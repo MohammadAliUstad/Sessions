@@ -6,9 +6,9 @@ import com.yugentech.sessions.utils.AppConstants.EMPTY
 data class TimerConfig(
     val focusDuration: Int = 25,
     val shortBreakDuration: Int = 5,
-    val longBreakDuration: Int = 15,
-    val targetSets: Int = 1,
-    val setsPerLongBreak: Int = 4,
+    val longBreakDuration: Int = 30,
+    val targetSets: Int = 4,
+    val setsPerLongBreak: Int = 3,
     val longBreakEnabled: Boolean = true,
     val sessionTask: String = EMPTY,
     val activeBackgroundSoundId: String? = null,
