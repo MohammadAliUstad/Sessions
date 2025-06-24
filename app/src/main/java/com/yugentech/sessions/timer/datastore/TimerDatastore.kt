@@ -44,9 +44,9 @@ class TimerDatastore(
             TimerConfig(
                 focusDuration = prefs[Keys.FOCUS_DURATION] ?: 25,
                 shortBreakDuration = prefs[Keys.SHORT_BREAK] ?: 5,
-                longBreakDuration = prefs[Keys.LONG_BREAK] ?: 15,
-                targetSets = prefs[Keys.TARGET_SETS] ?: 1,
-                setsPerLongBreak = prefs[Keys.SETS_PER_LONG_BREAK] ?: 4,
+                longBreakDuration = prefs[Keys.LONG_BREAK] ?: 30,
+                targetSets = prefs[Keys.TARGET_SETS] ?: 4,
+                setsPerLongBreak = prefs[Keys.SETS_PER_LONG_BREAK] ?: 3,
                 sessionTask = prefs[Keys.SESSION_TASK] ?: AppConstants.EMPTY,
                 activeBackgroundSoundId = prefs[Keys.ACTIVE_SOUND],
                 isAmbientEnabled = prefs[Keys.IS_AMBIENT_ENABLED] ?: true,
