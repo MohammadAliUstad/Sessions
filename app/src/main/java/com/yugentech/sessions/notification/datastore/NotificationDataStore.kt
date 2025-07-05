@@ -5,6 +5,7 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.emptyPreferences
+import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import com.yugentech.sessions.notification.model.NotificationConfig
 import kotlinx.coroutines.flow.Flow
@@ -111,10 +112,21 @@ class NotificationDataStore(
         )
     }
 
+    suspend fun getLastPlayfulReminderSent(): Long {
+        return dataStore.data.first()[LAST_PLAYFUL_REMINDER_SENT] ?: 0L
+    }
+
+    suspend fun setLastPlayfulReminderSent(timestamp: Long) {
+        dataStore.edit { prefs ->
+            prefs[LAST_PLAYFUL_REMINDER_SENT] = timestamp
+        }
+    }
+
     companion object {
         private val NOTIFICATIONS_ENABLED = booleanPreferencesKey("notifications_enabled")
         private val FOCUS_REMINDER_TIME = stringPreferencesKey("focus_reminder_time")
         private val FOCUS_REMINDERS_ENABLED = booleanPreferencesKey("focus_reminders_enabled")
         private val SMART_REMINDERS_ENABLED = booleanPreferencesKey("smart_reminders_enabled")
+        private val LAST_PLAYFUL_REMINDER_SENT = longPreferencesKey("last_playful_reminder_sent")
     }
 }
