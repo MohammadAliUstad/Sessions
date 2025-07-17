@@ -11,6 +11,7 @@ import com.yugentech.sessions.di.module.databaseModule
 import com.yugentech.sessions.di.module.notificationModule
 import com.yugentech.sessions.di.module.sessionModule
 import com.yugentech.sessions.di.module.themeModule
+import com.yugentech.sessions.di.module.templateModule
 import com.yugentech.sessions.di.module.timerModule
 import com.yugentech.sessions.di.module.userModule
 import com.yugentech.sessions.di.module.viewModelModule
@@ -52,6 +53,7 @@ class SessionsApp : Application(), Configuration.Provider {
                 alertsModule,
                 timerModule,
                 notificationModule,
+                templateModule,
             )
         }
     }
