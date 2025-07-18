@@ -4,9 +4,6 @@ import android.app.Activity
 import android.app.ActivityManager
 import android.app.Application
 import android.os.Bundle
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.LifecycleRegistry
 import com.google.firebase.FirebaseApp
 import com.yugentech.sessions.dependencyInjection.modules.authModule
 import com.yugentech.sessions.dependencyInjection.modules.leaderboardModule
@@ -20,14 +17,13 @@ import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
 import org.koin.core.context.GlobalContext.startKoin
 
-class SessionsApp : Application(), Application.ActivityLifecycleCallbacks, LifecycleOwner {
+class SessionsApp : Application(), Application.ActivityLifecycleCallbacks {
 
     private val statusViewModel: StatusViewModel by inject()
     private val sessionViewModel: SessionViewModel by inject()
 
     private var activeActivities = 0
     private var isAppVisible = false
-    private val lifecycleRegistry = LifecycleRegistry(this)
 
     override fun onCreate() {
         super.onCreate()
@@ -47,10 +43,7 @@ class SessionsApp : Application(), Application.ActivityLifecycleCallbacks, Lifec
         }
 
         registerActivityLifecycleCallbacks(this)
-        lifecycleRegistry.currentState = Lifecycle.State.CREATED
     }
-
-    override fun getLifecycle(): Lifecycle = lifecycleRegistry
 
     override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {
         activeActivities++
@@ -63,7 +56,6 @@ class SessionsApp : Application(), Application.ActivityLifecycleCallbacks, Lifec
     }
 
     override fun onActivityResumed(activity: Activity) {
-        lifecycleRegistry.currentState = Lifecycle.State.RESUMED
         isAppVisible = true
     }
 
@@ -78,7 +70,6 @@ class SessionsApp : Application(), Application.ActivityLifecycleCallbacks, Lifec
 
     override fun onActivityDestroyed(activity: Activity) {
         if (activeActivities == 0) {
-            lifecycleRegistry.currentState = Lifecycle.State.DESTROYED
             checkAppState()
         }
     }
@@ -88,10 +79,7 @@ class SessionsApp : Application(), Application.ActivityLifecycleCallbacks, Lifec
         isAppVisible = activeActivities > 0
 
         if (wasVisible && !isAppVisible) {
-            lifecycleRegistry.currentState = Lifecycle.State.CREATED
             checkAppState()
-        } else if (!wasVisible && isAppVisible) {
-            lifecycleRegistry.currentState = Lifecycle.State.STARTED
         }
     }
 
@@ -100,6 +88,7 @@ class SessionsApp : Application(), Application.ActivityLifecycleCallbacks, Lifec
             val activityManager = getSystemService(ACTIVITY_SERVICE) as ActivityManager
             val appTasks = activityManager.appTasks
 
+            // Only cleanup if app is being removed from recents
             if (appTasks.isEmpty() || appTasks.all { it.taskInfo == null }) {
                 sessionViewModel.stopTimer()
                 sessionViewModel.resetTimer()

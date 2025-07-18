@@ -1,5 +1,7 @@
 package com.yugentech.sessions.ui.screens.appScreens
 
+import android.app.ActivityManager
+import android.content.Context
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.animateFloatAsState
@@ -44,6 +46,7 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -52,6 +55,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -72,6 +76,7 @@ fun HomeScreen(
     val currentTime by sessionViewModel.currentTime.collectAsStateWithLifecycle()
     val selectedDuration by sessionViewModel.selectedDuration.collectAsStateWithLifecycle()
     val displayTime = if (isStudying || currentTime > 0) currentTime else selectedDuration
+    val context = LocalContext.current
 
     val safeProgress = remember(displayTime, selectedDuration) {
         if (selectedDuration > 0)
@@ -89,6 +94,16 @@ fun HomeScreen(
         statusViewModel.setUserStatus(userId, isStudying)
 
 
+    }
+
+    DisposableEffect(Unit) {
+        onDispose {
+            val activityManager = context.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
+            if (!activityManager.appTasks.any { it.taskInfo != null }) {
+                sessionViewModel.stopTimer()
+                statusViewModel.setUserStatus(userId, false)
+            }
+        }
     }
 
     LaunchedEffect(userId) {
