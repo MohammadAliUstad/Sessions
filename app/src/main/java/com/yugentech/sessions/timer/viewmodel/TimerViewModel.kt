@@ -115,6 +115,14 @@ class TimerViewModel(
         timerRepository.updateLongBreakAndTargetSets(longBreakMins, sets)
     }
 
+    fun updateSetsPerLongBreak(sets: Int) {
+        timerRepository.updateSetsPerLongBreak(sets)
+    }
+
+    fun updateLongBreakEnabled(enabled: Boolean) {
+        timerRepository.updateLongBreakEnabled(enabled)
+    }
+
     fun updateBackgroundSound(soundId: String?) {
         val current = timerState.value.timerConfig
         if (current.activeBackgroundSoundId != soundId) {
