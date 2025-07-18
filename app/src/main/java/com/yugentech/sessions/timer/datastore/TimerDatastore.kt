@@ -23,9 +23,11 @@ class TimerDatastore(
         val SHORT_BREAK = intPreferencesKey("short_break_duration")
         val LONG_BREAK = intPreferencesKey("long_break_duration")
         val TARGET_SETS = intPreferencesKey("target_sets")
+        val SETS_PER_LONG_BREAK = intPreferencesKey("sets_per_long_break")
         val SESSION_TASK = stringPreferencesKey("session_task")
         val ACTIVE_SOUND = stringPreferencesKey("active_background_sound_id")
         val IS_AMBIENT_ENABLED = booleanPreferencesKey("is_ambient_enabled")
+        val LONG_BREAK_ENABLED = booleanPreferencesKey("long_break_enabled")
     }
 
     // Continuously observe DataStore and emit the latest TimerConfig
@@ -44,9 +46,11 @@ class TimerDatastore(
                 shortBreakDuration = prefs[Keys.SHORT_BREAK] ?: 5,
                 longBreakDuration = prefs[Keys.LONG_BREAK] ?: 15,
                 targetSets = prefs[Keys.TARGET_SETS] ?: 1,
+                setsPerLongBreak = prefs[Keys.SETS_PER_LONG_BREAK] ?: 4,
                 sessionTask = prefs[Keys.SESSION_TASK] ?: AppConstants.EMPTY,
                 activeBackgroundSoundId = prefs[Keys.ACTIVE_SOUND],
-                isAmbientEnabled = prefs[Keys.IS_AMBIENT_ENABLED] ?: true
+                isAmbientEnabled = prefs[Keys.IS_AMBIENT_ENABLED] ?: true,
+                longBreakEnabled = prefs[Keys.LONG_BREAK_ENABLED] ?: true
             )
         }
 
@@ -91,6 +95,16 @@ class TimerDatastore(
         }
     }
 
+    suspend fun updateSetsPerLongBreak(sets: Int) {
+        try {
+            dataStore.edit { prefs ->
+                prefs[Keys.SETS_PER_LONG_BREAK] = sets
+            }
+        } catch (e: Exception) {
+            Timber.e(e, "Failed to update sets per long break")
+        }
+    }
+
     suspend fun updateActiveBackgroundSound(soundId: String?) {
         try {
             dataStore.edit { prefs ->
@@ -98,6 +112,16 @@ class TimerDatastore(
             }
         } catch (e: Exception) {
             Timber.e(e, "Failed to update active background sound")
+        }
+    }
+
+    suspend fun updateLongBreakEnabled(enabled: Boolean) {
+        try {
+            dataStore.edit { prefs ->
+                prefs[Keys.LONG_BREAK_ENABLED] = enabled
+            }
+        } catch (e: Exception) {
+            Timber.e(e, "Failed to update long break enabled")
         }
     }
 

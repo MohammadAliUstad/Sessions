@@ -24,6 +24,8 @@ interface TimerRepository {
     fun updateFocusDuration(duration: Int)
     fun updateShortBreakDuration(duration: Int)
     fun updateLongBreakAndTargetSets(duration: Int, sets: Int)
+    fun updateSetsPerLongBreak(sets: Int)
+    fun updateLongBreakEnabled(enabled: Boolean)
     fun updateActiveBackgroundSound(soundId: String?)
     fun toggleAmbientSound(enabled: Boolean)
 }
