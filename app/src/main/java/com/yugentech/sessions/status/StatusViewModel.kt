@@ -4,8 +4,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.yugentech.sessions.status.statusRepository.StatusRepository
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
@@ -13,9 +11,9 @@ import kotlinx.coroutines.launch
 class StatusViewModel(
     private val repository: StatusRepository
 ) : ViewModel() {
-
     private val _statuses = MutableStateFlow<Map<String, Boolean>>(emptyMap())
-    val statuses: StateFlow<Map<String, Boolean>> = _statuses.asStateFlow()
+
+    private var currentUserId: String? = null
 
     init {
         observeStatuses()
@@ -30,15 +28,22 @@ class StatusViewModel(
     }
 
     fun setUserStatus(userId: String, isStudying: Boolean) {
+        currentUserId = userId
         viewModelScope.launch {
             repository.setStudyStatus(userId, isStudying)
         }
     }
 
-    fun getUserStatusOnce(userId: String, onResult: (Boolean) -> Unit) {
+    fun cleanup() {
         viewModelScope.launch {
-            val result = repository.getStudyStatus(userId)
-            onResult(result)
+            currentUserId?.let { userId ->
+                repository.setStudyStatus(userId, false)
+            }
         }
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        cleanup()
     }
 }

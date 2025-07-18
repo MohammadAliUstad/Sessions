@@ -57,7 +57,6 @@ fun ProfileScreen(
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         item {
-            // ——— User Profile Card ———
             Card(
                 modifier = Modifier.fillMaxWidth(),
                 colors = CardDefaults.cardColors(
@@ -74,7 +73,6 @@ fun ProfileScreen(
                         .padding(24.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    // Edit Profile Button
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.End
@@ -90,7 +88,6 @@ fun ProfileScreen(
                         }
                     }
 
-                    // Profile Picture
                     Surface(
                         modifier = Modifier
                             .size(96.dp)
@@ -108,7 +105,6 @@ fun ProfileScreen(
 
                     Spacer(modifier = Modifier.height(16.dp))
 
-                    // User Name
                     Text(
                         text = user?.username ?: "Anonymous",
                         style = MaterialTheme.typography.headlineSmall,
@@ -117,7 +113,6 @@ fun ProfileScreen(
 
                     Spacer(modifier = Modifier.height(20.dp))
 
-                    // Study Time Section
                     StudyTimeSection(
                         formattedTime = formatTime(totalTime)
                     )
@@ -126,7 +121,6 @@ fun ProfileScreen(
         }
 
         item {
-            // ——— Recent Sessions Card ———
             Card(
                 modifier = Modifier.fillMaxWidth(),
                 colors = CardDefaults.cardColors(
@@ -142,7 +136,6 @@ fun ProfileScreen(
                         .fillMaxWidth()
                         .padding(24.dp)
                 ) {
-                    // Section Header
                     Text(
                         text = "Recent Sessions",
                         style = MaterialTheme.typography.titleLarge,
@@ -150,7 +143,6 @@ fun ProfileScreen(
                         modifier = Modifier.padding(bottom = 16.dp)
                     )
 
-                    // Sessions Content
                     if (sessions.isEmpty()) {
                         EmptySessionsIllustration(
                             modifier = Modifier.fillMaxWidth()
@@ -176,7 +168,6 @@ fun EmptySessionsIllustration(modifier: Modifier = Modifier) {
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        // Illustration
         Surface(
             modifier = Modifier
                 .size(120.dp)
@@ -197,7 +188,6 @@ fun EmptySessionsIllustration(modifier: Modifier = Modifier) {
 
         Spacer(modifier = Modifier.height(24.dp))
 
-        // Primary message
         Text(
             text = "No sessions yet",
             style = MaterialTheme.typography.titleMedium,
@@ -207,7 +197,6 @@ fun EmptySessionsIllustration(modifier: Modifier = Modifier) {
 
         Spacer(modifier = Modifier.height(8.dp))
 
-        // Secondary message
         Text(
             text = "Start your first session to track your progress and build productive habits!",
             style = MaterialTheme.typography.bodyMedium,
