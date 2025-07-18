@@ -38,14 +38,12 @@ fun LoginScreen(
     var password by remember { mutableStateOf("") }
     var passwordVisible by remember { mutableStateOf(false) }
 
-    // Local validation errors
     var nameError by remember { mutableStateOf("") }
     var emailError by remember { mutableStateOf("") }
     var passwordError by remember { mutableStateOf("") }
 
     val scope = rememberCoroutineScope()
 
-    // Clear errors when switching between login/signup
     LaunchedEffect(isLogin) {
         nameError = ""
         emailError = ""
@@ -53,7 +51,6 @@ fun LoginScreen(
         authViewModel.clearError()
     }
 
-    // Clear Firebase error when user starts typing
     LaunchedEffect(name, email, password) {
         if (state.error != null) {
             authViewModel.clearError()
@@ -114,7 +111,6 @@ fun LoginScreen(
         ) {
             Spacer(modifier = Modifier.height(32.dp))
 
-            // Logo
             Card(
                 modifier = Modifier.size(120.dp),
                 colors = CardDefaults.cardColors(
@@ -198,7 +194,6 @@ fun LoginScreen(
 
             Spacer(modifier = Modifier.height(40.dp))
 
-            // Firebase error display
             AnimatedVisibility(
                 visible = state.error != null,
                 enter = slideInVertically(tween(300)) + fadeIn(),
@@ -260,7 +255,6 @@ fun LoginScreen(
 
                     Spacer(modifier = Modifier.height(24.dp))
 
-                    // Name field for signup
                     AnimatedVisibility(
                         visible = !isLogin,
                         enter = expandVertically(tween(300)) + fadeIn(),
@@ -299,7 +293,6 @@ fun LoginScreen(
                         }
                     }
 
-                    // Email field
                     OutlinedTextField(
                         value = email,
                         onValueChange = {
@@ -331,7 +324,6 @@ fun LoginScreen(
 
                     Spacer(modifier = Modifier.height(16.dp))
 
-                    // Password field
                     OutlinedTextField(
                         value = password,
                         onValueChange = {
@@ -373,7 +365,6 @@ fun LoginScreen(
 
                     Spacer(modifier = Modifier.height(32.dp))
 
-                    // Sign In/Sign Up Button
                     Button(
                         onClick = {
                             if (validateForm()) {

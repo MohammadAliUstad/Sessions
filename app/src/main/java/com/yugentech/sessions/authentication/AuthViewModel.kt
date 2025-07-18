@@ -84,7 +84,6 @@ class AuthViewModel(
         }
     }
 
-    // New method to update profile
     fun updateProfile(displayName: String, profileImageUri: Uri? = null) {
         _authState.value = _authState.value.copy(isLoading = true)
 
