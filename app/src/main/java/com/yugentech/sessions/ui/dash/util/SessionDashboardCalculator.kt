@@ -29,7 +29,7 @@ object SessionDashboardCalculator {
             visualItems.add(SessionVisualItem.FocusBlock(setStatus))
 
             if (i < targetSets) {
-                val isLongBreakInterval = (i % setsPerLongBreak == 0)
+                val isLongBreakInterval = config.longBreakEnabled && (i % setsPerLongBreak == 0)
 
                 val breakStatus = when {
                     i < completedSets -> ItemStatus.Completed
@@ -44,11 +44,6 @@ object SessionDashboardCalculator {
                 }
             }
         }
-
-        val setsBeforeLast = (targetSets - 1).coerceAtLeast(0)
-        val timeBeforeLastSet = setsBeforeLast * config.focusDuration
-        val isEligibleForLongBreak = timeBeforeLastSet >= 100
-
 
         val (mainMsg, subMsg) = when {
             isLongBreakMode -> "You earned this." to "Reset & recover"
@@ -122,7 +117,7 @@ object SessionDashboardCalculator {
         val display = if (isLongBreakMode) "Chill" else "$currentSet"
 
         return SessionDashboardState(
-            showLongBreakBadge = isEligibleForLongBreak,
+            showLongBreakBadge = config.longBreakEnabled && config.setsPerLongBreak < config.targetSets,
             badgeText = "${config.longBreakDuration}m Long Break",
             mainMessage = mainMsg,
             subMessage = subMsg,

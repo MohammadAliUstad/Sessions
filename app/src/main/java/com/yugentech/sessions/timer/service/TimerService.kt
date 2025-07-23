@@ -150,7 +150,7 @@ class TimerService(
     }
 
     private fun transitionToBreak(config: TimerConfig, newCompletedSets: Int) {
-        val isLongBreak = (newCompletedSets % config.setsPerLongBreak == 0)
+        val isLongBreak = config.longBreakEnabled && (newCompletedSets % config.setsPerLongBreak == 0)
         val (breakMode, breakMinutes) = if (isLongBreak) {
             TimerMode.LongBreak to config.longBreakDuration
         } else {
