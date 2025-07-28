@@ -6,6 +6,8 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Slider
 import androidx.compose.material3.SliderDefaults
@@ -31,7 +33,8 @@ fun DurationPickerDialog(
     range: IntRange,
     step: Int,
     onDismiss: () -> Unit,
-    onConfirm: (Int) -> Unit
+    onConfirm: (Int) -> Unit,
+    onHaptic: () -> Unit = {}
 ) {
     var sliderValue by remember { mutableFloatStateOf(initialValue.toFloat()) }
     val stepsCount = ((range.last - range.first) / step) - 1
@@ -75,6 +78,9 @@ fun DurationPickerDialog(
                         value = sliderValue,
                         onValueChange = { newValue ->
                             val snapped = (newValue / step).roundToInt() * step
+                            if (snapped.toFloat() != sliderValue) {
+                                onHaptic()
+                            }
                             sliderValue = snapped.toFloat()
                         },
                         valueRange = range.first.toFloat()..range.last.toFloat(),
@@ -109,13 +115,19 @@ fun DurationPickerDialog(
             }
         },
         confirmButton = {
-            TextButton(onClick = { onConfirm(sliderValue.roundToInt()) }) {
+            Button(
+                onClick = { onConfirm(sliderValue.roundToInt()) },
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    contentColor = MaterialTheme.colorScheme.onPrimary
+                )
+            ) {
                 Text("Set Time")
             }
         },
         dismissButton = {
             TextButton(onClick = onDismiss) {
-                Text("Cancel")
+                Text("Cancel", color = MaterialTheme.colorScheme.onSurfaceVariant)
             }
         },
         containerColor = MaterialTheme.colorScheme.surfaceContainer,
