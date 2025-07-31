@@ -13,11 +13,8 @@ class SessionRepositoryImpl(
         return sessionService.saveSession(userId, session)
     }
 
-    override suspend fun updateTotalTime(
-        userId: String,
-        additionalSeconds: Int
-    ): SessionResult<Unit> {
-        return sessionService.updateTotalTime(userId, additionalSeconds)
+    override suspend fun updateTotalTime(userId: String, seconds: Int): SessionResult<Unit> {
+        return sessionService.updateTotalTime(userId, seconds)
     }
 
     override fun getSessions(userId: String): Flow<List<Session>> {

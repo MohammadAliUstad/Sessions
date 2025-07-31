@@ -44,10 +44,7 @@ class AuthRepositoryImpl(
         return authService.handleGoogleSignInResult(data)
     }
 
-    override suspend fun updateProfile(
-        displayName: String,
-        profileImageUri: Uri?
-    ): AuthResult<FirebaseUser> {
+    override suspend fun updateProfile(name: String, profileUri: Uri?): AuthResult<FirebaseUser> {
         return try {
             val currentUserResult = authService.getCurrentUser()
             if (currentUserResult !is AuthResult.Success) {
@@ -57,20 +54,20 @@ class AuthRepositoryImpl(
             val currentUser = currentUserResult.data
 
             val profileUpdateBuilder = UserProfileChangeRequest.Builder()
-                .setDisplayName(displayName)
+                .setDisplayName(name)
 
-            if (profileImageUri != null) {
-                profileUpdateBuilder.photoUri = profileImageUri
+            if (profileUri != null) {
+                profileUpdateBuilder.photoUri = profileUri
             }
 
             currentUser.updateProfile(profileUpdateBuilder.build()).await()
 
             val userUpdates = mutableMapOf<String, Any>(
-                "name" to displayName
+                "name" to name
             )
 
-            if (profileImageUri != null) {
-                userUpdates["profilePictureUrl"] = profileImageUri.toString()
+            if (profileUri != null) {
+                userUpdates["profilePictureUrl"] = profileUri.toString()
             }
 
             firestore.collection("users")

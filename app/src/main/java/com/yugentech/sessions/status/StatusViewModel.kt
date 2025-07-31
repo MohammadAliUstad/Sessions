@@ -1,49 +1,40 @@
 package com.yugentech.sessions.status
 
+import android.content.Context
+import android.content.Intent
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.yugentech.sessions.notification.SessionCleanupService
 import com.yugentech.sessions.status.statusRepository.StatusRepository
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
 class StatusViewModel(
-    private val repository: StatusRepository
+    private val statusRepository: StatusRepository
 ) : ViewModel() {
-    private val _statuses = MutableStateFlow<Map<String, Boolean>>(emptyMap())
 
-    private var currentUserId: String? = null
-
-    init {
-        observeStatuses()
-    }
-
-    private fun observeStatuses() {
-        repository.getAllStatuses()
-            .onEach { statusMap ->
-                _statuses.value = statusMap
-            }
-            .launchIn(viewModelScope)
-    }
-
-    fun setUserStatus(userId: String, isStudying: Boolean) {
-        currentUserId = userId
+    fun setUserStudyStatus(userId: String, isStudying: Boolean) {
         viewModelScope.launch {
-            repository.setStudyStatus(userId, isStudying)
+            statusRepository.setStudyStatus(userId, isStudying)
         }
     }
 
-    fun cleanup() {
-        viewModelScope.launch {
-            currentUserId?.let { userId ->
-                repository.setStudyStatus(userId, false)
-            }
+    fun sessionTrackingService(context: Context, userId: String, isStudying: Boolean) {
+
+        val serviceIntent = Intent(context, SessionCleanupService::class.java).apply {
+            putExtra("USER_ID", userId)
+        }
+
+        if (isStudying) {
+            context.startService(serviceIntent)
+        } else {
+            context.stopService(serviceIntent)
         }
     }
 
-    override fun onCleared() {
-        super.onCleared()
-        cleanup()
+    fun cleanupOnAppExit(context: Context, userId: String) {
+
+        val serviceIntent = Intent(context, SessionCleanupService::class.java)
+        context.stopService(serviceIntent)
+        setUserStudyStatus(userId, false)
     }
 }

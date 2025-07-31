@@ -20,6 +20,9 @@ class AuthViewModel(
     private val _authState = MutableStateFlow(AuthState())
     val authState: StateFlow<AuthState> = _authState
 
+    private val _userId = MutableStateFlow<String?>(null)
+    val userId: StateFlow<String?> = _userId
+
     init {
         viewModelScope.launch {
             when (val result = authRepository.getCurrentUser()) {
@@ -98,6 +101,7 @@ class AuthViewModel(
 
     private fun updateAuthState(user: FirebaseUser?) {
         if (user != null) {
+            _userId.value = user.uid
             val userData = UserData(
                 userId = user.uid,
                 username = user.displayName,

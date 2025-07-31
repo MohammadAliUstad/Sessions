@@ -1,7 +1,5 @@
 package com.yugentech.sessions.ui.screens.appScreens
 
-import android.app.ActivityManager
-import android.content.Context
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.animateFloatAsState
@@ -46,7 +44,6 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -76,7 +73,6 @@ fun HomeScreen(
     val currentTime by sessionViewModel.currentTime.collectAsStateWithLifecycle()
     val selectedDuration by sessionViewModel.selectedDuration.collectAsStateWithLifecycle()
     val displayTime = if (isStudying || currentTime > 0) currentTime else selectedDuration
-    val context = LocalContext.current
 
     val safeProgress = remember(displayTime, selectedDuration) {
         if (selectedDuration > 0)
@@ -90,21 +86,7 @@ fun HomeScreen(
         label = "TimerProgress"
     )
 
-    LaunchedEffect(isStudying) {
-        statusViewModel.setUserStatus(userId, isStudying)
-
-
-    }
-
-    DisposableEffect(Unit) {
-        onDispose {
-            val activityManager = context.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
-            if (!activityManager.appTasks.any { it.taskInfo != null }) {
-                sessionViewModel.stopTimer()
-                statusViewModel.setUserStatus(userId, false)
-            }
-        }
-    }
+    val appContext = LocalContext.current.applicationContext
 
     LaunchedEffect(userId) {
         sessionViewModel.setUserId(userId)
@@ -120,6 +102,7 @@ fun HomeScreen(
                 .padding(horizontal = 24.dp, vertical = 32.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
+            // HEADER TEXT
             Text(
                 text = if (isStudying) "Focus" else "Ready to Focus?",
                 style = MaterialTheme.typography.headlineMedium.copy(
@@ -131,6 +114,7 @@ fun HomeScreen(
 
             Spacer(modifier = Modifier.height(8.dp))
 
+            // STATUS INDICATOR CARD
             Card(
                 modifier = Modifier.padding(horizontal = 16.dp),
                 colors = CardDefaults.cardColors(
@@ -168,14 +152,13 @@ fun HomeScreen(
                 }
             }
 
-            // Timer Section
+            // TIMER SECTION
             Box(
                 modifier = Modifier
                     .weight(1f)
                     .padding(vertical = 32.dp),
                 contentAlignment = Alignment.Center
             ) {
-                // Background circle
                 CircularProgressIndicator(
                     progress = { 1f },
                     modifier = Modifier.size(320.dp),
@@ -185,7 +168,6 @@ fun HomeScreen(
                     strokeCap = StrokeCap.Round,
                 )
 
-                // Progress circle with gradient effect
                 CircularProgressIndicator(
                     progress = { animatedProgress },
                     modifier = Modifier.size(320.dp),
@@ -195,7 +177,6 @@ fun HomeScreen(
                     strokeCap = StrokeCap.Round,
                 )
 
-                // Center content
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.Center
@@ -225,7 +206,7 @@ fun HomeScreen(
                 }
             }
 
-            // Duration Selection (when not studying)
+            // DURATION SELECTOR
             AnimatedVisibility(
                 visible = !isStudying,
                 enter = fadeIn() + expandVertically(),
@@ -313,7 +294,7 @@ fun HomeScreen(
                 }
             }
 
-            // Main Action Button
+            // MAIN ACTION BUTTON - FIXED
             AnimatedVisibility(
                 visible = !isStudying || currentTime > 0,
                 enter = scaleIn() + fadeIn(),
@@ -321,8 +302,25 @@ fun HomeScreen(
             ) {
                 FloatingActionButton(
                     onClick = {
-                        if (isStudying) sessionViewModel.stopTimer()
-                        else sessionViewModel.startTimer()
+                        if (isStudying) {
+                            // STOPPING SESSION - FIXED
+                            sessionViewModel.stopTimer()
+                            statusViewModel.setUserStudyStatus(userId, false)
+                            statusViewModel.sessionTrackingService(
+                                context = appContext,
+                                userId = userId,
+                                isStudying = false
+                            )
+                        } else {
+                            // STARTING SESSION
+                            sessionViewModel.startTimer()
+                            statusViewModel.setUserStudyStatus(userId, true)
+                            statusViewModel.sessionTrackingService(
+                                context = appContext,
+                                userId = userId,
+                                isStudying = true
+                            )
+                        }
                     },
                     modifier = Modifier
                         .size(72.dp)
@@ -348,7 +346,7 @@ fun HomeScreen(
                 }
             }
 
-            // Session Control Buttons (when studying)
+            // CONTROL BUTTONS - FIXED
             AnimatedVisibility(
                 visible = isStudying,
                 enter = fadeIn() + expandVertically(),
@@ -360,10 +358,17 @@ fun HomeScreen(
                         .padding(top = 24.dp),
                     horizontalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
+                    // STOP BUTTON - FIXED
                     ExtendedFloatingActionButton(
                         onClick = {
                             sessionViewModel.stopTimer()
                             sessionViewModel.resetTimer()
+                            statusViewModel.setUserStudyStatus(userId, false)
+                            statusViewModel.sessionTrackingService(
+                                context = appContext,
+                                userId = userId,
+                                isStudying = false
+                            )
                         },
                         modifier = Modifier.weight(1f),
                         containerColor = MaterialTheme.colorScheme.errorContainer,
@@ -376,29 +381,25 @@ fun HomeScreen(
                             modifier = Modifier.size(18.dp)
                         )
                         Spacer(modifier = Modifier.width(8.dp))
-                        Text(
-                            "Stop",
-                            style = MaterialTheme.typography.labelLarge.copy(
-                                fontWeight = FontWeight.Medium
-                            )
-                        )
+                        Text("Stop")
                     }
 
+                    // SAVE BUTTON - FIXED
                     ExtendedFloatingActionButton(
                         onClick = {
                             sessionViewModel.stopTimer()
                             val elapsed = sessionViewModel.getElapsedTime()
                             if (elapsed > 0) {
-                                sessionViewModel.saveSession(
-                                    userId,
-                                    Session(elapsed)
-                                )
-                                sessionViewModel.updateTotalTime(
-                                    userId,
-                                    elapsed
-                                )
+                                sessionViewModel.saveSession(userId, Session(elapsed))
+                                sessionViewModel.updateTotalTime(userId, elapsed)
                             }
                             sessionViewModel.resetTimer()
+                            statusViewModel.setUserStudyStatus(userId, false)
+                            statusViewModel.sessionTrackingService(
+                                context = appContext,
+                                userId = userId,
+                                isStudying = false
+                            )
                         },
                         modifier = Modifier.weight(1f),
                         containerColor = MaterialTheme.colorScheme.primaryContainer,
@@ -411,12 +412,7 @@ fun HomeScreen(
                             modifier = Modifier.size(18.dp)
                         )
                         Spacer(modifier = Modifier.width(8.dp))
-                        Text(
-                            "Save",
-                            style = MaterialTheme.typography.labelLarge.copy(
-                                fontWeight = FontWeight.Medium
-                            )
-                        )
+                        Text("Save")
                     }
                 }
             }

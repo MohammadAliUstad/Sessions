@@ -20,7 +20,14 @@ class SessionViewModel(
     val isStudying: StateFlow<Boolean> = timerManager.isRunning
     val currentTime: StateFlow<Int> = timerManager.currentTime
 
+    private val _sessions = MutableStateFlow<List<Session>>(emptyList())
+    val sessions: StateFlow<List<Session>> = _sessions.asStateFlow()
+
+    private val _totalTime = MutableStateFlow(0L)
+    val totalTime: StateFlow<Long> = _totalTime.asStateFlow()
+
     private val _selectedDuration = MutableStateFlow(25 * 60)
+
     val selectedDuration: StateFlow<Int> = _selectedDuration.asStateFlow()
 
     init {
@@ -47,17 +54,11 @@ class SessionViewModel(
         _selectedDuration.value = minutes * 60
         timerManager.setDuration(_selectedDuration.value)
     }
-
     fun startTimer() = timerManager.start()
     fun stopTimer() = timerManager.stop()
     fun resetTimer() = timerManager.reset()
+
     fun getElapsedTime(): Int = timerManager.getElapsedTime()
-
-    private val _sessions = MutableStateFlow<List<Session>>(emptyList())
-    val sessions: StateFlow<List<Session>> = _sessions.asStateFlow()
-
-    private val _totalTime = MutableStateFlow(0L)
-    val totalTime: StateFlow<Long> = _totalTime.asStateFlow()
 
     fun saveSession(userId: String, session: Session) {
         viewModelScope.launch {

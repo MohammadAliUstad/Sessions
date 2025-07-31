@@ -15,7 +15,6 @@ android {
         targetSdk = 36
         versionCode = 1
         versionName = "1.0"
-
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -56,7 +55,7 @@ dependencies {
     // Firebase Auth
     implementation(libs.firebase.auth.ktx)
 
-    // Firestore (Cloud)
+    // Firestore
     implementation(libs.firebase.firestore.ktx)
 
     // Realtime DB
@@ -81,9 +80,6 @@ dependencies {
     // Koin
     implementation(libs.koin.android)
     implementation(libs.koin.androidx.compose)
-
-    // Datastore
-    implementation(libs.androidx.datastore.preferences)
 
     // Accompanist
     implementation(libs.accompanist.navigation.animation)

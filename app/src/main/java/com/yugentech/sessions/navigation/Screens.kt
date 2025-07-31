@@ -25,7 +25,7 @@ sealed class AppScreens(val route: String, val title: String, val icon: ImageVec
 
 sealed class Screens(val route: String, val title: String, val icon: ImageVector) {
     data object Login : Screens("login", "Login", Icons.AutoMirrored.Filled.Login)
-    data object Home : Screens("main", "Home", Icons.Filled.Home)
+    data object Main : Screens("main", "Home", Icons.Filled.Home)
     data object Profile : Screens("profile", "Profile", Icons.Filled.AccountCircle)
     data object Leaderboard : Screens("leaderboard", "Leaderboard", Icons.Filled.Leaderboard)
     data object About : Screens("about", "About", Icons.Filled.Info)
@@ -33,10 +33,10 @@ sealed class Screens(val route: String, val title: String, val icon: ImageVector
 
     companion object {
         fun fromRoute(route: String): Screens = when (route) {
-            Home.route -> Home
+            Main.route -> Main
             Profile.route -> Profile
             Leaderboard.route -> Leaderboard
-            else -> Home
+            else -> Main
         }
     }
 }
