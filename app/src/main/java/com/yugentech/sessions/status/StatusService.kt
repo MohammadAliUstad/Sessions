@@ -14,28 +14,25 @@ class StatusService(
 ) {
     private val studyStatusRef = firebaseDatabase.getReference("studyStatus")
 
-    suspend fun setStudyStatus(userId: String, isStudying: Boolean): Boolean {
+    suspend fun setStudyStatus(userId: String, isStudying: Boolean): StatusResult<Unit> {
         return try {
             studyStatusRef
                 .child(userId)
                 .setValue(isStudying)
                 .await()
-            true
-        } catch (_: Exception) {
-            false
+            StatusResult.Success(Unit)
+        } catch (e: Exception) {
+            StatusResult.Error(e)
         }
     }
 
-    suspend fun getStudyStatus(userId: String): Boolean {
+    suspend fun getStudyStatus(userId: String): StatusResult<Boolean> {
         return try {
-            val snapshot =
-                studyStatusRef
-                    .child(userId)
-                    .get()
-                    .await()
-            snapshot.getValue(Boolean::class.java) == true
-        } catch (_: Exception) {
-            false
+            val snapshot = studyStatusRef.child(userId).get().await()
+            val value = snapshot.getValue(Boolean::class.java) ?: false
+            StatusResult.Success(value)
+        } catch (e: Exception) {
+            StatusResult.Error(e)
         }
     }
 
@@ -46,7 +43,6 @@ class StatusService(
                     val key = child.key ?: return@mapNotNull null
                     key to (child.getValue(Boolean::class.java) == true)
                 }.toMap()
-
                 trySend(statusMap).isSuccess
             }
 
@@ -56,6 +52,8 @@ class StatusService(
         }
 
         studyStatusRef.addValueEventListener(listener)
-        awaitClose { studyStatusRef.removeEventListener(listener) }
+        awaitClose {
+            studyStatusRef.removeEventListener(listener)
+        }
     }
 }

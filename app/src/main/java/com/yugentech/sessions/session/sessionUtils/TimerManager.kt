@@ -13,19 +13,15 @@ class TimerManager {
 
     private var onTimerComplete: (() -> Unit)? = null
 
-    fun setOnTimerCompleteListener(listener: () -> Unit) {
-        onTimerComplete = listener
-    }
-
     private val _isRunning = MutableStateFlow(false)
+
     val isRunning: StateFlow<Boolean> = _isRunning
-
     private val _currentTime = MutableStateFlow(0)
+
     val currentTime: StateFlow<Int> = _currentTime
-
     private var timerJob: Job? = null
-    private var duration = 0
 
+    private var duration = 0
     fun setDuration(seconds: Int) {
         duration = seconds
         _currentTime.value = duration
@@ -59,4 +55,8 @@ class TimerManager {
     }
 
     fun getElapsedTime(): Int = duration - _currentTime.value
+
+    fun setOnTimerCompleteListener(listener: () -> Unit) {
+        onTimerComplete = listener
+    }
 }

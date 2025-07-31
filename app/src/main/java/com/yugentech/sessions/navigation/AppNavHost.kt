@@ -54,7 +54,7 @@ fun AppNavHost(
         }
     }
 
-    val startDestination = if (authState.isUserLoggedIn) Screens.Home.route else Screens.Login.route
+    val startDestination = if (authState.isUserLoggedIn) Screens.Main.route else Screens.Login.route
 
     AnimatedNavHost(
         navController = navController,
@@ -79,9 +79,13 @@ fun AppNavHost(
             )
         }
 
-        composable(Screens.Home.route) {
+        composable(Screens.Main.route) {
             val userId = authState.userId
             if (userId != null) {
+                LaunchedEffect(userId) {
+                    sessionViewModel.resetTimer()
+                    statusViewModel.setUserStudyStatus(userId, false)
+                }
                 MainScreen(
                     userId = userId,
                     sessionViewModel = sessionViewModel,

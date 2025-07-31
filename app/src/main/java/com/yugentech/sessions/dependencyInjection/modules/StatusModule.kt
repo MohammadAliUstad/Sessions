@@ -5,7 +5,6 @@ import com.yugentech.sessions.status.StatusService
 import com.yugentech.sessions.status.StatusViewModel
 import com.yugentech.sessions.status.statusRepository.StatusRepository
 import com.yugentech.sessions.status.statusRepository.StatusRepositoryImpl
-import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
 
 val statusModule = module {
@@ -16,5 +15,5 @@ val statusModule = module {
 
     single<StatusRepository> { StatusRepositoryImpl(get()) }
 
-    viewModel { StatusViewModel(get()) }
+    single { StatusViewModel(get()) }
 }
