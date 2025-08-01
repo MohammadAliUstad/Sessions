@@ -109,7 +109,8 @@ class AuthService(
             "uid" to user.uid,
             "name" to name,
             "email" to user.email,
-            "totalTimeStudied" to 0L
+            "totalTimeStudied" to 0L,
+            "profilePhoto" to user.photoUrl?.toString(),
         )
         firestore.collection("users").document(user.uid).set(userData).await()
     }

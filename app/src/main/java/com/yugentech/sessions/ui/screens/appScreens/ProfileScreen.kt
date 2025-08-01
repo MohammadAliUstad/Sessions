@@ -20,11 +20,18 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.FilterQuality
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
+import coil.request.ImageRequest
+import coil.size.Size
+import coil.transform.CircleCropTransformation
 import com.yugentech.sessions.R
 import com.yugentech.sessions.ui.components.profileScreen.StudyTimeSection
 import com.yugentech.sessions.authentication.AuthViewModel
@@ -88,22 +95,48 @@ fun ProfileScreen(
                         }
                     }
 
-                    Surface(
-                        modifier = Modifier
-                            .size(96.dp)
-                            .clip(CircleShape),
-                        color = MaterialTheme.colorScheme.primaryContainer
-                    ) {
-                        user?.profilePictureUrl?.let { url ->
-                            AsyncImage(
-                                model = url,
-                                contentDescription = "Profile Picture",
-                                modifier = Modifier.fillMaxSize()
-                            )
+                    // ✅ SMALLER, CLEARER PROFILE IMAGE (80dp - 33% smaller)
+                    user?.profilePictureUrl?.let { url ->
+                        val density = LocalDensity.current
+                        val sizePx = with(density) { 80.dp.toPx().toInt() } // ✅ Reduced from 120dp to 80dp
+
+                        AsyncImage(
+                            model = ImageRequest.Builder(LocalContext.current)
+                                .data(url)
+                                .size(Size(sizePx, sizePx))
+                                .allowHardware(false)
+                                .crossfade(300)
+                                .transformations(CircleCropTransformation())
+                                .build(),
+                            contentDescription = "Profile Picture",
+                            modifier = Modifier.size(80.dp), // ✅ Smaller image size
+                            contentScale = ContentScale.Crop,
+                            filterQuality = FilterQuality.High,
+                            placeholder = painterResource(R.drawable.new_beginnings),
+                            error = painterResource(R.drawable.new_beginnings)
+                        )
+                    } ?: run {
+                        // ✅ SMALLER FALLBACK
+                        Surface(
+                            modifier = Modifier
+                                .size(80.dp) // ✅ Match the smaller size
+                                .clip(CircleShape),
+                            color = MaterialTheme.colorScheme.primaryContainer
+                        ) {
+                            Box(
+                                modifier = Modifier.fillMaxSize(),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Image(
+                                    painter = painterResource(id = R.drawable.new_beginnings),
+                                    contentDescription = "Default Profile Picture",
+                                    modifier = Modifier.size(40.dp) // ✅ Proportionally smaller
+                                )
+                            }
                         }
                     }
 
-                    Spacer(modifier = Modifier.height(16.dp))
+                    Spacer(modifier = Modifier.height(12.dp)) // ✅ Slightly reduced spacing
 
                     Text(
                         text = user?.username ?: "Anonymous",
@@ -111,7 +144,7 @@ fun ProfileScreen(
                         color = MaterialTheme.colorScheme.onSurface
                     )
 
-                    Spacer(modifier = Modifier.height(20.dp))
+                    Spacer(modifier = Modifier.height(16.dp)) // ✅ Slightly reduced spacing
 
                     StudyTimeSection(
                         formattedTime = formatTime(totalTime)
@@ -170,7 +203,7 @@ fun EmptySessionsIllustration(modifier: Modifier = Modifier) {
     ) {
         Surface(
             modifier = Modifier
-                .size(120.dp)
+                .size(100.dp) // ✅ Slightly smaller to match the new proportions
                 .clip(CircleShape),
             color = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.3f)
         ) {
@@ -181,12 +214,12 @@ fun EmptySessionsIllustration(modifier: Modifier = Modifier) {
                 Image(
                     painter = painterResource(id = R.drawable.new_beginnings),
                     contentDescription = "No sessions illustration",
-                    modifier = Modifier.size(80.dp)
+                    modifier = Modifier.size(60.dp) // ✅ Proportionally smaller
                 )
             }
         }
 
-        Spacer(modifier = Modifier.height(24.dp))
+        Spacer(modifier = Modifier.height(20.dp)) // ✅ Slightly reduced spacing
 
         Text(
             text = "No sessions yet",

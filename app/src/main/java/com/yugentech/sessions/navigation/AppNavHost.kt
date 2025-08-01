@@ -82,10 +82,6 @@ fun AppNavHost(
         composable(Screens.Main.route) {
             val userId = authState.userId
             if (userId != null) {
-                LaunchedEffect(userId) {
-                    sessionViewModel.resetTimer()
-                    statusViewModel.setUserStudyStatus(userId, false)
-                }
                 MainScreen(
                     userId = userId,
                     sessionViewModel = sessionViewModel,
