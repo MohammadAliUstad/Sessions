@@ -5,7 +5,6 @@ import com.yugentech.sessions.session.SessionService
 import com.yugentech.sessions.session.SessionViewModel
 import com.yugentech.sessions.session.sessionRepository.SessionRepository
 import com.yugentech.sessions.session.sessionRepository.SessionRepositoryImpl
-import com.yugentech.sessions.session.sessionUtils.TimerManager
 import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
 
@@ -15,9 +14,7 @@ val sessionModule = module {
 
     single { SessionService(get()) }
 
-    single { TimerManager() }
-
     single<SessionRepository> { SessionRepositoryImpl(get()) }
 
-    viewModel { SessionViewModel(get(), get()) }
+    viewModel { SessionViewModel(get()) }
 }
