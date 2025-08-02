@@ -56,33 +56,25 @@ class HapticService(
                     }
                 }
             } else {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    if (isSpecial) {
-                        // Refined "Success" sequence: two short sharp pulses
+                if (isSpecial) {
+                    // Refined "Success" sequence: two short sharp pulses
+                    vibrator.vibrate(
+                        VibrationEffect.createWaveform(
+                            longArrayOf(0, 50, 100, 50),
+                            -1
+                        )
+                    )
+                } else {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                        // Single sharp click
+                        vibrator.vibrate(VibrationEffect.createPredefined(VibrationEffect.EFFECT_CLICK))
+                    } else {
                         vibrator.vibrate(
-                            VibrationEffect.createWaveform(
-                                longArrayOf(0, 50, 100, 50),
-                                -1
+                            VibrationEffect.createOneShot(
+                                15,
+                                VibrationEffect.DEFAULT_AMPLITUDE
                             )
                         )
-                    } else {
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                            // Single sharp click
-                            vibrator.vibrate(VibrationEffect.createPredefined(VibrationEffect.EFFECT_CLICK))
-                        } else {
-                            vibrator.vibrate(
-                                VibrationEffect.createOneShot(
-                                    15,
-                                    VibrationEffect.DEFAULT_AMPLITUDE
-                                )
-                            )
-                        }
-                    }
-                } else {
-                    if (isSpecial) {
-                        vibrator.vibrate(longArrayOf(0, 50, 100, 50), -1)
-                    } else {
-                        vibrator.vibrate(15)
                     }
                 }
             }
