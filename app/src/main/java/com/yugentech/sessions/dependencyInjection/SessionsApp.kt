@@ -4,6 +4,7 @@ import android.app.Application
 import com.google.firebase.FirebaseApp
 import com.yugentech.sessions.dependencyInjection.modules.authModule
 import com.yugentech.sessions.dependencyInjection.modules.sessionModule
+import com.yugentech.sessions.dependencyInjection.modules.themeModule
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
 import org.koin.core.context.startKoin
@@ -19,6 +20,7 @@ class SessionsApp : Application() {
             modules(
                 authModule,
                 sessionModule,
+                themeModule
             )
         }
     }

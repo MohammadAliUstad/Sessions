@@ -17,9 +17,9 @@ import com.yugentech.sessions.authentication.authUtils.AuthResult
 import kotlinx.coroutines.tasks.await
 
 class AuthService(
-    private val oneTapClient: SignInClient,
     private val auth: FirebaseAuth,
     private val firestore: FirebaseFirestore,
+    private val oneTapClient: SignInClient
 ) {
 
     suspend fun signUp(name: String, email: String, password: String): AuthResult<FirebaseUser> {
@@ -51,7 +51,6 @@ class AuthService(
 
     fun getCurrentUser(): AuthResult<FirebaseUser> {
         val user = auth.currentUser
-        Log.d("AuthDebug", "Firebase currentUser = ${user?.uid ?: "null"}")
         return if (user != null) {
             AuthResult.Success(user)
         } else {

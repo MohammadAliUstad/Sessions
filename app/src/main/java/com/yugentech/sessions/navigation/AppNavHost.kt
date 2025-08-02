@@ -20,6 +20,7 @@ import com.yugentech.sessions.ui.screens.AboutScreen
 import com.yugentech.sessions.ui.screens.LoginScreen
 import com.yugentech.sessions.ui.screens.MainScreen
 import com.yugentech.sessions.ui.screens.appScreens.EditProfileScreen
+import com.yugentech.sessions.ui.screens.appScreens.SettingsScreen
 import com.yugentech.sessions.utils.defaultEnterTransition
 import com.yugentech.sessions.utils.defaultExitTransition
 import com.yugentech.sessions.utils.defaultPopEnterTransition
@@ -87,6 +88,17 @@ fun AppNavHost(
                     onSettings = { navController.navigate(Screens.Settings.route) }
                 )
             }
+        }
+
+        composable(Screens.Settings.route) {
+            SettingsScreen(
+                onNavigateBack = {
+                    navController.popBackStack()
+                },
+                onAbout = {
+                    navController.navigate(Screens.About.route)
+                }
+            )
         }
 
         composable(Screens.About.route) {

@@ -25,7 +25,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import com.yugentech.sessions.authentication.AuthViewModel
 import com.yugentech.sessions.navigation.AppScreens
-import com.yugentech.sessions.navigation.Screens
 import com.yugentech.sessions.session.SessionViewModel
 import com.yugentech.sessions.ui.components.mainScreen.BottomNavBar
 import com.yugentech.sessions.ui.components.mainScreen.TopAppBar
@@ -62,7 +61,7 @@ fun MainScreen(
             TopAppBar(
                 currentScreen = currentScreen,
                 onLogout = onLogout,
-                onSettings = onSettings, // ✅ Pass settings callback
+                onSettings = onSettings,
                 scrollBehavior = scrollBehavior
             )
         },
@@ -74,7 +73,7 @@ fun MainScreen(
             )
         },
         containerColor = MaterialTheme.colorScheme.background,
-        contentWindowInsets = WindowInsets(0) // ✅ Remove default content insets
+        contentWindowInsets = WindowInsets(0)
     ) { innerPadding ->
 
         AnimatedContent(
@@ -106,8 +105,6 @@ fun MainScreen(
                     sessionViewModel = sessionViewModel,
                     onEditProfile = onEditProfile
                 )
-
-                Screens.Settings -> TODO()
             }
         }
     }

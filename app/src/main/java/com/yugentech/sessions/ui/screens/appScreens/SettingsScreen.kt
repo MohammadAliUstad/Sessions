@@ -1,30 +1,190 @@
 package com.yugentech.sessions.ui.screens.appScreens
 
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.*
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material.icons.filled.ArrowDropDown
+import androidx.compose.material.icons.filled.AutoMode
+import androidx.compose.material.icons.filled.ChevronRight
+import androidx.compose.material.icons.filled.DarkMode
+import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.LightMode
+import androidx.compose.material.icons.filled.Notifications
+import androidx.compose.material.icons.filled.Palette
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.RadioButton
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Switch
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.yugentech.sessions.theme.ThemeViewModel
+import com.yugentech.sessions.ui.components.ThemeSelector
+import com.yugentech.sessions.ui.theme.ThemeMode
+import org.koin.androidx.compose.koinViewModel
+
+@Composable
+fun ThemeModeSelector(
+    modifier: Modifier = Modifier,
+    viewModel: ThemeViewModel = koinViewModel()
+) {
+    val themeConfig by viewModel.themeConfig.collectAsStateWithLifecycle()
+
+    Card(
+        modifier = modifier.fillMaxWidth(),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surface
+        ),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+        shape = RoundedCornerShape(16.dp)
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(20.dp)
+        ) {
+            Text(
+                text = "Theme Mode",
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Medium,
+                color = MaterialTheme.colorScheme.onSurface,
+                modifier = Modifier.padding(bottom = 16.dp)
+            )
+
+            ThemeMode.entries.forEach { mode ->
+                val (icon, title, subtitle) = when (mode) {
+                    ThemeMode.LIGHT -> Triple(
+                        Icons.Default.LightMode,
+                        "Light",
+                        "Always use light theme"
+                    )
+
+                    ThemeMode.DARK -> Triple(
+                        Icons.Default.DarkMode,
+                        "Dark",
+                        "Always use dark theme"
+                    )
+
+                    ThemeMode.SYSTEM -> Triple(
+                        Icons.Default.AutoMode,
+                        "System",
+                        "Follow system settings"
+                    )
+                }
+
+                ThemeModeItem(
+                    icon = icon,
+                    title = title,
+                    subtitle = subtitle,
+                    isSelected = themeConfig.themeMode == mode,
+                    onClick = { viewModel.updateThemeMode(mode) }
+                )
+
+                if (mode != ThemeMode.entries.last()) {
+                    Spacer(modifier = Modifier.height(8.dp))
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun ThemeModeItem(
+    icon: ImageVector,
+    title: String,
+    subtitle: String,
+    isSelected: Boolean,
+    onClick: () -> Unit
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .selectable(
+                selected = isSelected,
+                onClick = onClick
+            )
+            .padding(vertical = 8.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Icon(
+            imageVector = icon,
+            contentDescription = null,
+            tint = if (isSelected)
+                MaterialTheme.colorScheme.primary
+            else
+                MaterialTheme.colorScheme.onSurface,
+            modifier = Modifier.size(24.dp)
+        )
+
+        Spacer(modifier = Modifier.width(16.dp))
+
+        Column(modifier = Modifier.weight(1f)) {
+            Text(
+                text = title,
+                style = MaterialTheme.typography.bodyLarge,
+                fontWeight = if (isSelected) FontWeight.Medium else FontWeight.Normal,
+                color = if (isSelected)
+                    MaterialTheme.colorScheme.primary
+                else
+                    MaterialTheme.colorScheme.onSurface
+            )
+            Text(
+                text = subtitle,
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+        }
+
+        RadioButton(
+            selected = isSelected,
+            onClick = onClick
+        )
+    }
+}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingsScreen(
     onNavigateBack: () -> Unit,
-    onAbout: () -> Unit
+    onAbout: () -> Unit,
+    themeViewModel: ThemeViewModel = koinViewModel()
 ) {
     var notificationsEnabled by remember { mutableStateOf(true) }
-    var selectedTheme by remember { mutableStateOf("System") }
     var selectedAppIcon by remember { mutableStateOf("Default") }
 
-    val themeOptions = listOf("Light", "Dark", "System")
+    val themeConfig by themeViewModel.themeConfig.collectAsStateWithLifecycle()
     val appIconOptions = listOf("Default", "Minimal", "Classic")
 
     Scaffold(
@@ -83,15 +243,27 @@ fun SettingsScreen(
                         title = "Appearance"
                     )
 
-                    SettingsDropdownItem(
-                        title = "Theme",
-                        subtitle = "Choose your preferred color scheme",
-                        options = themeOptions,
-                        selectedOption = selectedTheme,
-                        onOptionSelected = { selectedTheme = it }
-                    )
+                    // Theme Mode Selector
+                    ThemeModeSelector()
 
-                    Spacer(modifier = Modifier.height(8.dp))
+                    Spacer(modifier = Modifier.height(16.dp))
+
+                    // Color Theme Selector
+                    ThemeSelector()
+
+                    Spacer(modifier = Modifier.height(16.dp))
+
+                    // Dynamic Colors Toggle (only show on Android 12+)
+                    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
+                        SettingsToggleItem(
+                            title = "Dynamic Colors",
+                            subtitle = "Use colors from your wallpaper",
+                            checked = themeConfig.useDynamicColors,
+                            onCheckedChange = { themeViewModel.updateUseDynamicColors(it) }
+                        )
+
+                        Spacer(modifier = Modifier.height(8.dp))
+                    }
 
                     SettingsDropdownItem(
                         title = "App Icon",
@@ -112,7 +284,7 @@ fun SettingsScreen(
                     )
 
                     SettingsClickableItem(
-                        title = "About Jigaku",
+                        title = "About Sessions",
                         subtitle = "Learn more about the app and developer",
                         onClick = onAbout
                     )
@@ -121,6 +293,9 @@ fun SettingsScreen(
         }
     }
 }
+
+// Keep your existing compatibles: SettingsCard, SettingsSectionHeader, etc.
+// ... (rest of your existing composables remain the same)
 
 @Composable
 fun SettingsCard(
@@ -145,7 +320,7 @@ fun SettingsCard(
 
 @Composable
 fun SettingsSectionHeader(
-    icon: androidx.compose.ui.graphics.vector.ImageVector,
+    icon: ImageVector,
     title: String
 ) {
     Row(
