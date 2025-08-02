@@ -16,7 +16,6 @@ import androidx.navigation.compose.composable
 import com.google.accompanist.navigation.animation.AnimatedNavHost
 import com.yugentech.sessions.authentication.AuthViewModel
 import com.yugentech.sessions.session.SessionViewModel
-import com.yugentech.sessions.status.StatusViewModel
 import com.yugentech.sessions.ui.screens.AboutScreen
 import com.yugentech.sessions.ui.screens.LoginScreen
 import com.yugentech.sessions.ui.screens.MainScreen
@@ -25,7 +24,6 @@ import com.yugentech.sessions.utils.defaultEnterTransition
 import com.yugentech.sessions.utils.defaultExitTransition
 import com.yugentech.sessions.utils.defaultPopEnterTransition
 import com.yugentech.sessions.utils.defaultPopExitTransition
-import com.yugentech.sessions.viewModels.LeaderboardViewModel
 
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
@@ -33,8 +31,6 @@ fun AppNavHost(
     navController: NavHostController,
     authViewModel: AuthViewModel,
     sessionViewModel: SessionViewModel,
-    statusViewModel: StatusViewModel,
-    leaderboardViewModel: LeaderboardViewModel,
     webClientId: String
 ) {
     val authState by authViewModel.authState.collectAsStateWithLifecycle()
@@ -84,13 +80,11 @@ fun AppNavHost(
             if (userId != null) {
                 MainScreen(
                     userId = userId,
-                    sessionViewModel = sessionViewModel,
-                    statusViewModel = statusViewModel,
                     authViewModel = authViewModel,
-                    leaderboardViewModel = leaderboardViewModel,
-                    onNavigateToAbout = { navController.navigate(Screens.About.route) },
+                    sessionViewModel = sessionViewModel,
                     onLogout = { authViewModel.signOut() },
-                    onEditProfile = { navController.navigate(Screens.EditProfile.route) }
+                    onEditProfile = { navController.navigate(Screens.EditProfile.route) },
+                    onSettings = { navController.navigate(Screens.Settings.route) }
                 )
             }
         }

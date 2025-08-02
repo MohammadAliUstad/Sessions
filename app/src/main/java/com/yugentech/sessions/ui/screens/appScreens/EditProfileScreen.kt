@@ -1,14 +1,25 @@
 package com.yugentech.sessions.ui.screens.appScreens
 
-import android.net.Uri
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.foundation.background
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.gestures.detectTransformGestures
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -17,32 +28,49 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.CameraAlt
 import androidx.compose.material.icons.filled.Check
-import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Person
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.window.Dialog
-import androidx.compose.ui.window.DialogProperties
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import coil.compose.AsyncImage
-import coil.request.ImageRequest
+import com.yugentech.sessions.R
 import com.yugentech.sessions.authentication.AuthViewModel
 import kotlinx.coroutines.delay
+
+data class AvatarOption(
+    val id: String,
+    val name: String,
+    val drawableRes: Int
+)
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -56,20 +84,23 @@ fun EditProfileScreen(
     val focusManager = LocalFocusManager.current
 
     var displayName by remember { mutableStateOf(user?.username ?: "") }
-    var selectedImageUri by remember { mutableStateOf<Uri?>(null) }
-    var croppedImageUri by remember { mutableStateOf<Uri?>(null) }
+    var selectedAvatarId by remember { mutableStateOf(user?.profileAvatarId ?: "1") }
     var isLoading by remember { mutableStateOf(false) }
     var showSuccessMessage by remember { mutableStateOf(false) }
-    var showImageCropDialog by remember { mutableStateOf(false) }
     var validationError by remember { mutableStateOf<String?>(null) }
 
-    val imagePickerLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.GetContent()
-    ) { uri: Uri? ->
-        uri?.let {
-            selectedImageUri = it
-            showImageCropDialog = true
-        }
+    val avatarOptions = remember {
+        listOf(
+            AvatarOption("1", "Wise Elder", R.drawable.peep_100),        // Old man
+            AvatarOption("2", "Doc Life", R.drawable.peep_101),          // Female doctor
+            AvatarOption("3", "Dapper Gent", R.drawable.peep_17),        // Man with mustache and hat
+            AvatarOption("4", "Lost Soul", R.drawable.peep_2),           // Guy with beanie, hands up confused
+            AvatarOption("5", "Beard Boss", R.drawable.peep_27),         // Guy with sweater and beard
+            AvatarOption("6", "Teeth Grind", R.drawable.peep_47),        // Guy cringing teeth, hands crossed
+            AvatarOption("7", "Smart Hijabi", R.drawable.peep_6),        // Woman with hijab and specs
+            AvatarOption("8", "Cool Singh", R.drawable.peep_85),         // Sikh guy with turban and shades
+            AvatarOption("9", "Bored Bun", R.drawable.peep_93)           // Bored woman with hair bun
+        )
     }
 
     // Validation
@@ -91,21 +122,6 @@ fun EditProfileScreen(
     }
 
     val canSave = validationError == null && displayName.isNotBlank() && !isLoading
-
-    // Image Crop Dialog
-    if (showImageCropDialog && selectedImageUri != null) {
-        ImageCropDialog(
-            imageUri = selectedImageUri!!,
-            onImageCropped = { croppedUri ->
-                croppedImageUri = croppedUri
-                showImageCropDialog = false
-            },
-            onDismiss = {
-                showImageCropDialog = false
-                selectedImageUri = null
-            }
-        )
-    }
 
     Scaffold(
         topBar = {
@@ -132,11 +148,10 @@ fun EditProfileScreen(
                                 isLoading = true
                                 authViewModel.updateProfile(
                                     displayName = displayName.trim(),
-                                    profileImageUri = croppedImageUri
-                                ).also {
-                                    isLoading = false
-                                    showSuccessMessage = true
-                                }
+                                    avatarId = selectedAvatarId
+                                )
+                                isLoading = false
+                                showSuccessMessage = true
                             }
                         },
                         enabled = canSave
@@ -171,7 +186,7 @@ fun EditProfileScreen(
                 .fillMaxSize()
                 .padding(paddingValues)
                 .verticalScroll(rememberScrollState())
-                .padding(20.dp),
+                .padding(24.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             // Success Message
@@ -179,7 +194,7 @@ fun EditProfileScreen(
                 Card(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(bottom = 20.dp),
+                        .padding(bottom = 24.dp),
                     colors = CardDefaults.cardColors(
                         containerColor = MaterialTheme.colorScheme.primaryContainer
                     ),
@@ -205,7 +220,6 @@ fun EditProfileScreen(
                 }
             }
 
-            // Profile Picture Section
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -214,105 +228,75 @@ fun EditProfileScreen(
                     containerColor = MaterialTheme.colorScheme.surface
                 ),
                 elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
-                shape = RoundedCornerShape(20.dp)
+                shape = RoundedCornerShape(24.dp)
             ) {
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(28.dp),
+                        .padding(24.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Text(
-                        text = "Profile Picture",
-                        style = MaterialTheme.typography.titleLarge,
+                        text = "Choose Your Avatar",
+                        style = MaterialTheme.typography.headlineSmall,
                         fontWeight = FontWeight.SemiBold,
                         color = MaterialTheme.colorScheme.onSurface,
-                        modifier = Modifier.padding(bottom = 20.dp)
+                        modifier = Modifier.padding(bottom = 8.dp)
                     )
 
-                    Box(
+                    Text(
+                        text = "Pick an illustration that represents you",
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.padding(bottom = 24.dp)
+                    )
+
+                    // Current Selected Avatar Preview
+                    Surface(
                         modifier = Modifier
-                            .size(140.dp)
-                            .clip(CircleShape)
-                            .border(
-                                width = 3.dp,
-                                color = MaterialTheme.colorScheme.primary.copy(alpha = 0.3f),
-                                shape = CircleShape
-                            )
-                            .clickable { imagePickerLauncher.launch("image/*") },
-                        contentAlignment = Alignment.Center
+                            .size(120.dp)
+                            .clip(CircleShape),
+                        color = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.3f),
+                        tonalElevation = 2.dp
                     ) {
-                        val imageToShow = croppedImageUri ?: user?.profilePictureUrl
-
-                        if (imageToShow != null) {
-                            AsyncImage(
-                                model = ImageRequest.Builder(LocalContext.current)
-                                    .data(imageToShow)
-                                    .crossfade(true)
-                                    .build(),
-                                contentDescription = "Profile Picture",
-                                modifier = Modifier.fillMaxSize(),
-                                contentScale = ContentScale.Crop
-                            )
-                        } else {
-                            Surface(
-                                modifier = Modifier.fillMaxSize(),
-                                color = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.4f),
-                                shape = CircleShape
-                            ) {
-                                Box(
-                                    modifier = Modifier.fillMaxSize(),
-                                    contentAlignment = Alignment.Center
-                                ) {
-                                    Icon(
-                                        imageVector = Icons.Default.Person,
-                                        contentDescription = "Default Profile",
-                                        modifier = Modifier.size(60.dp),
-                                        tint = MaterialTheme.colorScheme.onSurfaceVariant
-                                    )
-                                }
-                            }
-                        }
-
-                        // Camera overlay button
-                        Surface(
-                            modifier = Modifier
-                                .size(44.dp)
-                                .align(Alignment.BottomEnd),
-                            color = MaterialTheme.colorScheme.primary,
-                            shape = CircleShape,
-                            shadowElevation = 6.dp
+                        Box(
+                            modifier = Modifier.fillMaxSize(),
+                            contentAlignment = Alignment.Center
                         ) {
-                            Box(
-                                modifier = Modifier.fillMaxSize(),
-                                contentAlignment = Alignment.Center
-                            ) {
-                                Icon(
-                                    imageVector = Icons.Default.CameraAlt,
-                                    contentDescription = "Change Photo",
-                                    modifier = Modifier.size(22.dp),
-                                    tint = MaterialTheme.colorScheme.onPrimary
-                                )
-                            }
+                            Image(
+                                painter = painterResource(id = getAvatarResource(selectedAvatarId)),
+                                contentDescription = "Selected Avatar",
+                                modifier = Modifier.size(80.dp)
+                            )
                         }
                     }
 
-                    Spacer(modifier = Modifier.height(16.dp))
+                    Spacer(modifier = Modifier.height(24.dp))
 
                     Text(
-                        text = "Tap to select a new photo",
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        textAlign = TextAlign.Center
+                        text = avatarOptions.find { it.id == selectedAvatarId }?.name ?: "Explorer",
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.Medium,
+                        color = MaterialTheme.colorScheme.primary,
+                        modifier = Modifier.padding(bottom = 24.dp)
                     )
 
-                    Text(
-                        text = "Recommended: Square image, at least 200x200px",
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f),
-                        textAlign = TextAlign.Center,
-                        modifier = Modifier.padding(top = 4.dp)
-                    )
+                    LazyVerticalGrid(
+                        columns = GridCells.Fixed(3),  // ✅ Changed to 3 columns for 9 avatars (3x3 grid)
+                        horizontalArrangement = Arrangement.spacedBy(16.dp),
+                        verticalArrangement = Arrangement.spacedBy(16.dp),
+                        modifier = Modifier.height(280.dp),  // ✅ Increased height for 3 rows
+                        contentPadding = PaddingValues(8.dp)
+                    ) {
+                        items(avatarOptions) { option ->
+                            AvatarOptionItem(
+                                option = option,
+                                isSelected = selectedAvatarId == option.id,
+                                onSelect = { selectedAvatarId = option.id }
+                            )
+                        }
+                    }
                 }
             }
 
@@ -325,18 +309,25 @@ fun EditProfileScreen(
                     containerColor = MaterialTheme.colorScheme.surface
                 ),
                 elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
-                shape = RoundedCornerShape(20.dp)
+                shape = RoundedCornerShape(24.dp)
             ) {
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(28.dp)
+                        .padding(24.dp)
                 ) {
                     Text(
                         text = "Display Name",
-                        style = MaterialTheme.typography.titleLarge,
+                        style = MaterialTheme.typography.headlineSmall,
                         fontWeight = FontWeight.SemiBold,
                         color = MaterialTheme.colorScheme.onSurface,
+                        modifier = Modifier.padding(bottom = 8.dp)
+                    )
+
+                    Text(
+                        text = "This is how others will see you",
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
                         modifier = Modifier.padding(bottom = 20.dp)
                     )
 
@@ -386,190 +377,68 @@ fun EditProfileScreen(
                     )
                 }
             }
-
-            // Guidelines Section
-            Card(
-                modifier = Modifier.fillMaxWidth(),
-                colors = CardDefaults.cardColors(
-                    containerColor = MaterialTheme.colorScheme.surfaceContainer
-                ),
-                elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
-                shape = RoundedCornerShape(20.dp)
-            ) {
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(24.dp)
-                ) {
-                    Text(
-                        text = "Profile Guidelines",
-                        style = MaterialTheme.typography.titleMedium,
-                        fontWeight = FontWeight.SemiBold,
-                        color = MaterialTheme.colorScheme.onSurface,
-                        modifier = Modifier.padding(bottom = 12.dp)
-                    )
-
-                    val guidelines = listOf(
-                        "Use a clear, recognizable photo of yourself",
-                        "Choose a display name that represents you professionally",
-                        "Avoid inappropriate or offensive content",
-                        "Keep your information up to date"
-                    )
-
-                    guidelines.forEach { guideline ->
-                        Row(
-                            modifier = Modifier.padding(vertical = 4.dp),
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Box(
-                                modifier = Modifier
-                                    .size(6.dp)
-                                    .background(
-                                        MaterialTheme.colorScheme.primary,
-                                        CircleShape
-                                    )
-                            )
-                            Spacer(modifier = Modifier.width(12.dp))
-                            Text(
-                                text = guideline,
-                                style = MaterialTheme.typography.bodySmall,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                                lineHeight = MaterialTheme.typography.bodySmall.lineHeight * 1.3
-                            )
-                        }
-                    }
-                }
-            }
         }
     }
 }
 
 @Composable
-fun ImageCropDialog(
-    imageUri: Uri,
-    onImageCropped: (Uri) -> Unit,
-    onDismiss: () -> Unit
+fun AvatarOptionItem(
+    option: AvatarOption,
+    isSelected: Boolean,
+    onSelect: () -> Unit
 ) {
-    var scale by remember { mutableStateOf(1f) }
-    var offset by remember { mutableStateOf(Offset.Zero) }
+    val scale by animateFloatAsState(
+        targetValue = if (isSelected) 1.1f else 1f,
+        animationSpec = tween(300),
+        label = "avatar_scale"
+    )
 
-    Dialog(
-        onDismissRequest = onDismiss,
-        properties = DialogProperties(
-            dismissOnBackPress = true,
-            dismissOnClickOutside = false,
-            usePlatformDefaultWidth = false
-        )
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier.clickable { onSelect() }
     ) {
-        Card(
+        Surface(
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(20.dp),
-            shape = RoundedCornerShape(20.dp),
-            colors = CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.surface
-            )
+                .size(64.dp)
+                .scale(scale)
+                .clip(CircleShape)
+                .border(
+                    width = if (isSelected) 3.dp else 1.dp,
+                    color = if (isSelected)
+                        MaterialTheme.colorScheme.primary
+                    else
+                        MaterialTheme.colorScheme.outline.copy(alpha = 0.3f),
+                    shape = CircleShape
+                ),
+            color = if (isSelected)
+                MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.4f)
+            else
+                MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.2f),
+            tonalElevation = if (isSelected) 4.dp else 1.dp
         ) {
-            Column(
-                modifier = Modifier.padding(24.dp)
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center
             ) {
-                // Header
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Text(
-                        text = "Adjust Your Photo",
-                        style = MaterialTheme.typography.titleLarge,
-                        fontWeight = FontWeight.SemiBold
-                    )
-                    IconButton(onClick = onDismiss) {
-                        Icon(
-                            imageVector = Icons.Default.Close,
-                            contentDescription = "Close"
-                        )
-                    }
-                }
-
-                Spacer(modifier = Modifier.height(20.dp))
-
-                // Image Preview
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(300.dp)
-                        .clip(RoundedCornerShape(16.dp))
-                        .background(MaterialTheme.colorScheme.surfaceVariant),
-                    contentAlignment = Alignment.Center
-                ) {
-                    AsyncImage(
-                        model = ImageRequest.Builder(LocalContext.current)
-                            .data(imageUri)
-                            .crossfade(true)
-                            .build(),
-                        contentDescription = "Image to crop",
-                        modifier = Modifier
-                            .size(250.dp)
-                            .clip(CircleShape)
-                            .graphicsLayer(
-                                scaleX = scale,
-                                scaleY = scale,
-                                translationX = offset.x,
-                                translationY = offset.y
-                            )
-                            .pointerInput(Unit) {
-                                detectTransformGestures { _, pan, zoom, _ ->
-                                    scale = (scale * zoom).coerceIn(0.5f, 3f)
-                                    offset = Offset(
-                                        x = (offset.x + pan.x).coerceIn(-200f, 200f),
-                                        y = (offset.y + pan.y).coerceIn(-200f, 200f)
-                                    )
-                                }
-                            },
-                        contentScale = ContentScale.Crop
-                    )
-                }
-
-                Spacer(modifier = Modifier.height(20.dp))
-
-                // Instructions
-                Text(
-                    text = "Pinch to zoom • Drag to reposition",
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier.fillMaxWidth()
+                Image(
+                    painter = painterResource(id = option.drawableRes),
+                    contentDescription = option.name,
+                    modifier = Modifier.size(if (isSelected) 44.dp else 40.dp)
                 )
-
-                Spacer(modifier = Modifier.height(24.dp))
-
-                // Action Buttons
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(12.dp)
-                ) {
-                    OutlinedButton(
-                        onClick = onDismiss,
-                        modifier = Modifier.weight(1f),
-                        shape = RoundedCornerShape(12.dp)
-                    ) {
-                        Text("Cancel")
-                    }
-
-                    Button(
-                        onClick = {
-                            // For now, just use the original image
-                            // In a real app, you'd process the crop parameters
-                            onImageCropped(imageUri)
-                        },
-                        modifier = Modifier.weight(1f),
-                        shape = RoundedCornerShape(12.dp)
-                    ) {
-                        Text("Use Photo")
-                    }
-                }
             }
         }
+
+        Spacer(modifier = Modifier.height(6.dp))
+
+        Text(
+            text = option.name,
+            style = MaterialTheme.typography.labelSmall,
+            color = if (isSelected)
+                MaterialTheme.colorScheme.primary
+            else
+                MaterialTheme.colorScheme.onSurfaceVariant,
+            fontWeight = if (isSelected) FontWeight.SemiBold else FontWeight.Normal,
+            textAlign = TextAlign.Center
+        )
     }
 }

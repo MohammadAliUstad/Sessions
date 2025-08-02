@@ -2,7 +2,6 @@ package com.yugentech.sessions.authentication.authRepository
 
 import android.app.PendingIntent
 import android.content.Intent
-import android.net.Uri
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.UserProfileChangeRequest
 import com.google.firebase.firestore.FirebaseFirestore
@@ -44,7 +43,7 @@ class AuthRepositoryImpl(
         return authService.handleGoogleSignInResult(data)
     }
 
-    override suspend fun updateProfile(name: String, profileUri: Uri?): AuthResult<FirebaseUser> {
+    override suspend fun updateProfile(name: String, avatarId: String): AuthResult<FirebaseUser> {
         return try {
             val currentUserResult = authService.getCurrentUser()
             if (currentUserResult !is AuthResult.Success) {
@@ -56,24 +55,19 @@ class AuthRepositoryImpl(
             val profileUpdateBuilder = UserProfileChangeRequest.Builder()
                 .setDisplayName(name)
 
-            if (profileUri != null) {
-                profileUpdateBuilder.photoUri = profileUri
-            }
-
             currentUser.updateProfile(profileUpdateBuilder.build()).await()
 
-            val userUpdates = mutableMapOf<String, Any>(
-                "name" to name
+            val userUpdates = mapOf(
+                "name" to name,
+                "profileAvatarId" to avatarId
             )
-
-            if (profileUri != null) {
-                userUpdates["profilePictureUrl"] = profileUri.toString()
-            }
 
             firestore.collection("users")
                 .document(currentUser.uid)
                 .update(userUpdates)
                 .await()
+
+            currentUser.reload().await()
 
             AuthResult.Success(currentUser)
         } catch (e: Exception) {

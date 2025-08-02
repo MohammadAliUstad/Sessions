@@ -25,18 +25,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import com.yugentech.sessions.authentication.AuthViewModel
 import com.yugentech.sessions.navigation.AppScreens
+import com.yugentech.sessions.navigation.Screens
 import com.yugentech.sessions.session.SessionViewModel
-import com.yugentech.sessions.status.StatusViewModel
 import com.yugentech.sessions.ui.components.mainScreen.BottomNavBar
 import com.yugentech.sessions.ui.components.mainScreen.TopAppBar
 import com.yugentech.sessions.ui.screens.appScreens.HomeScreen
-import com.yugentech.sessions.ui.screens.appScreens.LeaderboardScreen
 import com.yugentech.sessions.ui.screens.appScreens.ProfileScreen
-import com.yugentech.sessions.viewModels.LeaderboardViewModel
 
 private const val ANIMATION_DURATION = 300
 private const val FADE_DURATION = 150
-private val bottomNavItems = listOf(AppScreens.Leaderboard, AppScreens.Home, AppScreens.Profile)
+private val bottomNavItems = listOf(AppScreens.Home, AppScreens.Profile)
 private val screenSaver = Saver<AppScreens, String>(
     save = { it.route },
     restore = { route -> AppScreens.fromRoute(route) }
@@ -46,13 +44,11 @@ private val screenSaver = Saver<AppScreens, String>(
 @Composable
 fun MainScreen(
     userId: String,
-    sessionViewModel: SessionViewModel,
-    statusViewModel: StatusViewModel,
     authViewModel: AuthViewModel,
-    leaderboardViewModel: LeaderboardViewModel,
-    onNavigateToAbout: () -> Unit,
+    sessionViewModel: SessionViewModel,
     onLogout: () -> Unit,
-    onEditProfile: () -> Unit
+    onEditProfile: () -> Unit,
+    onSettings: () -> Unit
 ) {
     var currentScreen by rememberSaveable(stateSaver = screenSaver) {
         mutableStateOf(AppScreens.Home)
@@ -65,8 +61,8 @@ fun MainScreen(
         topBar = {
             TopAppBar(
                 currentScreen = currentScreen,
-                onNavigateToAbout = onNavigateToAbout,
                 onLogout = onLogout,
+                onSettings = onSettings, // ✅ Pass settings callback
                 scrollBehavior = scrollBehavior
             )
         },
@@ -78,30 +74,19 @@ fun MainScreen(
             )
         },
         containerColor = MaterialTheme.colorScheme.background,
-        contentWindowInsets = WindowInsets(0)
+        contentWindowInsets = WindowInsets(0) // ✅ Remove default content insets
     ) { innerPadding ->
 
         AnimatedContent(
             targetState = currentScreen,
             transitionSpec = {
                 when {
-                    // Leaderboard -> Home: slide right
-                    initialState == AppScreens.Leaderboard && targetState == AppScreens.Home ->
-                        createSlideTransition(slideFromRight = true)
-
-                    // Profile -> Home: slide left
                     initialState == AppScreens.Profile && targetState == AppScreens.Home ->
                         createSlideTransition(slideFromRight = false)
 
-                    // Home -> Leaderboard: slide left
-                    initialState == AppScreens.Home && targetState == AppScreens.Leaderboard ->
-                        createSlideTransition(slideFromRight = false)
-
-                    // Home -> Profile: slide right
                     initialState == AppScreens.Home && targetState == AppScreens.Profile ->
                         createSlideTransition(slideFromRight = true)
 
-                    // Leaderboard <-> Profile: fade only (skip home)
                     else -> createFadeTransition()
                 }
             },
@@ -113,7 +98,6 @@ fun MainScreen(
             when (screen) {
                 AppScreens.Home -> HomeScreen(
                     sessionViewModel = sessionViewModel,
-                    statusViewModel = statusViewModel,
                     userId = userId
                 )
 
@@ -123,15 +107,12 @@ fun MainScreen(
                     onEditProfile = onEditProfile
                 )
 
-                AppScreens.Leaderboard -> LeaderboardScreen(
-                    leaderboardViewModel = leaderboardViewModel
-                )
+                Screens.Settings -> TODO()
             }
         }
     }
 }
 
-// Performance optimization: Reusable slide transition
 private fun createSlideTransition(slideFromRight: Boolean): ContentTransform {
     val offsetMultiplier = if (slideFromRight) 1 else -1
     return slideInHorizontally(
@@ -146,7 +127,6 @@ private fun createSlideTransition(slideFromRight: Boolean): ContentTransform {
         )
 }
 
-// Performance optimization: Reusable fade transition
 private fun createFadeTransition(): ContentTransform {
     return fadeIn(animationSpec = tween(FADE_DURATION))
         .togetherWith(fadeOut(animationSpec = tween(FADE_DURATION)))

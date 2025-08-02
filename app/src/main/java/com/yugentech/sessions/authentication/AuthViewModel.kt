@@ -1,7 +1,6 @@
 package com.yugentech.sessions.authentication
 
 import android.content.Intent
-import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.auth.FirebaseUser
@@ -87,12 +86,16 @@ class AuthViewModel(
         }
     }
 
-    fun updateProfile(displayName: String, profileImageUri: Uri? = null) {
+    fun updateProfile(displayName: String, avatarId: String = "1") {
         _authState.value = _authState.value.copy(isLoading = true)
 
         viewModelScope.launch {
-            when (val result = authRepository.updateProfile(displayName, profileImageUri)) {
-                is AuthResult.Success -> updateAuthState(result.data)
+            when (val result = authRepository.updateProfile(displayName, avatarId)) {
+                is AuthResult.Success -> {
+                    updateAuthState(result.data)
+                    _authState.value = _authState.value.copy(isLoading = false)
+                }
+
                 is AuthResult.Error -> _authState.value =
                     _authState.value.copy(isLoading = false, error = result.message)
             }
@@ -105,7 +108,7 @@ class AuthViewModel(
             val userData = UserData(
                 userId = user.uid,
                 username = user.displayName,
-                profilePictureUrl = user.photoUrl?.toString(),
+                profileAvatarId = user.photoUrl?.toString(),
                 email = user.email
             )
 

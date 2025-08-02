@@ -2,7 +2,6 @@ package com.yugentech.sessions.authentication.authRepository
 
 import android.app.PendingIntent
 import android.content.Intent
-import android.net.Uri
 import com.google.firebase.auth.FirebaseUser
 import com.yugentech.sessions.authentication.authUtils.AuthResult
 
@@ -13,5 +12,5 @@ interface AuthRepository {
     fun signOut()
     suspend fun getGoogleSignInIntent(webClientId: String): AuthResult<PendingIntent>
     suspend fun handleGoogleSignInResult(data: Intent?): AuthResult<FirebaseUser>
-    suspend fun updateProfile(name: String, profileUri: Uri? = null): AuthResult<FirebaseUser>
+    suspend fun updateProfile(name: String, avatarId: String): AuthResult<FirebaseUser>
 }
