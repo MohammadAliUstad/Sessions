@@ -26,5 +26,5 @@ sealed class Screens(val route: String, val icon: ImageVector) {
     data object Main : Screens("main", Icons.Filled.Home)
     data object About : Screens("about", Icons.Filled.Info)
     data object EditProfile : Screens("editProfile", Icons.Filled.Info)
-    data object Settings : AppScreens("settings", "Settings", Icons.Filled.Settings)
+    data object Settings : Screens("settings", Icons.Filled.Settings)
 }

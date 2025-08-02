@@ -102,6 +102,10 @@ class AuthViewModel(
         }
     }
 
+    fun clearError() {
+        _authState.value = _authState.value.copy(error = null)
+    }
+
     private fun updateAuthState(user: FirebaseUser?) {
         if (user != null) {
             _userId.value = user.uid
@@ -121,9 +125,5 @@ class AuthViewModel(
         } else {
             _authState.value = AuthState(isUserLoggedIn = false, isLoading = false)
         }
-    }
-
-    fun clearError() {
-        _authState.value = _authState.value.copy(error = null)
     }
 }
