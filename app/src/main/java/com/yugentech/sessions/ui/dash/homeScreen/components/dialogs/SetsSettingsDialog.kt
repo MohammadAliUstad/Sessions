@@ -38,6 +38,7 @@ import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material.icons.rounded.Remove
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilledTonalIconButton
 import androidx.compose.material3.Icon
@@ -55,7 +56,9 @@ import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import kotlinx.coroutines.launch
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -73,7 +76,8 @@ fun SetsSettingsSheet(
     currentLongBreak: Int,
     currentSetsPerLongBreak: Int,
     currentLongBreakEnabled: Boolean,
-    onDismiss: (Int, Int, Int, Boolean) -> Unit,
+    onSave: (Int, Int, Int, Boolean) -> Unit,
+    onDismiss: () -> Unit,
     onHaptic: () -> Unit
 ) {
     var sets by remember { mutableIntStateOf(currentSets) }
@@ -82,17 +86,14 @@ fun SetsSettingsSheet(
         mutableIntStateOf(currentSetsPerLongBreak.coerceIn(1, (currentSets - 1).coerceAtLeast(1)))
     }
     var longBreakEnabled by remember { mutableStateOf(currentLongBreakEnabled) }
+    val scope = rememberCoroutineScope()
 
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
-    val cornerRadius by animateDpAsState(
-        targetValue = if (sheetState.targetValue == SheetValue.Expanded) 0.dp else 28.dp,
-        label = "sheetCornerRadius"
-    )
 
     ModalBottomSheet(
-        onDismissRequest = { onDismiss(sets, longBreak.roundToInt(), setsPerLongBreak, longBreakEnabled) },
+        onDismissRequest = onDismiss,
         sheetState = sheetState,
-        shape = RoundedCornerShape(topStart = cornerRadius, topEnd = cornerRadius),
+        shape = RoundedCornerShape(topStart = 28.dp, topEnd = 28.dp),
         dragHandle = {
             Box(
                 modifier = Modifier
@@ -131,7 +132,7 @@ fun SetsSettingsSheet(
                     color = MaterialTheme.colorScheme.onSurface
                 )
                 Text(
-                    text = "Choose number of focus sets and break intervals.",
+                    text = "Set your focus goal and configure long breaks.",
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
@@ -238,6 +239,19 @@ fun SetsSettingsSheet(
                         )
                     }
                 }
+            }
+
+            Button(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(56.dp),
+                onClick = {
+                    onHaptic()
+                    onSave(sets, longBreak.roundToInt(), setsPerLongBreak, longBreakEnabled)
+                    scope.launch { sheetState.hide() }
+                }
+            ) {
+                Text("Save")
             }
         }
     }
