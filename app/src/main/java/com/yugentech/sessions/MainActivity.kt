@@ -13,9 +13,7 @@ import androidx.navigation.compose.rememberNavController
 import com.yugentech.sessions.authentication.AuthViewModel
 import com.yugentech.sessions.navigation.AppNavHost
 import com.yugentech.sessions.session.SessionViewModel
-import com.yugentech.sessions.status.StatusViewModel
 import com.yugentech.sessions.ui.theme.SessionsTheme
-import com.yugentech.sessions.viewModels.LeaderboardViewModel
 import org.koin.androidx.compose.koinViewModel
 
 class MainActivity : ComponentActivity() {
@@ -33,15 +31,11 @@ class MainActivity : ComponentActivity() {
                     val navController = rememberNavController()
                     val authViewModel: AuthViewModel = koinViewModel()
                     val sessionViewModel: SessionViewModel = koinViewModel()
-                    val statusViewModel: StatusViewModel = koinViewModel()
-                    val leaderboardViewModel: LeaderboardViewModel = koinViewModel()
 
                     AppNavHost(
                         navController = navController,
                         authViewModel = authViewModel,
                         sessionViewModel = sessionViewModel,
-                        statusViewModel = statusViewModel,
-                        leaderboardViewModel = leaderboardViewModel,
                         webClientId = webClientId
                     )
                 }

@@ -20,18 +20,10 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.FilterQuality
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import coil.compose.AsyncImage
-import coil.request.ImageRequest
-import coil.size.Size
-import coil.transform.CircleCropTransformation
 import com.yugentech.sessions.R
 import com.yugentech.sessions.ui.components.profileScreen.StudyTimeSection
 import com.yugentech.sessions.authentication.AuthViewModel
@@ -72,12 +64,12 @@ fun ProfileScreen(
                 elevation = CardDefaults.cardElevation(
                     defaultElevation = 2.dp
                 ),
-                shape = RoundedCornerShape(16.dp)
+                shape = RoundedCornerShape(24.dp)
             ) {
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(24.dp),
+                        .padding(20.dp), // ✅ Reduced from 24dp to 20dp
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Row(
@@ -95,56 +87,46 @@ fun ProfileScreen(
                         }
                     }
 
-                    // ✅ SMALLER, CLEARER PROFILE IMAGE (80dp - 33% smaller)
-                    user?.profilePictureUrl?.let { url ->
-                        val density = LocalDensity.current
-                        val sizePx = with(density) { 80.dp.toPx().toInt() } // ✅ Reduced from 120dp to 80dp
-
-                        AsyncImage(
-                            model = ImageRequest.Builder(LocalContext.current)
-                                .data(url)
-                                .size(Size(sizePx, sizePx))
-                                .allowHardware(false)
-                                .crossfade(300)
-                                .transformations(CircleCropTransformation())
-                                .build(),
-                            contentDescription = "Profile Picture",
-                            modifier = Modifier.size(80.dp), // ✅ Smaller image size
-                            contentScale = ContentScale.Crop,
-                            filterQuality = FilterQuality.High,
-                            placeholder = painterResource(R.drawable.new_beginnings),
-                            error = painterResource(R.drawable.new_beginnings)
-                        )
-                    } ?: run {
-                        // ✅ SMALLER FALLBACK
-                        Surface(
-                            modifier = Modifier
-                                .size(80.dp) // ✅ Match the smaller size
-                                .clip(CircleShape),
-                            color = MaterialTheme.colorScheme.primaryContainer
-                        ) {
-                            Box(
-                                modifier = Modifier.fillMaxSize(),
-                                contentAlignment = Alignment.Center
-                            ) {
-                                Image(
-                                    painter = painterResource(id = R.drawable.new_beginnings),
-                                    contentDescription = "Default Profile Picture",
-                                    modifier = Modifier.size(40.dp) // ✅ Proportionally smaller
-                                )
-                            }
-                        }
-                    }
-
-                    Spacer(modifier = Modifier.height(12.dp)) // ✅ Slightly reduced spacing
-
+                    // ✅ NAME ABOVE ILLUSTRATION - CLOSER TO TOP
                     Text(
                         text = user?.username ?: "Anonymous",
                         style = MaterialTheme.typography.headlineSmall,
                         color = MaterialTheme.colorScheme.onSurface
                     )
 
-                    Spacer(modifier = Modifier.height(16.dp)) // ✅ Slightly reduced spacing
+                    Spacer(modifier = Modifier.height(12.dp)) // ✅ Reduced from 16dp to 12dp
+
+                    // ✅ EVEN LARGER ILLUSTRATION
+                    Surface(
+                        modifier = Modifier
+                            .size(180.dp) // ✅ Increased from 140dp to 180dp
+                            .clip(CircleShape),
+                        color = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.2f)
+                    ) {
+                        Box(
+                            modifier = Modifier.fillMaxSize(),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            val avatarRes = getAvatarResource(user?.profileAvatarId ?: "1")
+                            Image(
+                                painter = painterResource(id = avatarRes),
+                                contentDescription = "Profile Avatar",
+                                modifier = Modifier.size(130.dp) // ✅ Increased from 100dp to 130dp
+                            )
+                        }
+                    }
+
+                    Spacer(modifier = Modifier.height(8.dp)) // ✅ Reduced from 12dp to 8dp
+
+                    // ✅ ILLUSTRATION NAME BELOW AVATAR
+                    Text(
+                        text = getAvatarName(user?.profileAvatarId ?: "1"),
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        textAlign = TextAlign.Center
+                    )
+
+                    Spacer(modifier = Modifier.height(16.dp)) // ✅ Reduced from 24dp to 16dp
 
                     StudyTimeSection(
                         formattedTime = formatTime(totalTime)
@@ -162,7 +144,7 @@ fun ProfileScreen(
                 elevation = CardDefaults.cardElevation(
                     defaultElevation = 2.dp
                 ),
-                shape = RoundedCornerShape(16.dp)
+                shape = RoundedCornerShape(24.dp)
             ) {
                 Column(
                     modifier = Modifier
@@ -197,15 +179,16 @@ fun EmptySessionsIllustration(modifier: Modifier = Modifier) {
     Column(
         modifier = modifier
             .fillMaxWidth()
-            .padding(vertical = 32.dp),
+            .padding(vertical = 24.dp), // ✅ Reduced from 32dp to 24dp
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
+        // ✅ EVEN LARGER ILLUSTRATION FOR EMPTY STATE
         Surface(
             modifier = Modifier
-                .size(100.dp) // ✅ Slightly smaller to match the new proportions
+                .size(200.dp) // ✅ Increased from 160dp to 200dp
                 .clip(CircleShape),
-            color = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.3f)
+            color = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.2f)
         ) {
             Box(
                 modifier = Modifier.fillMaxSize(),
@@ -214,12 +197,12 @@ fun EmptySessionsIllustration(modifier: Modifier = Modifier) {
                 Image(
                     painter = painterResource(id = R.drawable.new_beginnings),
                     contentDescription = "No sessions illustration",
-                    modifier = Modifier.size(60.dp) // ✅ Proportionally smaller
+                    modifier = Modifier.size(150.dp) // ✅ Increased from 120dp to 150dp
                 )
             }
         }
 
-        Spacer(modifier = Modifier.height(20.dp)) // ✅ Slightly reduced spacing
+        Spacer(modifier = Modifier.height(20.dp)) // ✅ Reduced from 24dp to 20dp
 
         Text(
             text = "No sessions yet",
@@ -237,5 +220,37 @@ fun EmptySessionsIllustration(modifier: Modifier = Modifier) {
             textAlign = TextAlign.Center,
             modifier = Modifier.padding(horizontal = 16.dp)
         )
+    }
+}
+
+@Composable
+fun getAvatarResource(avatarId: String): Int {
+    return when (avatarId) {
+        "1" -> R.drawable.peep_100     // Wise Elder
+        "2" -> R.drawable.peep_101     // Doc Life
+        "3" -> R.drawable.peep_17      // Dapper Gent
+        "4" -> R.drawable.peep_2       // Lost Soul
+        "5" -> R.drawable.peep_27      // Beard Boss
+        "6" -> R.drawable.peep_47      // Teeth Grind
+        "7" -> R.drawable.peep_6       // Smart Hijabi
+        "8" -> R.drawable.peep_85      // Cool Singh
+        "9" -> R.drawable.peep_93      // Bored Bun
+        else -> R.drawable.peep_27     // Default to Beard Boss
+    }
+}
+
+@Composable
+fun getAvatarName(avatarId: String): String {
+    return when (avatarId) {
+        "1" -> "Wise Elder"
+        "2" -> "Doc Life"
+        "3" -> "Dapper Gent"
+        "4" -> "Lost Soul"
+        "5" -> "Beard Boss"
+        "6" -> "Teeth Grind"
+        "7" -> "Smart Hijabi"
+        "8" -> "Cool Singh"
+        "9" -> "Bored Bun"
+        else -> "Beard Boss"
     }
 }

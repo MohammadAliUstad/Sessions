@@ -3,9 +3,8 @@ package com.yugentech.sessions.ui.components.mainScreen
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.Logout
-import androidx.compose.material.icons.filled.Info
-import androidx.compose.material.icons.filled.Timer
+import androidx.compose.material.icons.filled.ExitToApp
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -17,13 +16,14 @@ import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.text.font.FontWeight
 import com.yugentech.sessions.navigation.AppScreens
+import com.yugentech.sessions.navigation.Screens
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TopAppBar(
     currentScreen: AppScreens,
-    onNavigateToAbout: () -> Unit,
     onLogout: () -> Unit,
+    onSettings: () -> Unit = {}, // ✅ Added settings callback
     scrollBehavior: TopAppBarScrollBehavior? = null
 ) {
     TopAppBar(
@@ -31,8 +31,8 @@ fun TopAppBar(
             Text(
                 text = when (currentScreen) {
                     AppScreens.Home -> "Sessions"
-                    AppScreens.Leaderboard -> "Leaderboard"
                     AppScreens.Profile -> "Profile"
+                    Screens.Settings -> TODO()
                 },
                 style = MaterialTheme.typography.titleLarge.copy(
                     fontWeight = FontWeight.Medium
@@ -42,35 +42,29 @@ fun TopAppBar(
         },
         actions = {
             when (currentScreen) {
-                AppScreens.Leaderboard -> {
-                    IconButton(onClick = onNavigateToAbout) {
-                        Icon(
-                            imageVector = Icons.Default.Info,
-                            contentDescription = "About",
-                            tint = MaterialTheme.colorScheme.onSurfaceVariant
-                        )
-                    }
-                }
-
                 AppScreens.Home -> {
-                    IconButton(onClick = { /* Handle timer action */ }) {
+                    // ✅ Logout button on Home screen
+                    IconButton(onClick = onLogout) {
                         Icon(
-                            imageVector = Icons.Default.Timer,
-                            contentDescription = "Timer",
+                            imageVector = Icons.Default.ExitToApp,
+                            contentDescription = "Logout",
                             tint = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                     }
                 }
 
                 AppScreens.Profile -> {
-                    IconButton(onClick = onLogout) {
+                    // ✅ Settings button on Profile screen
+                    IconButton(onClick = onSettings) {
                         Icon(
-                            imageVector = Icons.AutoMirrored.Filled.Logout,
-                            contentDescription = "Logout",
-                            tint = MaterialTheme.colorScheme.error
+                            imageVector = Icons.Default.Settings,
+                            contentDescription = "Settings",
+                            tint = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                     }
                 }
+
+                Screens.Settings -> TODO()
             }
         },
         windowInsets = WindowInsets.statusBars,

@@ -52,20 +52,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.yugentech.sessions.session.SessionViewModel
-import com.yugentech.sessions.status.StatusViewModel
 import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
     sessionViewModel: SessionViewModel,
-    statusViewModel: StatusViewModel,
     userId: String
 ) {
     val isStudying by sessionViewModel.isStudying.collectAsStateWithLifecycle()
@@ -73,7 +70,6 @@ fun HomeScreen(
     val selectedDuration by sessionViewModel.selectedDuration.collectAsStateWithLifecycle()
     val displayTime = if (isStudying || currentTime > 0) currentTime else selectedDuration
     val availableDurations = remember { listOf(25, 50) }
-    val context = LocalContext.current
 
     val safeProgress = remember(displayTime, selectedDuration) {
         if (selectedDuration > 0)
@@ -89,29 +85,24 @@ fun HomeScreen(
 
     fun startSession() {
         sessionViewModel.startTimer()
-        statusViewModel.startSession()
     }
 
     fun pauseSession() {
         sessionViewModel.stopTimer()
-        statusViewModel.stopSession()
     }
 
     fun stopSession() {
         sessionViewModel.stopAndDiscardSession()
-        statusViewModel.stopSession()
     }
 
     fun saveAndEndSession() {
         sessionViewModel.stopAndSaveSession()
-        statusViewModel.stopSession()
     }
 
     LaunchedEffect(userId) {
         sessionViewModel.setUserId(userId)
         sessionViewModel.getSessions(userId)
         sessionViewModel.getTotalTime(userId)
-        statusViewModel.initialize(context, userId)
     }
 
     Surface(
