@@ -28,6 +28,7 @@ class BackgroundService(private val context: Context) {
     private var crossfadeScheduled = false
     private var targetVolume = FOCUS_VOLUME
     private var isStopping = false
+    private var pendingOnComplete: (() -> Unit)? = null
 
     private val handler = Handler(Looper.getMainLooper())
 
@@ -55,6 +56,7 @@ class BackgroundService(private val context: Context) {
             if (isStopping) {
                 Timber.d("Cancelling ongoing stop operation")
                 isStopping = false
+                pendingOnComplete = null
             }
 
             val startVolume = if (isBreakMode) BREAK_VOLUME else FOCUS_VOLUME
@@ -167,21 +169,33 @@ class BackgroundService(private val context: Context) {
         }
     }
 
-    // Gradually fades out audio, releases resources, then invokes onComplete
+    // Gradually fades out audio, releases resources, then invokes onComplete.
+    // If already fading out, the new callback is absorbed and the in-progress fade wins —
+    // this prevents the double-stop race between handleBackgroundSoundState and onFocusPause.
     fun stop(onComplete: (() -> Unit)? = null) {
         handler.post {
             Timber.d("stop() called")
 
+            if (isStopping) {
+                Timber.d("Already fading out - absorbing callback")
+                if (onComplete != null) pendingOnComplete = onComplete
+                return@post
+            }
+
             if (activePlayer?.isPlaying == true) {
                 isStopping = true
+                pendingOnComplete = onComplete
                 fadeVolumeInternal(targetVolume, 0f) {
                     if (isStopping) {
                         Timber.d("Fade complete, releasing player")
+                        val callback = pendingOnComplete
+                        pendingOnComplete = null
                         releaseInternal()
+                        callback?.invoke()
                     } else {
                         Timber.d("Fade complete, but stop was cancelled - keeping player")
+                        pendingOnComplete = null
                     }
-                    onComplete?.invoke()
                 }
             } else {
                 releaseInternal()
@@ -316,7 +330,9 @@ class BackgroundService(private val context: Context) {
 
             onEnd?.let {
                 addListener(object : AnimatorListenerAdapter() {
-                    override fun onAnimationEnd(animation: Animator) = it()
+                    private var cancelled = false
+                    override fun onAnimationCancel(animation: Animator) { cancelled = true }
+                    override fun onAnimationEnd(animation: Animator) { if (!cancelled) it() }
                 })
             }
 
@@ -346,6 +362,7 @@ class BackgroundService(private val context: Context) {
             crossfadeAnimator = null
             isLooping = false
             isStopping = false
+            pendingOnComplete = null
 
             activePlayer?.stop()
             activePlayer?.release()

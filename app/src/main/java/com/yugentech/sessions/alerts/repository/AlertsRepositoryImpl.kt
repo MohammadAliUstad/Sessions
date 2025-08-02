@@ -9,6 +9,7 @@ import com.yugentech.sessions.alerts.model.AlertsConfiguration
 import com.yugentech.sessions.alerts.model.BackgroundSound
 import com.yugentech.sessions.timer.repository.TimerRepository
 import com.yugentech.sessions.timer.state.TimerMode // Added Import
+import com.yugentech.sessions.timer.state.TimerState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -40,7 +41,7 @@ class AlertsRepositoryImpl(
     private var lastSoundId: String? = null
     private var lastMode: TimerMode? = null
 
-    private fun handleBackgroundSoundState(state: com.yugentech.sessions.timer.state.TimerState) {
+    private fun handleBackgroundSoundState(state: TimerState) {
         val config = state.timerConfig
         val isRunning = state.isTimerRunning
         val isAmbientEnabled = config.isAmbientEnabled
