@@ -1,14 +1,14 @@
-package com.yugentech.sessions.ui.theme
+package com.yugentech.sessions.theme.utils
 
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 
 @Composable
 fun SessionsTheme(
-    themeConfig: ThemeConfig,
+    themeConfiguration: ThemeConfiguration,
     content: @Composable () -> Unit
 ) {
-    val colorScheme = getColorScheme(themeConfig = themeConfig)
+    val colorScheme = getColorScheme(themeConfiguration = themeConfiguration)
 
     MaterialTheme(
         colorScheme = colorScheme,

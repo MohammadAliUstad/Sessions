@@ -1,12 +1,11 @@
 package com.yugentech.sessions.theme
 
-import android.os.Build
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.yugentech.sessions.theme.themeRepository.ThemeRepository
-import com.yugentech.sessions.ui.theme.ColorTheme
-import com.yugentech.sessions.ui.theme.ThemeConfig
-import com.yugentech.sessions.ui.theme.ThemeMode
+import com.yugentech.sessions.theme.utils.ColorTheme
+import com.yugentech.sessions.theme.utils.ThemeConfiguration
+import com.yugentech.sessions.theme.utils.ThemeMode
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -19,11 +18,11 @@ class ThemeViewModel(
 ) : ViewModel() {
 
     // Main theme configuration state
-    val themeConfig: StateFlow<ThemeConfig> = themeRepository.themeConfig
+    val themeConfiguration: StateFlow<ThemeConfiguration> = themeRepository.themeConfiguration
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.Companion.WhileSubscribed(5_000),
-            initialValue = ThemeConfig()
+            initialValue = ThemeConfiguration()
         )
 
     // Loading state for UI feedback

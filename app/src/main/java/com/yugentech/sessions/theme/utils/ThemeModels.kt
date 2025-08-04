@@ -1,4 +1,4 @@
-package com.yugentech.sessions.ui.theme
+package com.yugentech.sessions.theme.utils
 
 enum class ThemeMode {
     LIGHT,
@@ -16,7 +16,7 @@ enum class ColorTheme {
     TEAL
 }
 
-data class ThemeConfig(
+data class ThemeConfiguration(
     val themeMode: ThemeMode = ThemeMode.SYSTEM,
     val colorTheme: ColorTheme = ColorTheme.DYNAMIC,
     val useDynamicColors: Boolean = true

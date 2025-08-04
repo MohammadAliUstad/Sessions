@@ -12,5 +12,4 @@ interface AuthRepository {
     fun signOut()
     suspend fun getGoogleSignInIntent(webClientId: String): AuthResult<PendingIntent>
     suspend fun handleGoogleSignInResult(data: Intent?): AuthResult<FirebaseUser>
-    suspend fun updateProfile(name: String, avatarId: String): AuthResult<FirebaseUser>
 }

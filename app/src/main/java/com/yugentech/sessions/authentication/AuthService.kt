@@ -4,21 +4,18 @@ package com.yugentech.sessions.authentication
 
 import android.app.PendingIntent
 import android.content.Intent
-import android.util.Log
 import com.google.android.gms.auth.api.identity.BeginSignInRequest
 import com.google.android.gms.auth.api.identity.SignInClient
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.UserProfileChangeRequest
-import com.google.firebase.firestore.FirebaseFirestore
 import com.yugentech.sessions.authentication.authUtils.AuthErrorMapper
 import com.yugentech.sessions.authentication.authUtils.AuthResult
 import kotlinx.coroutines.tasks.await
 
 class AuthService(
     private val auth: FirebaseAuth,
-    private val firestore: FirebaseFirestore,
     private val oneTapClient: SignInClient
 ) {
 
@@ -26,14 +23,11 @@ class AuthService(
         return try {
             val result = auth.createUserWithEmailAndPassword(email, password).await()
             val user = result.user!!
-
             user.updateProfile(
                 UserProfileChangeRequest.Builder()
                     .setDisplayName(name)
                     .build()
             ).await()
-
-            addUser(user, name)
             AuthResult.Success(user)
         } catch (e: Exception) {
             AuthResult.Error(AuthErrorMapper.mapFirebaseAuthError(e))
@@ -77,8 +71,8 @@ class AuthService(
 
             val result = oneTapClient.beginSignIn(signInRequest).await()
             AuthResult.Success(result.pendingIntent)
-        } catch (_: Exception) {
-            AuthResult.Error("Unable to start Google Sign-In. Please try again.")
+        } catch (e: Exception) {
+            AuthResult.Error(AuthErrorMapper.mapGoogleSignInError(e))
         }
     }
 
@@ -91,26 +85,10 @@ class AuthService(
             val firebaseCredential = GoogleAuthProvider.getCredential(idToken, null)
             val result = auth.signInWithCredential(firebaseCredential).await()
             val user = result.user!!
-            val isNewUser = result.additionalUserInfo?.isNewUser == true
-
-            if (isNewUser) {
-                addUser(user, user.displayName ?: "No Name")
-            }
 
             AuthResult.Success(user)
         } catch (e: Exception) {
             AuthResult.Error(AuthErrorMapper.mapGoogleSignInError(e))
         }
-    }
-
-    private suspend fun addUser(user: FirebaseUser, name: String) {
-        val userData = mapOf(
-            "uid" to user.uid,
-            "name" to name,
-            "email" to user.email,
-            "totalTimeStudied" to 0L,
-            "profilePhoto" to user.photoUrl?.toString(),
-        )
-        firestore.collection("users").document(user.uid).set(userData).await()
     }
 }

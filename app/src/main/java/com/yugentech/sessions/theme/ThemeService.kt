@@ -6,9 +6,9 @@ import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.emptyPreferences
 import androidx.datastore.preferences.core.stringPreferencesKey
-import com.yugentech.sessions.ui.theme.ColorTheme
-import com.yugentech.sessions.ui.theme.ThemeConfig
-import com.yugentech.sessions.ui.theme.ThemeMode
+import com.yugentech.sessions.theme.utils.ColorTheme
+import com.yugentech.sessions.theme.utils.ThemeConfiguration
+import com.yugentech.sessions.theme.utils.ThemeMode
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
@@ -22,14 +22,13 @@ class ThemeService(
         private val USE_DYNAMIC_COLORS_KEY = booleanPreferencesKey("use_dynamic_colors")
     }
 
-    val themeConfig: Flow<ThemeConfig> = dataStore.data
+    val themeConfiguration: Flow<ThemeConfiguration> = dataStore.data
         .catch { exception ->
-            // Log error and emit default preferences
             exception.printStackTrace()
             emit(emptyPreferences())
         }
         .map { preferences ->
-            ThemeConfig(
+            ThemeConfiguration(
                 themeMode = try {
                     ThemeMode.valueOf(
                         preferences[THEME_MODE_KEY] ?: ThemeMode.SYSTEM.name
@@ -66,11 +65,11 @@ class ThemeService(
         }
     }
 
-    suspend fun updateThemeConfig(themeConfig: ThemeConfig) {
+    suspend fun updateThemeConfig(themeConfiguration: ThemeConfiguration) {
         dataStore.edit { preferences ->
-            preferences[THEME_MODE_KEY] = themeConfig.themeMode.name
-            preferences[COLOR_THEME_KEY] = themeConfig.colorTheme.name
-            preferences[USE_DYNAMIC_COLORS_KEY] = themeConfig.useDynamicColors
+            preferences[THEME_MODE_KEY] = themeConfiguration.themeMode.name
+            preferences[COLOR_THEME_KEY] = themeConfiguration.colorTheme.name
+            preferences[USE_DYNAMIC_COLORS_KEY] = themeConfiguration.useDynamicColors
         }
     }
 

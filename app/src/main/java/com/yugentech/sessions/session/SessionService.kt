@@ -12,11 +12,13 @@ import kotlinx.coroutines.tasks.await
 class SessionService(
     private val firestore: FirebaseFirestore
 ) {
+
+    private fun userDocRef(userId: String) = firestore.collection("users").document(userId)
+    private fun sessionsCollectionRef(userId: String) = userDocRef(userId).collection("sessions")
+
     suspend fun saveSession(userId: String, session: Session): SessionResult<Unit> {
         return try {
-            firestore.collection("users")
-                .document(userId)
-                .collection("sessions")
+            sessionsCollectionRef(userId)
                 .add(session.toMap())
                 .await()
 
@@ -28,9 +30,7 @@ class SessionService(
 
     suspend fun updateTotalTime(userId: String, additionalSeconds: Int): SessionResult<Unit> {
         return try {
-            val userRef = firestore
-                .collection("users")
-                .document(userId)
+            val userRef = userDocRef(userId)
 
             firestore.runTransaction { transaction ->
                 val snapshot = transaction.get(userRef)
@@ -45,10 +45,7 @@ class SessionService(
     }
 
     fun getSessions(userId: String): Flow<List<Session>> = callbackFlow {
-        val listenerRegistration: ListenerRegistration = firestore
-            .collection("users")
-            .document(userId)
-            .collection("sessions")
+        val listenerRegistration: ListenerRegistration = sessionsCollectionRef(userId)
             .addSnapshotListener { snapshot, error ->
                 if (error != null) {
                     close(error)
@@ -66,8 +63,7 @@ class SessionService(
     }
 
     fun getTotalTime(userId: String): Flow<Long> = callbackFlow {
-        val listener = firestore.collection("users")
-            .document(userId)
+        val listener = userDocRef(userId)
             .addSnapshotListener { snapshot, error ->
                 if (error != null) {
                     close(error)

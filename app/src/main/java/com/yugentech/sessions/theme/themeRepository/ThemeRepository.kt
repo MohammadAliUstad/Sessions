@@ -1,15 +1,15 @@
 package com.yugentech.sessions.theme.themeRepository
 
-import com.yugentech.sessions.ui.theme.ColorTheme
-import com.yugentech.sessions.ui.theme.ThemeConfig
-import com.yugentech.sessions.ui.theme.ThemeMode
+import com.yugentech.sessions.theme.utils.ColorTheme
+import com.yugentech.sessions.theme.utils.ThemeConfiguration
+import com.yugentech.sessions.theme.utils.ThemeMode
 import kotlinx.coroutines.flow.Flow
 
 abstract class ThemeRepository {
-    abstract val themeConfig: Flow<ThemeConfig>
+    abstract val themeConfiguration: Flow<ThemeConfiguration>
     abstract suspend fun setThemeMode(themeMode: ThemeMode)
     abstract suspend fun setColorTheme(colorTheme: ColorTheme)
     abstract suspend fun setUseDynamicColors(useDynamicColors: Boolean)
-    abstract suspend fun setThemeConfig(themeConfig: ThemeConfig)
+    abstract suspend fun setThemeConfig(themeConfiguration: ThemeConfiguration)
     abstract suspend fun resetThemeToDefaults()
 }
