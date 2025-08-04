@@ -1,4 +1,4 @@
-package com.yugentech.sessions.ui.theme
+package com.yugentech.sessions.theme.utils
 
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -10,19 +10,19 @@ import androidx.compose.ui.platform.LocalContext
 
 @Composable
 fun getColorScheme(
-    themeConfig: ThemeConfig,
+    themeConfiguration: ThemeConfiguration,
     isSystemInDarkTheme: Boolean = isSystemInDarkTheme()
 ): ColorScheme {
 
-    val isDarkMode = when (themeConfig.themeMode) {
+    val isDarkMode = when (themeConfiguration.themeMode) {
         ThemeMode.LIGHT -> false
         ThemeMode.DARK -> true
         ThemeMode.SYSTEM -> isSystemInDarkTheme
     }
 
     return when {
-        themeConfig.colorTheme == ColorTheme.DYNAMIC &&
-                themeConfig.useDynamicColors && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
+        themeConfiguration.colorTheme == ColorTheme.DYNAMIC &&
+                themeConfiguration.useDynamicColors && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
             val context = LocalContext.current
             if (isDarkMode) {
                 dynamicDarkColorScheme(context)
@@ -32,7 +32,7 @@ fun getColorScheme(
         }
 
         else -> {
-            when (themeConfig.colorTheme) {
+            when (themeConfiguration.colorTheme) {
                 ColorTheme.DYNAMIC -> {
                     if (isDarkMode) AppColorSchemes.MonochromeDark else AppColorSchemes.MonochromeLight
                 }

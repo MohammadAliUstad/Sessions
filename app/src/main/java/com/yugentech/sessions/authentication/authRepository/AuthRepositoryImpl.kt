@@ -3,16 +3,11 @@ package com.yugentech.sessions.authentication.authRepository
 import android.app.PendingIntent
 import android.content.Intent
 import com.google.firebase.auth.FirebaseUser
-import com.google.firebase.auth.UserProfileChangeRequest
-import com.google.firebase.firestore.FirebaseFirestore
 import com.yugentech.sessions.authentication.AuthService
-import com.yugentech.sessions.authentication.authUtils.AuthErrorMapper
 import com.yugentech.sessions.authentication.authUtils.AuthResult
-import kotlinx.coroutines.tasks.await
 
 class AuthRepositoryImpl(
-    private val authService: AuthService,
-    private val firestore: FirebaseFirestore
+    private val authService: AuthService
 ) : AuthRepository {
 
     override suspend fun signUp(
@@ -41,37 +36,5 @@ class AuthRepositoryImpl(
 
     override suspend fun handleGoogleSignInResult(data: Intent?): AuthResult<FirebaseUser> {
         return authService.handleGoogleSignInResult(data)
-    }
-
-    override suspend fun updateProfile(name: String, avatarId: String): AuthResult<FirebaseUser> {
-        return try {
-            val currentUserResult = authService.getCurrentUser()
-            if (currentUserResult !is AuthResult.Success) {
-                return AuthResult.Error("No user is currently signed in")
-            }
-
-            val currentUser = currentUserResult.data
-
-            val profileUpdateBuilder = UserProfileChangeRequest.Builder()
-                .setDisplayName(name)
-
-            currentUser.updateProfile(profileUpdateBuilder.build()).await()
-
-            val userUpdates = mapOf(
-                "name" to name,
-                "profileAvatarId" to avatarId
-            )
-
-            firestore.collection("users")
-                .document(currentUser.uid)
-                .update(userUpdates)
-                .await()
-
-            currentUser.reload().await()
-
-            AuthResult.Success(currentUser)
-        } catch (e: Exception) {
-            AuthResult.Error(AuthErrorMapper.mapFirebaseAuthError(e))
-        }
     }
 }

@@ -1,4 +1,4 @@
-package com.yugentech.sessions.ui.theme
+package com.yugentech.sessions.theme.utils
 
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle

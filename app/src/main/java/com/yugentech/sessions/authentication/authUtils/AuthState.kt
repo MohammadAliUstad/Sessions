@@ -1,6 +1,7 @@
 package com.yugentech.sessions.authentication.authUtils
 
 import android.app.PendingIntent
+import com.yugentech.sessions.models.UserData
 
 data class AuthState(
     val isLoading: Boolean = false,

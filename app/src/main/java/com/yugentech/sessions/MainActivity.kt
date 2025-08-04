@@ -16,7 +16,7 @@ import com.yugentech.sessions.authentication.AuthViewModel
 import com.yugentech.sessions.navigation.AppNavHost
 import com.yugentech.sessions.session.SessionViewModel
 import com.yugentech.sessions.theme.ThemeViewModel
-import com.yugentech.sessions.ui.theme.SessionsTheme
+import com.yugentech.sessions.theme.utils.SessionsTheme
 import org.koin.androidx.compose.koinViewModel
 
 class MainActivity : ComponentActivity() {
@@ -30,11 +30,9 @@ class MainActivity : ComponentActivity() {
             val authViewModel: AuthViewModel = koinViewModel()
             val themeViewModel: ThemeViewModel = koinViewModel()
             val sessionViewModel: SessionViewModel = koinViewModel()
-            val themeConfig by themeViewModel.themeConfig.collectAsStateWithLifecycle()
+            val themeConfiguration by themeViewModel.themeConfiguration.collectAsStateWithLifecycle()
 
-            SessionsTheme(
-                themeConfig = themeConfig
-            ) {
+            SessionsTheme(themeConfiguration = themeConfiguration) {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
