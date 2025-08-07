@@ -2,8 +2,8 @@ package com.yugentech.sessions.models
 
 data class UserData(
     val userId: String = "",
-    val name: String = "",
-    val email: String = "",
+    val name: String? = null,
+    val email: String? = null,
     val avatarId: Int = 1,
     val totalTimeStudied: Long = 0L,
     val lastSyncTimestamp: Long = 0L,
@@ -35,7 +35,7 @@ data class UserData(
                     avatarId = avatarId,
                     totalTimeStudied = totalTimeStudied,
                     lastSyncTimestamp = lastSyncTimestamp,
-                    pendingSync = false // Always false when coming from Firestore
+                    pendingSync = false
                 )
             } else null
         }

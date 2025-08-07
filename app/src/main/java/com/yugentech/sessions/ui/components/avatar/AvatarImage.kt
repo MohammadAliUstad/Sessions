@@ -20,35 +20,23 @@ fun AvatarImage(
     avatarId: Int?,
     modifier: Modifier = Modifier,
     size: Dp = 100.dp,
-    contentDescription: String? = null,
-    showBackground: Boolean = true
+    contentDescription: String? = null
 ) {
-    val avatar =
-        AvatarRepository.getAvatarById(avatarId) ?: AvatarRepository.getDefaultAvatar()
+    val avatar = AvatarRepository.getAvatarById(avatarId) ?: AvatarRepository.getDefaultAvatar()
 
-    if (showBackground) {
-        Surface(
-            modifier = modifier
-                .size(size)
-                .clip(CircleShape),
-            color = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.2f)
+    Surface(
+        modifier = modifier.size(size).clip(CircleShape),
+        color = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.15f)
+    ) {
+        Box(
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.Center
         ) {
-            Box(
-                modifier = Modifier.fillMaxSize(),
-                contentAlignment = Alignment.Center
-            ) {
-                Image(
-                    painter = painterResource(id = avatar.drawableRes),
-                    contentDescription = contentDescription ?: avatar.name,
-                    modifier = Modifier.size(size * 0.7f)
-                )
-            }
+            Image(
+                painter = painterResource(id = avatar.drawableRes),
+                contentDescription = contentDescription ?: avatar.name,
+                modifier = Modifier.size(size * 0.7f)
+            )
         }
-    } else {
-        Image(
-            painter = painterResource(id = avatar.drawableRes),
-            contentDescription = contentDescription ?: avatar.name,
-            modifier = modifier.size(size)
-        )
     }
 }

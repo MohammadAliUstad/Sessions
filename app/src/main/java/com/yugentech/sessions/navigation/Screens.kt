@@ -3,6 +3,7 @@ package com.yugentech.sessions.navigation
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Login
 import androidx.compose.material.icons.filled.AccountCircle
+import androidx.compose.material.icons.filled.ColorLens
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Settings
@@ -22,6 +23,7 @@ sealed class AppScreens(val route: String, val title: String, val icon: ImageVec
 }
 
 sealed class Screens(val route: String, val icon: ImageVector) {
+    data object Appearance : Screens("appearance", Icons.Filled.ColorLens)
     data object Login : Screens("login", Icons.AutoMirrored.Filled.Login)
     data object Main : Screens("main", Icons.Filled.Home)
     data object About : Screens("about", Icons.Filled.Info)

@@ -1,4 +1,4 @@
-package com.yugentech.sessions.session.sessionUtils
+package com.yugentech.sessions.sessions.sessionsUtils
 
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job

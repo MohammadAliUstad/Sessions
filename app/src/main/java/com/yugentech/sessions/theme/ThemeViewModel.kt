@@ -17,12 +17,12 @@ class ThemeViewModel(
     private val themeRepository: ThemeRepository
 ) : ViewModel() {
 
-    // Main theme configuration state
+    // 🎯 FIX: Keep collecting eagerly and start immediately
     val themeConfiguration: StateFlow<ThemeConfiguration> = themeRepository.themeConfiguration
         .stateIn(
             scope = viewModelScope,
-            started = SharingStarted.Companion.WhileSubscribed(5_000),
-            initialValue = ThemeConfiguration()
+            started = SharingStarted.Eagerly, // 👈 Changed from WhileSubscribed!
+            initialValue = ThemeConfiguration() // This loads immediately
         )
 
     // Loading state for UI feedback
@@ -70,8 +70,6 @@ class ThemeViewModel(
                 _isLoading.value = true
                 _error.value = null
                 themeRepository.setUseDynamicColors(useDynamicColors)
-            } catch (e: Exception) {
-                _error.value = "Failed to update dynamic colors setting: ${e.message}"
             } finally {
                 _isLoading.value = false
             }

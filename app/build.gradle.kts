@@ -3,11 +3,12 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.google.services)
+    id("com.google.devtools.ksp")
 }
 
 android {
     namespace = "com.yugentech.sessions"
-    compileSdk = 36
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "com.yugentech.sessions"
@@ -83,6 +84,11 @@ dependencies {
 
     // Accompanist
     implementation(libs.accompanist.navigation.animation)
+
+    // Room
+    implementation(libs.androidx.room.runtime)
+    ksp(libs.androidx.room.compiler)
+    implementation(libs.androidx.room.ktx)
 
     // Datastore
     implementation(libs.androidx.datastore.preferences)

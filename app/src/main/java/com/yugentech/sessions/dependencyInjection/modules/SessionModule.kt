@@ -1,20 +1,31 @@
 package com.yugentech.sessions.dependencyInjection.modules
 
-import com.google.firebase.firestore.FirebaseFirestore
-import com.yugentech.sessions.session.SessionService
-import com.yugentech.sessions.session.SessionViewModel
-import com.yugentech.sessions.session.sessionRepository.SessionRepository
-import com.yugentech.sessions.session.sessionRepository.SessionRepositoryImpl
+import com.yugentech.sessions.sessions.SessionsService
+import com.yugentech.sessions.sessions.SessionsViewModel
+import com.yugentech.sessions.sessions.sessionsRepository.SessionsRepository
+import com.yugentech.sessions.sessions.sessionsRepository.SessionsRepositoryImpl
 import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
 
 val sessionModule = module {
 
-    single { FirebaseFirestore.getInstance() }
+    single {
+        SessionsService(
+            firestore = get()
+        )
+    }
 
-    single { SessionService(get()) }
+    single<SessionsRepository> {
+        SessionsRepositoryImpl(
+            sessionsDao = get(),
+            sessionService = get(),
+            userRepository = get()
+        )
+    }
 
-    single<SessionRepository> { SessionRepositoryImpl(get()) }
-
-    viewModel { SessionViewModel(get()) }
+    viewModel {
+        SessionsViewModel(
+            sessionsRepository = get()
+        )
+    }
 }

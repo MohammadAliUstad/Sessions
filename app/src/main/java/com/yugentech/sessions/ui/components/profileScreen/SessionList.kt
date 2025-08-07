@@ -14,7 +14,7 @@ fun SessionList(
 ) {
     Column(
         modifier = modifier,
-        verticalArrangement = Arrangement.spacedBy(8.dp)
+        verticalArrangement = Arrangement.spacedBy(12.dp) // Slightly more space for clarity
     ) {
         sessions.forEach { session ->
             SessionCard(session = session)

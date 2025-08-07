@@ -12,11 +12,11 @@ import androidx.compose.ui.Modifier
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.rememberNavController
-import com.yugentech.sessions.authentication.AuthViewModel
 import com.yugentech.sessions.navigation.AppNavHost
-import com.yugentech.sessions.session.SessionViewModel
+import com.yugentech.sessions.sessions.SessionsViewModel
 import com.yugentech.sessions.theme.ThemeViewModel
 import com.yugentech.sessions.theme.utils.SessionsTheme
+import com.yugentech.sessions.user.UserViewModel
 import org.koin.androidx.compose.koinViewModel
 
 class MainActivity : ComponentActivity() {
@@ -27,21 +27,24 @@ class MainActivity : ComponentActivity() {
         setContent {
             val webClientId = getString(R.string.web_client_id)
             val navController = rememberNavController()
-            val authViewModel: AuthViewModel = koinViewModel()
+            val loginViewModel: LoginViewModel = koinViewModel()
+            val sessionsViewModel: SessionsViewModel = koinViewModel()
+            val userViewModel: UserViewModel = koinViewModel()
             val themeViewModel: ThemeViewModel = koinViewModel()
-            val sessionViewModel: SessionViewModel = koinViewModel()
             val themeConfiguration by themeViewModel.themeConfiguration.collectAsStateWithLifecycle()
-
-            SessionsTheme(themeConfiguration = themeConfiguration) {
+            SessionsTheme(
+                themeConfiguration = themeConfiguration
+            ) {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
                     AppNavHost(
                         navController = navController,
-                        authViewModel = authViewModel,
-                        sessionViewModel = sessionViewModel,
-                        webClientId = webClientId
+                        loginViewModel = loginViewModel,
+                        sessionsViewModel = sessionsViewModel,
+                        webClientId = webClientId,
+                        userViewModel = userViewModel
                     )
                 }
             }
