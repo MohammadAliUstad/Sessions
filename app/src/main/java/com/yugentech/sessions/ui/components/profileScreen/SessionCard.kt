@@ -25,7 +25,7 @@ fun SessionCard(session: Session) {
         modifier = Modifier
             .fillMaxWidth(),
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.tertiaryContainer
+            containerColor = MaterialTheme.colorScheme.primaryContainer
         ),
         shape = MaterialTheme.shapes.medium,
         elevation = CardDefaults.elevatedCardElevation(0.dp)
@@ -47,7 +47,7 @@ fun SessionCard(session: Session) {
             Text(
                 text = formattedDate,
                 style = MaterialTheme.typography.titleMedium,
-                color = MaterialTheme.colorScheme.onTertiaryContainer
+                color = MaterialTheme.colorScheme.onPrimaryContainer
             )
 
             Spacer(modifier = Modifier.height(6.dp))
@@ -55,7 +55,7 @@ fun SessionCard(session: Session) {
             Text(
                 text = "Duration: $durationText",
                 style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onTertiaryContainer
+                color = MaterialTheme.colorScheme.onPrimaryContainer
             )
         }
     }

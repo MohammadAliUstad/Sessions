@@ -86,7 +86,7 @@ fun StudyingControlButtons(
             containerColor = MaterialTheme.colorScheme.primaryContainer,
             contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
             elevation = FloatingActionButtonDefaults.elevation(0.dp),
-            shape = RoundedCornerShape(50) // <--- Makes it more rounded
+            shape = RoundedCornerShape(50)
         ) {
             Icon(
                 imageVector = Icons.Default.Save,
