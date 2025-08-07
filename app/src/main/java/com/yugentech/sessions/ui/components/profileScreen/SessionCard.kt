@@ -22,15 +22,18 @@ import java.util.Locale
 @Composable
 fun SessionCard(session: Session) {
     Card(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier
+            .fillMaxWidth(),
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surfaceVariant
-        )
+            containerColor = MaterialTheme.colorScheme.tertiaryContainer
+        ),
+        shape = MaterialTheme.shapes.medium,
+        elevation = CardDefaults.elevatedCardElevation(0.dp)
     ) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(16.dp)
+                .padding(horizontal = 16.dp, vertical = 18.dp)
         ) {
             val dateFormat = SimpleDateFormat("MMM dd, yyyy HH:mm", Locale.getDefault())
             val formattedDate = session.timestamp.let { dateFormat.format(Date(it)) } ?: "Unknown date"
@@ -43,16 +46,16 @@ fun SessionCard(session: Session) {
 
             Text(
                 text = formattedDate,
-                style = MaterialTheme.typography.labelMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
+                style = MaterialTheme.typography.titleMedium,
+                color = MaterialTheme.colorScheme.onTertiaryContainer
             )
 
-            Spacer(modifier = Modifier.height(4.dp))
+            Spacer(modifier = Modifier.height(6.dp))
 
             Text(
                 text = "Duration: $durationText",
-                style = MaterialTheme.typography.bodyLarge,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onTertiaryContainer
             )
         }
     }

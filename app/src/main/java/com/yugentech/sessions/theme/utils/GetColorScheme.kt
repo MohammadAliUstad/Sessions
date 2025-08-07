@@ -45,20 +45,8 @@ fun getColorScheme(
                     if (isDarkMode) AppColorSchemes.BlueDark else AppColorSchemes.BlueLight
                 }
 
-                ColorTheme.GREEN -> {
-                    if (isDarkMode) AppColorSchemes.GreenDark else AppColorSchemes.GreenLight
-                }
-
                 ColorTheme.ORANGE -> {
                     if (isDarkMode) AppColorSchemes.OrangeDark else AppColorSchemes.OrangeLight
-                }
-
-                ColorTheme.PURPLE -> {
-                    if (isDarkMode) AppColorSchemes.PurpleDark else AppColorSchemes.PurpleLight
-                }
-
-                ColorTheme.TEAL -> {
-                    if (isDarkMode) AppColorSchemes.TealDark else AppColorSchemes.TealLight
                 }
             }
         }
