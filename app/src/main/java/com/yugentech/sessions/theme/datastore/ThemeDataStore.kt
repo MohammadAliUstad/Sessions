@@ -18,14 +18,6 @@ import timber.log.Timber
 class ThemeDataStore(
     private val dataStore: DataStore<Preferences>
 ) {
-    companion object {
-        private val THEME_MODE_KEY = stringPreferencesKey("theme_mode")
-        private val COLOR_THEME_KEY = stringPreferencesKey("color_theme")
-        private val USE_DYNAMIC_COLORS_KEY = booleanPreferencesKey("use_dynamic_colors")
-        private val IS_AMOLED_MODE_KEY = booleanPreferencesKey("is_amoled_mode")
-        private val APP_FONT_KEY = stringPreferencesKey("app_font")
-    }
-
     // Stream that converts raw DataStore preferences into a ThemeConfiguration object
     val themeConfiguration: Flow<ThemeConfiguration> = dataStore.data
         .catch {
@@ -66,5 +58,13 @@ class ThemeDataStore(
     suspend fun resetToDefaults() {
         Timber.i("Resetting theme preferences to default")
         dataStore.edit { it.clear() }
+    }
+
+    companion object {
+        private val THEME_MODE_KEY = stringPreferencesKey("theme_mode")
+        private val COLOR_THEME_KEY = stringPreferencesKey("color_theme")
+        private val USE_DYNAMIC_COLORS_KEY = booleanPreferencesKey("use_dynamic_colors")
+        private val IS_AMOLED_MODE_KEY = booleanPreferencesKey("is_amoled_mode")
+        private val APP_FONT_KEY = stringPreferencesKey("app_font")
     }
 }
