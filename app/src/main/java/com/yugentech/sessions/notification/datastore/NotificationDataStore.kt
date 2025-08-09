@@ -18,13 +18,6 @@ import java.util.Locale
 class NotificationDataStore(
     private val dataStore: DataStore<Preferences>
 ) {
-    companion object {
-        private val NOTIFICATIONS_ENABLED = booleanPreferencesKey("notifications_enabled")
-        private val FOCUS_REMINDER_TIME = stringPreferencesKey("focus_reminder_time")
-        private val FOCUS_REMINDERS_ENABLED = booleanPreferencesKey("focus_reminders_enabled")
-        private val SMART_REMINDERS_ENABLED = booleanPreferencesKey("smart_reminders_enabled")
-    }
-
     // Fetches the current configuration synchronously (useful for one-off checks like boot)
     suspend fun getInitialConfig(): NotificationConfig {
         return try {
@@ -116,5 +109,12 @@ class NotificationDataStore(
             reminderTimeHour = hour,
             reminderTimeMinute = minute
         )
+    }
+
+    companion object {
+        private val NOTIFICATIONS_ENABLED = booleanPreferencesKey("notifications_enabled")
+        private val FOCUS_REMINDER_TIME = stringPreferencesKey("focus_reminder_time")
+        private val FOCUS_REMINDERS_ENABLED = booleanPreferencesKey("focus_reminders_enabled")
+        private val SMART_REMINDERS_ENABLED = booleanPreferencesKey("smart_reminders_enabled")
     }
 }
