@@ -12,7 +12,7 @@ val databaseModule = module {
             androidContext(),
             AppDatabase::class.java,
             "sessions_database"
-        ).build()
+        ).fallbackToDestructiveMigration(true).build()
     }
 
     single {

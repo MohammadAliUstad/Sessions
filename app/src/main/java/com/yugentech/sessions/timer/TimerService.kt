@@ -1,4 +1,4 @@
-package com.yugentech.sessions.sessions.sessionsUtils
+package com.yugentech.sessions.timer
 
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
@@ -7,7 +7,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
-class TimerManager(
+class TimerService(
     private val coroutineScope: CoroutineScope
 ) {
     private var onTimerComplete: (() -> Unit)? = null

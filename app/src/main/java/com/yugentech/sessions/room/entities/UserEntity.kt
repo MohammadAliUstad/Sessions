@@ -10,20 +10,14 @@ data class UserEntity(
     val userId: String,
     val name: String?,
     val email: String?,
-    val avatarId: Int,
-    val totalTimeStudied: Long,
-    val lastSyncTimestamp: Long,
-    val pendingSync: Boolean
+    val avatarId: Int?
 ) {
     fun toUserData(): UserData {
         return UserData(
             userId = userId,
             name = name,
             email = email,
-            avatarId = avatarId,
-            totalTimeStudied = totalTimeStudied,
-            lastSyncTimestamp = lastSyncTimestamp,
-            pendingSync = pendingSync
+            avatarId = avatarId
         )
     }
 
@@ -33,10 +27,7 @@ data class UserEntity(
                 userId = userData.userId,
                 name = userData.name,
                 email = userData.email,
-                avatarId = userData.avatarId,
-                totalTimeStudied = userData.totalTimeStudied,
-                lastSyncTimestamp = userData.lastSyncTimestamp,
-                pendingSync = userData.pendingSync
+                avatarId = userData.avatarId
             )
         }
     }

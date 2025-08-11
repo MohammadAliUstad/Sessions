@@ -31,7 +31,7 @@ fun SessionActionButtons(
 ) {
     FloatingActionButton(
         onClick = onPlayPause,
-        modifier = modifier.size(80.dp),
+        modifier = modifier.size(64.dp),
         shape = CircleShape,
         containerColor = if (isStudying)
             MaterialTheme.colorScheme.tertiaryContainer
@@ -41,12 +41,12 @@ fun SessionActionButtons(
             MaterialTheme.colorScheme.onTertiaryContainer
         else
             MaterialTheme.colorScheme.onPrimary,
-        elevation = FloatingActionButtonDefaults.elevation(0.dp)
+        elevation = FloatingActionButtonDefaults.elevation(defaultElevation = 0.dp)  // Remove shadow
     ) {
         Icon(
             imageVector = if (isStudying) Icons.Default.Pause else Icons.Default.PlayArrow,
             contentDescription = if (isStudying) "Pause" else "Start",
-            modifier = Modifier.size(36.dp)
+            modifier = Modifier.size(28.dp)
         )
     }
 }
@@ -59,42 +59,40 @@ fun StudyingControlButtons(
 ) {
     Row(
         modifier = modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.spacedBy(16.dp)
+        horizontalArrangement = Arrangement.spacedBy(12.dp)
     ) {
         ExtendedFloatingActionButton(
             onClick = onStop,
-            modifier = Modifier
-                .weight(1f),
+            modifier = Modifier.weight(1f),
             containerColor = MaterialTheme.colorScheme.errorContainer,
             contentColor = MaterialTheme.colorScheme.onErrorContainer,
-            elevation = FloatingActionButtonDefaults.elevation(0.dp),
-            shape = RoundedCornerShape(50)
+            shape = RoundedCornerShape(30.dp),
+            elevation = FloatingActionButtonDefaults.elevation(defaultElevation = 0.dp)  // Remove shadow
         ) {
             Icon(
                 imageVector = Icons.Default.Stop,
                 contentDescription = "Stop",
-                modifier = Modifier.size(20.dp)
+                modifier = Modifier.size(18.dp)
             )
-            Spacer(modifier = Modifier.width(8.dp))
-            Text("Stop", style = MaterialTheme.typography.labelLarge)
+            Spacer(modifier = Modifier.width(6.dp))
+            Text("Stop", style = MaterialTheme.typography.labelMedium)
         }
 
         ExtendedFloatingActionButton(
             onClick = onSave,
-            modifier = Modifier
-                .weight(1f),
+            modifier = Modifier.weight(1f),
             containerColor = MaterialTheme.colorScheme.primaryContainer,
             contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
-            elevation = FloatingActionButtonDefaults.elevation(0.dp),
-            shape = RoundedCornerShape(50)
+            shape = RoundedCornerShape(30.dp),
+            elevation = FloatingActionButtonDefaults.elevation(defaultElevation = 0.dp)  // Remove shadow
         ) {
             Icon(
                 imageVector = Icons.Default.Save,
                 contentDescription = "Save",
-                modifier = Modifier.size(20.dp)
+                modifier = Modifier.size(18.dp)
             )
-            Spacer(modifier = Modifier.width(8.dp))
-            Text("Save", style = MaterialTheme.typography.labelLarge)
+            Spacer(modifier = Modifier.width(6.dp))
+            Text("Save", style = MaterialTheme.typography.labelMedium)
         }
     }
 }

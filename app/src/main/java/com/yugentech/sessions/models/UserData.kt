@@ -4,38 +4,28 @@ data class UserData(
     val userId: String = "",
     val name: String? = null,
     val email: String? = null,
-    val avatarId: Int = 1,
-    val totalTimeStudied: Long = 0L,
-    val lastSyncTimestamp: Long = 0L,
-    val pendingSync: Boolean = false
+    val avatarId: Int? = 0,
 ) {
     fun toMap(): Map<String, Any?> = mapOf(
-        "uid" to userId,
+        "userId" to userId,
         "name" to name,
         "email" to email,
-        "avatarId" to avatarId,
-        "totalTimeStudied" to totalTimeStudied,
-        "lastSyncTimestamp" to lastSyncTimestamp
+        "avatarId" to avatarId
     )
 
     companion object {
         fun fromMap(map: Map<String, Any?>): UserData? {
-            val uid = map["uid"] as? String
+            val userId = map["userId"] as? String
             val name = map["name"] as? String
             val email = map["email"] as? String
-            val avatarId = (map["avatarId"] as? Long)?.toInt() ?: 1
-            val totalTimeStudied = map["totalTimeStudied"] as? Long ?: 0L
-            val lastSyncTimestamp = map["lastSyncTimestamp"] as? Long ?: 0L
+            val avatarId = map["avatarId"] as? Int
 
-            return if (uid != null) {
+            return if (userId != null) {
                 UserData(
-                    userId = uid,
+                    userId = userId,
                     name = name,
                     email = email,
-                    avatarId = avatarId,
-                    totalTimeStudied = totalTimeStudied,
-                    lastSyncTimestamp = lastSyncTimestamp,
-                    pendingSync = false
+                    avatarId = avatarId
                 )
             } else null
         }

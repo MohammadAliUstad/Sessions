@@ -29,34 +29,28 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.yugentech.sessions.models.Session
 import com.yugentech.sessions.models.UserData
-import com.yugentech.sessions.sessions.SessionsViewModel
-import com.yugentech.sessions.ui.components.profileScreen.EmptySessionsIllustration
 import com.yugentech.sessions.ui.components.avatar.AvatarImage
 import com.yugentech.sessions.ui.components.avatar.AvatarRepository
+import com.yugentech.sessions.ui.components.profileScreen.EmptySessionsIllustration
 import com.yugentech.sessions.ui.components.profileScreen.SessionList
 import com.yugentech.sessions.ui.components.profileScreen.StudyTimeSection
 import com.yugentech.sessions.user.UserViewModel
 import com.yugentech.sessions.utils.formatTime
+import com.yugentech.sessions.viewModels.ProfileViewModel
 
 @Composable
 fun ProfileScreen(
     userId: String,
     modifier: Modifier = Modifier,
-    sessionsViewModel: SessionsViewModel,
+    profileViewModel: ProfileViewModel,
     userViewModel: UserViewModel,
     onEditProfile: () -> Unit = {}
 ) {
-    val userData by userViewModel.userState.collectAsStateWithLifecycle()
-    val userIsLoading by userViewModel.isLoading.collectAsStateWithLifecycle()
-    val userErrorMessage by userViewModel.errorMessage.collectAsStateWithLifecycle()
-    val sessions by sessionsViewModel.sessions.collectAsStateWithLifecycle()
-    val sessionsIsLoading by sessionsViewModel.isLoading.collectAsStateWithLifecycle()
-    val sessionsErrorMessage by sessionsViewModel.errorMessage.collectAsStateWithLifecycle()
-    val totalTime by userViewModel.totalTime.collectAsStateWithLifecycle()
+    val uiState by profileViewModel.uiState.collectAsStateWithLifecycle()
 
     LaunchedEffect(userId) {
+        profileViewModel.loadProfile(userId)
         userViewModel.loadUser(userId)
-        sessionsViewModel.setUserId(userId)
     }
 
     LazyColumn(
@@ -66,19 +60,17 @@ fun ProfileScreen(
     ) {
         item {
             ProfileCard(
-                userData = userData,
-                totalTime = totalTime,
-                isLoading = userIsLoading,
-                errorMessage = userErrorMessage,
+                userData = uiState.user ?: UserData(name = "User"),
+                totalTime = uiState.totalTime,
                 onEditProfile = onEditProfile
             )
         }
 
         item {
             SessionsCard(
-                sessions = sessions,
-                isLoading = sessionsIsLoading,
-                errorMessage = sessionsErrorMessage
+                sessions = uiState.sessions,
+                isLoading = uiState.isLoading,
+                errorMessage = uiState.errorMessage
             )
         }
     }
@@ -86,10 +78,8 @@ fun ProfileScreen(
 
 @Composable
 private fun ProfileCard(
-    userData: UserData?,
+    userData: UserData,
     totalTime: Long,
-    isLoading: Boolean,
-    errorMessage: String?,
     onEditProfile: () -> Unit
 ) {
     Card(
@@ -104,14 +94,12 @@ private fun ProfileCard(
                 .padding(24.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            // Edit Button Row
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.End
             ) {
                 IconButton(
                     onClick = onEditProfile,
-                    enabled = userData != null && !isLoading
                 ) {
                     Icon(
                         imageVector = Icons.Default.Edit,
@@ -121,69 +109,11 @@ private fun ProfileCard(
                 }
             }
 
-            when {
-                isLoading -> {
-                    ProfileLoadingState()
-                }
-
-                errorMessage != null -> {
-                    ProfileErrorState(errorMessage = errorMessage)
-                }
-
-                userData != null -> {
-                    ProfileContent(
-                        userData = userData,
-                        totalTime = totalTime
-                    )
-                }
-
-                else -> {
-                    ProfileEmptyState()
-                }
-            }
+            ProfileContent(
+                userData = userData,
+                totalTime = totalTime
+            )
         }
-    }
-}
-
-@Composable
-private fun ProfileLoadingState() {
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier.padding(32.dp)
-    ) {
-        CircularProgressIndicator(
-            color = MaterialTheme.colorScheme.primary
-        )
-        Spacer(modifier = Modifier.height(16.dp))
-        Text(
-            text = "Loading profile...",
-            style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.onSurfaceVariant
-        )
-    }
-}
-
-@Composable
-private fun ProfileErrorState(errorMessage: String) {
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier.padding(32.dp)
-    ) {
-        Text(
-            text = "Failed to load profile",
-            style = MaterialTheme.typography.titleMedium,
-            color = MaterialTheme.colorScheme.error,
-            textAlign = TextAlign.Center
-        )
-
-        Spacer(modifier = Modifier.height(8.dp))
-
-        Text(
-            text = errorMessage,
-            style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-            textAlign = TextAlign.Center
-        )
     }
 }
 
@@ -192,7 +122,6 @@ private fun ProfileContent(
     userData: UserData,
     totalTime: Long
 ) {
-    // User Name
     Text(
         text = userData.name ?: "User",
         style = MaterialTheme.typography.headlineSmall,
@@ -202,7 +131,6 @@ private fun ProfileContent(
 
     Spacer(modifier = Modifier.height(16.dp))
 
-    // Avatar
     AvatarImage(
         avatarId = userData.avatarId,
         size = 160.dp,
@@ -211,7 +139,6 @@ private fun ProfileContent(
 
     Spacer(modifier = Modifier.height(12.dp))
 
-    // Avatar Name
     Text(
         text = AvatarRepository.getAvatarName(userData.avatarId) ?: "Explorer",
         style = MaterialTheme.typography.bodyLarge,
@@ -221,25 +148,9 @@ private fun ProfileContent(
 
     Spacer(modifier = Modifier.height(24.dp))
 
-    // Study Time Section
     StudyTimeSection(
         formattedTime = formatTime(totalTime)
     )
-}
-
-@Composable
-private fun ProfileEmptyState() {
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier.padding(32.dp)
-    ) {
-        Text(
-            text = "No profile data",
-            style = MaterialTheme.typography.titleMedium,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-            textAlign = TextAlign.Center
-        )
-    }
 }
 
 @Composable
@@ -259,7 +170,6 @@ private fun SessionsCard(
                 .fillMaxWidth()
                 .padding(24.dp)
         ) {
-            // Section Header
             Text(
                 text = "Recent Sessions",
                 style = MaterialTheme.typography.titleLarge,

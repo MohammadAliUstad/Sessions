@@ -1,3 +1,4 @@
+// DurationSelector.kt
 package com.yugentech.sessions.ui.components.homeScreen
 
 import androidx.compose.foundation.background
@@ -39,25 +40,27 @@ fun DurationSelector(
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surfaceContainer
         ),
-        shape = RoundedCornerShape(28.dp) // More rounded card corners
+        shape = RoundedCornerShape(24.dp)
     ) {
         Column(
-            modifier = Modifier.padding(24.dp)
+            modifier = Modifier.padding(16.dp)
         ) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.padding(bottom = 20.dp)
+                modifier = Modifier.padding(bottom = 12.dp)
             ) {
                 Icon(
                     imageVector = Icons.Default.Timer,
-                    contentDescription = null,
+                    contentDescription = "Session Duration",
                     tint = MaterialTheme.colorScheme.primary,
-                    modifier = Modifier.size(24.dp)
+                    modifier = Modifier.size(20.dp)
                 )
-                Spacer(modifier = Modifier.width(12.dp))
+                Spacer(modifier = Modifier.width(8.dp))
                 Text(
-                    text = "Choose Duration",
-                    style = MaterialTheme.typography.titleMedium,
+                    text = "Duration",
+                    style = MaterialTheme.typography.titleSmall.copy(
+                        fontWeight = FontWeight.Medium
+                    ),
                     color = MaterialTheme.colorScheme.onSurface
                 )
             }
@@ -67,19 +70,19 @@ fun DurationSelector(
                     .fillMaxWidth()
                     .background(
                         color = MaterialTheme.colorScheme.surface,
-                        shape = RoundedCornerShape(24.dp) // More rounded background
+                        shape = RoundedCornerShape(16.dp)
                     )
                     .padding(4.dp),
-                horizontalArrangement = Arrangement.spacedBy(0.dp)
+                horizontalArrangement = Arrangement.spacedBy(4.dp)
             ) {
                 availableDurations.forEach { min ->
-                    val isSelected = selectedDuration == min * 60
+                    val isSelected = selectedDuration == (min * 60)
 
                     Box(
                         modifier = Modifier
                             .weight(1f)
-                            .height(48.dp)
-                            .clip(RoundedCornerShape(20.dp)) // More rounded segment pills
+                            .height(40.dp)
+                            .clip(RoundedCornerShape(12.dp))
                             .background(
                                 color = if (isSelected)
                                     MaterialTheme.colorScheme.primaryContainer

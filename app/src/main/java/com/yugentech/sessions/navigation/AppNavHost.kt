@@ -3,6 +3,7 @@
 package com.yugentech.sessions.navigation
 
 import android.app.Activity
+import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.IntentSenderRequest
 import androidx.activity.result.contract.ActivityResultContracts
@@ -10,12 +11,11 @@ import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import com.google.accompanist.navigation.animation.AnimatedNavHost
-import com.yugentech.sessions.LoginViewModel
-import com.yugentech.sessions.sessions.SessionsViewModel
 import com.yugentech.sessions.ui.screens.AboutScreen
 import com.yugentech.sessions.ui.screens.LoginScreen
 import com.yugentech.sessions.ui.screens.MainScreen
@@ -27,17 +27,23 @@ import com.yugentech.sessions.utils.defaultEnterTransition
 import com.yugentech.sessions.utils.defaultExitTransition
 import com.yugentech.sessions.utils.defaultPopEnterTransition
 import com.yugentech.sessions.utils.defaultPopExitTransition
+import com.yugentech.sessions.viewModels.HomeViewModel
+import com.yugentech.sessions.viewModels.LoginViewModel
+import com.yugentech.sessions.viewModels.ProfileViewModel
 
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun AppNavHost(
     navController: NavHostController,
+    webClientId: String,
     loginViewModel: LoginViewModel,
     userViewModel: UserViewModel,
-    sessionsViewModel: SessionsViewModel,
-    webClientId: String
+    homeViewModel: HomeViewModel,
+    profileViewModel: ProfileViewModel
 ) {
     val authState by loginViewModel.authState.collectAsStateWithLifecycle()
+    val context = LocalContext.current
+
     val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.StartIntentSenderForResult(),
         onResult = { result ->
@@ -53,30 +59,26 @@ fun AppNavHost(
         }
     }
 
-    LaunchedEffect(authState.isUserLoggedIn) {
-        if (authState.isUserLoggedIn) {
-            navController.navigate(Screens.Main.route) {
-                popUpTo(Screens.Login.route) { inclusive = true }
-            }
-        } else {
-            val currentRoute = navController.currentDestination?.route
-            if (currentRoute != Screens.Login.route) {
-                navController.navigate(Screens.Login.route) {
-                    popUpTo(0) { inclusive = true }
-                }
-            }
-        }
+    val startDestination = if (authState.isUserLoggedIn && authState.userId != null) {
+        Screens.Main.route
+    } else {
+        Screens.Login.route
     }
 
     AnimatedNavHost(
         navController = navController,
-        startDestination = Screens.Login.route,
+        startDestination = startDestination,
         enterTransition = { defaultEnterTransition },
         exitTransition = { defaultExitTransition },
         popEnterTransition = { defaultPopEnterTransition },
         popExitTransition = { defaultPopExitTransition }
     ) {
         composable(Screens.Login.route) {
+            // Handle back press on login screen to exit app
+            BackHandler {
+                (context as? Activity)?.finish()
+            }
+
             LoginScreen(
                 loginViewModel = loginViewModel,
                 onSignInClick = { email, password ->
@@ -92,15 +94,34 @@ fun AppNavHost(
         }
 
         composable(Screens.Main.route) {
-            authState.userId?.let { userId ->
+            val currentUserId = authState.userId
+            if (currentUserId != null) {
                 MainScreen(
-                    userId = userId,
-                    sessionsViewModel = sessionsViewModel,
-                    onLogout = { loginViewModel.signOut() },
-                    onEditProfile = { navController.navigate(Screens.EditProfile.route) },
-                    onSettings = { navController.navigate(Screens.Settings.route) },
+                    userId = currentUserId,
+                    onLogout = {
+                        loginViewModel.signOut()
+                        navController.navigate(Screens.Login.route) {
+                            popUpTo(0) { inclusive = true } // Clear entire backstack
+                            launchSingleTop = true
+                        }
+                    },
+                    onEditProfile = {
+                        navController.navigate(Screens.EditProfile.route)
+                    },
+                    onSettings = {
+                        navController.navigate(Screens.Settings.route)
+                    },
+                    homeViewModel = homeViewModel,
+                    profileViewModel = profileViewModel,
                     userViewModel = userViewModel
                 )
+            } else {
+                LaunchedEffect(Unit) {
+                    navController.navigate(Screens.Login.route) {
+                        popUpTo(0) { inclusive = true }
+                        launchSingleTop = true
+                    }
+                }
             }
         }
 
@@ -135,13 +156,19 @@ fun AppNavHost(
         }
 
         composable(Screens.EditProfile.route) {
-            EditProfileScreen(
-                loginViewModel = loginViewModel,
-                userViewModel = userViewModel,
-                onNavigateBack = {
+            val currentUserId = authState.userId
+            if (currentUserId != null) {
+                EditProfileScreen(
+                    userViewModel = userViewModel,
+                    onNavigateBack = {
+                        navController.popBackStack()
+                    }
+                )
+            } else {
+                LaunchedEffect(Unit) {
                     navController.popBackStack()
                 }
-            )
+            }
         }
     }
 }

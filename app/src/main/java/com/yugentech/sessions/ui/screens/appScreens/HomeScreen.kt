@@ -35,7 +35,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.yugentech.sessions.sessions.SessionsViewModel
+import com.yugentech.sessions.viewModels.HomeViewModel
 import com.yugentech.sessions.ui.components.homeScreen.DurationSelector
 import com.yugentech.sessions.ui.components.homeScreen.SessionActionButtons
 import com.yugentech.sessions.ui.components.homeScreen.StudyingControlButtons
@@ -44,26 +44,21 @@ import com.yugentech.sessions.ui.components.homeScreen.TimerDisplay
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
-    sessionsViewModel: SessionsViewModel,
+    homeViewModel: HomeViewModel,
     userId: String
 ) {
-    val isStudying by sessionsViewModel.isStudying.collectAsStateWithLifecycle()
-    val currentTime by sessionsViewModel.currentTime.collectAsStateWithLifecycle()
-    val selectedDuration by sessionsViewModel.selectedDuration.collectAsStateWithLifecycle()
-    val displayTime = if (isStudying || currentTime > 0) currentTime else selectedDuration
-    val availableDurations = remember { listOf(25, 50) }
+    val uiState by homeViewModel.uiState.collectAsStateWithLifecycle()
 
-    fun startSession() = sessionsViewModel.startTimer()
-    fun pauseSession() = sessionsViewModel.stopTimer()
-    fun stopSession() = sessionsViewModel.stopAndDiscardSession()
-    fun saveAndEndSession() = sessionsViewModel.stopAndSaveSession()
-    fun handleDurationChange(minutes: Int) {
-        sessionsViewModel.updateSelectedDuration(minutes)
-        sessionsViewModel.resetTimer()
+    val displayTime = if (uiState.isRunning || uiState.currentTime > 0) {
+        uiState.currentTime
+    } else {
+        uiState.selectedDuration
     }
 
+    val availableDurations = remember { listOf(25, 50) }
+
     LaunchedEffect(userId) {
-        sessionsViewModel.setUserId(userId)
+        homeViewModel.setUserId(userId)
     }
 
     Surface(
@@ -76,117 +71,145 @@ fun HomeScreen(
                 .padding(horizontal = 24.dp, vertical = 24.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            // Header Section - Clean and simple
-            Text(
-                text = if (isStudying) "Focus" else "Ready to Focus?",
-                style = MaterialTheme.typography.headlineMedium.copy(
-                    fontWeight = FontWeight.Medium,
-                    letterSpacing = 0.5.sp
-                ),
-                color = MaterialTheme.colorScheme.onSurface
-            )
-
-            Spacer(modifier = Modifier.height(8.dp))
-
-            Card(
-                modifier = Modifier.padding(horizontal = 16.dp),
-                colors = CardDefaults.cardColors(
-                    containerColor = if (isStudying)
-                        MaterialTheme.colorScheme.primaryContainer
-                    else
-                        MaterialTheme.colorScheme.surfaceVariant
-                ),
-                shape = RoundedCornerShape(20.dp)
+            // Header area with fixed height
+            Column(
+                modifier = Modifier.height(100.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Row(
-                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Box(
-                        modifier = Modifier
-                            .size(8.dp)
-                            .background(
-                                color = if (isStudying)
-                                    MaterialTheme.colorScheme.primary
-                                else
-                                    MaterialTheme.colorScheme.outline,
-                                shape = CircleShape
-                            )
-                    )
+                Text(
+                    text = if (uiState.isRunning) "Focus" else "Ready to Focus?",
+                    style = MaterialTheme.typography.headlineMedium.copy(
+                        fontWeight = FontWeight.Medium,
+                        letterSpacing = 0.5.sp
+                    ),
+                    color = MaterialTheme.colorScheme.onSurface
+                )
 
-                    Spacer(modifier = Modifier.width(8.dp))
+                Spacer(modifier = Modifier.height(8.dp))
 
-                    Text(
-                        text = if (isStudying) "In Session" else "Idle",
-                        style = MaterialTheme.typography.labelMedium,
-                        color = if (isStudying)
-                            MaterialTheme.colorScheme.onPrimaryContainer
+                Card(
+                    modifier = Modifier.padding(horizontal = 16.dp),
+                    colors = CardDefaults.cardColors(
+                        containerColor = if (uiState.isRunning)
+                            MaterialTheme.colorScheme.primaryContainer
                         else
-                            MaterialTheme.colorScheme.onSurfaceVariant
-                    )
+                            MaterialTheme.colorScheme.surfaceVariant
+                    ),
+                    shape = RoundedCornerShape(20.dp)
+                ) {
+                    Row(
+                        modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Box(
+                            modifier = Modifier
+                                .size(8.dp)
+                                .background(
+                                    color = if (uiState.isRunning)
+                                        MaterialTheme.colorScheme.primary
+                                    else
+                                        MaterialTheme.colorScheme.outline,
+                                    shape = CircleShape
+                                )
+                        )
+
+                        Spacer(modifier = Modifier.width(8.dp))
+
+                        Text(
+                            text = if (uiState.isRunning) "In Session" else "Idle",
+                            style = MaterialTheme.typography.labelMedium,
+                            color = if (uiState.isRunning)
+                                MaterialTheme.colorScheme.onPrimaryContainer
+                            else
+                                MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
                 }
             }
 
-            Spacer(modifier = Modifier.height(8.dp))
-
+            // Timer area with fixed height and centered
             Box(
-                modifier = Modifier
-                    .weight(1f)
-                    .padding(vertical = 32.dp),
+                modifier = Modifier.height(300.dp),
                 contentAlignment = Alignment.Center
             ) {
                 TimerDisplay(
                     displayTime = displayTime,
-                    selectedDuration = selectedDuration,
-                    isStudying = isStudying,
-                    modifier = Modifier.padding()
+                    selectedDuration = uiState.selectedDuration,
+                    isStudying = uiState.isRunning,
+                    modifier = Modifier
                 )
             }
 
-            AnimatedVisibility(
-                visible = !isStudying,
-                enter = expandVertically(),
-                exit = shrinkVertically()
+            Spacer(modifier = Modifier.height(36.dp))
+
+            // Bottom area with fixed spacing
+            Box(
+                modifier = Modifier.height(200.dp),
+                contentAlignment = Alignment.TopCenter
             ) {
-                DurationSelector(
-                    selectedDuration = selectedDuration,
-                    availableDurations = availableDurations,
-                    onDurationSelected = { handleDurationChange(it) }
-                )
-            }
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            AnimatedVisibility(
-                visible = !isStudying || currentTime > 0,
-                enter = scaleIn() + fadeIn(),
-                exit = scaleOut() + fadeOut()
-            ) {
-
-                SessionActionButtons(
-                    isStudying = isStudying,
-                    onPlayPause = {
-                        if (isStudying) {
-                            pauseSession()
-                        } else {
-                            startSession()
-                        }
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    // Duration selector
+                    AnimatedVisibility(
+                        visible = !uiState.isRunning,
+                        enter = expandVertically() + fadeIn(),
+                        exit = shrinkVertically() + fadeOut()
+                    ) {
+                        DurationSelector(
+                            selectedDuration = uiState.selectedDuration,
+                            availableDurations = availableDurations,
+                            onDurationSelected = {
+                                homeViewModel.updateSelectedDuration(it)
+                                homeViewModel.resetTimer()
+                            }
+                        )
                     }
-                )
-            }
 
-            Spacer(modifier = Modifier.height(16.dp))
+                    Spacer(modifier = Modifier.height(16.dp))
 
-            AnimatedVisibility(
-                visible = isStudying,
-                enter = fadeIn() + expandVertically(),
-                exit = fadeOut() + shrinkVertically()
-            ) {
+                    // Session action buttons
+                    AnimatedVisibility(
+                        visible = !uiState.isRunning || uiState.currentTime > 0,
+                        enter = scaleIn() + fadeIn(),
+                        exit = scaleOut() + fadeOut()
+                    ) {
+                        SessionActionButtons(
+                            isStudying = uiState.isRunning,
+                            onPlayPause = {
+                                if (uiState.isRunning) {
+                                    homeViewModel.stopTimer()
+                                } else {
+                                    homeViewModel.startTimer()
+                                }
+                            }
+                        )
+                    }
 
-                StudyingControlButtons(
-                    onStop = { stopSession() },
-                    onSave = { saveAndEndSession() }
-                )
+                    Spacer(modifier = Modifier.height(16.dp))
+
+                    // Studying control buttons
+                    AnimatedVisibility(
+                        visible = uiState.isRunning,
+                        enter = fadeIn() + expandVertically(),
+                        exit = fadeOut() + shrinkVertically()
+                    ) {
+                        StudyingControlButtons(
+                            onStop = { homeViewModel.stopAndDiscardSession() },
+                            onSave = { homeViewModel.stopAndSaveSession() }
+                        )
+                    }
+
+                    // Error message if any
+                    uiState.errorMessage?.let { error ->
+                        Spacer(modifier = Modifier.height(12.dp))
+                        Text(
+                            text = error,
+                            color = MaterialTheme.colorScheme.error,
+                            style = MaterialTheme.typography.bodyMedium
+                        )
+                    }
+                }
             }
         }
     }
