@@ -1,5 +1,6 @@
 package com.yugentech.sessions.ui.screens
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.ContentTransform
 import androidx.compose.animation.core.tween
@@ -16,18 +17,24 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.Saver
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.platform.LocalContext
+import android.app.Activity
 import com.yugentech.sessions.navigation.AppScreens
-import com.yugentech.sessions.sessions.SessionsViewModel
+import com.yugentech.sessions.ui.components.ExitConfirmationDialog
+import com.yugentech.sessions.ui.components.LogoutConfirmationDialog
 import com.yugentech.sessions.ui.components.mainScreen.BottomNavBar
 import com.yugentech.sessions.ui.components.mainScreen.TopAppBar
 import com.yugentech.sessions.ui.screens.appScreens.HomeScreen
 import com.yugentech.sessions.ui.screens.appScreens.ProfileScreen
 import com.yugentech.sessions.user.UserViewModel
+import com.yugentech.sessions.viewModels.HomeViewModel
+import com.yugentech.sessions.viewModels.ProfileViewModel
 
 private const val ANIMATION_DURATION = 300
 private const val FADE_DURATION = 150
@@ -43,8 +50,9 @@ private val screenSaver = Saver<AppScreens, String>(
 @Composable
 fun MainScreen(
     userId: String,
+    homeViewModel: HomeViewModel,
     userViewModel: UserViewModel,
-    sessionsViewModel: SessionsViewModel,
+    profileViewModel: ProfileViewModel,
     onLogout: () -> Unit,
     onEditProfile: () -> Unit,
     onSettings: () -> Unit
@@ -53,15 +61,56 @@ fun MainScreen(
         mutableStateOf(AppScreens.Home)
     }
 
-    val scrollBehavior =
-        TopAppBarDefaults.exitUntilCollapsedScrollBehavior() // Enhanced scroll behavior
+    var showLogoutDialog by remember { mutableStateOf(false) }
+    var showExitDialog by remember { mutableStateOf(false) }
+    val context = LocalContext.current
+
+    // Handle back press based on current screen
+    BackHandler {
+        when (currentScreen) {
+            AppScreens.Profile -> {
+                // If on Profile screen, go back to Home screen
+                currentScreen = AppScreens.Home
+            }
+            AppScreens.Home -> {
+                // If on Home screen, show exit confirmation dialog
+                showExitDialog = true
+            }
+        }
+    }
+
+    val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
+
+    if (showLogoutDialog) {
+        LogoutConfirmationDialog(
+            onConfirm = {
+                showLogoutDialog = false
+                onLogout()
+            },
+            onDismiss = {
+                showLogoutDialog = false
+            }
+        )
+    }
+
+    if (showExitDialog) {
+        ExitConfirmationDialog(
+            onConfirm = {
+                showExitDialog = false
+                (context as? Activity)?.finish()
+            },
+            onDismiss = {
+                showExitDialog = false
+            }
+        )
+    }
 
     Scaffold(
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
             TopAppBar(
                 currentScreen = currentScreen,
-                onLogout = onLogout,
+                onLogout = { showLogoutDialog = true },
                 onSettings = onSettings,
                 scrollBehavior = scrollBehavior
             )
@@ -94,14 +143,14 @@ fun MainScreen(
         ) { screen ->
             when (screen) {
                 AppScreens.Home -> HomeScreen(
-                    sessionsViewModel = sessionsViewModel,
-                    userId = userId
+                    userId = userId,
+                    homeViewModel = homeViewModel
                 )
 
                 AppScreens.Profile -> ProfileScreen(
                     userId = userId,
-                    sessionsViewModel = sessionsViewModel,
                     onEditProfile = onEditProfile,
+                    profileViewModel = profileViewModel,
                     userViewModel = userViewModel
                 )
             }

@@ -3,7 +3,7 @@ package com.yugentech.sessions.dependencyInjection.modules
 import com.google.android.gms.auth.api.identity.Identity
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
-import com.yugentech.sessions.LoginViewModel
+import com.yugentech.sessions.viewModels.LoginViewModel
 import com.yugentech.sessions.authentication.AuthService
 import com.yugentech.sessions.authentication.authRepository.AuthRepository
 import com.yugentech.sessions.authentication.authRepository.AuthRepositoryImpl

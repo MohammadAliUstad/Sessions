@@ -1,7 +1,6 @@
-package com.yugentech.sessions
+package com.yugentech.sessions.viewModels
 
 import android.content.Intent
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.yugentech.sessions.authentication.authRepository.AuthRepository
@@ -42,14 +41,10 @@ class LoginViewModel(
                         userId = firebaseUser.uid,
                         name = name,
                         email = email,
-                        avatarId = 1,
-                        totalTimeStudied = 0L,
-                        pendingSync = true,
-                        lastSyncTimestamp = System.currentTimeMillis()
+                        avatarId = 1
                     )
 
-                    // 🎯 UPDATED: createUser now handles sync automatically!
-                    when (val createResult = userRepository.createUser(userData)) {
+                    when (val createResult = userRepository.upsertUser(userData)) {
                         is AuthResult.Success -> {
                             _authState.value = AuthState(
                                 isUserLoggedIn = true,
@@ -57,7 +52,6 @@ class LoginViewModel(
                                 userData = userData,
                                 isLoading = false
                             )
-                            Log.d("LoginViewModel", "✅ User created successfully: ${userData.name}")
                         }
 
                         is AuthResult.Error -> {
@@ -177,7 +171,7 @@ class LoginViewModel(
                     userData = localUser,
                     isLoading = false
                 )
-                userRepository.syncUserToFirestore(userId)
+                userRepository.syncUser(localUser)
 
             } else {
                 when (val authResult = authRepository.getCurrentUser()) {
@@ -187,13 +181,10 @@ class LoginViewModel(
                             userId = firebaseUser.uid,
                             name = firebaseUser.displayName ?: "User",
                             email = firebaseUser.email ?: "",
-                            avatarId = 1,
-                            totalTimeStudied = 0L,
-                            pendingSync = true,
-                            lastSyncTimestamp = System.currentTimeMillis()
+                            avatarId = 0
                         )
 
-                        when (val createResult = userRepository.createUser(userData)) {
+                        when (val createResult = userRepository.upsertUser(userData)) {
                             is AuthResult.Success -> {
                                 _authState.value = AuthState(
                                     isUserLoggedIn = true,

@@ -5,12 +5,12 @@ import com.yugentech.sessions.sessions.sessionsUtils.SessionResult
 import kotlinx.coroutines.flow.Flow
 
 interface SessionsRepository {
-    // UI functions - instant from Room
-    fun getSessionsFlow(userId: String): Flow<List<Session>>
     suspend fun saveSession(userId: String, session: Session): SessionResult<Unit>
-
-    // Background sync functions
-    suspend fun syncSessionsToFirestore(userId: String): SessionResult<Unit>
-    suspend fun downloadSessionsFromFirestore(userId: String): SessionResult<List<Session>>
-    suspend fun getSessionsPendingSync(): List<Session>
+    fun getSessions(userId: String): Flow<List<Session>>
+    fun getTotalDuration(userId: String): Flow<Long>
+    suspend fun deleteSession(sessionId: String): SessionResult<Unit>
+    suspend fun deleteAllSessions(userId: String): SessionResult<Unit>
+    suspend fun getPendingSessions(userId: String): List<Session>
+    suspend fun syncSessions(userId: String): SessionResult<Unit>
+    suspend fun fetchSessionsOnce(userId: String): SessionResult<Unit>
 }

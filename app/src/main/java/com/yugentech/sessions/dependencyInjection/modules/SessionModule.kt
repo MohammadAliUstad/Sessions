@@ -1,10 +1,10 @@
 package com.yugentech.sessions.dependencyInjection.modules
 
+import com.yugentech.sessions.sessions.SessionPreferences
 import com.yugentech.sessions.sessions.SessionsService
-import com.yugentech.sessions.sessions.SessionsViewModel
 import com.yugentech.sessions.sessions.sessionsRepository.SessionsRepository
 import com.yugentech.sessions.sessions.sessionsRepository.SessionsRepositoryImpl
-import org.koin.core.module.dsl.viewModel
+import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module
 
 val sessionModule = module {
@@ -15,17 +15,17 @@ val sessionModule = module {
         )
     }
 
+    single {
+        SessionPreferences(
+            context = androidContext()
+        )
+    }
+
     single<SessionsRepository> {
         SessionsRepositoryImpl(
             sessionsDao = get(),
             sessionService = get(),
-            userRepository = get()
-        )
-    }
-
-    viewModel {
-        SessionsViewModel(
-            sessionsRepository = get()
+            sessionPreferences = get()
         )
     }
 }

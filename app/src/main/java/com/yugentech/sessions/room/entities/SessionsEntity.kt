@@ -16,7 +16,7 @@ data class SessionsEntity(
     val userId: String,
     val duration: Int,
     val timestamp: Long,
-    val pendingSync: Boolean = false
+    val pendingSync: Boolean = true
 ) {
     fun toSession(): Session {
         return Session(
@@ -29,14 +29,15 @@ data class SessionsEntity(
         fun fromSession(
             session: Session,
             userId: String,
-            sessionId: String = UUID.randomUUID().toString()
+            sessionId: String = UUID.randomUUID().toString(),
+            pendingSync: Boolean = true
         ): SessionsEntity {
             return SessionsEntity(
                 sessionId = sessionId,
                 userId = userId,
                 duration = session.duration,
                 timestamp = session.timestamp,
-                pendingSync = true
+                pendingSync = pendingSync
             )
         }
     }

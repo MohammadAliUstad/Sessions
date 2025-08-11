@@ -7,6 +7,7 @@ import com.yugentech.sessions.dependencyInjection.modules.databaseModule
 import com.yugentech.sessions.dependencyInjection.modules.sessionModule
 import com.yugentech.sessions.dependencyInjection.modules.themeModule
 import com.yugentech.sessions.dependencyInjection.modules.userModule
+import com.yugentech.sessions.dependencyInjection.modules.viewModelModule
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
 import org.koin.core.context.startKoin
@@ -24,7 +25,8 @@ class SessionsApp : Application() {
                 databaseModule,
                 sessionModule,
                 userModule,
-                themeModule
+                themeModule,
+                viewModelModule
             )
         }
     }

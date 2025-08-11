@@ -45,28 +45,34 @@ fun TimerDisplay(
         label = "TimerProgress"
     )
 
+    // Fixed size for the timer circle
+    val timerSize = 280.dp
+
     Box(
         modifier = modifier.fillMaxWidth(),
         contentAlignment = Alignment.Center
     ) {
+        // Background track
         CircularProgressIndicator(
             progress = { 1f },
-            modifier = Modifier.size(300.dp),
+            modifier = Modifier.size(timerSize),
             color = MaterialTheme.colorScheme.surfaceContainer,
             strokeWidth = 6.dp,
             trackColor = Color.Transparent,
             strokeCap = StrokeCap.Round,
         )
 
+        // Progress indicator
         CircularProgressIndicator(
             progress = { animatedProgress },
-            modifier = Modifier.size(300.dp),
+            modifier = Modifier.size(timerSize),
             color = MaterialTheme.colorScheme.primary,
             strokeWidth = 6.dp,
             trackColor = Color.Transparent,
             strokeCap = StrokeCap.Round,
         )
 
+        // Center time display
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center

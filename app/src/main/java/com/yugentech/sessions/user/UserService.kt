@@ -12,12 +12,9 @@ class UserService(
 
     private fun profileDocRef(userId: String) = firestore.collection("users").document(userId)
 
-    suspend fun uploadUserToFirestore(userData: UserData): AuthResult<Unit> {
+    suspend fun uploadUser(userData: UserData): AuthResult<Unit> {
         return try {
-            val uploadData = userData.copy(
-                lastSyncTimestamp = System.currentTimeMillis(),
-                pendingSync = false
-            ).toMap()
+            val uploadData = userData.toMap()
 
             profileDocRef(userData.userId).set(uploadData).await()
             AuthResult.Success(Unit)
