@@ -36,6 +36,8 @@ import com.yugentech.sessions.ui.dash.homeScreen.components.dialogs.GoalReachedD
 import com.yugentech.sessions.ui.dash.homeScreen.components.dialogs.ReviewReminderDialog
 import com.yugentech.sessions.ui.dash.homeScreen.components.dialogs.SetsSettingsSheet
 import com.yugentech.sessions.ui.dash.homeScreen.components.dialogs.SoundSelectionSheet
+import com.yugentech.sessions.ui.dash.homeScreen.components.dialogs.TaskSelectionSheet
+import com.yugentech.sessions.templates.viewmodel.TemplateViewModel
 import com.yugentech.sessions.ui.dash.homeScreen.components.durationSelection.SessionConfigCard
 import com.yugentech.sessions.ui.dash.homeScreen.components.durationSelection.SessionProgressCard
 import com.yugentech.sessions.ui.dash.homeScreen.components.middle.TimerDisplay
@@ -52,10 +54,12 @@ fun HomeScreen(
     homeViewModel: HomeViewModel,
     timerViewModel: TimerViewModel,
     userId: String,
-    alertsViewModel: AlertsViewModel = koinViewModel()
+    alertsViewModel: AlertsViewModel = koinViewModel(),
+    templateViewModel: TemplateViewModel = koinViewModel()
 ) {
     val timerState by timerViewModel.timerState.collectAsStateWithLifecycle()
     val dashboardState by timerViewModel.dashboardState.collectAsStateWithLifecycle()
+    val templates by templateViewModel.templates.collectAsStateWithLifecycle()
     val errorMessage by timerViewModel.errorMessage.collectAsStateWithLifecycle()
     val showGoalReached by timerViewModel.showGoalReachedDialog.collectAsStateWithLifecycle()
     val setsRemainingToConfirm by timerViewModel.showFinishConfirmation.collectAsStateWithLifecycle()
@@ -97,8 +101,9 @@ fun HomeScreen(
                     SessionHeader(
                         isRunning = timerState.isTimerRunning,
                         sessionTask = config.sessionTask,
-                        onTaskChange = { newTask ->
-                            timerViewModel.updateSessionTask(newTask)
+                        onTaskClick = {
+                            activeDialog = ActiveDialog.TaskSelection
+                            alertsViewModel.performHaptic(view)
                         },
                         onSoundBadgeClick = {
                             timerViewModel.toggleAmbientSound()
@@ -150,7 +155,6 @@ fun HomeScreen(
                         isSessionActive = isSessionActive,
                         onStartStop = {
                             if (timerState.isTimerRunning) {
-                                alertsViewModel.performHaptic(view)
                                 timerViewModel.stopTimer(view)
                             } else {
                                 timerViewModel.startTimer(view)
@@ -165,11 +169,9 @@ fun HomeScreen(
                             alertsViewModel.performHaptic(view)
                         },
                         onStopDiscard = {
-                            alertsViewModel.performHaptic(view)
                             timerViewModel.stopAndDiscardSession(view)
                         },
                         onStopSave = {
-                            alertsViewModel.performHaptic(view)
                             timerViewModel.stopAndSaveSession(view)
                         }
                     )
@@ -188,14 +190,15 @@ fun HomeScreen(
                                 title = "Focus Duration",
                                 description = "Choose how long you want to focus before taking a break.",
                                 initialValue = currentFocus,
-                                range = 1..120,
-                                step = 1,
+                                range = 5..120,
+                                step = 5,
                                 onDismiss = closeDialog,
                                 onConfirm = { newMins ->
                                     timerViewModel.updateFocusDuration(newMins)
                                     alertsViewModel.performHaptic(view)
                                     closeDialog()
-                                }
+                                },
+                                onHaptic = { alertsViewModel.performHaptic(view) }
                             )
                         }
 
@@ -204,14 +207,15 @@ fun HomeScreen(
                                 title = "Short Break",
                                 description = "Choose the duration of your break between sessions.",
                                 initialValue = currentShort,
-                                range = 1..30,
-                                step = 1,
+                                range = 5..30,
+                                step = 5,
                                 onDismiss = closeDialog,
                                 onConfirm = { newMins ->
                                     timerViewModel.updateShortBreakDuration(newMins)
                                     alertsViewModel.performHaptic(view)
                                     closeDialog()
-                                }
+                                },
+                                onHaptic = { alertsViewModel.performHaptic(view) }
                             )
                         }
 
@@ -221,15 +225,50 @@ fun HomeScreen(
                                 currentLongBreak = currentLong,
                                 currentSetsPerLongBreak = config.setsPerLongBreak,
                                 currentLongBreakEnabled = config.longBreakEnabled,
-                                onDismiss = { newSets, newLongBreak, newSetsPerLongBreak, newLongBreakEnabled ->
-                                    timerViewModel.updateLongBreakAndTargetSets(
-                                        newSets,
-                                        newLongBreak
-                                    )
+                                onSave = { newSets, newLongBreak, newSetsPerLongBreak, newLongBreakEnabled ->
+                                    timerViewModel.updateLongBreakAndTargetSets(newSets, newLongBreak)
                                     timerViewModel.updateSetsPerLongBreak(newSetsPerLongBreak)
                                     timerViewModel.updateLongBreakEnabled(newLongBreakEnabled)
                                     closeDialog()
                                 },
+                                onDismiss = closeDialog,
+                                onHaptic = { alertsViewModel.performHaptic(view) }
+                            )
+                        }
+
+                        ActiveDialog.TaskSelection -> {
+                            TaskSelectionSheet(
+                                currentTask = config.sessionTask,
+                                templates = templates,
+                                focusDuration = config.focusDuration,
+                                shortBreakDuration = config.shortBreakDuration,
+                                longBreakDuration = config.longBreakDuration,
+                                targetSets = config.targetSets,
+                                longBreakEnabled = config.longBreakEnabled,
+                                setsPerLongBreak = config.setsPerLongBreak,
+                                onSetTask = { newTask ->
+                                    timerViewModel.updateSessionTask(newTask)
+                                    closeDialog()
+                                },
+                                onApplyTemplate = { template ->
+                                    timerViewModel.updateSessionTask(template.name)
+                                    timerViewModel.updateFocusDuration(template.focusDuration)
+                                    timerViewModel.updateShortBreakDuration(template.shortBreakDuration)
+                                    timerViewModel.updateLongBreakAndTargetSets(
+                                        template.targetSets,
+                                        template.longBreakDuration
+                                    )
+                                    timerViewModel.updateSetsPerLongBreak(template.setsPerLongBreak)
+                                    timerViewModel.updateLongBreakEnabled(template.longBreakEnabled)
+                                    closeDialog()
+                                },
+                                onSaveTemplate = { name ->
+                                    templateViewModel.saveTemplate(name, config)
+                                },
+                                onDeleteTemplate = { id ->
+                                    templateViewModel.deleteTemplate(id)
+                                },
+                                onDismiss = closeDialog,
                                 onHaptic = { alertsViewModel.performHaptic(view) }
                             )
                         }
@@ -237,13 +276,17 @@ fun HomeScreen(
                         ActiveDialog.Sound -> {
                             SoundSelectionSheet(
                                 currentSoundId = config.activeBackgroundSoundId,
-                                onPreview = { previewId ->
-                                    timerViewModel.playPreview(previewId)
-                                },
                                 onConfirm = { newSoundId ->
                                     timerViewModel.stopPreview()
                                     timerViewModel.updateBackgroundSound(newSoundId)
                                     closeDialog()
+                                },
+                                onDismiss = {
+                                    timerViewModel.stopPreview()
+                                    closeDialog()
+                                },
+                                onPreview = { previewId ->
+                                    timerViewModel.playPreview(previewId)
                                 },
                                 onHaptic = { alertsViewModel.performHaptic(view) }
                             )
