@@ -12,6 +12,8 @@ import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -146,14 +148,18 @@ fun MainScreen(
             title = { Text("Delete All Sessions?") },
             text = { Text("This will permanently remove all your focus history. This action cannot be undone.") },
             confirmButton = {
-                TextButton(
+                Button(
                     onClick = {
                         profileViewModel.deleteAllSessions()
                         alertsViewModel.performHaptic(view)
                         showDeleteAllDialog = false
-                    }
+                    },
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = MaterialTheme.colorScheme.error,
+                        contentColor = MaterialTheme.colorScheme.onError
+                    )
                 ) {
-                    Text("Delete All", color = MaterialTheme.colorScheme.error)
+                    Text("Delete All")
                 }
             },
             dismissButton = {
