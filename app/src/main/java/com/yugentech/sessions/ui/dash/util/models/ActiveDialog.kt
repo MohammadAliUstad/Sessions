@@ -5,5 +5,6 @@ enum class ActiveDialog {
     Focus,
     ShortBreak,
     SetsSettings,
-    Sound
+    Sound,
+    TaskSelection
 }
