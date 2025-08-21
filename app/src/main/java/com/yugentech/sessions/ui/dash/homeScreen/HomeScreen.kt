@@ -1,6 +1,5 @@
 package com.yugentech.sessions.ui.dash.homeScreen
 
-import android.app.Activity
 import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
@@ -28,7 +27,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.google.android.play.core.review.ReviewManagerFactory
 import com.yugentech.sessions.alerts.viewmodel.AlertsViewModel
 import com.yugentech.sessions.timer.viewmodel.TimerViewModel
 import com.yugentech.sessions.ui.dash.homeScreen.components.FinishConfirmationDialog
@@ -36,8 +34,8 @@ import com.yugentech.sessions.ui.dash.homeScreen.components.bottomRow.SessionCon
 import com.yugentech.sessions.ui.dash.homeScreen.components.dialogs.DurationPickerDialog
 import com.yugentech.sessions.ui.dash.homeScreen.components.dialogs.GoalReachedDialog
 import com.yugentech.sessions.ui.dash.homeScreen.components.dialogs.ReviewReminderDialog
-import com.yugentech.sessions.ui.dash.homeScreen.components.dialogs.SetsSettingsDialog
-import com.yugentech.sessions.ui.dash.homeScreen.components.dialogs.SoundSelectionDialog
+import com.yugentech.sessions.ui.dash.homeScreen.components.dialogs.SetsSettingsSheet
+import com.yugentech.sessions.ui.dash.homeScreen.components.dialogs.SoundSelectionSheet
 import com.yugentech.sessions.ui.dash.homeScreen.components.durationSelection.SessionConfigCard
 import com.yugentech.sessions.ui.dash.homeScreen.components.durationSelection.SessionProgressCard
 import com.yugentech.sessions.ui.dash.homeScreen.components.middle.TimerDisplay
@@ -46,6 +44,7 @@ import com.yugentech.sessions.ui.dash.util.models.ActiveDialog
 import com.yugentech.sessions.utils.AppConstants
 import com.yugentech.sessions.viewModels.HomeViewModel
 import org.koin.androidx.compose.koinViewModel
+import androidx.core.net.toUri
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
@@ -151,6 +150,7 @@ fun HomeScreen(
                         isSessionActive = isSessionActive,
                         onStartStop = {
                             if (timerState.isTimerRunning) {
+                                alertsViewModel.performHaptic(view)
                                 timerViewModel.stopTimer(view)
                             } else {
                                 timerViewModel.startTimer(view)
@@ -165,9 +165,11 @@ fun HomeScreen(
                             alertsViewModel.performHaptic(view)
                         },
                         onStopDiscard = {
+                            alertsViewModel.performHaptic(view)
                             timerViewModel.stopAndDiscardSession(view)
                         },
                         onStopSave = {
+                            alertsViewModel.performHaptic(view)
                             timerViewModel.stopAndSaveSession(view)
                         }
                     )
@@ -186,8 +188,8 @@ fun HomeScreen(
                                 title = "Focus Duration",
                                 description = "Choose how long you want to focus before taking a break.",
                                 initialValue = currentFocus,
-                                range = 15..120,
-                                step = 5,
+                                range = 1..120,
+                                step = 1,
                                 onDismiss = closeDialog,
                                 onConfirm = { newMins ->
                                     timerViewModel.updateFocusDuration(newMins)
@@ -202,8 +204,8 @@ fun HomeScreen(
                                 title = "Short Break",
                                 description = "Choose the duration of your break between sessions.",
                                 initialValue = currentShort,
-                                range = 5..30,
-                                step = 5,
+                                range = 1..30,
+                                step = 1,
                                 onDismiss = closeDialog,
                                 onConfirm = { newMins ->
                                     timerViewModel.updateShortBreakDuration(newMins)
@@ -214,25 +216,26 @@ fun HomeScreen(
                         }
 
                         ActiveDialog.SetsSettings -> {
-                            SetsSettingsDialog(
+                            SetsSettingsSheet(
                                 currentSets = config.targetSets,
                                 currentLongBreak = currentLong,
-                                focusDuration = currentFocus,
-                                setsPerLongBreak = config.setsPerLongBreak,
-                                onDismiss = closeDialog,
-                                onConfirm = { newSets, newLongBreak ->
+                                currentSetsPerLongBreak = config.setsPerLongBreak,
+                                currentLongBreakEnabled = config.longBreakEnabled,
+                                onDismiss = { newSets, newLongBreak, newSetsPerLongBreak, newLongBreakEnabled ->
                                     timerViewModel.updateLongBreakAndTargetSets(
                                         newSets,
                                         newLongBreak
                                     )
-                                    alertsViewModel.performHaptic(view)
+                                    timerViewModel.updateSetsPerLongBreak(newSetsPerLongBreak)
+                                    timerViewModel.updateLongBreakEnabled(newLongBreakEnabled)
                                     closeDialog()
-                                }
+                                },
+                                onHaptic = { alertsViewModel.performHaptic(view) }
                             )
                         }
 
                         ActiveDialog.Sound -> {
-                            SoundSelectionDialog(
+                            SoundSelectionSheet(
                                 currentSoundId = config.activeBackgroundSoundId,
                                 onPreview = { previewId ->
                                     timerViewModel.playPreview(previewId)
@@ -240,13 +243,9 @@ fun HomeScreen(
                                 onConfirm = { newSoundId ->
                                     timerViewModel.stopPreview()
                                     timerViewModel.updateBackgroundSound(newSoundId)
-                                    alertsViewModel.performHaptic(view)
                                     closeDialog()
                                 },
-                                onDismiss = {
-                                    timerViewModel.stopPreview()
-                                    closeDialog()
-                                }
+                                onHaptic = { alertsViewModel.performHaptic(view) }
                             )
                         }
 
@@ -271,7 +270,7 @@ fun HomeScreen(
                     onDismiss = { homeViewModel.onReviewDialogDismissed() },
                     onReviewClick = {
                         homeViewModel.onReviewPromptShown()
-                        launchReviewFlow(context)
+                        openPlayStore(context)
                     }
                 )
             }
@@ -287,35 +286,8 @@ fun HomeScreen(
     }
 }
 
-private fun launchReviewFlow(context: Context) {
-    val manager = ReviewManagerFactory.create(context)
-    val request = manager.requestReviewFlow()
-    request.addOnCompleteListener { task ->
-        if (task.isSuccessful) {
-            val reviewInfo = task.result
-            val activity = context as? Activity
-            if (activity != null) {
-                val flow = manager.launchReviewFlow(activity, reviewInfo)
-                flow.addOnCompleteListener { _ ->
-                    // The flow has finished.
-                    // Google recommends opening the Play Store regardless if we want to ensure they can review.
-                    // But usually, if they saw the native dialog, we shouldn't redirect them immediately.
-                    // However, the native dialog might NOT show up due to quota.
-                    // So we can check if it actually showed up? No, the API doesn't provide that.
-                    // A common trick is to ALWAYS open the Play Store if the user explicitly clicked "Rate".
-                    openPlayStore(context)
-                }
-            } else {
-                openPlayStore(context)
-            }
-        } else {
-            openPlayStore(context)
-        }
-    }
-}
-
 private fun openPlayStore(context: Context) {
-    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(AppConstants.MARKET_URL)).apply {
+    val intent = Intent(Intent.ACTION_VIEW, AppConstants.MARKET_URL.toUri()).apply {
         addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_NO_HISTORY or Intent.FLAG_ACTIVITY_MULTIPLE_TASK)
     }
     try {
@@ -324,7 +296,7 @@ private fun openPlayStore(context: Context) {
         context.startActivity(
             Intent(
                 Intent.ACTION_VIEW,
-                Uri.parse(AppConstants.PLAY_STORE_URL)
+                AppConstants.PLAY_STORE_URL.toUri()
             ).apply {
                 addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             }
