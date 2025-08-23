@@ -4,18 +4,26 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.provider.Settings
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.window.DialogProperties
 import androidx.core.net.toUri
 import com.yugentech.sessions.theme.tokens.corners
+import com.yugentech.sessions.theme.tokens.spacing
 
 @Composable
 fun AlarmPermissionDialog(
@@ -29,15 +37,38 @@ fun AlarmPermissionDialog(
         modifier = Modifier.fillMaxWidth(0.84f),
         title = { Text(text = "Permission Required") },
         text = {
-            Text(
-                text = "To ensure your study reminder rings at the exact time you set, please allow the permission 'Alarms & Reminders' in the next screen.",
-                textAlign = TextAlign.Start,
-                style = MaterialTheme.typography.bodyMedium
-            )
+            Column(
+                verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.m),
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Surface(
+                    color = MaterialTheme.colorScheme.surfaceContainerHigh,
+                    shape = RoundedCornerShape(MaterialTheme.corners.medium),
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text(
+                        text = "Alarms & Reminders",
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.onSurface,
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.padding(
+                            horizontal = MaterialTheme.spacing.m,
+                            vertical = MaterialTheme.spacing.s
+                        )
+                    )
+                }
+
+                Text(
+                    text = "To ensure your study reminder rings at the exact time you set, please allow this permission in the next screen.",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
         },
         shape = RoundedCornerShape(MaterialTheme.corners.large),
         confirmButton = {
-            TextButton(
+            Button(
                 onClick = {
                     onConfirm()
 
@@ -54,7 +85,11 @@ fun AlarmPermissionDialog(
                         )
                         context.startActivity(intent)
                     }
-                }
+                },
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    contentColor = MaterialTheme.colorScheme.onPrimary
+                )
             ) { Text(text = "Go to Settings") }
         },
         dismissButton = {
