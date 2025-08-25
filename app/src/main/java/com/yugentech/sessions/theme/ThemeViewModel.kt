@@ -17,25 +17,23 @@ class ThemeViewModel(
     private val themeRepository: ThemeRepository
 ) : ViewModel() {
 
-    // 🎯 FIX: Keep collecting eagerly and start immediately
     val themeConfiguration: StateFlow<ThemeConfiguration> = themeRepository.themeConfiguration
         .stateIn(
             scope = viewModelScope,
-            started = SharingStarted.Eagerly, // 👈 Changed from WhileSubscribed!
-            initialValue = ThemeConfiguration() // This loads immediately
+            started = SharingStarted.Eagerly,
+            initialValue = ThemeConfiguration( // guaranteed first value
+                themeMode = ThemeMode.LIGHT,
+                colorTheme = ColorTheme.DYNAMIC,
+                useDynamicColors = true
+            )
         )
 
-    // Loading state for UI feedback
     private val _isLoading = MutableStateFlow(false)
     val isLoading: StateFlow<Boolean> = _isLoading.asStateFlow()
 
-    // Error state for error handling
     private val _error = MutableStateFlow<String?>(null)
     val error: StateFlow<String?> = _error.asStateFlow()
 
-    /**
-     * Update the theme mode (Light, Dark, System)
-     */
     fun updateThemeMode(themeMode: ThemeMode) {
         viewModelScope.launch {
             try {

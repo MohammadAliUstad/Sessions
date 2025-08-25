@@ -26,19 +26,16 @@ class ThemeService(
 
     val themeConfiguration: Flow<ThemeConfiguration> = dataStore.data
         .catch { exception ->
-            Log.e(TAG, "Error reading theme preferences", exception)
-            // 👈 Always emit safe defaults on error
             emit(emptyPreferences())
         }
         .map { preferences ->
             val config = ThemeConfiguration(
                 themeMode = try {
                     ThemeMode.valueOf(
-                        preferences[THEME_MODE_KEY] ?: ThemeMode.SYSTEM.name
+                        preferences[THEME_MODE_KEY] ?: ThemeMode.LIGHT.name
                     )
-                } catch (e: IllegalArgumentException) {
-                    Log.w(TAG, "Invalid theme mode, using SYSTEM", e)
-                    ThemeMode.SYSTEM
+                } catch (_: IllegalArgumentException) {
+                    ThemeMode.LIGHT
                 },
                 colorTheme = try {
                     ColorTheme.valueOf(
@@ -50,7 +47,6 @@ class ThemeService(
                 },
                 useDynamicColors = preferences[USE_DYNAMIC_COLORS_KEY] ?: true
             )
-            Log.d(TAG, "Theme configuration loaded: $config")
             config
         }
 
@@ -59,9 +55,7 @@ class ThemeService(
             dataStore.edit { preferences ->
                 preferences[THEME_MODE_KEY] = themeMode.name
             }
-            Log.d(TAG, "Theme mode updated: $themeMode")
         } catch (e: Exception) {
-            Log.e(TAG, "Failed to update theme mode", e)
             throw e
         }
     }
@@ -71,9 +65,7 @@ class ThemeService(
             dataStore.edit { preferences ->
                 preferences[COLOR_THEME_KEY] = colorTheme.name
             }
-            Log.d(TAG, "Color theme updated: $colorTheme")
         } catch (e: Exception) {
-            Log.e(TAG, "Failed to update color theme", e)
             throw e
         }
     }
@@ -83,9 +75,7 @@ class ThemeService(
             dataStore.edit { preferences ->
                 preferences[USE_DYNAMIC_COLORS_KEY] = useDynamicColors
             }
-            Log.d(TAG, "Dynamic colors updated: $useDynamicColors")
         } catch (e: Exception) {
-            Log.e(TAG, "Failed to update dynamic colors", e)
             throw e
         }
     }
@@ -97,9 +87,7 @@ class ThemeService(
                 preferences[COLOR_THEME_KEY] = themeConfiguration.colorTheme.name
                 preferences[USE_DYNAMIC_COLORS_KEY] = themeConfiguration.useDynamicColors
             }
-            Log.d(TAG, "Theme config updated: $themeConfiguration")
         } catch (e: Exception) {
-            Log.e(TAG, "Failed to update theme config", e)
             throw e
         }
     }
@@ -109,9 +97,7 @@ class ThemeService(
             dataStore.edit { preferences ->
                 preferences.clear()
             }
-            Log.d(TAG, "Theme reset to defaults")
         } catch (e: Exception) {
-            Log.e(TAG, "Failed to reset theme", e)
             throw e
         }
     }

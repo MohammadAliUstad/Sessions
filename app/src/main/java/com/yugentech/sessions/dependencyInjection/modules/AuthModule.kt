@@ -40,13 +40,6 @@ val authModule = module {
         )
     }
 
-    single<UserRepository> {
-        UserRepositoryImpl(
-            userDao = get(),
-            userService = get()
-        )
-    }
-
     viewModel {
         LoginViewModel(
             authRepository = get(),
