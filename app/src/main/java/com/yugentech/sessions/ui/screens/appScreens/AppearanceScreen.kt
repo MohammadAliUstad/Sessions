@@ -57,6 +57,7 @@ import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -75,7 +76,7 @@ fun AppearanceScreen(
     themeViewModel: ThemeViewModel = koinViewModel()
 ) {
     var selectedAppIcon by remember { mutableStateOf("Default") }
-    val appIconOptions = listOf("Default", "Minimal", "Classic", "Modern")
+    val appIconOptions = listOf("Coral", "Blue", "Green", "Purple")
 
     Scaffold(
         topBar = {
@@ -132,12 +133,16 @@ fun AppearanceScreen(
                         title = "App Customization"
                     )
 
+                    val context = LocalContext.current
+
                     DropdownSelector(
                         title = "App Icon",
                         subtitle = "Customize your home screen icon",
                         options = appIconOptions,
                         selectedOption = selectedAppIcon,
-                        onOptionSelected = { selectedAppIcon = it }
+                        onOptionSelected = { option ->
+                            selectedAppIcon = option
+                        }
                     )
                 }
             }

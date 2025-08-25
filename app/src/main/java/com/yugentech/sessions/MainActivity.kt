@@ -28,11 +28,14 @@ import org.koin.androidx.compose.koinViewModel
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        installSplashScreen()
+        val splashScreen = installSplashScreen()
         setContent {
             val webClientId = getString(R.string.web_client_id)
             val navController = rememberNavController()
             val loginViewModel: LoginViewModel = koinViewModel()
+            splashScreen.setKeepOnScreenCondition {
+                loginViewModel.authState.value.isLoading
+            }
             val userViewModel: UserViewModel = koinViewModel()
             val homeViewModel: HomeViewModel = koinViewModel()
             val profileViewModel: ProfileViewModel = koinViewModel()

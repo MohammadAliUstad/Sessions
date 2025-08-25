@@ -61,6 +61,8 @@ fun AppNavHost(
 
     val startDestination = if (authState.isUserLoggedIn && authState.userId != null) {
         Screens.Main.route
+    } else if (authState.isLoading) {
+        return
     } else {
         Screens.Login.route
     }
@@ -74,7 +76,6 @@ fun AppNavHost(
         popExitTransition = { defaultPopExitTransition }
     ) {
         composable(Screens.Login.route) {
-            // Handle back press on login screen to exit app
             BackHandler {
                 (context as? Activity)?.finish()
             }
@@ -101,7 +102,7 @@ fun AppNavHost(
                     onLogout = {
                         loginViewModel.signOut()
                         navController.navigate(Screens.Login.route) {
-                            popUpTo(0) { inclusive = true } // Clear entire backstack
+                            popUpTo(0) { inclusive = true }
                             launchSingleTop = true
                         }
                     },
