@@ -41,9 +41,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalLayoutDirection // Added
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
 import com.yugentech.sessions.theme.tokens.corners
 import com.yugentech.sessions.theme.tokens.icons
 import com.yugentech.sessions.theme.tokens.spacing
+import com.yugentech.sessions.ui.dash.mainScreen.components.itemShape
 import com.yugentech.sessions.ui.config.insightsScreen.components.ConsistencyCard
 import com.yugentech.sessions.ui.config.insightsScreen.components.EmptyDistributionPlaceholder
 import com.yugentech.sessions.ui.config.insightsScreen.components.InsightSectionHeader
@@ -109,62 +111,72 @@ fun InsightsScreen(
                     start = MaterialTheme.spacing.m + paddingValues.calculateStartPadding(layoutDirection),
                     end = MaterialTheme.spacing.m + paddingValues.calculateEndPadding(layoutDirection)
                 ),
-                verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.m)
+                verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.s)
             ) {
                 item {
-                    MetricCard(
-                        title = "Total Focus Time",
-                        value = totalTime,
-                        subtitle = "Cumulative time across all sessions",
-                        icon = Icons.Default.Timer
-                    )
-                }
+                    val topSectionCount = if (taskDistribution.isNotEmpty()) 3 else 2
 
-                if (taskDistribution.isNotEmpty()) {
-                    item {
-                        Card(
-                            modifier = Modifier.fillMaxWidth(),
-                            shape = RoundedCornerShape(MaterialTheme.corners.large),
-                            colors = CardDefaults.cardColors(
-                                containerColor = MaterialTheme.colorScheme.secondaryContainer,
-                                contentColor = MaterialTheme.colorScheme.onSecondaryContainer
-                            )
-                        ) {
-                            Row(
-                                modifier = Modifier.padding(MaterialTheme.spacing.m),
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-                                Icon(
-                                    Icons.Default.AutoAwesome,
-                                    contentDescription = null,
-                                    tint = MaterialTheme.colorScheme.secondary,
-                                    modifier = Modifier.size(MaterialTheme.icons.medium)
+                    Column(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalArrangement = Arrangement.spacedBy(2.dp)
+                    ) {
+                        MetricCard(
+                            title = "Total Focus Time",
+                            value = totalTime,
+                            subtitle = "Cumulative time across all sessions",
+                            icon = Icons.Default.Timer,
+                            shape = itemShape(index = 0, count = topSectionCount)
+                        )
+
+                        if (taskDistribution.isNotEmpty()) {
+                            Card(
+                                modifier = Modifier.fillMaxWidth(),
+                                shape = itemShape(index = 1, count = topSectionCount),
+                                colors = CardDefaults.cardColors(
+                                    containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                                    contentColor = MaterialTheme.colorScheme.onSecondaryContainer
                                 )
+                            ) {
+                                Row(
+                                    modifier = Modifier.padding(MaterialTheme.spacing.m),
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    Icon(
+                                        Icons.Default.AutoAwesome,
+                                        contentDescription = null,
+                                        tint = MaterialTheme.colorScheme.secondary,
+                                        modifier = Modifier.size(MaterialTheme.icons.medium)
+                                    )
 
-                                Spacer(Modifier.width(MaterialTheme.spacing.m))
+                                    Spacer(Modifier.width(MaterialTheme.spacing.m))
 
-                                Column {
-                                    Text(
-                                        "Primary Focus",
-                                        style = MaterialTheme.typography.labelSmall,
-                                        color = MaterialTheme.colorScheme.onSecondaryContainer.copy(
-                                            alpha = 0.7f
+                                    Column {
+                                        Text(
+                                            "Primary Focus",
+                                            style = MaterialTheme.typography.labelSmall,
+                                            color = MaterialTheme.colorScheme.onSecondaryContainer.copy(
+                                                alpha = 0.7f
+                                            )
                                         )
-                                    )
 
-                                    Text(
-                                        topTask,
-                                        style = MaterialTheme.typography.titleMedium,
-                                        fontWeight = FontWeight.Bold
-                                    )
+                                        Text(
+                                            topTask,
+                                            style = MaterialTheme.typography.titleMedium,
+                                            fontWeight = FontWeight.Bold
+                                        )
+                                    }
                                 }
                             }
                         }
-                    }
-                }
 
-                item {
-                    PeakHourCard(peakHour = peakHour)
+                        PeakHourCard(
+                            peakHour = peakHour,
+                            shape = itemShape(
+                                index = if (taskDistribution.isNotEmpty()) 2 else 1,
+                                count = topSectionCount
+                            )
+                        )
+                    }
                 }
 
 
