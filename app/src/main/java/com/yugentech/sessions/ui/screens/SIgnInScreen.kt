@@ -1,10 +1,10 @@
 package com.yugentech.sessions.ui.screens
 
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.spring
-import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
@@ -13,6 +13,8 @@ import androidx.compose.animation.shrinkVertically
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.animation.togetherWith
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -31,7 +33,6 @@ import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Error
 import androidx.compose.material.icons.filled.Lock
-import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.Button
@@ -65,30 +66,25 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import coil.compose.rememberAsyncImagePainter
 import com.yugentech.sessions.R
+import com.yugentech.sessions.ui.components.ForgotPasswordDialog
 import com.yugentech.sessions.viewModels.LoginViewModel
 import kotlinx.coroutines.launch
 
-// Material 3 standard spacing
-private val spacing = object {
-    val xs = 4.dp      // 4dp
-    val sm = 8.dp      // 8dp
-    val md = 16.dp     // 16dp
-    val lg = 24.dp     // 24dp
-    val xl = 32.dp     // 32dp
-    val xxl = 48.dp    // 48dp
-    val xxxl = 64.dp   // 64dp
-}
-
 @Composable
-fun SignUpScreen(
+fun SignInScreen(
     loginViewModel: LoginViewModel,
-    onSignUpClick: (name: String, email: String, password: String) -> Unit,
+    onSignInClick: (email: String, password: String) -> Unit,
     onGoogleSignInClick: () -> Unit,
-    onNavigateToSignIn: () -> Unit
+    onNavigateToSignUp: () -> Unit,
+    onForgotPasswordClick: (email: String) -> Unit
 ) {
     val state by loginViewModel.authState.collectAsState()
+    val forgotPasswordState by loginViewModel.forgotPasswordState.collectAsState()
     val scrollState = rememberScrollState()
+    var showForgotPasswordDialog by remember { mutableStateOf(false) }
+    var currentEmail by remember { mutableStateOf("") }
 
     Surface(
         modifier = Modifier.fillMaxSize(),
@@ -98,86 +94,94 @@ fun SignUpScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .verticalScroll(scrollState)
-                .padding(spacing.lg),
+                .padding(24.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Spacer(modifier = Modifier.height(spacing.xl))
+            Spacer(modifier = Modifier.height(32.dp))
 
-            AppLogo()
+            // App Logo
+            Box(
+                modifier = Modifier.size(96.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                Image(
+                    painter = painterResource(id = R.drawable.sessions_timer_coral),
+                    contentDescription = "Sessions Logo",
+                    modifier = Modifier.size(64.dp)
+                )
+            }
 
-            Spacer(modifier = Modifier.height(spacing.lg))
+            Spacer(modifier = Modifier.height(24.dp))
 
-            AppTitle()
+            // App Title and Subtitle
+            Text(
+                text = "Sessions",
+                style = MaterialTheme.typography.displaySmall,
+                fontWeight = FontWeight.Medium,
+                color = MaterialTheme.colorScheme.onBackground
+            )
 
-            Spacer(modifier = Modifier.height(spacing.sm))
+            Spacer(modifier = Modifier.height(8.dp))
 
-            AppSubtitle()
+            Text(
+                text = "Ready to focus and be productive?",
+                style = MaterialTheme.typography.bodyLarge,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.padding(horizontal = 16.dp)
+            )
 
-            Spacer(modifier = Modifier.height(spacing.xl))
+            Spacer(modifier = Modifier.height(32.dp))
 
             ErrorMessage(
                 error = state.error,
                 onDismiss = { loginViewModel.clearError() }
             )
 
-            SignUpForm(
+            SignInForm(
                 isLoading = state.isLoading,
-                onSignUpClick = onSignUpClick,
+                onSignInClick = onSignInClick,
                 onGoogleSignInClick = onGoogleSignInClick,
-                onClearError = { loginViewModel.clearError() }
+                onForgotPasswordClick = { email ->
+                    currentEmail = email
+                    showForgotPasswordDialog = true
+                },
+                onClearError = { loginViewModel.clearError() },
+                onEmailChange = { currentEmail = it }
             )
 
-            Spacer(modifier = Modifier.height(spacing.md))
+            Spacer(modifier = Modifier.height(16.dp))
 
-            SignInNavigation(onNavigateToSignIn = onNavigateToSignIn)
+            // Sign Up Navigation
+            TextButton(onClick = onNavigateToSignUp) {
+                Text(
+                    text = "Don't have an account? Sign Up",
+                    style = MaterialTheme.typography.bodyMedium,
+                    fontWeight = FontWeight.Medium,
+                    color = MaterialTheme.colorScheme.primary
+                )
+            }
 
-            Spacer(modifier = Modifier.height(spacing.xl))
+            Spacer(modifier = Modifier.height(32.dp))
         }
+
+        // Forgot Password Dialog
+        ForgotPasswordDialog(
+            isVisible = showForgotPasswordDialog,
+            forgotPasswordState = forgotPasswordState,
+            initialEmail = currentEmail,
+            onDismiss = {
+                showForgotPasswordDialog = false
+                loginViewModel.clearForgotPasswordState()
+            },
+            onSendResetEmail = { email ->
+                loginViewModel.forgotPassword(email)
+            },
+            onClearState = {
+                loginViewModel.clearForgotPasswordState()
+            }
+        )
     }
-}
-
-@Composable
-private fun AppLogo() {
-    Card(
-        modifier = Modifier.size(96.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.primaryContainer
-        ),
-        shape = RoundedCornerShape(spacing.lg)
-    ) {
-        Box(
-            modifier = Modifier.fillMaxSize(),
-            contentAlignment = Alignment.Center
-        ) {
-            Icon(
-                painter = painterResource(id = R.drawable.sessions_timer_coral),
-                contentDescription = "Sessions Logo",
-                modifier = Modifier.size(48.dp),
-                tint = MaterialTheme.colorScheme.primary
-            )
-        }
-    }
-}
-
-@Composable
-private fun AppTitle() {
-    Text(
-        text = "Sessions",
-        style = MaterialTheme.typography.displaySmall,
-        fontWeight = FontWeight.Medium,
-        color = MaterialTheme.colorScheme.onBackground
-    )
-}
-
-@Composable
-private fun AppSubtitle() {
-    Text(
-        text = "Start your productivity journey",
-        style = MaterialTheme.typography.bodyLarge,
-        color = MaterialTheme.colorScheme.onSurfaceVariant,
-        textAlign = TextAlign.Center,
-        modifier = Modifier.padding(horizontal = spacing.md)
-    )
 }
 
 @Composable
@@ -194,7 +198,7 @@ private fun ErrorMessage(
             )
         ) + fadeIn(),
         exit = slideOutVertically() + fadeOut(),
-        modifier = Modifier.padding(bottom = if (error != null) spacing.md else 0.dp)
+        modifier = Modifier.padding(bottom = if (error != null) 16.dp else 0.dp)
     ) {
         Card(
             modifier = Modifier.fillMaxWidth(),
@@ -204,7 +208,7 @@ private fun ErrorMessage(
             shape = RoundedCornerShape(12.dp)
         ) {
             Row(
-                modifier = Modifier.padding(spacing.md),
+                modifier = Modifier.padding(16.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Icon(
@@ -222,13 +226,13 @@ private fun ErrorMessage(
                 )
                 IconButton(
                     onClick = onDismiss,
-                    modifier = Modifier.size(spacing.lg)
+                    modifier = Modifier.size(24.dp)
                 ) {
                     Icon(
                         imageVector = Icons.Default.Close,
                         contentDescription = "Dismiss",
                         tint = MaterialTheme.colorScheme.error,
-                        modifier = Modifier.size(spacing.md)
+                        modifier = Modifier.size(16.dp)
                     )
                 }
             }
@@ -237,28 +241,25 @@ private fun ErrorMessage(
 }
 
 @Composable
-private fun SignUpForm(
+private fun SignInForm(
     isLoading: Boolean,
-    onSignUpClick: (name: String, email: String, password: String) -> Unit,
+    onSignInClick: (email: String, password: String) -> Unit,
     onGoogleSignInClick: () -> Unit,
-    onClearError: () -> Unit
+    onForgotPasswordClick: (email: String) -> Unit,
+    onClearError: () -> Unit,
+    onEmailChange: (String) -> Unit
 ) {
-    var name by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
-    var confirmPassword by remember { mutableStateOf("") }
     var passwordVisible by remember { mutableStateOf(false) }
-    var confirmPasswordVisible by remember { mutableStateOf(false) }
 
-    var nameError by remember { mutableStateOf("") }
     var emailError by remember { mutableStateOf("") }
     var passwordError by remember { mutableStateOf("") }
-    var confirmPasswordError by remember { mutableStateOf("") }
 
     val scope = rememberCoroutineScope()
 
     // Clear backend errors when user types
-    LaunchedEffect(name, email, password, confirmPassword) {
+    LaunchedEffect(email, password) {
         onClearError()
     }
 
@@ -267,37 +268,24 @@ private fun SignUpForm(
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surfaceContainerLow
         ),
-        shape = RoundedCornerShape(spacing.lg)
+        shape = RoundedCornerShape(24.dp)
     ) {
-        Column(modifier = Modifier.padding(spacing.lg)) {
+        Column(modifier = Modifier.padding(24.dp)) {
             Text(
-                text = "Create Account",
+                text = "Welcome back",
                 style = MaterialTheme.typography.headlineSmall,
                 fontWeight = FontWeight.Medium,
                 color = MaterialTheme.colorScheme.onSurface
             )
 
-            Spacer(modifier = Modifier.height(spacing.lg))
-
-            // Name field
-            InputField(
-                value = name,
-                onValueChange = {
-                    name = it
-                    nameError = validateName(it)
-                },
-                label = "Full Name",
-                icon = Icons.Default.Person,
-                error = nameError
-            )
-
-            Spacer(modifier = Modifier.height(spacing.md))
+            Spacer(modifier = Modifier.height(24.dp))
 
             // Email field
             InputField(
                 value = email,
                 onValueChange = {
                     email = it
+                    onEmailChange(it) // Update the parent's email state
                     emailError = validateEmail(it)
                 },
                 label = "Email",
@@ -305,7 +293,7 @@ private fun SignUpForm(
                 error = emailError
             )
 
-            Spacer(modifier = Modifier.height(spacing.md))
+            Spacer(modifier = Modifier.height(16.dp))
 
             // Password field
             PasswordField(
@@ -313,58 +301,54 @@ private fun SignUpForm(
                 onValueChange = {
                     password = it
                     passwordError = validatePassword(it)
-                    // Also validate confirm password if it's not empty
-                    if (confirmPassword.isNotEmpty()) {
-                        confirmPasswordError = validateConfirmPassword(password, confirmPassword)
-                    }
                 },
                 passwordVisible = passwordVisible,
                 onVisibilityChange = { passwordVisible = it },
-                error = passwordError,
-                label = "Password"
+                error = passwordError
             )
 
-            Spacer(modifier = Modifier.height(spacing.md))
+            Spacer(modifier = Modifier.height(8.dp))
 
-            // Confirm Password field
-            PasswordField(
-                value = confirmPassword,
-                onValueChange = {
-                    confirmPassword = it
-                    confirmPasswordError = validateConfirmPassword(password, it)
-                },
-                passwordVisible = confirmPasswordVisible,
-                onVisibilityChange = { confirmPasswordVisible = it },
-                error = confirmPasswordError,
-                label = "Confirm Password"
-            )
+            // Forgot Password
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.End
+            ) {
+                TextButton(
+                    onClick = {
+                        onForgotPasswordClick(email)
+                    }
+                ) {
+                    Text(
+                        text = "Forgot Password?",
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.primary
+                    )
+                }
+            }
 
-            Spacer(modifier = Modifier.height(spacing.xl))
+            Spacer(modifier = Modifier.height(16.dp))
 
-            // Sign up button
+            // Sign in button
             ActionButton(
-                text = "Create Account",
+                text = "Sign In",
                 isLoading = isLoading,
                 onClick = {
-                    if (validateSignUpForm(
-                            name = name,
+                    if (validateSignInForm(
                             email = email,
                             password = password,
-                            confirmPassword = confirmPassword,
-                            onNameError = { nameError = it },
                             onEmailError = { emailError = it },
-                            onPasswordError = { passwordError = it },
-                            onConfirmPasswordError = { confirmPasswordError = it }
+                            onPasswordError = { passwordError = it }
                         )
                     ) {
                         scope.launch {
-                            onSignUpClick(name, email, password)
+                            onSignInClick(email, password)
                         }
                     }
                 }
             )
 
-            Spacer(modifier = Modifier.height(spacing.md))
+            Spacer(modifier = Modifier.height(16.dp))
 
             // Google sign in button
             GoogleSignInButton(
@@ -410,7 +394,7 @@ private fun InputField(
                 text = error,
                 color = MaterialTheme.colorScheme.error,
                 style = MaterialTheme.typography.labelSmall,
-                modifier = Modifier.padding(start = spacing.sm, top = spacing.xs)
+                modifier = Modifier.padding(start = 8.dp, top = 4.dp)
             )
         }
     }
@@ -422,14 +406,13 @@ private fun PasswordField(
     onValueChange: (String) -> Unit,
     passwordVisible: Boolean,
     onVisibilityChange: (Boolean) -> Unit,
-    error: String = "",
-    label: String
+    error: String = ""
 ) {
     Column {
         OutlinedTextField(
             value = value,
             onValueChange = onValueChange,
-            label = { Text(label) },
+            label = { Text("Password") },
             isError = error.isNotEmpty(),
             shape = RoundedCornerShape(12.dp),
             modifier = Modifier.fillMaxWidth(),
@@ -471,7 +454,7 @@ private fun PasswordField(
                 text = error,
                 color = MaterialTheme.colorScheme.error,
                 style = MaterialTheme.typography.labelSmall,
-                modifier = Modifier.padding(start = spacing.sm, top = spacing.xs)
+                modifier = Modifier.padding(start = 8.dp, top = 4.dp)
             )
         }
     }
@@ -546,12 +529,12 @@ private fun GoogleSignInButton(
 }
 
 @Composable
-private fun SignInNavigation(
-    onNavigateToSignIn: () -> Unit
+private fun SignUpNavigation(
+    onNavigateToSignUp: () -> Unit
 ) {
-    TextButton(onClick = onNavigateToSignIn) {
+    TextButton(onClick = onNavigateToSignUp) {
         Text(
-            text = "Already have an account? Sign In",
+            text = "Don't have an account? Sign Up",
             style = MaterialTheme.typography.bodyMedium,
             fontWeight = FontWeight.Medium,
             color = MaterialTheme.colorScheme.primary
@@ -560,19 +543,12 @@ private fun SignInNavigation(
 }
 
 // Validation functions
-private fun validateName(name: String): String {
-    return when {
-        name.isBlank() -> "Name cannot be empty"
-        name.length < 2 -> "Name must be at least 2 characters"
-        else -> ""
-    }
-}
-
 private fun validateEmail(email: String): String {
     return when {
         email.isBlank() -> "Email cannot be empty"
         !android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches() ->
             "Please enter a valid email"
+
         else -> ""
     }
 }
@@ -580,37 +556,18 @@ private fun validateEmail(email: String): String {
 private fun validatePassword(password: String): String {
     return when {
         password.isBlank() -> "Password cannot be empty"
-        password.length < 8 -> "Password must be at least 8 characters"
-        !password.any { it.isDigit() } -> "Password must contain at least one number"
-        !password.any { it.isUpperCase() } -> "Password must contain at least one uppercase letter"
-        !password.any { it.isLowerCase() } -> "Password must contain at least one lowercase letter"
+        password.length < 6 -> "Password must be at least 6 characters"
         else -> ""
     }
 }
 
-private fun validateConfirmPassword(password: String, confirmPassword: String): String {
-    return when {
-        confirmPassword.isBlank() -> "Please confirm your password"
-        password != confirmPassword -> "Passwords do not match"
-        else -> ""
-    }
-}
-
-private fun validateSignUpForm(
-    name: String,
+private fun validateSignInForm(
     email: String,
     password: String,
-    confirmPassword: String,
-    onNameError: (String) -> Unit,
     onEmailError: (String) -> Unit,
-    onPasswordError: (String) -> Unit,
-    onConfirmPasswordError: (String) -> Unit
+    onPasswordError: (String) -> Unit
 ): Boolean {
     var isValid = true
-
-    val nameError = validateName(name)
-    onNameError(nameError)
-    if (nameError.isNotEmpty()) isValid = false
 
     val emailError = validateEmail(email)
     onEmailError(emailError)
@@ -619,10 +576,6 @@ private fun validateSignUpForm(
     val passwordError = validatePassword(password)
     onPasswordError(passwordError)
     if (passwordError.isNotEmpty()) isValid = false
-
-    val confirmPasswordError = validateConfirmPassword(password, confirmPassword)
-    onConfirmPasswordError(confirmPasswordError)
-    if (confirmPasswordError.isNotEmpty()) isValid = false
 
     return isValid
 }

@@ -18,7 +18,7 @@ class ThemeRepositoryImpl(
 
     override suspend fun setColorTheme(colorTheme: ColorTheme) {
         themeService.updateColorTheme(colorTheme)
-    }
+     }
 
     override suspend fun setUseDynamicColors(useDynamicColors: Boolean) {
         themeService.updateUseDynamicColors(useDynamicColors)

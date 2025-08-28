@@ -43,6 +43,15 @@ class AuthService(
         }
     }
 
+    suspend fun sendPasswordResetEmail(email: String): AuthResult<Unit> {
+        return try {
+            auth.sendPasswordResetEmail(email).await()
+            AuthResult.Success(Unit)
+        } catch (e: Exception) {
+            AuthResult.Error(AuthErrorMapper.mapFirebaseAuthError(e))
+        }
+    }
+
     fun getCurrentUser(): AuthResult<FirebaseUser> {
         val user = auth.currentUser
         return if (user != null) {

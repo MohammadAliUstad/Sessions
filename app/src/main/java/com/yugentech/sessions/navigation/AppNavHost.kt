@@ -19,6 +19,8 @@ import com.google.accompanist.navigation.animation.AnimatedNavHost
 import com.yugentech.sessions.ui.screens.AboutScreen
 import com.yugentech.sessions.ui.screens.LoginScreen
 import com.yugentech.sessions.ui.screens.MainScreen
+import com.yugentech.sessions.ui.screens.SignInScreen
+import com.yugentech.sessions.ui.screens.SignUpScreen
 import com.yugentech.sessions.ui.screens.appScreens.AppearanceScreen
 import com.yugentech.sessions.ui.screens.appScreens.EditProfileScreen
 import com.yugentech.sessions.ui.screens.appScreens.SettingsScreen
@@ -64,7 +66,7 @@ fun AppNavHost(
     } else if (authState.isLoading) {
         return
     } else {
-        Screens.Login.route
+        Screens.SignIn.route
     }
 
     AnimatedNavHost(
@@ -75,23 +77,44 @@ fun AppNavHost(
         popEnterTransition = { defaultPopEnterTransition },
         popExitTransition = { defaultPopExitTransition }
     ) {
-        composable(Screens.Login.route) {
+        composable(Screens.SignIn.route) {
             BackHandler {
                 (context as? Activity)?.finish()
             }
 
-            LoginScreen(
+            SignInScreen(
                 loginViewModel = loginViewModel,
                 onSignInClick = { email, password ->
                     loginViewModel.signIn(email, password)
                 },
+                onGoogleSignInClick = {
+                    loginViewModel.getGoogleSignInIntent(webClientId)
+                },
+                onNavigateToSignUp = {
+                    navController.navigate(Screens.SignUp.route)
+                },
+                onForgotPasswordClick = {
+                    loginViewModel.forgotPassword(it)
+                }
+            )
+        }
+
+        composable(Screens.SignUp.route) {
+            SignUpScreen(
+                loginViewModel = loginViewModel,
                 onSignUpClick = { name, email, password ->
                     loginViewModel.signUp(name, email, password)
                 },
                 onGoogleSignInClick = {
                     loginViewModel.getGoogleSignInIntent(webClientId)
-                }
+                },
+                onNavigateToSignIn = {
+                    navController.popBackStack()
+                },
             )
+            BackHandler {
+                navController.popBackStack()
+            }
         }
 
         composable(Screens.Main.route) {
