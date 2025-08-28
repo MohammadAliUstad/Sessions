@@ -127,7 +127,6 @@ dependencies {
 
     // Google Play Services
     implementation(libs.play.services.auth)
-    implementation(libs.play.review)
 
     // Room Database
     implementation(libs.androidx.room.runtime)
