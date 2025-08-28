@@ -1,18 +1,13 @@
 package com.yugentech.sessions.ui.screens
 
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.Spring
-import androidx.compose.animation.core.tween
-import androidx.compose.animation.expandVertically
+import androidx.compose.animation.core.spring
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
-import androidx.compose.animation.shrinkVertically
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
-import androidx.compose.animation.togetherWith
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -24,6 +19,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -32,18 +28,12 @@ import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Error
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Person
-import androidx.compose.material.icons.filled.Visibility
-import androidx.compose.material.icons.filled.VisibilityOff
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material.icons.filled.Timer
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -57,28 +47,14 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.yugentech.sessions.R
+import com.yugentech.sessions.ui.components.ActionButton
+import com.yugentech.sessions.ui.components.AppTextField
+import com.yugentech.sessions.ui.components.GoogleSignInButton
 import com.yugentech.sessions.viewModels.LoginViewModel
 import kotlinx.coroutines.launch
-
-// Material 3 standard spacing
-private val spacing = object {
-    val xs = 4.dp      // 4dp
-    val sm = 8.dp      // 8dp
-    val md = 16.dp     // 16dp
-    val lg = 24.dp     // 24dp
-    val xl = 32.dp     // 32dp
-    val xxl = 48.dp    // 48dp
-    val xxxl = 64.dp   // 64dp
-}
 
 @Composable
 fun SignUpScreen(
@@ -98,22 +74,47 @@ fun SignUpScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .verticalScroll(scrollState)
-                .padding(spacing.lg),
+                .padding(24.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Spacer(modifier = Modifier.height(spacing.xl))
+            Spacer(modifier = Modifier.height(40.dp))
 
-            AppLogo()
+            Box(
+                modifier = Modifier
+                    .size(96.dp)
+                    .background(
+                        color = MaterialTheme.colorScheme.surfaceContainer,
+                        shape = CircleShape
+                    ),
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Timer,
+                    contentDescription = null,
+                    modifier = Modifier.size(48.dp),
+                    tint = MaterialTheme.colorScheme.primary
+                )
+            }
 
-            Spacer(modifier = Modifier.height(spacing.lg))
+            Spacer(modifier = Modifier.height(12.dp))
 
-            AppTitle()
+            Text(
+                text = "Sessions",
+                style = MaterialTheme.typography.headlineMedium,
+                fontWeight = FontWeight.Medium,
+                color = MaterialTheme.colorScheme.onBackground
+            )
 
-            Spacer(modifier = Modifier.height(spacing.sm))
+            Spacer(modifier = Modifier.height(8.dp))
 
-            AppSubtitle()
+            Text(
+                text = "Start your productivity journey",
+                style = MaterialTheme.typography.titleMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                textAlign = TextAlign.Center
+            )
 
-            Spacer(modifier = Modifier.height(spacing.xl))
+            Spacer(modifier = Modifier.height(24.dp))
 
             ErrorMessage(
                 error = state.error,
@@ -127,57 +128,21 @@ fun SignUpScreen(
                 onClearError = { loginViewModel.clearError() }
             )
 
-            Spacer(modifier = Modifier.height(spacing.md))
+            TextButton(
+                onClick = onNavigateToSignIn,
+                modifier = Modifier.padding(vertical = 4.dp)
+            ) {
+                Text(
+                    text = "Already have an account? Sign In",
+                    style = MaterialTheme.typography.labelLarge,
+                    fontWeight = FontWeight.Medium,
+                    color = MaterialTheme.colorScheme.primary
+                )
+            }
 
-            SignInNavigation(onNavigateToSignIn = onNavigateToSignIn)
-
-            Spacer(modifier = Modifier.height(spacing.xl))
+            Spacer(modifier = Modifier.height(24.dp))
         }
     }
-}
-
-@Composable
-private fun AppLogo() {
-    Card(
-        modifier = Modifier.size(96.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.primaryContainer
-        ),
-        shape = RoundedCornerShape(spacing.lg)
-    ) {
-        Box(
-            modifier = Modifier.fillMaxSize(),
-            contentAlignment = Alignment.Center
-        ) {
-            Icon(
-                painter = painterResource(id = R.drawable.sessions_timer_coral),
-                contentDescription = "Sessions Logo",
-                modifier = Modifier.size(48.dp),
-                tint = MaterialTheme.colorScheme.primary
-            )
-        }
-    }
-}
-
-@Composable
-private fun AppTitle() {
-    Text(
-        text = "Sessions",
-        style = MaterialTheme.typography.displaySmall,
-        fontWeight = FontWeight.Medium,
-        color = MaterialTheme.colorScheme.onBackground
-    )
-}
-
-@Composable
-private fun AppSubtitle() {
-    Text(
-        text = "Start your productivity journey",
-        style = MaterialTheme.typography.bodyLarge,
-        color = MaterialTheme.colorScheme.onSurfaceVariant,
-        textAlign = TextAlign.Center,
-        modifier = Modifier.padding(horizontal = spacing.md)
-    )
 }
 
 @Composable
@@ -194,7 +159,7 @@ private fun ErrorMessage(
             )
         ) + fadeIn(),
         exit = slideOutVertically() + fadeOut(),
-        modifier = Modifier.padding(bottom = if (error != null) spacing.md else 0.dp)
+        modifier = Modifier.padding(bottom = if (error != null) 16.dp else 0.dp)
     ) {
         Card(
             modifier = Modifier.fillMaxWidth(),
@@ -204,7 +169,7 @@ private fun ErrorMessage(
             shape = RoundedCornerShape(12.dp)
         ) {
             Row(
-                modifier = Modifier.padding(spacing.md),
+                modifier = Modifier.padding(16.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Icon(
@@ -222,13 +187,13 @@ private fun ErrorMessage(
                 )
                 IconButton(
                     onClick = onDismiss,
-                    modifier = Modifier.size(spacing.lg)
+                    modifier = Modifier.size(24.dp)
                 ) {
                     Icon(
                         imageVector = Icons.Default.Close,
                         contentDescription = "Dismiss",
                         tint = MaterialTheme.colorScheme.error,
-                        modifier = Modifier.size(spacing.md)
+                        modifier = Modifier.size(16.dp)
                     )
                 }
             }
@@ -247,8 +212,6 @@ private fun SignUpForm(
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var confirmPassword by remember { mutableStateOf("") }
-    var passwordVisible by remember { mutableStateOf(false) }
-    var confirmPasswordVisible by remember { mutableStateOf(false) }
 
     var nameError by remember { mutableStateOf("") }
     var emailError by remember { mutableStateOf("") }
@@ -257,7 +220,6 @@ private fun SignUpForm(
 
     val scope = rememberCoroutineScope()
 
-    // Clear backend errors when user types
     LaunchedEffect(name, email, password, confirmPassword) {
         onClearError()
     }
@@ -265,83 +227,77 @@ private fun SignUpForm(
     Card(
         modifier = Modifier.fillMaxWidth(),
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surfaceContainerLow
+            containerColor = MaterialTheme.colorScheme.surfaceContainer
         ),
-        shape = RoundedCornerShape(spacing.lg)
+        shape = RoundedCornerShape(28.dp)
     ) {
-        Column(modifier = Modifier.padding(spacing.lg)) {
+        Column(modifier = Modifier.padding(24.dp)) {
             Text(
                 text = "Create Account",
-                style = MaterialTheme.typography.headlineSmall,
-                fontWeight = FontWeight.Medium,
+                style = MaterialTheme.typography.headlineMedium,
+                fontWeight = FontWeight.W200,
                 color = MaterialTheme.colorScheme.onSurface
             )
 
-            Spacer(modifier = Modifier.height(spacing.lg))
+            Spacer(modifier = Modifier.height(16.dp))
 
-            // Name field
-            InputField(
+            AppTextField(
                 value = name,
                 onValueChange = {
                     name = it
                     nameError = validateName(it)
                 },
                 label = "Full Name",
-                icon = Icons.Default.Person,
+                leadingIcon = Icons.Default.Person,
                 error = nameError
             )
 
-            Spacer(modifier = Modifier.height(spacing.md))
+            Spacer(modifier = Modifier.height(16.dp))
 
-            // Email field
-            InputField(
+            AppTextField(
                 value = email,
                 onValueChange = {
                     email = it
                     emailError = validateEmail(it)
                 },
                 label = "Email",
-                icon = Icons.Default.Email,
+                leadingIcon = Icons.Default.Email,
                 error = emailError
             )
 
-            Spacer(modifier = Modifier.height(spacing.md))
+            Spacer(modifier = Modifier.height(16.dp))
 
-            // Password field
-            PasswordField(
+            AppTextField(
                 value = password,
                 onValueChange = {
                     password = it
                     passwordError = validatePassword(it)
-                    // Also validate confirm password if it's not empty
                     if (confirmPassword.isNotEmpty()) {
-                        confirmPasswordError = validateConfirmPassword(password, confirmPassword)
+                        confirmPasswordError = validateConfirmPassword(it, confirmPassword)
                     }
                 },
-                passwordVisible = passwordVisible,
-                onVisibilityChange = { passwordVisible = it },
+                label = "Password",
+                leadingIcon = Icons.Default.Lock,
                 error = passwordError,
-                label = "Password"
+                isPassword = true
             )
 
-            Spacer(modifier = Modifier.height(spacing.md))
+            Spacer(modifier = Modifier.height(16.dp))
 
-            // Confirm Password field
-            PasswordField(
+            AppTextField(
                 value = confirmPassword,
                 onValueChange = {
                     confirmPassword = it
                     confirmPasswordError = validateConfirmPassword(password, it)
                 },
-                passwordVisible = confirmPasswordVisible,
-                onVisibilityChange = { confirmPasswordVisible = it },
+                label = "Confirm Password",
+                leadingIcon = Icons.Default.Lock,
                 error = confirmPasswordError,
-                label = "Confirm Password"
+                isPassword = true
             )
 
-            Spacer(modifier = Modifier.height(spacing.xl))
+            Spacer(modifier = Modifier.height(24.dp))
 
-            // Sign up button
             ActionButton(
                 text = "Create Account",
                 isLoading = isLoading,
@@ -364,198 +320,13 @@ private fun SignUpForm(
                 }
             )
 
-            Spacer(modifier = Modifier.height(spacing.md))
+            Spacer(modifier = Modifier.height(16.dp))
 
-            // Google sign in button
             GoogleSignInButton(
                 isLoading = isLoading,
                 onClick = { scope.launch { onGoogleSignInClick() } }
             )
         }
-    }
-}
-
-@Composable
-private fun InputField(
-    value: String,
-    onValueChange: (String) -> Unit,
-    label: String,
-    icon: ImageVector,
-    error: String = ""
-) {
-    Column {
-        OutlinedTextField(
-            value = value,
-            onValueChange = onValueChange,
-            label = { Text(label) },
-            isError = error.isNotEmpty(),
-            shape = RoundedCornerShape(12.dp),
-            modifier = Modifier.fillMaxWidth(),
-            singleLine = true,
-            leadingIcon = {
-                Icon(
-                    imageVector = icon,
-                    contentDescription = null,
-                    tint = if (error.isNotEmpty()) MaterialTheme.colorScheme.error
-                    else MaterialTheme.colorScheme.primary
-                )
-            }
-        )
-        AnimatedVisibility(
-            visible = error.isNotEmpty(),
-            enter = expandVertically() + fadeIn(),
-            exit = shrinkVertically() + fadeOut()
-        ) {
-            Text(
-                text = error,
-                color = MaterialTheme.colorScheme.error,
-                style = MaterialTheme.typography.labelSmall,
-                modifier = Modifier.padding(start = spacing.sm, top = spacing.xs)
-            )
-        }
-    }
-}
-
-@Composable
-private fun PasswordField(
-    value: String,
-    onValueChange: (String) -> Unit,
-    passwordVisible: Boolean,
-    onVisibilityChange: (Boolean) -> Unit,
-    error: String = "",
-    label: String
-) {
-    Column {
-        OutlinedTextField(
-            value = value,
-            onValueChange = onValueChange,
-            label = { Text(label) },
-            isError = error.isNotEmpty(),
-            shape = RoundedCornerShape(12.dp),
-            modifier = Modifier.fillMaxWidth(),
-            singleLine = true,
-            leadingIcon = {
-                Icon(
-                    imageVector = Icons.Default.Lock,
-                    contentDescription = null,
-                    tint = if (error.isNotEmpty()) MaterialTheme.colorScheme.error
-                    else MaterialTheme.colorScheme.primary
-                )
-            },
-            trailingIcon = {
-                val alpha by animateFloatAsState(
-                    targetValue = if (value.isNotEmpty()) 1f else 0.6f,
-                    label = "password_visibility_alpha"
-                )
-                IconButton(
-                    onClick = { onVisibilityChange(!passwordVisible) },
-                    modifier = Modifier.alpha(alpha)
-                ) {
-                    Icon(
-                        imageVector = if (passwordVisible) Icons.Default.Visibility
-                        else Icons.Default.VisibilityOff,
-                        contentDescription = "Toggle Password Visibility",
-                        tint = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
-                }
-            },
-            visualTransformation = if (passwordVisible) VisualTransformation.None
-            else PasswordVisualTransformation()
-        )
-        AnimatedVisibility(
-            visible = error.isNotEmpty(),
-            enter = expandVertically() + fadeIn(),
-            exit = shrinkVertically() + fadeOut()
-        ) {
-            Text(
-                text = error,
-                color = MaterialTheme.colorScheme.error,
-                style = MaterialTheme.typography.labelSmall,
-                modifier = Modifier.padding(start = spacing.sm, top = spacing.xs)
-            )
-        }
-    }
-}
-
-@Composable
-private fun ActionButton(
-    text: String,
-    isLoading: Boolean,
-    onClick: () -> Unit
-) {
-    Button(
-        onClick = onClick,
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(56.dp),
-        shape = RoundedCornerShape(12.dp),
-        enabled = !isLoading,
-        colors = ButtonDefaults.buttonColors(
-            containerColor = MaterialTheme.colorScheme.primary,
-            contentColor = MaterialTheme.colorScheme.onPrimary
-        )
-    ) {
-        AnimatedContent(
-            targetState = isLoading,
-            transitionSpec = {
-                fadeIn(tween(200)) togetherWith fadeOut(tween(200))
-            },
-            label = "button_content"
-        ) { loading ->
-            if (loading) {
-                CircularProgressIndicator(
-                    modifier = Modifier.size(20.dp),
-                    color = MaterialTheme.colorScheme.onPrimary,
-                    strokeWidth = 2.dp
-                )
-            } else {
-                Text(
-                    text = text,
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.Medium
-                )
-            }
-        }
-    }
-}
-
-@Composable
-private fun GoogleSignInButton(
-    isLoading: Boolean,
-    onClick: () -> Unit
-) {
-    OutlinedButton(
-        onClick = onClick,
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(56.dp),
-        shape = RoundedCornerShape(12.dp),
-        enabled = !isLoading
-    ) {
-        Icon(
-            painter = painterResource(id = R.drawable.ic_google_icon),
-            contentDescription = null,
-            modifier = Modifier.size(20.dp)
-        )
-        Spacer(modifier = Modifier.width(12.dp))
-        Text(
-            text = "Continue with Google",
-            style = MaterialTheme.typography.titleMedium
-        )
-    }
-}
-
-@Composable
-private fun SignInNavigation(
-    onNavigateToSignIn: () -> Unit
-) {
-    TextButton(onClick = onNavigateToSignIn) {
-        Text(
-            text = "Already have an account? Sign In",
-            style = MaterialTheme.typography.bodyMedium,
-            fontWeight = FontWeight.Medium,
-            color = MaterialTheme.colorScheme.primary
-        )
     }
 }
 
@@ -573,6 +344,7 @@ private fun validateEmail(email: String): String {
         email.isBlank() -> "Email cannot be empty"
         !android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches() ->
             "Please enter a valid email"
+
         else -> ""
     }
 }
