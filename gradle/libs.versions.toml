@@ -40,7 +40,6 @@ firebaseBom = "34.15.0"
 
 # Google Play Services
 playServicesAuth = "21.6.0"
-playReview = "2.0.2"
 
 # Room
 roomRuntime = "2.8.4"
@@ -122,7 +121,6 @@ firebase-analytics = { module = "com.google.firebase:firebase-analytics" }
 # Google Play Services
 lottie-compose = { module = "com.airbnb.android:lottie-compose", version.ref = "lottieCompose" }
 play-services-auth = { group = "com.google.android.gms", name = "play-services-auth", version.ref = "playServicesAuth" }
-play-review = { module = "com.google.android.play:review-ktx", version.ref = "playReview" }
 
 # Room Database
 androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "roomRuntime" }
