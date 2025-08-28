@@ -25,6 +25,8 @@ sealed class AppScreens(val route: String, val title: String, val icon: ImageVec
 sealed class Screens(val route: String, val icon: ImageVector) {
     data object Appearance : Screens("appearance", Icons.Filled.ColorLens)
     data object Login : Screens("login", Icons.AutoMirrored.Filled.Login)
+    data object SignUp : Screens("signUp", Icons.AutoMirrored.Filled.Login)
+    data object SignIn : Screens("signIn", Icons.AutoMirrored.Filled.Login)
     data object Main : Screens("main", Icons.Filled.Home)
     data object About : Screens("about", Icons.Filled.Info)
     data object EditProfile : Screens("editProfile", Icons.Filled.Info)

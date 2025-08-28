@@ -23,6 +23,9 @@ class LoginViewModel(
     private val _userId = MutableStateFlow<String?>(null)
     val userId: StateFlow<String?> = _userId
 
+    private val _forgotPasswordState = MutableStateFlow<ForgotPasswordState>(ForgotPasswordState.Idle)
+    val forgotPasswordState: StateFlow<ForgotPasswordState> = _forgotPasswordState
+
     init {
         checkCurrentUser()
     }
@@ -100,6 +103,26 @@ class LoginViewModel(
         _userId.value = null
     }
 
+    fun forgotPassword(email: String) {
+        _forgotPasswordState.value = ForgotPasswordState.Loading
+
+        viewModelScope.launch {
+            when (val result = authRepository.sendPasswordResetEmail(email)) {
+                is AuthResult.Success -> {
+                    _forgotPasswordState.value = ForgotPasswordState.Success
+                }
+
+                is AuthResult.Error -> {
+                    _forgotPasswordState.value = ForgotPasswordState.Error(result.message)
+                }
+            }
+        }
+    }
+
+    fun clearForgotPasswordState() {
+        _forgotPasswordState.value = ForgotPasswordState.Idle
+    }
+
     fun getGoogleSignInIntent(webClientId: String) {
         _authState.value = _authState.value.copy(isLoading = true)
 
@@ -131,7 +154,7 @@ class LoginViewModel(
                     val firebaseUser = result.data
                     _userId.value = firebaseUser.uid
 
-                    // 🎯 SIMPLIFIED: Just load user profile - no complex download logic!
+                    // Load user profile
                     loadUserProfile(firebaseUser.uid)
                 }
 
@@ -222,4 +245,12 @@ class LoginViewModel(
     fun clearError() {
         _authState.value = _authState.value.copy(error = null)
     }
+}
+
+// Forgot Password State
+sealed class ForgotPasswordState {
+    object Idle : ForgotPasswordState()
+    object Loading : ForgotPasswordState()
+    object Success : ForgotPasswordState()
+    data class Error(val message: String) : ForgotPasswordState()
 }

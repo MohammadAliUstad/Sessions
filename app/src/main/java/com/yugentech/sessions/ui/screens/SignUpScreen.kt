@@ -1,11 +1,10 @@
 package com.yugentech.sessions.ui.screens
 
-import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.animateContentSize
-import androidx.compose.animation.core.Spring
+import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.spring
+import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
@@ -14,8 +13,6 @@ import androidx.compose.animation.shrinkVertically
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.animation.togetherWith
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -27,18 +24,14 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Analytics
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Error
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Person
-import androidx.compose.material.icons.filled.Schedule
-import androidx.compose.material.icons.filled.Timer
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.Button
@@ -76,75 +69,15 @@ import com.yugentech.sessions.R
 import com.yugentech.sessions.viewModels.LoginViewModel
 import kotlinx.coroutines.launch
 
-@Composable
-fun SignInScreen(
-    loginViewModel: LoginViewModel,
-    onSignInClick: (email: String, password: String) -> Unit,
-    onGoogleSignInClick: () -> Unit,
-    onNavigateToSignUp: () -> Unit,
-    onForgotPasswordClick: (email: String) -> Unit
-) {
-    val state by loginViewModel.authState.collectAsState()
-    val scrollState = rememberScrollState()
-
-    Surface(
-        modifier = Modifier.fillMaxSize(),
-        color = MaterialTheme.colorScheme.background
-    ) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .verticalScroll(scrollState)
-                .padding(24.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Spacer(modifier = Modifier.height(32.dp))
-
-            AppLogo()
-
-            Spacer(modifier = Modifier.height(24.dp))
-
-            AppTitle()
-
-            Spacer(modifier = Modifier.height(8.dp))
-
-            Text(
-                text = "Welcome back! Ready to focus?",
-                style = MaterialTheme.typography.bodyLarge,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                textAlign = TextAlign.Center,
-                modifier = Modifier.padding(horizontal = 16.dp)
-            )
-
-            Spacer(modifier = Modifier.height(32.dp))
-
-            ErrorMessage(
-                error = state.error,
-                onDismiss = { loginViewModel.clearError() }
-            )
-
-            SignInForm(
-                isLoading = state.isLoading,
-                onSignInClick = onSignInClick,
-                onGoogleSignInClick = onGoogleSignInClick,
-                onForgotPasswordClick = onForgotPasswordClick,
-                onClearError = { loginViewModel.clearError() }
-            )
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            TextButton(onClick = onNavigateToSignUp) {
-                Text(
-                    text = "Don't have an account? Sign Up",
-                    style = MaterialTheme.typography.bodyMedium,
-                    fontWeight = FontWeight.Medium,
-                    color = MaterialTheme.colorScheme.primary
-                )
-            }
-
-            Spacer(modifier = Modifier.height(32.dp))
-        }
-    }
+// Material 3 standard spacing
+private val spacing = object {
+    val xs = 4.dp      // 4dp
+    val sm = 8.dp      // 8dp
+    val md = 16.dp     // 16dp
+    val lg = 24.dp     // 24dp
+    val xl = 32.dp     // 32dp
+    val xxl = 48.dp    // 48dp
+    val xxxl = 64.dp   // 64dp
 }
 
 @Composable
@@ -165,28 +98,22 @@ fun SignUpScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .verticalScroll(scrollState)
-                .padding(24.dp),
+                .padding(spacing.lg),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Spacer(modifier = Modifier.height(32.dp))
+            Spacer(modifier = Modifier.height(spacing.xl))
 
             AppLogo()
 
-            Spacer(modifier = Modifier.height(24.dp))
+            Spacer(modifier = Modifier.height(spacing.lg))
 
             AppTitle()
 
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(spacing.sm))
 
-            Text(
-                text = "Start your productivity journey",
-                style = MaterialTheme.typography.bodyLarge,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                textAlign = TextAlign.Center,
-                modifier = Modifier.padding(horizontal = 16.dp)
-            )
+            AppSubtitle()
 
-            Spacer(modifier = Modifier.height(32.dp))
+            Spacer(modifier = Modifier.height(spacing.xl))
 
             ErrorMessage(
                 error = state.error,
@@ -200,148 +127,111 @@ fun SignUpScreen(
                 onClearError = { loginViewModel.clearError() }
             )
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(spacing.md))
 
-            TextButton(onClick = onNavigateToSignIn) {
-                Text(
-                    text = "Already have an account? Sign In",
-                    style = MaterialTheme.typography.bodyMedium,
-                    fontWeight = FontWeight.Medium,
-                    color = MaterialTheme.colorScheme.primary
-                )
-            }
+            SignInNavigation(onNavigateToSignIn = onNavigateToSignIn)
 
-            Spacer(modifier = Modifier.height(32.dp))
+            Spacer(modifier = Modifier.height(spacing.xl))
         }
     }
 }
 
 @Composable
-private fun SignInForm(
-    isLoading: Boolean,
-    onSignInClick: (email: String, password: String) -> Unit,
-    onGoogleSignInClick: () -> Unit,
-    onForgotPasswordClick: (email: String) -> Unit,
-    onClearError: () -> Unit
-) {
-    var email by remember { mutableStateOf("") }
-    var password by remember { mutableStateOf("") }
-    var passwordVisible by remember { mutableStateOf(false) }
-
-    var emailError by remember { mutableStateOf("") }
-    var passwordError by remember { mutableStateOf("") }
-
-    val scope = rememberCoroutineScope()
-
-    // Clear backend errors when user types
-    LaunchedEffect(email, password) {
-        onClearError()
-    }
-
+private fun AppLogo() {
     Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .animateContentSize(
-                animationSpec = spring(
-                    dampingRatio = Spring.DampingRatioMediumBouncy,
-                    stiffness = Spring.StiffnessMedium
-                )
-            ),
+        modifier = Modifier.size(96.dp),
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surfaceContainerLow
+            containerColor = MaterialTheme.colorScheme.primaryContainer
         ),
-        shape = RoundedCornerShape(16.dp)
+        shape = RoundedCornerShape(spacing.lg)
     ) {
-        Column(modifier = Modifier.padding(24.dp)) {
-            Text(
-                text = "Sign In",
-                style = MaterialTheme.typography.headlineSmall,
-                fontWeight = FontWeight.Medium,
-                color = MaterialTheme.colorScheme.onSurface
+        Box(
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.Center
+        ) {
+            Icon(
+                painter = painterResource(id = R.drawable.sessions_timer_coral),
+                contentDescription = "Sessions Logo",
+                modifier = Modifier.size(48.dp),
+                tint = MaterialTheme.colorScheme.primary
             )
+        }
+    }
+}
 
-            Spacer(modifier = Modifier.height(24.dp))
+@Composable
+private fun AppTitle() {
+    Text(
+        text = "Sessions",
+        style = MaterialTheme.typography.displaySmall,
+        fontWeight = FontWeight.Medium,
+        color = MaterialTheme.colorScheme.onBackground
+    )
+}
 
-            // Email field
-            InputField(
-                value = email,
-                onValueChange = {
-                    email = it
-                    emailError = validateEmail(it)
-                },
-                label = "Email",
-                icon = Icons.Default.Email,
-                error = emailError
+@Composable
+private fun AppSubtitle() {
+    Text(
+        text = "Start your productivity journey",
+        style = MaterialTheme.typography.bodyLarge,
+        color = MaterialTheme.colorScheme.onSurfaceVariant,
+        textAlign = TextAlign.Center,
+        modifier = Modifier.padding(horizontal = spacing.md)
+    )
+}
+
+@Composable
+private fun ErrorMessage(
+    error: String?,
+    onDismiss: () -> Unit
+) {
+    AnimatedVisibility(
+        visible = error != null,
+        enter = slideInVertically(
+            animationSpec = spring(
+                dampingRatio = Spring.DampingRatioMediumBouncy,
+                stiffness = Spring.StiffnessMedium
             )
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            // Password field
-            PasswordField(
-                value = password,
-                onValueChange = {
-                    password = it
-                    passwordError = validatePassword(it)
-                },
-                passwordVisible = passwordVisible,
-                onVisibilityChange = { passwordVisible = it },
-                error = passwordError
-            )
-
-            Spacer(modifier = Modifier.height(8.dp))
-
-            // Forgot password
+        ) + fadeIn(),
+        exit = slideOutVertically() + fadeOut(),
+        modifier = Modifier.padding(bottom = if (error != null) spacing.md else 0.dp)
+    ) {
+        Card(
+            modifier = Modifier.fillMaxWidth(),
+            colors = CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.errorContainer
+            ),
+            shape = RoundedCornerShape(12.dp)
+        ) {
             Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.End
+                modifier = Modifier.padding(spacing.md),
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                TextButton(
-                    onClick = {
-                        if (email.isNotBlank() && validateEmail(email).isEmpty()) {
-                            onForgotPasswordClick(email)
-                        } else {
-                            // Show error or prompt for email
-                            emailError = if (email.isBlank()) "Please enter your email first"
-                            else validateEmail(email)
-                        }
-                    }
+                Icon(
+                    imageVector = Icons.Default.Error,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.error,
+                    modifier = Modifier.size(20.dp)
+                )
+                Spacer(modifier = Modifier.width(12.dp))
+                Text(
+                    text = error ?: "",
+                    color = MaterialTheme.colorScheme.onErrorContainer,
+                    style = MaterialTheme.typography.bodyMedium,
+                    modifier = Modifier.weight(1f)
+                )
+                IconButton(
+                    onClick = onDismiss,
+                    modifier = Modifier.size(spacing.lg)
                 ) {
-                    Text(
-                        text = "Forgot Password?",
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.primary
+                    Icon(
+                        imageVector = Icons.Default.Close,
+                        contentDescription = "Dismiss",
+                        tint = MaterialTheme.colorScheme.error,
+                        modifier = Modifier.size(spacing.md)
                     )
                 }
             }
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            // Sign in button
-            ActionButton(
-                text = "Sign In",
-                isLoading = isLoading,
-                onClick = {
-                    if (validateSignInForm(
-                            email = email,
-                            password = password,
-                            onEmailError = { emailError = it },
-                            onPasswordError = { passwordError = it }
-                        )
-                    ) {
-                        scope.launch {
-                            onSignInClick(email, password)
-                        }
-                    }
-                }
-            )
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            // Google sign in button
-            GoogleSignInButton(
-                isLoading = isLoading,
-                onClick = { scope.launch { onGoogleSignInClick() } }
-            )
         }
     }
 }
@@ -373,20 +263,13 @@ private fun SignUpForm(
     }
 
     Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .animateContentSize(
-                animationSpec = spring(
-                    dampingRatio = Spring.DampingRatioMediumBouncy,
-                    stiffness = Spring.StiffnessMedium
-                )
-            ),
+        modifier = Modifier.fillMaxWidth(),
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surfaceContainerLow
         ),
-        shape = RoundedCornerShape(16.dp)
+        shape = RoundedCornerShape(spacing.lg)
     ) {
-        Column(modifier = Modifier.padding(24.dp)) {
+        Column(modifier = Modifier.padding(spacing.lg)) {
             Text(
                 text = "Create Account",
                 style = MaterialTheme.typography.headlineSmall,
@@ -394,7 +277,7 @@ private fun SignUpForm(
                 color = MaterialTheme.colorScheme.onSurface
             )
 
-            Spacer(modifier = Modifier.height(24.dp))
+            Spacer(modifier = Modifier.height(spacing.lg))
 
             // Name field
             InputField(
@@ -408,7 +291,7 @@ private fun SignUpForm(
                 error = nameError
             )
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(spacing.md))
 
             // Email field
             InputField(
@@ -422,7 +305,7 @@ private fun SignUpForm(
                 error = emailError
             )
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(spacing.md))
 
             // Password field
             PasswordField(
@@ -430,7 +313,7 @@ private fun SignUpForm(
                 onValueChange = {
                     password = it
                     passwordError = validatePassword(it)
-                    // Re-validate confirm password when password changes
+                    // Also validate confirm password if it's not empty
                     if (confirmPassword.isNotEmpty()) {
                         confirmPasswordError = validateConfirmPassword(password, confirmPassword)
                     }
@@ -441,7 +324,7 @@ private fun SignUpForm(
                 label = "Password"
             )
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(spacing.md))
 
             // Confirm Password field
             PasswordField(
@@ -456,7 +339,7 @@ private fun SignUpForm(
                 label = "Confirm Password"
             )
 
-            Spacer(modifier = Modifier.height(32.dp))
+            Spacer(modifier = Modifier.height(spacing.xl))
 
             // Sign up button
             ActionButton(
@@ -481,151 +364,13 @@ private fun SignUpForm(
                 }
             )
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(spacing.md))
 
             // Google sign in button
             GoogleSignInButton(
                 isLoading = isLoading,
                 onClick = { scope.launch { onGoogleSignInClick() } }
             )
-        }
-    }
-}
-
-@Composable
-private fun AppLogo() {
-    Card(
-        modifier = Modifier.size(96.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.primaryContainer
-        ),
-        shape = RoundedCornerShape(16.dp)
-    ) {
-        Box(
-            modifier = Modifier.fillMaxSize(),
-            contentAlignment = Alignment.Center
-        ) {
-            LogoIcons()
-        }
-    }
-}
-
-@Composable
-private fun LogoIcons() {
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(4.dp)
-    ) {
-        Row(
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            LogoIcon(
-                icon = Icons.Default.Timer,
-                size = 20.dp,
-                iconSize = 12.dp,
-                color = MaterialTheme.colorScheme.primary
-            )
-            LogoIcon(
-                icon = Icons.Default.Analytics,
-                size = 16.dp,
-                iconSize = 10.dp,
-                color = MaterialTheme.colorScheme.secondary
-            )
-        }
-        LogoIcon(
-            icon = Icons.Default.Schedule,
-            size = 24.dp,
-            iconSize = 14.dp,
-            color = MaterialTheme.colorScheme.tertiary
-        )
-    }
-}
-
-@Composable
-private fun LogoIcon(
-    icon: ImageVector,
-    size: androidx.compose.ui.unit.Dp,
-    iconSize: androidx.compose.ui.unit.Dp,
-    color: androidx.compose.ui.graphics.Color
-) {
-    Box(
-        modifier = Modifier
-            .size(size)
-            .background(color, CircleShape),
-        contentAlignment = Alignment.Center
-    ) {
-        Icon(
-            imageVector = icon,
-            contentDescription = null,
-            tint = MaterialTheme.colorScheme.onPrimary,
-            modifier = Modifier.size(iconSize)
-        )
-    }
-}
-
-@Composable
-private fun AppTitle() {
-    Text(
-        text = "Sessions",
-        style = MaterialTheme.typography.displaySmall,
-        fontWeight = FontWeight.Medium,
-        color = MaterialTheme.colorScheme.onBackground
-    )
-}
-
-@Composable
-private fun ErrorMessage(
-    error: String?,
-    onDismiss: () -> Unit
-) {
-    AnimatedVisibility(
-        visible = error != null,
-        enter = slideInVertically(
-            animationSpec = spring(
-                dampingRatio = Spring.DampingRatioMediumBouncy,
-                stiffness = Spring.StiffnessMedium
-            )
-        ) + fadeIn(),
-        exit = slideOutVertically() + fadeOut(),
-        modifier = Modifier.padding(bottom = if (error != null) 16.dp else 0.dp)
-    ) {
-        Card(
-            modifier = Modifier.fillMaxWidth(),
-            colors = CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.errorContainer
-            ),
-            shape = RoundedCornerShape(12.dp)
-        ) {
-            Row(
-                modifier = Modifier.padding(16.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Icon(
-                    imageVector = Icons.Default.Error,
-                    contentDescription = null,
-                    tint = MaterialTheme.colorScheme.error,
-                    modifier = Modifier.size(20.dp)
-                )
-                Spacer(modifier = Modifier.width(12.dp))
-                Text(
-                    text = error ?: "",
-                    color = MaterialTheme.colorScheme.onErrorContainer,
-                    style = MaterialTheme.typography.bodyMedium,
-                    modifier = Modifier.weight(1f)
-                )
-                IconButton(
-                    onClick = onDismiss,
-                    modifier = Modifier.size(24.dp)
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.Close,
-                        contentDescription = "Dismiss",
-                        tint = MaterialTheme.colorScheme.error,
-                        modifier = Modifier.size(16.dp)
-                    )
-                }
-            }
         }
     }
 }
@@ -665,7 +410,7 @@ private fun InputField(
                 text = error,
                 color = MaterialTheme.colorScheme.error,
                 style = MaterialTheme.typography.labelSmall,
-                modifier = Modifier.padding(start = 8.dp, top = 4.dp)
+                modifier = Modifier.padding(start = spacing.sm, top = spacing.xs)
             )
         }
     }
@@ -678,7 +423,7 @@ private fun PasswordField(
     passwordVisible: Boolean,
     onVisibilityChange: (Boolean) -> Unit,
     error: String = "",
-    label: String = "Password"
+    label: String
 ) {
     Column {
         OutlinedTextField(
@@ -726,7 +471,7 @@ private fun PasswordField(
                 text = error,
                 color = MaterialTheme.colorScheme.error,
                 style = MaterialTheme.typography.labelSmall,
-                modifier = Modifier.padding(start = 8.dp, top = 4.dp)
+                modifier = Modifier.padding(start = spacing.sm, top = spacing.xs)
             )
         }
     }
@@ -800,12 +545,25 @@ private fun GoogleSignInButton(
     }
 }
 
+@Composable
+private fun SignInNavigation(
+    onNavigateToSignIn: () -> Unit
+) {
+    TextButton(onClick = onNavigateToSignIn) {
+        Text(
+            text = "Already have an account? Sign In",
+            style = MaterialTheme.typography.bodyMedium,
+            fontWeight = FontWeight.Medium,
+            color = MaterialTheme.colorScheme.primary
+        )
+    }
+}
+
 // Validation functions
 private fun validateName(name: String): String {
     return when {
         name.isBlank() -> "Name cannot be empty"
         name.length < 2 -> "Name must be at least 2 characters"
-        name.length > 50 -> "Name must be less than 50 characters"
         else -> ""
     }
 }
@@ -825,6 +583,7 @@ private fun validatePassword(password: String): String {
         password.length < 8 -> "Password must be at least 8 characters"
         !password.any { it.isDigit() } -> "Password must contain at least one number"
         !password.any { it.isUpperCase() } -> "Password must contain at least one uppercase letter"
+        !password.any { it.isLowerCase() } -> "Password must contain at least one lowercase letter"
         else -> ""
     }
 }
@@ -835,25 +594,6 @@ private fun validateConfirmPassword(password: String, confirmPassword: String): 
         password != confirmPassword -> "Passwords do not match"
         else -> ""
     }
-}
-
-private fun validateSignInForm(
-    email: String,
-    password: String,
-    onEmailError: (String) -> Unit,
-    onPasswordError: (String) -> Unit
-): Boolean {
-    var isValid = true
-
-    val emailError = validateEmail(email)
-    onEmailError(emailError)
-    if (emailError.isNotEmpty()) isValid = false
-
-    val passwordError = if (password.isBlank()) "Password cannot be empty" else ""
-    onPasswordError(passwordError)
-    if (passwordError.isNotEmpty()) isValid = false
-
-    return isValid
 }
 
 private fun validateSignUpForm(

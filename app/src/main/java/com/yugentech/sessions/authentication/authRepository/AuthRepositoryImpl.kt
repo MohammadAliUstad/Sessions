@@ -22,6 +22,10 @@ class AuthRepositoryImpl(
         return authService.signIn(email, password)
     }
 
+    override suspend fun sendPasswordResetEmail(email: String): AuthResult<Unit> {
+        return authService.sendPasswordResetEmail(email)
+    }
+
     override fun getCurrentUser(): AuthResult<FirebaseUser> {
         return authService.getCurrentUser()
     }
