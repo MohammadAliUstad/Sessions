@@ -4,13 +4,12 @@ import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.tween
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 
-private const val AnimationDuration = 450
-private const val EnterAnimationDuration = 550
+// Adjusted durations for smoother slide animations
+private const val AnimationDuration = 400
+private const val EnterAnimationDuration = 500
 
 val defaultEnterTransition: EnterTransition
     get() = slideInHorizontally(
@@ -18,12 +17,7 @@ val defaultEnterTransition: EnterTransition
             durationMillis = EnterAnimationDuration,
             easing = FastOutSlowInEasing
         )
-    ) { fullWidth -> fullWidth } + fadeIn(
-        animationSpec = tween(
-            durationMillis = EnterAnimationDuration,
-            easing = FastOutSlowInEasing
-        )
-    )
+    ) { fullWidth -> fullWidth }
 
 val defaultExitTransition: ExitTransition
     get() = slideOutHorizontally(
@@ -31,12 +25,7 @@ val defaultExitTransition: ExitTransition
             durationMillis = AnimationDuration,
             easing = FastOutSlowInEasing
         )
-    ) { fullWidth -> -fullWidth / 3 } + fadeOut(
-        animationSpec = tween(
-            durationMillis = AnimationDuration,
-            easing = FastOutSlowInEasing
-        )
-    )
+    ) { fullWidth -> -fullWidth / 3 }
 
 val defaultPopEnterTransition: EnterTransition
     get() = slideInHorizontally(
@@ -44,12 +33,7 @@ val defaultPopEnterTransition: EnterTransition
             durationMillis = AnimationDuration,
             easing = FastOutSlowInEasing
         )
-    ) { fullWidth -> -fullWidth / 3 } + fadeIn(
-        animationSpec = tween(
-            durationMillis = AnimationDuration,
-            easing = FastOutSlowInEasing
-        )
-    )
+    ) { fullWidth -> -fullWidth / 3 }
 
 val defaultPopExitTransition: ExitTransition
     get() = slideOutHorizontally(
@@ -57,9 +41,4 @@ val defaultPopExitTransition: ExitTransition
             durationMillis = AnimationDuration,
             easing = FastOutSlowInEasing
         )
-    ) { fullWidth -> fullWidth } + fadeOut(
-        animationSpec = tween(
-            durationMillis = AnimationDuration,
-            easing = FastOutSlowInEasing
-        )
-    )
+    ) { fullWidth -> fullWidth }

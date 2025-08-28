@@ -17,7 +17,6 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import com.google.accompanist.navigation.animation.AnimatedNavHost
 import com.yugentech.sessions.ui.screens.AboutScreen
-import com.yugentech.sessions.ui.screens.LoginScreen
 import com.yugentech.sessions.ui.screens.MainScreen
 import com.yugentech.sessions.ui.screens.SignInScreen
 import com.yugentech.sessions.ui.screens.SignUpScreen
@@ -92,9 +91,6 @@ fun AppNavHost(
                 },
                 onNavigateToSignUp = {
                     navController.navigate(Screens.SignUp.route)
-                },
-                onForgotPasswordClick = {
-                    loginViewModel.forgotPassword(it)
                 }
             )
         }
@@ -124,7 +120,7 @@ fun AppNavHost(
                     userId = currentUserId,
                     onLogout = {
                         loginViewModel.signOut()
-                        navController.navigate(Screens.Login.route) {
+                        navController.navigate(Screens.SignIn.route) {
                             popUpTo(0) { inclusive = true }
                             launchSingleTop = true
                         }
@@ -141,7 +137,7 @@ fun AppNavHost(
                 )
             } else {
                 LaunchedEffect(Unit) {
-                    navController.navigate(Screens.Login.route) {
+                    navController.navigate(Screens.SignIn.route) {
                         popUpTo(0) { inclusive = true }
                         launchSingleTop = true
                     }
