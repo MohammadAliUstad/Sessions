@@ -1,18 +1,11 @@
 package com.yugentech.sessions.ui.screens
 
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.RepeatMode
-import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
-import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.slideInVertically
-import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -25,16 +18,13 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Assignment
-import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Email
-import androidx.compose.material.icons.filled.Error
 import androidx.compose.material.icons.filled.Lightbulb
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.School
@@ -43,7 +33,6 @@ import androidx.compose.material.icons.filled.Work
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -62,10 +51,12 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.zIndex
 import com.yugentech.sessions.ui.components.ActionButton
 import com.yugentech.sessions.ui.components.AppTextField
 import com.yugentech.sessions.ui.components.ForgotPasswordDialog
 import com.yugentech.sessions.ui.components.GoogleSignInButton
+import com.yugentech.sessions.ui.components.ToastMessage
 import com.yugentech.sessions.viewModels.LoginViewModel
 import kotlinx.coroutines.launch
 import kotlin.math.cos
@@ -84,90 +75,96 @@ fun SignInScreen(
     var showForgotPasswordDialog by remember { mutableStateOf(false) }
     var currentEmail by remember { mutableStateOf("") }
 
-    Surface(
-        modifier = Modifier.fillMaxSize(),
-        color = MaterialTheme.colorScheme.background
-    ) {
-        Column(
+    Box(modifier = Modifier.fillMaxSize()) {
+        ToastMessage(
+            message = state.error,
+            onDismiss = { loginViewModel.clearError() },
             modifier = Modifier
-                .fillMaxSize()
-                .verticalScroll(scrollState)
-                .padding(horizontal = 24.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Spacer(modifier = Modifier.height(56.dp))
-
-            IconCarousel(
-                modifier = Modifier.padding(vertical = 8.dp)
-            )
-
-            Spacer(modifier = Modifier.height(12.dp))
-
-            Text(
-                text = "Sessions",
-                style = MaterialTheme.typography.headlineMedium,
-                fontWeight = FontWeight.Medium,
-                color = MaterialTheme.colorScheme.onBackground
-            )
-
-            Spacer(modifier = Modifier.height(8.dp))
-
-            Text(
-                text = "Ready to focus and be productive?",
-                style = MaterialTheme.typography.titleMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                textAlign = TextAlign.Center
-            )
-
-            Spacer(modifier = Modifier.height(24.dp))
-
-            ErrorMessage(
-                error = state.error,
-                onDismiss = { loginViewModel.clearError() }
-            )
-
-            SignInForm(
-                isLoading = state.isLoading,
-                onSignInClick = onSignInClick,
-                onGoogleSignInClick = onGoogleSignInClick,
-                onForgotPasswordClick = { email ->
-                    currentEmail = email
-                    showForgotPasswordDialog = true
-                },
-                onClearError = { loginViewModel.clearError() },
-                onEmailChange = { currentEmail = it }
-            )
-
-            TextButton(
-                onClick = onNavigateToSignUp,
-                modifier = Modifier.padding(vertical = 4.dp)
-            ) {
-                Text(
-                    text = "Don't have an account? Sign Up",
-                    style = MaterialTheme.typography.labelLarge,
-                    fontWeight = FontWeight.Medium,
-                    color = MaterialTheme.colorScheme.primary
-                )
-            }
-
-            Spacer(modifier = Modifier.height(24.dp))
-        }
-
-        ForgotPasswordDialog(
-            isVisible = showForgotPasswordDialog,
-            forgotPasswordState = forgotPasswordState,
-            initialEmail = currentEmail,
-            onDismiss = {
-                showForgotPasswordDialog = false
-                loginViewModel.clearForgotPasswordState()
-            },
-            onSendResetEmail = { email ->
-                loginViewModel.forgotPassword(email)
-            },
-            onClearState = {
-                loginViewModel.clearForgotPasswordState()
-            }
+                .align(Alignment.TopCenter)
+                .padding(top = 60.dp)
+                .zIndex(1f)
         )
+
+        Surface(
+            modifier = Modifier.fillMaxSize(),
+            color = MaterialTheme.colorScheme.background
+        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .verticalScroll(scrollState)
+                    .padding(horizontal = 24.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Spacer(modifier = Modifier.height(56.dp))
+
+                IconCarousel(
+                    modifier = Modifier.padding(vertical = 8.dp)
+                )
+
+                Spacer(modifier = Modifier.height(12.dp))
+
+                Text(
+                    text = "Sessions",
+                    style = MaterialTheme.typography.headlineMedium,
+                    fontWeight = FontWeight.Medium,
+                    color = MaterialTheme.colorScheme.onBackground
+                )
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+                Text(
+                    text = "Ready to focus and be productive?",
+                    style = MaterialTheme.typography.titleMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    textAlign = TextAlign.Center
+                )
+
+                Spacer(modifier = Modifier.height(24.dp))
+
+                SignInForm(
+                    isLoading = state.isLoading,
+                    onSignInClick = onSignInClick,
+                    onGoogleSignInClick = onGoogleSignInClick,
+                    onForgotPasswordClick = { email ->
+                        currentEmail = email
+                        showForgotPasswordDialog = true
+                    },
+                    onClearError = { loginViewModel.clearError() },
+                    onEmailChange = { currentEmail = it }
+                )
+
+                TextButton(
+                    onClick = onNavigateToSignUp,
+                    modifier = Modifier.padding(vertical = 4.dp)
+                ) {
+                    Text(
+                        text = "Don't have an account? Sign Up",
+                        style = MaterialTheme.typography.labelLarge,
+                        fontWeight = FontWeight.Medium,
+                        color = MaterialTheme.colorScheme.primary
+                    )
+                }
+
+                Spacer(modifier = Modifier.height(24.dp))
+            }
+
+            ForgotPasswordDialog(
+                isVisible = showForgotPasswordDialog,
+                forgotPasswordState = forgotPasswordState,
+                initialEmail = currentEmail,
+                onDismiss = {
+                    showForgotPasswordDialog = false
+                    loginViewModel.clearForgotPasswordState()
+                },
+                onSendResetEmail = { email ->
+                    loginViewModel.forgotPassword(email)
+                },
+                onClearState = {
+                    loginViewModel.clearForgotPasswordState()
+                }
+            )
+        }
     }
 }
 
@@ -236,62 +233,6 @@ private fun IconCarousel(
 }
 
 @Composable
-private fun ErrorMessage(
-    error: String?,
-    onDismiss: () -> Unit
-) {
-    AnimatedVisibility(
-        visible = error != null,
-        enter = slideInVertically(
-            animationSpec = spring(
-                dampingRatio = Spring.DampingRatioMediumBouncy,
-                stiffness = Spring.StiffnessMedium
-            )
-        ) + fadeIn(),
-        exit = slideOutVertically() + fadeOut(),
-        modifier = Modifier.padding(bottom = if (error != null) 16.dp else 0.dp)
-    ) {
-        Card(
-            modifier = Modifier.fillMaxWidth(),
-            colors = CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.errorContainer
-            ),
-            shape = RoundedCornerShape(16.dp)
-        ) {
-            Row(
-                modifier = Modifier.padding(16.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Icon(
-                    imageVector = Icons.Default.Error,
-                    contentDescription = null,
-                    tint = MaterialTheme.colorScheme.error,
-                    modifier = Modifier.size(24.dp)
-                )
-                Spacer(modifier = Modifier.width(16.dp))
-                Text(
-                    text = error ?: "",
-                    color = MaterialTheme.colorScheme.onErrorContainer,
-                    style = MaterialTheme.typography.bodyLarge,
-                    modifier = Modifier.weight(1f)
-                )
-                IconButton(
-                    onClick = onDismiss,
-                    modifier = Modifier.size(24.dp)
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.Close,
-                        contentDescription = "Dismiss",
-                        tint = MaterialTheme.colorScheme.error,
-                        modifier = Modifier.size(20.dp)
-                    )
-                }
-            }
-        }
-    }
-}
-
-@Composable
 private fun SignInForm(
     isLoading: Boolean,
     onSignInClick: (email: String, password: String) -> Unit,
@@ -329,7 +270,6 @@ private fun SignInForm(
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // In SignInForm
             AppTextField(
                 value = email,
                 onValueChange = {

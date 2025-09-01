@@ -35,11 +35,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.yugentech.sessions.viewModels.HomeViewModel
 import com.yugentech.sessions.ui.components.homeScreen.DurationSelector
 import com.yugentech.sessions.ui.components.homeScreen.SessionActionButtons
 import com.yugentech.sessions.ui.components.homeScreen.StudyingControlButtons
 import com.yugentech.sessions.ui.components.homeScreen.TimerDisplay
+import com.yugentech.sessions.viewModels.HomeViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -161,7 +161,6 @@ fun HomeScreen(
                             availableDurations = availableDurations,
                             onDurationSelected = {
                                 homeViewModel.updateSelectedDuration(it)
-                                homeViewModel.resetTimer()
                             }
                         )
                     }

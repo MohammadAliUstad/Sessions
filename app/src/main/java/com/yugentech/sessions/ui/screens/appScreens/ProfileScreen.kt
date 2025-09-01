@@ -9,9 +9,13 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.outlined.BookmarkBorder
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -22,21 +26,23 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.yugentech.sessions.models.Session
 import com.yugentech.sessions.models.UserData
 import com.yugentech.sessions.ui.components.avatar.AvatarImage
 import com.yugentech.sessions.ui.components.avatar.AvatarRepository
-import com.yugentech.sessions.ui.components.profileScreen.EmptySessionsIllustration
-import com.yugentech.sessions.ui.components.profileScreen.SessionList
+import com.yugentech.sessions.ui.components.profileScreen.EmptySessionsCard
+import com.yugentech.sessions.ui.components.profileScreen.SessionCard
 import com.yugentech.sessions.ui.components.profileScreen.StudyTimeSection
 import com.yugentech.sessions.user.UserViewModel
 import com.yugentech.sessions.utils.formatTime
 import com.yugentech.sessions.viewModels.ProfileViewModel
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 @Composable
 fun ProfileScreen(
@@ -47,16 +53,37 @@ fun ProfileScreen(
     onEditProfile: () -> Unit = {}
 ) {
     val uiState by profileViewModel.uiState.collectAsStateWithLifecycle()
+    val coroutineScope = rememberCoroutineScope()
 
     LaunchedEffect(userId) {
         profileViewModel.loadProfile(userId)
         userViewModel.loadUser(userId)
     }
 
+    if (uiState.isLoading) {
+        Column(
+            modifier = modifier.fillMaxSize(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
+            CircularProgressIndicator(
+                modifier = Modifier.size(48.dp),
+                color = MaterialTheme.colorScheme.primary
+            )
+            Spacer(modifier = Modifier.height(16.dp))
+            Text(
+                text = "Loading profile...",
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+        }
+        return
+    }
+
     LazyColumn(
         modifier = modifier.fillMaxSize(),
-        contentPadding = PaddingValues(24.dp),
-        verticalArrangement = Arrangement.spacedBy(20.dp)
+        contentPadding = PaddingValues(16.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         item {
             ProfileCard(
@@ -67,11 +94,41 @@ fun ProfileScreen(
         }
 
         item {
-            SessionsCard(
-                sessions = uiState.sessions,
-                isLoading = uiState.isLoading,
-                errorMessage = uiState.errorMessage
+            Spacer(modifier = Modifier.height(8.dp))
+        }
+
+        item {
+            SectionHeader(
+                sessionCount = uiState.sessions.size
             )
+        }
+
+        if (uiState.sessions.isEmpty()) {
+            item {
+                EmptySessionsCard()
+            }
+        } else {
+            items(
+                items = uiState.sessions,
+                key = { session -> session.sessionId }
+            ) { session ->
+                SessionCard(
+                    session = session,
+                    onDelete = { sessionId ->
+                        coroutineScope.launch {
+                            delay(300) // Allow animation to complete
+                            profileViewModel.deleteSession(sessionId)
+                        }
+                    }
+                )
+            }
+        }
+
+        // Show error message if any
+        uiState.errorMessage?.let { errorMessage ->
+            item {
+                ErrorCard(errorMessage = errorMessage)
+            }
         }
     }
 }
@@ -86,6 +143,10 @@ private fun ProfileCard(
         modifier = Modifier.fillMaxWidth(),
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surfaceContainer
+        ),
+        shape = RoundedCornerShape(20.dp),
+        elevation = CardDefaults.cardElevation(
+            defaultElevation = 4.dp
         )
     ) {
         Column(
@@ -100,11 +161,13 @@ private fun ProfileCard(
             ) {
                 IconButton(
                     onClick = onEditProfile,
+                    modifier = Modifier.size(48.dp)
                 ) {
                     Icon(
                         imageVector = Icons.Default.Edit,
                         contentDescription = "Edit Profile",
-                        tint = MaterialTheme.colorScheme.onSurfaceVariant
+                        tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                        modifier = Modifier.size(24.dp)
                     )
                 }
             }
@@ -124,24 +187,24 @@ private fun ProfileContent(
 ) {
     Text(
         text = userData.name ?: "User",
-        style = MaterialTheme.typography.headlineSmall,
+        style = MaterialTheme.typography.headlineMedium,
         color = MaterialTheme.colorScheme.onSurface,
         textAlign = TextAlign.Center
     )
 
-    Spacer(modifier = Modifier.height(16.dp))
+    Spacer(modifier = Modifier.height(20.dp))
 
     AvatarImage(
         avatarId = userData.avatarId,
-        size = 160.dp,
+        size = 120.dp,
         contentDescription = "Profile Avatar"
     )
 
-    Spacer(modifier = Modifier.height(12.dp))
+    Spacer(modifier = Modifier.height(16.dp))
 
     Text(
         text = AvatarRepository.getAvatarName(userData.avatarId) ?: "Explorer",
-        style = MaterialTheme.typography.bodyLarge,
+        style = MaterialTheme.typography.titleMedium,
         color = MaterialTheme.colorScheme.onSurfaceVariant,
         textAlign = TextAlign.Center
     )
@@ -154,97 +217,42 @@ private fun ProfileContent(
 }
 
 @Composable
-private fun SessionsCard(
-    sessions: List<Session>,
-    isLoading: Boolean,
-    errorMessage: String?
+private fun SectionHeader(
+    sessionCount: Int
 ) {
-    Card(
+    Row(
         modifier = Modifier.fillMaxWidth(),
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surfaceContainer
-        )
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
     ) {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(24.dp)
-        ) {
+        Text(
+            text = "Study Sessions",
+            style = MaterialTheme.typography.titleLarge,
+            color = MaterialTheme.colorScheme.onSurface
+        )
+        if (sessionCount > 0) {
             Text(
-                text = "Recent Sessions",
-                style = MaterialTheme.typography.titleLarge,
-                color = MaterialTheme.colorScheme.onSurface,
-                modifier = Modifier.padding(bottom = 20.dp)
+                text = "$sessionCount session${if (sessionCount != 1) "s" else ""}",
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
             )
-
-            when {
-                isLoading -> {
-                    SessionsLoadingState()
-                }
-
-                errorMessage != null -> {
-                    SessionsErrorState(errorMessage = errorMessage)
-                }
-
-                sessions.isEmpty() -> {
-                    EmptySessionsIllustration(
-                        modifier = Modifier.fillMaxWidth()
-                    )
-                }
-
-                else -> {
-                    SessionList(
-                        sessions = sessions,
-                        modifier = Modifier.fillMaxWidth()
-                    )
-                }
-            }
         }
     }
 }
 
 @Composable
-private fun SessionsLoadingState() {
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = 32.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
+private fun ErrorCard(errorMessage: String) {
+    Card(
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.errorContainer
+        ),
+        shape = RoundedCornerShape(12.dp)
     ) {
-        CircularProgressIndicator(
-            color = MaterialTheme.colorScheme.primary
-        )
-        Spacer(modifier = Modifier.height(16.dp))
-        Text(
-            text = "Loading sessions...",
-            style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.onSurfaceVariant
-        )
-    }
-}
-
-@Composable
-private fun SessionsErrorState(errorMessage: String) {
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = 32.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Text(
-            text = "Failed to load sessions",
-            style = MaterialTheme.typography.titleMedium,
-            color = MaterialTheme.colorScheme.error,
-            textAlign = TextAlign.Center
-        )
-
-        Spacer(modifier = Modifier.height(8.dp))
-
         Text(
             text = errorMessage,
             style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-            textAlign = TextAlign.Center
+            color = MaterialTheme.colorScheme.onErrorContainer,
+            modifier = Modifier.padding(16.dp)
         )
     }
 }

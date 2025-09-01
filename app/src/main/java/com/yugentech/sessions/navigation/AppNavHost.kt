@@ -8,9 +8,14 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.IntentSenderRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
@@ -60,10 +65,45 @@ fun AppNavHost(
         }
     }
 
+    // Handle navigation based on auth state changes
+    LaunchedEffect(authState.isUserLoggedIn, authState.userId) {
+        if (!authState.isLoading) {
+            val currentRoute = navController.currentDestination?.route
+
+            if (authState.isUserLoggedIn && authState.userId != null) {
+                // User is authenticated, navigate to main if not already there
+                if (currentRoute != Screens.Main.route) {
+                    navController.navigate(Screens.Main.route) {
+                        popUpTo(0) { inclusive = true }
+                        launchSingleTop = true
+                    }
+                }
+            } else {
+                // User is not authenticated, navigate to sign in if not already there
+                if (currentRoute != Screens.SignIn.route && currentRoute != Screens.SignUp.route) {
+                    navController.navigate(Screens.SignIn.route) {
+                        popUpTo(0) { inclusive = true }
+                        launchSingleTop = true
+                    }
+                }
+            }
+        }
+    }
+
+    // Show loading screen during initial authentication check
+    if (authState.isLoading && navController.currentDestination?.route == null) {
+        Box(
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.Center
+        ) {
+            CircularProgressIndicator()
+        }
+        return
+    }
+
+    // Determine start destination only once when not loading
     val startDestination = if (authState.isUserLoggedIn && authState.userId != null) {
         Screens.Main.route
-    } else if (authState.isLoading) {
-        return
     } else {
         Screens.SignIn.route
     }
@@ -119,11 +159,8 @@ fun AppNavHost(
                 MainScreen(
                     userId = currentUserId,
                     onLogout = {
+                        // Only call signOut, let the LaunchedEffect handle navigation
                         loginViewModel.signOut()
-                        navController.navigate(Screens.SignIn.route) {
-                            popUpTo(0) { inclusive = true }
-                            launchSingleTop = true
-                        }
                     },
                     onEditProfile = {
                         navController.navigate(Screens.EditProfile.route)
@@ -135,13 +172,6 @@ fun AppNavHost(
                     profileViewModel = profileViewModel,
                     userViewModel = userViewModel
                 )
-            } else {
-                LaunchedEffect(Unit) {
-                    navController.navigate(Screens.SignIn.route) {
-                        popUpTo(0) { inclusive = true }
-                        launchSingleTop = true
-                    }
-                }
             }
         }
 
