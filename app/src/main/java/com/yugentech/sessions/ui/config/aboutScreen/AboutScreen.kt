@@ -1,4 +1,4 @@
-package com.yugentech.sessions.ui.config.aboutScreen.parent
+package com.yugentech.sessions.ui.config.aboutScreen
 
 import android.app.Activity
 import android.content.Intent
@@ -44,7 +44,7 @@ import androidx.core.net.toUri
 import com.yugentech.sessions.theme.tokens.spacing
 import com.yugentech.sessions.ui.config.aboutScreen.components.AppInfoCard
 import com.yugentech.sessions.ui.config.aboutScreen.components.DonationDialog
-import com.yugentech.sessions.ui.config.models.about.AboutContent
+import com.yugentech.sessions.ui.config.model.about.AboutContent
 import com.yugentech.sessions.ui.dash.mainScreen.components.SectionHeader
 import com.yugentech.sessions.ui.dash.mainScreen.components.ToastMessage
 import com.yugentech.sessions.ui.dash.settingsScreen.components.SettingsListItem
@@ -141,7 +141,7 @@ fun AboutScreen(
                 verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.xxs),
                 contentPadding = PaddingValues(
 
-                    bottom = navBarPadding.calculateBottomPadding() + MaterialTheme.spacing.l,
+                    bottom = navBarPadding.calculateBottomPadding(),
                     start = MaterialTheme.spacing.m + scaffoldPadding.calculateStartPadding(layoutDirection),
                     end = MaterialTheme.spacing.m + scaffoldPadding.calculateEndPadding(layoutDirection)
                 )
