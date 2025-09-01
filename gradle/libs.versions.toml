@@ -1,7 +1,7 @@
 [versions]
 accompanistNavigationAnimation = "0.36.0"
 accompanistSystemuicontroller = "0.34.0-alpha"
-agp = "8.12.1"
+agp = "8.12.2"
 coilCompose = "2.7.0"
 coreSplashscreen = "1.0.1"
 datastorePreferences = "1.1.7"

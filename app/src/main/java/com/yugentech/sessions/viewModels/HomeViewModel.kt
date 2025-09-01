@@ -67,15 +67,8 @@ class HomeViewModel(
 
     fun startTimer() {
         if (_uiState.value.isRunning) return
-
         sessionStartTime = System.currentTimeMillis()
-
-        // Only set duration if currentTime equals selectedDuration (fresh start)
-        if (_uiState.value.currentTime == _uiState.value.selectedDuration) {
-            timerRepository.setDuration(_uiState.value.selectedDuration)
-        }
-
-        timerRepository.startTimer()
+        timerRepository.startTimer() // ✅ no duration reset here
     }
 
     fun stopTimer() {

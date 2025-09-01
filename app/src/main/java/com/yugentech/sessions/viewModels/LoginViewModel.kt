@@ -17,7 +17,16 @@ class LoginViewModel(
     private val userRepository: UserRepository
 ) : ViewModel() {
 
-    private val _authState = MutableStateFlow(AuthState(isLoading = true))
+    private val _authState = MutableStateFlow(
+        AuthState(
+            isLoading = true,
+            isUserLoggedIn = false,
+            userId = null,
+            userData = null,
+            error = null,
+            intent = null
+        )
+    )
     val authState: StateFlow<AuthState> = _authState
 
     private val _userId = MutableStateFlow<String?>(null)
@@ -31,7 +40,7 @@ class LoginViewModel(
     }
 
     fun signUp(name: String, email: String, password: String) {
-        _authState.value = _authState.value.copy(isLoading = true)
+        _authState.value = _authState.value.copy(isLoading = true, error = null)
 
         viewModelScope.launch {
             when (val result = authRepository.signUp(name, email, password)) {
@@ -53,13 +62,16 @@ class LoginViewModel(
                                 isUserLoggedIn = true,
                                 userId = firebaseUser.uid,
                                 userData = userData,
-                                isLoading = false
+                                isLoading = false,
+                                error = null,
+                                intent = null
                             )
                         }
 
                         is AuthResult.Error -> {
                             _authState.value = _authState.value.copy(
                                 isLoading = false,
+                                isUserLoggedIn = false,
                                 error = "Failed to create user profile: ${createResult.message}"
                             )
                         }
@@ -69,6 +81,7 @@ class LoginViewModel(
                 is AuthResult.Error -> {
                     _authState.value = _authState.value.copy(
                         isLoading = false,
+                        isUserLoggedIn = false,
                         error = result.message
                     )
                 }
@@ -77,7 +90,7 @@ class LoginViewModel(
     }
 
     fun signIn(email: String, password: String) {
-        _authState.value = _authState.value.copy(isLoading = true)
+        _authState.value = _authState.value.copy(isLoading = true, error = null, intent = null)
 
         viewModelScope.launch {
             when (val result = authRepository.signIn(email, password)) {
@@ -90,6 +103,7 @@ class LoginViewModel(
                 is AuthResult.Error -> {
                     _authState.value = _authState.value.copy(
                         isLoading = false,
+                        isUserLoggedIn = false,
                         error = result.message
                     )
                 }
@@ -98,9 +112,24 @@ class LoginViewModel(
     }
 
     fun signOut() {
-        authRepository.signOut()
-        _authState.value = AuthState(isUserLoggedIn = false)
-        _userId.value = null
+        viewModelScope.launch {
+            // Set loading state briefly to prevent UI flicker
+            _authState.value = _authState.value.copy(isLoading = true)
+
+            // Sign out from Firebase
+            authRepository.signOut()
+
+            // Clear all state
+            _authState.value = AuthState(
+                isUserLoggedIn = false,
+                userId = null,
+                userData = null,
+                isLoading = false,
+                error = null,
+                intent = null
+            )
+            _userId.value = null
+        }
     }
 
     fun forgotPassword(email: String) {
@@ -124,7 +153,7 @@ class LoginViewModel(
     }
 
     fun getGoogleSignInIntent(webClientId: String) {
-        _authState.value = _authState.value.copy(isLoading = true)
+        _authState.value = _authState.value.copy(isLoading = true, error = null)
 
         viewModelScope.launch {
             when (val result = authRepository.getGoogleSignInIntent(webClientId)) {
@@ -146,7 +175,7 @@ class LoginViewModel(
     }
 
     fun handleGoogleSignInResult(data: Intent?) {
-        _authState.value = _authState.value.copy(isLoading = true)
+        _authState.value = _authState.value.copy(isLoading = true, error = null, intent = null)
 
         viewModelScope.launch {
             when (val result = authRepository.handleGoogleSignInResult(data)) {
@@ -161,7 +190,9 @@ class LoginViewModel(
                 is AuthResult.Error -> {
                     _authState.value = _authState.value.copy(
                         isLoading = false,
-                        error = result.message
+                        isUserLoggedIn = false,
+                        error = result.message,
+                        intent = null
                     )
                 }
             }
@@ -178,7 +209,14 @@ class LoginViewModel(
                 }
 
                 is AuthResult.Error -> {
-                    _authState.value = AuthState(isUserLoggedIn = false)
+                    _authState.value = AuthState(
+                        isUserLoggedIn = false,
+                        userId = null,
+                        userData = null,
+                        isLoading = false,
+                        error = null,
+                        intent = null
+                    )
                 }
             }
         }
@@ -192,11 +230,15 @@ class LoginViewModel(
                     isUserLoggedIn = true,
                     userId = userId,
                     userData = localUser,
-                    isLoading = false
+                    isLoading = false,
+                    error = null,
+                    intent = null
                 )
+                // Sync user data in background
                 userRepository.syncUser(localUser)
 
             } else {
+                // Create user profile from Firebase Auth data
                 when (val authResult = authRepository.getCurrentUser()) {
                     is AuthResult.Success -> {
                         val firebaseUser = authResult.data
@@ -213,13 +255,16 @@ class LoginViewModel(
                                     isUserLoggedIn = true,
                                     userId = userId,
                                     userData = userData,
-                                    isLoading = false
+                                    isLoading = false,
+                                    error = null,
+                                    intent = null
                                 )
                             }
 
                             is AuthResult.Error -> {
                                 _authState.value = _authState.value.copy(
                                     isLoading = false,
+                                    isUserLoggedIn = false,
                                     error = "Failed to create user profile: ${createResult.message}"
                                 )
                             }
@@ -229,6 +274,7 @@ class LoginViewModel(
                     is AuthResult.Error -> {
                         _authState.value = _authState.value.copy(
                             isLoading = false,
+                            isUserLoggedIn = false,
                             error = "User not found"
                         )
                     }
@@ -237,6 +283,7 @@ class LoginViewModel(
         } catch (e: Exception) {
             _authState.value = _authState.value.copy(
                 isLoading = false,
+                isUserLoggedIn = false,
                 error = "Failed to load user profile: ${e.message}"
             )
         }
@@ -244,6 +291,10 @@ class LoginViewModel(
 
     fun clearError() {
         _authState.value = _authState.value.copy(error = null)
+    }
+
+    fun clearIntent() {
+        _authState.value = _authState.value.copy(intent = null)
     }
 }
 
