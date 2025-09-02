@@ -1,4 +1,4 @@
-package com.yugentech.sessions.ui.dash.utils.models
+package com.yugentech.sessions.ui.dash.util.models
 
 enum class ActiveDialog {
     None,
