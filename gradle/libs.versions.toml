@@ -26,6 +26,7 @@ roomKtx = "2.7.2"
 roomRuntime = "2.7.2"
 runtime = "1.8.3"
 workRuntimeKtx = "2.10.3"
+datastoreCore = "1.1.7"
 
 [libraries]
 accompanist-navigation-animation = { module = "com.google.accompanist:accompanist-navigation-animation", version.ref = "accompanistNavigationAnimation" }
@@ -64,6 +65,7 @@ koin-androidx-compose = { module = "io.insert-koin:koin-androidx-compose", versi
 kotlinx-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "kotlinxCoroutinesAndroid" }
 play-services-auth = { group = "com.google.android.gms", name = "play-services-auth", version.ref = "playServicesAuth" }
 androidx-work-runtime-ktx = { group = "androidx.work", name = "work-runtime-ktx", version.ref = "workRuntimeKtx" }
+androidx-datastore-core = { group = "androidx.datastore", name = "datastore-core", version.ref = "datastoreCore" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

@@ -16,8 +16,8 @@ fun StudyTimeSection(
     formattedTime: String
 ) {
     Surface(
-        color = MaterialTheme.colorScheme.secondaryContainer, // M3: surface for highlighted stats
-        contentColor = MaterialTheme.colorScheme.onSecondaryContainer, // Sets correct on-color for text
+        color = MaterialTheme.colorScheme.secondaryContainer,
+        contentColor = MaterialTheme.colorScheme.onSecondaryContainer,
         shape = MaterialTheme.shapes.large,
         tonalElevation = 3.dp
     ) {
@@ -28,7 +28,7 @@ fun StudyTimeSection(
         ) {
             Text(
                 text = formattedTime,
-                style = MaterialTheme.typography.headlineSmall, // Use headline for important stat
+                style = MaterialTheme.typography.headlineSmall,
                 textAlign = TextAlign.Center
             )
         }

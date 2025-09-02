@@ -10,7 +10,7 @@ enum class ColorTheme {
     DYNAMIC,
     MONOCHROME,
     BLUE,
-    ORANGE
+    GREEN
 }
 
 data class ThemeConfiguration(

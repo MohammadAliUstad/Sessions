@@ -22,7 +22,7 @@ class TimerService(
     private var duration = 0
 
     fun setDuration(seconds: Int) {
-        val elapsed = duration - _currentTime.value   // how much was already used
+        val elapsed = duration - _currentTime.value
         duration = seconds
         val newRemaining = duration - elapsed
         _currentTime.value = if (newRemaining > 0) newRemaining else 0

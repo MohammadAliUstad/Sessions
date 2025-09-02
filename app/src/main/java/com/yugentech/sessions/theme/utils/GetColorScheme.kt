@@ -34,19 +34,19 @@ fun getColorScheme(
         else -> {
             when (themeConfiguration.colorTheme) {
                 ColorTheme.DYNAMIC -> {
-                    if (isDarkMode) AppColorSchemes.MonochromeDark else AppColorSchemes.MonochromeLight
+                    if (isDarkMode) AppColorSchemes.GrayDarkColorScheme else AppColorSchemes.GrayLightColorScheme
                 }
 
                 ColorTheme.MONOCHROME -> {
-                    if (isDarkMode) AppColorSchemes.MonochromeDark else AppColorSchemes.MonochromeLight
+                    if (isDarkMode) AppColorSchemes.GrayDarkColorScheme else AppColorSchemes.GrayLightColorScheme
                 }
 
                 ColorTheme.BLUE -> {
-                    if (isDarkMode) AppColorSchemes.BlueDark else AppColorSchemes.BlueLight
+                    if (isDarkMode) AppColorSchemes.DarkBlueScheme else AppColorSchemes.LightBlueScheme
                 }
 
-                ColorTheme.ORANGE -> {
-                    if (isDarkMode) AppColorSchemes.OrangeDark else AppColorSchemes.OrangeLight
+                ColorTheme.GREEN -> {
+                    if (isDarkMode) AppColorSchemes.YellowDarkColorScheme else AppColorSchemes.YellowLightColorScheme
                 }
             }
         }

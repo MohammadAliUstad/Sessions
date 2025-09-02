@@ -26,7 +26,7 @@ fun AvatarImage(
 
     Surface(
         modifier = modifier.size(size).clip(CircleShape),
-        color = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.15f)
+        color = MaterialTheme.colorScheme.secondaryContainer
     ) {
         Box(
             modifier = Modifier.fillMaxSize(),

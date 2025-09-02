@@ -23,8 +23,10 @@ fun AvatarSection(
     Card(
         modifier = Modifier.fillMaxWidth(),
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surfaceContainer
-        )
+            containerColor = MaterialTheme.colorScheme.surfaceContainer, // Background role
+            contentColor = MaterialTheme.colorScheme.onSurface           // Text/icon role
+        ),
+        shape = CardDefaults.shape // Optional, defaults to M3
     ) {
         Column(
             modifier = Modifier
@@ -34,7 +36,8 @@ fun AvatarSection(
         ) {
             Text(
                 text = "Choose Your Avatar",
-                style = MaterialTheme.typography.headlineSmall
+                style = MaterialTheme.typography.headlineSmall,
+                color = MaterialTheme.colorScheme.onSurface // Ensures contrast
             )
 
             Spacer(modifier = Modifier.height(8.dp))
@@ -42,7 +45,7 @@ fun AvatarSection(
             Text(
                 text = "Pick an illustration that represents you",
                 style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                color = MaterialTheme.colorScheme.onSurfaceVariant, // Subtle text
                 textAlign = TextAlign.Center
             )
 

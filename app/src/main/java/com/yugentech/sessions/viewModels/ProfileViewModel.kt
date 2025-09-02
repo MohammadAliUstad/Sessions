@@ -1,5 +1,6 @@
 package com.yugentech.sessions.viewModels
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.yugentech.sessions.models.Session
@@ -64,14 +65,23 @@ class ProfileViewModel(
     }
 
     fun deleteSession(sessionId: String) {
-        val userId = currentUserId ?: return
         viewModelScope.launch {
+            Log.d("ProfileRepository", "Attempting to delete session: $sessionId")
+
             when (val result = sessionsRepository.deleteSession(sessionId)) {
                 is SessionResult.Error -> {
+                    Log.e("ProfileRepository", "Failed to delete session: $sessionId | Error: ${result.message}")
                     _uiState.update { it.copy(errorMessage = result.message) }
                 }
-                else -> Unit
+                else -> {
+                    Log.d("ProfileRepository", "Session deleted successfully: $sessionId")
+                }
             }
+
+            // Optional: check current sessions after deletion
+            val currentSessions = _uiState.value.sessions
+            Log.d("ProfileRepository", "Current sessions in state after deletion: ${currentSessions.map { it.sessionId }}")
         }
     }
+
 }
