@@ -20,7 +20,7 @@ fun BottomNavBar(
     onSelected: (AppScreens) -> Unit,
 ) {
     NavigationBar(
-        containerColor = MaterialTheme.colorScheme.surfaceVariant,
+        containerColor = MaterialTheme.colorScheme.surfaceContainer,
         modifier = Modifier.clip(RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp))
 
     ) {
@@ -41,7 +41,7 @@ fun BottomNavBar(
                 colors = NavigationBarItemDefaults.colors(
                     indicatorColor = MaterialTheme.colorScheme.primaryContainer,
                     selectedIconColor = MaterialTheme.colorScheme.onPrimaryContainer,
-                    selectedTextColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                    selectedTextColor = MaterialTheme.colorScheme.onSurface,
                     unselectedIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
                     unselectedTextColor = MaterialTheme.colorScheme.onSurfaceVariant
                 )

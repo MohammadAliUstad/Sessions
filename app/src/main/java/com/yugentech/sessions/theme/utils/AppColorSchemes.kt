@@ -6,273 +6,267 @@ import androidx.compose.ui.graphics.Color
 
 object AppColorSchemes {
 
-    val MonochromeLight = lightColorScheme(
-        primary = Color(0xFF1C1B1F),
+    val LightBlueScheme = lightColorScheme(
+        primary = Color(0xFF445E91),
         onPrimary = Color(0xFFFFFFFF),
-        primaryContainer = Color(0xFFE6E1E5),
-        onPrimaryContainer = Color(0xFF1C1B1F),
+        primaryContainer = Color(0xFFD8E2FF),
+        onPrimaryContainer = Color(0xFF001B3E),
 
-        secondary = Color(0xFF605D62),
+        secondary = Color(0xFF575E71),
         onSecondary = Color(0xFFFFFFFF),
-        secondaryContainer = Color(0xFFE6E1E5),
-        onSecondaryContainer = Color(0xFF1C1B1F),
+        secondaryContainer = Color(0xFFD1D8F0), // Improved contrast
+        onSecondaryContainer = Color(0xFF141B2C), // Better contrast
 
-        tertiary = Color(0xFF7C5260),
+        tertiary = Color(0xFF715573),
         onTertiary = Color(0xFFFFFFFF),
-        tertiaryContainer = Color(0xFFFFD8E4),
-        onTertiaryContainer = Color(0xFF31101D),
-
-        background = Color(0xFFFFFBFE),
-        onBackground = Color(0xFF1C1B1F),
-        surface = Color(0xFFFFFBFE),
-        onSurface = Color(0xFF1C1B1F),
-        surfaceVariant = Color(0xFFE7E0E4),
-        onSurfaceVariant = Color(0xFF49454F),
-        surfaceContainer = Color(0xFFF3EDF7),
-        surfaceContainerHigh = Color(0xFFECE6F0),
-        surfaceContainerHighest = Color(0xFFE6E0E9),
-        surfaceContainerLow = Color(0xFFFEF7FF),
-        surfaceContainerLowest = Color(0xFFFFFFFF),
+        tertiaryContainer = Color(0xFFFBD7FC),
+        onTertiaryContainer = Color(0xFF583E5B),
 
         error = Color(0xFFBA1A1A),
         onError = Color(0xFFFFFFFF),
         errorContainer = Color(0xFFFFDAD6),
-        onErrorContainer = Color(0xFF410002),
+        onErrorContainer = Color(0xFF93000A),
 
-        outline = Color(0xFF79747E),
-        outlineVariant = Color(0xFFCAC4D0),
+        background = Color(0xFFF9F9FF),
+        onBackground = Color(0xFF1A1B20),
+        surface = Color(0xFFF9F9FF),
+        onSurface = Color(0xFF1A1B20),
+        surfaceVariant = Color(0xFFE1E2EC),
+        onSurfaceVariant = Color(0xFF44474F),
+
+        outline = Color(0xFF74777F),
+        outlineVariant = Color(0xFFC4C6D0),
         scrim = Color(0xFF000000),
-        inverseSurface = Color(0xFF313033),
-        inverseOnSurface = Color(0xFFF4EFF4),
-        inversePrimary = Color(0xFFCAC5CD),
+        inverseSurface = Color(0xFF2F3036),
+        inverseOnSurface = Color(0xFFF0F0F7),
+        inversePrimary = Color(0xFFADC6FF),
 
-        surfaceBright = Color(0xFFFFFBFE),
-        surfaceDim = Color(0xFFDDD8DD),
-        surfaceTint = Color(0xFF1C1B1F)
+        surfaceDim = Color(0xFFD9D9E0),
+        surfaceBright = Color(0xFFF9F9FF),
+        surfaceContainerLowest = Color(0xFFFFFFFF),
+        surfaceContainerLow = Color(0xFFF3F3FA),
+        surfaceContainer = Color(0xFFECEDF4), // Better navigation background
+        surfaceContainerHigh = Color(0xFFE8E7EE),
+        surfaceContainerHighest = Color(0xFFE2E2E9)
     )
 
-    val MonochromeDark = darkColorScheme(
-        primary = Color(0xFFCAC5CD),
-        onPrimary = Color(0xFF322F35),
-        primaryContainer = Color(0xFF49454F),
-        onPrimaryContainer = Color(0xFFE6E1E5),
+    val DarkBlueScheme = darkColorScheme(
+        primary = Color(0xFFADC6FF),
+        onPrimary = Color(0xFF102F60),
+        primaryContainer = Color(0xFF2B4678),
+        onPrimaryContainer = Color(0xFFD8E2FF),
 
-        secondary = Color(0xFFCBC2C7),
-        onSecondary = Color(0xFF332D32),
-        secondaryContainer = Color(0xFF4A4458),
-        onSecondaryContainer = Color(0xFFE7DEE3),
+        secondary = Color(0xFFBFC6DC),
+        onSecondary = Color(0xFF293041),
+        secondaryContainer = Color(0xFF404764), // Better navigation selection
+        onSecondaryContainer = Color(0xFFDBE2F9), // Improved contrast
 
-        tertiary = Color(0xFFEFB8C8),
-        onTertiary = Color(0xFF492532),
-        tertiaryContainer = Color(0xFF633B48),
-        onTertiaryContainer = Color(0xFFFFD8E4),
-
-        background = Color(0xFF141218),
-        onBackground = Color(0xFFE6E1E5),
-        surface = Color(0xFF141218),
-        onSurface = Color(0xFFE6E1E5),
-        surfaceVariant = Color(0xFF49454F),
-        onSurfaceVariant = Color(0xFFCAC4D0),
-        surfaceContainer = Color(0xFF211F26),
-        surfaceContainerHigh = Color(0xFF2B2930),
-        surfaceContainerHighest = Color(0xFF36343B),
-        surfaceContainerLow = Color(0xFF1C1B1F),
-        surfaceContainerLowest = Color(0xFF0F0D13),
+        tertiary = Color(0xFFDEBCDF),
+        onTertiary = Color(0xFF402843),
+        tertiaryContainer = Color(0xFF583E5B),
+        onTertiaryContainer = Color(0xFFFBD7FC),
 
         error = Color(0xFFFFB4AB),
         onError = Color(0xFF690005),
         errorContainer = Color(0xFF93000A),
         onErrorContainer = Color(0xFFFFDAD6),
 
-        outline = Color(0xFF938F99),
-        outlineVariant = Color(0xFF49454F),
-        scrim = Color(0xFF000000),
-        inverseSurface = Color(0xFFE6E1E5),
-        inverseOnSurface = Color(0xFF313033),
-        inversePrimary = Color(0xFF625B71),
-
-        surfaceBright = Color(0xFF3B383E),
-        surfaceDim = Color(0xFF141218),
-        surfaceTint = Color(0xFFCAC5CD)
-    )
-
-    val BlueLight = lightColorScheme(
-        primary = Color(0xFF0052CC),
-        onPrimary = Color(0xFFFFFFFF),
-        primaryContainer = Color(0xFFD6E7FF),
-        onPrimaryContainer = Color(0xFF001B3E),
-
-        secondary = Color(0xFF4A5568),
-        onSecondary = Color(0xFFFFFFFF),
-        secondaryContainer = Color(0xFFD1E4FF),
-        onSecondaryContainer = Color(0xFF041E2C),
-
-        tertiary = Color(0xFF6B46C1),
-        onTertiary = Color(0xFFFFFFFF),
-        tertiaryContainer = Color(0xFFE9DDFF),
-        onTertiaryContainer = Color(0xFF21005D),
-
-        background = Color(0xFFFEFBFF),
-        onBackground = Color(0xFF1A1B20),
-        surface = Color(0xFFFEFBFF),
-        onSurface = Color(0xFF1A1B20),
-        surfaceVariant = Color(0xFFE1E2EC),
-        onSurfaceVariant = Color(0xFF44474F),
-        surfaceContainer = Color(0xFFF0F4FF),
-        surfaceContainerHigh = Color(0xFFEAEEF8),
-        surfaceContainerHighest = Color(0xFFE4E8F2),
-        surfaceContainerLow = Color(0xFFF6FAFF),
-        surfaceContainerLowest = Color(0xFFFFFFFF),
-
-        error = Color(0xFFD32F2F),
-        onError = Color(0xFFFFFFFF),
-        errorContainer = Color(0xFFFFDAD6),
-        onErrorContainer = Color(0xFF410002),
-
-        outline = Color(0xFF74777F),
-        outlineVariant = Color(0xFFC4C7D0),
-        scrim = Color(0xFF000000),
-        inverseSurface = Color(0xFF2F3036),
-        inverseOnSurface = Color(0xFFF1F0F4),
-        inversePrimary = Color(0xFFA8C8FF),
-
-        surfaceBright = Color(0xFFFEFBFF),
-        surfaceDim = Color(0xFFDED8E1),
-        surfaceTint = Color(0xFF0052CC)
-    )
-
-    val BlueDark = darkColorScheme(
-        primary = Color(0xFFA8C8FF),
-        onPrimary = Color(0xFF002E5B),
-        primaryContainer = Color(0xFF003D82),
-        onPrimaryContainer = Color(0xFFD6E7FF),
-
-        secondary = Color(0xFFB4C5E4),
-        onSecondary = Color(0xFF1E2A3A),
-        secondaryContainer = Color(0xFF344150),
-        onSecondaryContainer = Color(0xFFD1E4FF),
-
-        tertiary = Color(0xFFCFBCFF),
-        onTertiary = Color(0xFF361D73),
-        tertiaryContainer = Color(0xFF4F378A),
-        onTertiaryContainer = Color(0xFFE9DDFF),
-
-        background = Color(0xFF101419),
-        onBackground = Color(0xFFE1E2E8),
-        surface = Color(0xFF101419),
-        onSurface = Color(0xFFE1E2E8),
+        background = Color(0xFF111318),
+        onBackground = Color(0xFFE2E2E9),
+        surface = Color(0xFF111318),
+        onSurface = Color(0xFFE2E2E9),
         surfaceVariant = Color(0xFF44474F),
-        onSurfaceVariant = Color(0xFFC4C7D0),
-        surfaceContainer = Color(0xFF1C2025),
-        surfaceContainerHigh = Color(0xFF262B30),
-        surfaceContainerHighest = Color(0xFF31363B),
-        surfaceContainerLow = Color(0xFF181C21),
-        surfaceContainerLowest = Color(0xFF0B0F14),
-
-        error = Color(0xFFFF7A6B),
-        onError = Color(0xFF690005),
-        errorContainer = Color(0xFF93000A),
-        onErrorContainer = Color(0xFFFFDAD6),
+        onSurfaceVariant = Color(0xFFC4C6D0),
 
         outline = Color(0xFF8E9099),
         outlineVariant = Color(0xFF44474F),
         scrim = Color(0xFF000000),
-        inverseSurface = Color(0xFFE1E2E8),
+        inverseSurface = Color(0xFFE2E2E9),
         inverseOnSurface = Color(0xFF2F3036),
-        inversePrimary = Color(0xFF0052CC),
+        inversePrimary = Color(0xFF445E91),
 
-        surfaceBright = Color(0xFF363A3F),
-        surfaceDim = Color(0xFF101419),
-        surfaceTint = Color(0xFFA8C8FF)
+        surfaceDim = Color(0xFF111318),
+        surfaceBright = Color(0xFF37393E),
+        surfaceContainerLowest = Color(0xFF0C0E13),
+        surfaceContainerLow = Color(0xFF1A1B20),
+        surfaceContainer = Color(0xFF21222A), // Better dark navigation background
+        surfaceContainerHigh = Color(0xFF282A2F),
+        surfaceContainerHighest = Color(0xFF33353A)
     )
 
-    val OrangeLight = lightColorScheme(
-        primary = Color(0xFF8C4A00),
+    val YellowLightColorScheme = lightColorScheme(
+        primary = Color(0xFF6D5E0F),
         onPrimary = Color(0xFFFFFFFF),
-        primaryContainer = Color(0xFFFFE6D0),
-        onPrimaryContainer = Color(0xFF2E1500),
+        primaryContainer = Color(0xFFF8E287),
+        onPrimaryContainer = Color(0xFF534600),
 
-        secondary = Color(0xFF755847),
+        secondary = Color(0xFF665E40),
         onSecondary = Color(0xFFFFFFFF),
-        secondaryContainer = Color(0xFFFFE6D0),
-        onSecondaryContainer = Color(0xFF2B1708),
+        secondaryContainer = Color(0xFFE8DDB3), // Improved yellow navigation
+        onSecondaryContainer = Color(0xFF2A2419), // Better contrast
 
-        tertiary = Color(0xFF5D5E2F),
+        tertiary = Color(0xFF43664E),
         onTertiary = Color(0xFFFFFFFF),
-        tertiaryContainer = Color(0xFFE2E3A8),
-        onTertiaryContainer = Color(0xFF1A1C00),
-
-        background = Color(0xFFFFFBFF),
-        onBackground = Color(0xFF201A17),
-        surface = Color(0xFFFFFBFF),
-        onSurface = Color(0xFF201A17),
-        surfaceVariant = Color(0xFFF0E0D0),
-        onSurfaceVariant = Color(0xFF50453A),
-        surfaceContainer = Color(0xFFFFF1E4),
-        surfaceContainerHigh = Color(0xFFF9EBDE),
-        surfaceContainerHighest = Color(0xFFF3E5D8),
-        surfaceContainerLow = Color(0xFFFFFAF5),
-        surfaceContainerLowest = Color(0xFFFFFFFF),
+        tertiaryContainer = Color(0xFFC5ECCE),
+        onTertiaryContainer = Color(0xFF2C4E38),
 
         error = Color(0xFFBA1A1A),
         onError = Color(0xFFFFFFFF),
         errorContainer = Color(0xFFFFDAD6),
-        onErrorContainer = Color(0xFF410002),
+        onErrorContainer = Color(0xFF93000A),
 
-        outline = Color(0xFF81756A),
-        outlineVariant = Color(0xFFD3C4B4),
+        background = Color(0xFFFFF9EE),
+        onBackground = Color(0xFF1E1B13),
+        surface = Color(0xFFFFF9EE),
+        onSurface = Color(0xFF1E1B13),
+        surfaceVariant = Color(0xFFEAE2D0),
+        onSurfaceVariant = Color(0xFF4B4739),
+
+        outline = Color(0xFF7C7767),
+        outlineVariant = Color(0xFFCDC6B4),
         scrim = Color(0xFF000000),
-        inverseSurface = Color(0xFF352F2B),
-        inverseOnSurface = Color(0xFFFBEEE7),
-        inversePrimary = Color(0xFFFFB86E),
+        inverseSurface = Color(0xFF333027),
+        inverseOnSurface = Color(0xFFF7F0E2),
+        inversePrimary = Color(0xFFDBC66E),
 
-        surfaceBright = Color(0xFFFFFBFF),
-        surfaceDim = Color(0xFFE0D9D0),
-        surfaceTint = Color(0xFF8C4A00)
+        surfaceDim = Color(0xFFE0D9CC),
+        surfaceBright = Color(0xFFFFF9EE),
+        surfaceContainerLowest = Color(0xFFFFFFFF),
+        surfaceContainerLow = Color(0xFFFAF3E5),
+        surfaceContainer = Color(0xFFF2EBD9), // Better warm navigation
+        surfaceContainerHigh = Color(0xFFEEE8DA),
+        surfaceContainerHighest = Color(0xFFE8E2D4)
     )
 
-    val OrangeDark = darkColorScheme(
-        primary = Color(0xFFFFB86E),
-        onPrimary = Color(0xFF4A2800),
-        primaryContainer = Color(0xFF6A3600),
-        onPrimaryContainer = Color(0xFFFFE6D0),
+    val YellowDarkColorScheme = darkColorScheme(
+        primary = Color(0xFFDBC66E),
+        onPrimary = Color(0xFF3A3000),
+        primaryContainer = Color(0xFF534600),
+        onPrimaryContainer = Color(0xFFF8E287),
 
-        secondary = Color(0xFFE4BFA6),
-        onSecondary = Color(0xFF422C1C),
-        secondaryContainer = Color(0xFF5A4131),
-        onSecondaryContainer = Color(0xFFFFE6D0),
+        secondary = Color(0xFFD1C6A1),
+        onSecondary = Color(0xFF363016),
+        secondaryContainer = Color(0xFF4A4226), // Better dark yellow navigation
+        onSecondaryContainer = Color(0xFFE8DDB3), // Improved contrast
 
-        tertiary = Color(0xFFC6C78D),
-        onTertiary = Color(0xFF2F3104),
-        tertiaryContainer = Color(0xFF454619),
-        onTertiaryContainer = Color(0xFFE2E3A8),
-
-        background = Color(0xFF181210),
-        onBackground = Color(0xFFF0DDD1),
-        surface = Color(0xFF181210),
-        onSurface = Color(0xFFF0DDD1),
-        surfaceVariant = Color(0xFF50453A),
-        onSurfaceVariant = Color(0xFFD3C4B4),
-        surfaceContainer = Color(0xFF241E18),
-        surfaceContainerHigh = Color(0xFF2E2822),
-        surfaceContainerHighest = Color(0xFF39332D),
-        surfaceContainerLow = Color(0xFF201A17),
-        surfaceContainerLowest = Color(0xFF130E0A),
+        tertiary = Color(0xFFA9D0B3),
+        onTertiary = Color(0xFF143723),
+        tertiaryContainer = Color(0xFF2C4E38),
+        onTertiaryContainer = Color(0xFFC5ECCE),
 
         error = Color(0xFFFFB4AB),
         onError = Color(0xFF690005),
         errorContainer = Color(0xFF93000A),
         onErrorContainer = Color(0xFFFFDAD6),
 
-        outline = Color(0xFF9C8F83),
-        outlineVariant = Color(0xFF50453A),
-        scrim = Color(0xFF000000),
-        inverseSurface = Color(0xFFF0DDD1),
-        inverseOnSurface = Color(0xFF352F2B),
-        inversePrimary = Color(0xFF8C4A00),
+        background = Color(0xFF15130B),
+        onBackground = Color(0xFFE8E2D4),
+        surface = Color(0xFF15130B),
+        onSurface = Color(0xFFE8E2D4),
+        surfaceVariant = Color(0xFF4B4739),
+        onSurfaceVariant = Color(0xFFCDC6B4),
 
-        surfaceBright = Color(0xFF3E3731),
-        surfaceDim = Color(0xFF181210),
-        surfaceTint = Color(0xFFFFB86E)
+        outline = Color(0xFF969080),
+        outlineVariant = Color(0xFF4B4739),
+        scrim = Color(0xFF000000),
+        inverseSurface = Color(0xFFE8E2D4),
+        inverseOnSurface = Color(0xFF333027),
+        inversePrimary = Color(0xFF6D5E0F),
+
+        surfaceDim = Color(0xFF15130B),
+        surfaceBright = Color(0xFF3C3930),
+        surfaceContainerLowest = Color(0xFF100E07),
+        surfaceContainerLow = Color(0xFF1E1B13),
+        surfaceContainer = Color(0xFF26241A), // Better dark warm navigation
+        surfaceContainerHigh = Color(0xFF2D2A21),
+        surfaceContainerHighest = Color(0xFF38352B)
+    )
+
+    val GrayLightColorScheme = lightColorScheme(
+        primary = Color(0xFF5F5F5F),
+        onPrimary = Color(0xFFFFFFFF),
+        primaryContainer = Color(0xFFE3E3E3),
+        onPrimaryContainer = Color(0xFF1C1C1C),
+
+        secondary = Color(0xFF5F5E5E),
+        onSecondary = Color(0xFFFFFFFF),
+        secondaryContainer = Color(0xFFE0E0E0), // Much better gray navigation
+        onSecondaryContainer = Color(0xFF1A1A1A), // Excellent contrast
+
+        tertiary = Color(0xFF5E5E5F),
+        onTertiary = Color(0xFFFFFFFF),
+        tertiaryContainer = Color(0xFFE2E2E3),
+        onTertiaryContainer = Color(0xFF1B1B1C),
+
+        error = Color(0xFFBA1A1A),
+        onError = Color(0xFFFFFFFF),
+        errorContainer = Color(0xFFFFDAD6),
+        onErrorContainer = Color(0xFF93000A),
+
+        background = Color(0xFFFDF8F8),
+        onBackground = Color(0xFF1C1B1B),
+        surface = Color(0xFFFDF8F8),
+        onSurface = Color(0xFF1C1B1B),
+        surfaceVariant = Color(0xFFE0E3E3),
+        onSurfaceVariant = Color(0xFF444748),
+
+        outline = Color(0xFF747878),
+        outlineVariant = Color(0xFFC4C7C7),
+        scrim = Color(0xFF000000),
+        inverseSurface = Color(0xFF313030),
+        inverseOnSurface = Color(0xFFF4F0EF),
+        inversePrimary = Color(0xFFC8C6C6),
+
+        surfaceDim = Color(0xFFDDD9D8),
+        surfaceBright = Color(0xFFFDF8F8),
+        surfaceContainerLowest = Color(0xFFFFFFFF),
+        surfaceContainerLow = Color(0xFFF7F3F2),
+        surfaceContainer = Color(0xFFF0F0F0), // Clean gray navigation
+        surfaceContainerHigh = Color(0xFFEBE7E7),
+        surfaceContainerHighest = Color(0xFFE5E2E1)
+    )
+
+    val GrayDarkColorScheme = darkColorScheme(
+        primary = Color(0xFFC8C6C6),
+        onPrimary = Color(0xFF303030),
+        primaryContainer = Color(0xFF474747),
+        onPrimaryContainer = Color(0xFFE3E3E3),
+
+        secondary = Color(0xFFC8C6C5),
+        onSecondary = Color(0xFF313030),
+        secondaryContainer = Color(0xFF484848), // Much better dark gray navigation
+        onSecondaryContainer = Color(0xFFE0E0E0), // Excellent contrast
+
+        tertiary = Color(0xFFC9C6C7),
+        onTertiary = Color(0xFF313031),
+        tertiaryContainer = Color(0xFF484748),
+        onTertiaryContainer = Color(0xFFE2E2E3),
+
+        error = Color(0xFFFFB4AB),
+        onError = Color(0xFF690005),
+        errorContainer = Color(0xFF93000A),
+        onErrorContainer = Color(0xFFFFDAD6),
+
+        background = Color(0xFF141313),
+        onBackground = Color(0xFFE5E2E1),
+        surface = Color(0xFF141313),
+        onSurface = Color(0xFFE5E2E1),
+        surfaceVariant = Color(0xFF444748),
+        onSurfaceVariant = Color(0xFFC4C7C7),
+
+        outline = Color(0xFF8E9192),
+        outlineVariant = Color(0xFF444748),
+        scrim = Color(0xFF000000),
+        inverseSurface = Color(0xFFE5E2E1),
+        inverseOnSurface = Color(0xFF313030),
+        inversePrimary = Color(0xFF5F5F5F),
+
+        surfaceDim = Color(0xFF141313),
+        surfaceBright = Color(0xFF3A3939),
+        surfaceContainerLowest = Color(0xFF0E0E0E),
+        surfaceContainerLow = Color(0xFF1C1B1B),
+        surfaceContainer = Color(0xFF242424), // Clean dark gray navigation
+        surfaceContainerHigh = Color(0xFF2B2A2A),
+        surfaceContainerHighest = Color(0xFF353434)
     )
 }

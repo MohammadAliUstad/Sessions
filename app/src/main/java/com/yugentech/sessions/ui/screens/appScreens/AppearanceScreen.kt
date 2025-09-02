@@ -25,7 +25,6 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.Apps
 import androidx.compose.material.icons.filled.AutoMode
 import androidx.compose.material.icons.filled.Brightness6
 import androidx.compose.material.icons.filled.Check
@@ -47,9 +46,7 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -57,14 +54,12 @@ import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.yugentech.sessions.theme.ThemeViewModel
 import com.yugentech.sessions.theme.utils.ThemeMode
-import com.yugentech.sessions.ui.components.DropdownSelector
 import com.yugentech.sessions.ui.components.ThemeOption
 import com.yugentech.sessions.ui.components.themeOptions
 import org.koin.androidx.compose.koinViewModel
@@ -75,9 +70,6 @@ fun AppearanceScreen(
     onNavigateBack: () -> Unit,
     themeViewModel: ThemeViewModel = koinViewModel()
 ) {
-    var selectedAppIcon by remember { mutableStateOf("Default") }
-    val appIconOptions = listOf("Coral", "Blue", "Green", "Purple")
-
     Scaffold(
         topBar = {
             TopAppBar(
@@ -112,40 +104,11 @@ fun AppearanceScreen(
                 .fillMaxSize()
                 .padding(paddingValues)
                 .padding(horizontal = 16.dp),
-            verticalArrangement = Arrangement.spacedBy(20.dp), // 🎯 Pixel spacing
-            contentPadding = PaddingValues(vertical = 20.dp) // 🎯 Pixel spacing
+            verticalArrangement = Arrangement.spacedBy(20.dp),
+            contentPadding = PaddingValues(vertical = 20.dp)
         ) {
-            // 🎯 THEME MODE SECTION
-            item {
-                ThemeModeSelector(viewModel = themeViewModel)
-            }
-
-            // 🎯 COLOR THEME SECTION - NO FLICKER!
-            item {
-                ThemeSelector(viewModel = themeViewModel)
-            }
-
-            // 🎯 APP CUSTOMIZATION SECTION
-            item {
-                PixelCard {
-                    PixelSectionHeader(
-                        icon = Icons.Default.Apps,
-                        title = "App Customization"
-                    )
-
-                    val context = LocalContext.current
-
-                    DropdownSelector(
-                        title = "App Icon",
-                        subtitle = "Customize your home screen icon",
-                        options = appIconOptions,
-                        selectedOption = selectedAppIcon,
-                        onOptionSelected = { option ->
-                            selectedAppIcon = option
-                        }
-                    )
-                }
-            }
+            item { ThemeModeSelector(viewModel = themeViewModel) }
+            item { ThemeSelector(viewModel = themeViewModel) }
         }
     }
 }
@@ -158,10 +121,7 @@ fun ThemeModeSelector(
     val themeConfig by viewModel.themeConfiguration.collectAsStateWithLifecycle()
 
     PixelCard(modifier = modifier) {
-        PixelSectionHeader(
-            icon = Icons.Default.Brightness6,
-            title = "Theme Mode"
-        )
+        PixelSectionHeader(icon = Icons.Default.Brightness6, title = "Theme Mode")
 
         Column(
             modifier = Modifier.selectableGroup(),
@@ -193,7 +153,7 @@ fun ThemeModeSelector(
                     title = title,
                     subtitle = subtitle,
                     isSelected = themeConfig.themeMode == mode,
-                    onClick = { viewModel.updateThemeMode(mode) }
+                    onClick = { viewModel.updateTheme(themeConfig) }
                 )
             }
         }
@@ -206,26 +166,15 @@ fun ThemeSelector(
     viewModel: ThemeViewModel = koinViewModel()
 ) {
     val themeConfig by viewModel.themeConfiguration.collectAsStateWithLifecycle()
-
     val currentPrimary = MaterialTheme.colorScheme.primary
     val currentTertiary = MaterialTheme.colorScheme.tertiary
-
-    // 🎯 Only 4 themes now - no Royal, Aqua, Forest!
-    val themeOptions = remember(currentPrimary, currentTertiary) {
-        themeOptions(currentPrimary, currentTertiary)
-    }
+    val themeOptions =
+        remember(currentPrimary, currentTertiary) { themeOptions(currentPrimary, currentTertiary) }
 
     PixelCard(modifier = modifier) {
-        PixelSectionHeader(
-            icon = Icons.Default.Palette,
-            title = "Color Theme"
-        )
+        PixelSectionHeader(icon = Icons.Default.Palette, title = "Color Theme")
 
-        // 🎯 NORMAL GRID - No lazy loading, better performance!
-        Column(
-            verticalArrangement = Arrangement.spacedBy(12.dp) // 🎯 Perfect grid spacing
-        ) {
-            // First row - Dynamic & Monochrome
+        Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(12.dp)
@@ -235,15 +184,12 @@ fun ThemeSelector(
                         PixelThemeCard(
                             themeOption = themeOption,
                             isSelected = themeConfig.colorTheme == themeOption.colorTheme,
-                            onClick = {
-                                viewModel.updateColorTheme(themeOption.colorTheme)
-                            }
+                            onClick = { viewModel.updateTheme(themeConfig) }
                         )
                     }
                 }
             }
 
-            // Second row - Ocean & Sunset
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(12.dp)
@@ -253,9 +199,7 @@ fun ThemeSelector(
                         PixelThemeCard(
                             themeOption = themeOption,
                             isSelected = themeConfig.colorTheme == themeOption.colorTheme,
-                            onClick = {
-                                viewModel.updateColorTheme(themeOption.colorTheme)
-                            }
+                            onClick = { viewModel.updateTheme(themeConfig) }
                         )
                     }
                 }
@@ -264,7 +208,6 @@ fun ThemeSelector(
     }
 }
 
-// 🎯 PERFECTED PIXEL THEME CARD - Proper size & ripple!
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PixelThemeCard(
@@ -274,39 +217,29 @@ fun PixelThemeCard(
 ) {
     val scale by animateFloatAsState(
         targetValue = if (isSelected) 1.02f else 1f,
-        animationSpec = tween(150),
-        label = "scale"
+        animationSpec = tween(150)
     )
-
     val borderColor by animateColorAsState(
-        targetValue = if (isSelected)
-            MaterialTheme.colorScheme.primary
-        else
-            Color.Transparent,
-        animationSpec = tween(150),
-        label = "border"
+        targetValue = if (isSelected) MaterialTheme.colorScheme.primary else Color.Transparent,
+        animationSpec = tween(150)
     )
 
-    // 🎯 PERFECT RIPPLE CONTAINER
     Surface(
         onClick = onClick,
         modifier = Modifier
             .fillMaxWidth()
             .scale(scale)
             .then(
-                if (isSelected) {
-                    Modifier.border(
-                        width = 2.dp,
-                        color = borderColor,
-                        shape = RoundedCornerShape(20.dp)
-                    )
-                } else Modifier
+                if (isSelected) Modifier.border(
+                    width = 2.dp,
+                    color = borderColor,
+                    shape = RoundedCornerShape(20.dp)
+                )
+                else Modifier
             ),
         shape = RoundedCornerShape(20.dp),
-        color = if (isSelected)
-            MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.08f)
-        else
-            MaterialTheme.colorScheme.surfaceContainer,
+        color = if (isSelected) MaterialTheme.colorScheme.primaryContainer
+        else MaterialTheme.colorScheme.surfaceContainer,
         interactionSource = remember { MutableInteractionSource() }
     ) {
         Column(
@@ -317,18 +250,16 @@ fun PixelThemeCard(
         ) {
             Box(
                 modifier = Modifier
-                    .size(44.dp) // 🎯 Slightly smaller for compact cards
+                    .size(44.dp)
                     .clip(CircleShape)
-                    .background(
-                        brush = Brush.linearGradient(themeOption.gradientColors)
-                    ),
+                    .background(brush = Brush.linearGradient(themeOption.gradientColors)),
                 contentAlignment = Alignment.Center
             ) {
                 if (isSelected) {
                     Surface(
-                        modifier = Modifier.size(22.dp), // 🎯 Proportional check size
+                        modifier = Modifier.size(22.dp),
                         shape = CircleShape,
-                        color = Color.White.copy(alpha = 0.95f)
+                        color = MaterialTheme.colorScheme.onPrimary
                     ) {
                         Icon(
                             imageVector = Icons.Default.Check,
@@ -342,16 +273,13 @@ fun PixelThemeCard(
                 }
             }
 
-            Spacer(modifier = Modifier.height(12.dp)) // 🎯 Optimized spacing
+            Spacer(modifier = Modifier.height(12.dp))
 
             Text(
                 text = themeOption.displayName,
-                style = MaterialTheme.typography.labelLarge, // 🎯 Perfect size for compact cards
+                style = MaterialTheme.typography.labelLarge,
                 fontWeight = if (isSelected) FontWeight.SemiBold else FontWeight.Medium,
-                color = if (isSelected)
-                    MaterialTheme.colorScheme.primary
-                else
-                    MaterialTheme.colorScheme.onSurface,
+                color = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface,
                 textAlign = TextAlign.Center,
                 maxLines = 1
             )
@@ -359,7 +287,6 @@ fun PixelThemeCard(
     }
 }
 
-// 🎯 PIXEL THEME MODE OPTION - Pure Pixel Design
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PixelThemeModeOption(
@@ -372,50 +299,45 @@ fun PixelThemeModeOption(
     Surface(
         onClick = onClick,
         modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(24.dp), // 🎯 Large Pixel corner radius
-        color = if (isSelected)
-            MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.12f) // 🎯 Subtle Pixel selection
-        else
-            Color.Transparent // 🎯 No background when unselected
+        shape = RoundedCornerShape(24.dp),
+        color = MaterialTheme.colorScheme.surface
     ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(20.dp), // 🎯 Generous Pixel padding
+                .background(
+                    if (isSelected) {
+                        MaterialTheme.colorScheme.primaryContainer
+                    } else {
+                        MaterialTheme.colorScheme.surface
+                    }
+                )
+                .padding(20.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Surface(
-                modifier = Modifier.size(48.dp), // 🎯 Larger icon container
-                shape = RoundedCornerShape(16.dp), // 🎯 Pixel corner radius
-                color = if (isSelected)
-                    MaterialTheme.colorScheme.primary
-                else
-                    MaterialTheme.colorScheme.surfaceContainerHigh // 🎯 Pixel surface
+                modifier = Modifier.size(48.dp),
+                shape = RoundedCornerShape(16.dp),
+                color = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surfaceContainer
             ) {
                 Icon(
                     imageVector = icon,
                     contentDescription = null,
-                    tint = if (isSelected)
-                        MaterialTheme.colorScheme.onPrimary
-                    else
-                        MaterialTheme.colorScheme.onSurfaceVariant,
+                    tint = if (isSelected) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurface,
                     modifier = Modifier
                         .fillMaxSize()
-                        .padding(12.dp) // 🎯 Icon padding
+                        .padding(12.dp)
                 )
             }
 
-            Spacer(modifier = Modifier.width(20.dp)) // 🎯 Pixel spacing
+            Spacer(modifier = Modifier.width(20.dp))
 
             Column(modifier = Modifier.weight(1f)) {
                 Text(
                     text = title,
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Medium,
-                    color = if (isSelected)
-                        MaterialTheme.colorScheme.primary
-                    else
-                        MaterialTheme.colorScheme.onSurface
+                    color = MaterialTheme.colorScheme.onSurface
                 )
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(
@@ -451,20 +373,14 @@ fun PixelCard(
         elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
         shape = RoundedCornerShape(28.dp)
     ) {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(28.dp),
-            content = content
-        )
+        Column(modifier = Modifier
+            .fillMaxWidth()
+            .padding(28.dp), content = content)
     }
 }
 
 @Composable
-fun PixelSectionHeader(
-    icon: ImageVector,
-    title: String
-) {
+fun PixelSectionHeader(icon: ImageVector, title: String) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier.padding(bottom = 20.dp)

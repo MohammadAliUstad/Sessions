@@ -30,4 +30,11 @@ interface SessionsDao {
 
     @Query("UPDATE sessions SET pendingSync = 0 WHERE userId = :userId AND pendingSync = 1")
     suspend fun syncSessions(userId: String)
+
+    // Add these debug queries
+    @Query("SELECT sessionId FROM sessions WHERE userId = :userId")
+    suspend fun getSessionIds(userId: String): List<String>
+
+    @Query("SELECT COUNT(*) FROM sessions WHERE sessionId = :sessionId")
+    suspend fun checkSessionExists(sessionId: String): Int
 }

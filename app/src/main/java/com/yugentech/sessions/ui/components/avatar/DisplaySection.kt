@@ -14,11 +14,12 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
@@ -43,7 +44,8 @@ fun DisplayNameSection(
         ) {
             Text(
                 text = "Display Name",
-                style = MaterialTheme.typography.headlineSmall
+                style = MaterialTheme.typography.headlineSmall,
+                color = MaterialTheme.colorScheme.onSurface
             )
 
             Spacer(modifier = Modifier.height(8.dp))
@@ -58,21 +60,17 @@ fun DisplayNameSection(
 
             val focusManager = LocalFocusManager.current
 
-            OutlinedTextField(
+            TextField(
                 value = displayName,
                 onValueChange = onDisplayNameChange,
                 modifier = Modifier.fillMaxWidth(),
                 label = {
-                    Text(
-                        "Enter your display name",
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
+                    Text("Enter your display name")
                 },
                 leadingIcon = {
                     Icon(
                         imageVector = Icons.Default.Person,
-                        contentDescription = "Name",
-                        tint = MaterialTheme.colorScheme.onSurfaceVariant
+                        contentDescription = "Name"
                     )
                 },
                 singleLine = true,
@@ -81,22 +79,19 @@ fun DisplayNameSection(
                 keyboardActions = KeyboardActions(
                     onDone = { focusManager.clearFocus() }
                 ),
-                colors = OutlinedTextFieldDefaults.colors(
-                    focusedBorderColor = MaterialTheme.colorScheme.primary,
-                    unfocusedBorderColor = MaterialTheme.colorScheme.outline,
-                    disabledBorderColor = MaterialTheme.colorScheme.outline.copy(alpha = 0.38f),
-                    errorBorderColor = MaterialTheme.colorScheme.error,
+                colors = TextFieldDefaults.colors(
+                    focusedContainerColor = MaterialTheme.colorScheme.secondaryContainer,
+                    unfocusedContainerColor = MaterialTheme.colorScheme.secondaryContainer,
+                    focusedIndicatorColor = Color.Transparent,
+                    unfocusedIndicatorColor = Color.Transparent,
+                    cursorColor = MaterialTheme.colorScheme.primary,
+                    errorIndicatorColor = MaterialTheme.colorScheme.error,
                     focusedLabelColor = MaterialTheme.colorScheme.primary,
                     unfocusedLabelColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                    errorLabelColor = MaterialTheme.colorScheme.error,
-                    focusedTextColor = MaterialTheme.colorScheme.onSurface,
-                    unfocusedTextColor = MaterialTheme.colorScheme.onSurface,
-                    disabledTextColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f),
-                    errorTextColor = MaterialTheme.colorScheme.onSurface,
-                    cursorColor = MaterialTheme.colorScheme.primary,
-                    errorCursorColor = MaterialTheme.colorScheme.error
+                    focusedLeadingIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                    unfocusedLeadingIconColor = MaterialTheme.colorScheme.onSurfaceVariant
                 ),
-                shape = RoundedCornerShape(4.dp),
+                shape = RoundedCornerShape(12.dp),
                 isError = validationError != null,
                 supportingText = {
                     if (validationError != null) {

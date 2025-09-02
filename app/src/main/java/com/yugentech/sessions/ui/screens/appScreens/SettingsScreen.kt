@@ -18,6 +18,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.VolumeUp
 import androidx.compose.material.icons.filled.ChevronRight
+import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Palette
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -27,6 +28,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Switch
+import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
@@ -81,8 +83,7 @@ fun SettingsScreen(
                     navigationIconContentColor = MaterialTheme.colorScheme.onSurface
                 )
             )
-        },
-        containerColor = MaterialTheme.colorScheme.background
+        }
     ) { paddingValues ->
         LazyColumn(
             modifier = Modifier
@@ -92,7 +93,7 @@ fun SettingsScreen(
             verticalArrangement = Arrangement.spacedBy(16.dp),
             contentPadding = PaddingValues(vertical = 16.dp)
         ) {
-            // 🎯 NOTIFICATIONS SECTION
+            // Notifications Section
             item {
                 SettingsCard {
                     SettingsSectionHeader(
@@ -129,7 +130,7 @@ fun SettingsScreen(
                 }
             }
 
-            // 🎯 AUDIO & HAPTICS SECTION
+            // Audio & Haptics Section
             item {
                 SettingsCard {
                     SettingsSectionHeader(
@@ -155,7 +156,7 @@ fun SettingsScreen(
                 }
             }
 
-            // 🎯 APPEARANCE SECTION - With Perfect Ripple
+            // Appearance Section
             item {
                 SettingsCard {
                     SettingsSectionHeader(
@@ -171,10 +172,14 @@ fun SettingsScreen(
                 }
             }
 
-            // 🎯 ABOUT SECTION - With Perfect Ripple
+            // About Section
             item {
-                // 🎯 Standalone card for About
                 SettingsCard {
+                    SettingsSectionHeader(
+                        icon = Icons.Default.Info,
+                        title = "About"
+                    )
+
                     SettingsNavigationItem(
                         title = "About Sessions",
                         subtitle = "Learn more about the app and developer",
@@ -201,6 +206,7 @@ fun SettingsSectionHeader(
             tint = MaterialTheme.colorScheme.primary,
             modifier = Modifier.size(24.dp)
         )
+
         Spacer(modifier = Modifier.width(12.dp))
         Text(
             text = title,
@@ -219,40 +225,51 @@ fun SettingsToggleItem(
     enabled: Boolean = true,
     onCheckedChange: (Boolean) -> Unit
 ) {
-    val alpha = if (enabled) 1f else 0.38f
-
     Row(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp, vertical = 8.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
         Column(
-            modifier = Modifier.weight(1f)
+            modifier = Modifier
+                .weight(1f)
+                .padding(end = 16.dp)
         ) {
             Text(
                 text = title,
                 style = MaterialTheme.typography.bodyLarge,
-                color = MaterialTheme.colorScheme.onSurface.copy(alpha = alpha)
+                color = MaterialTheme.colorScheme.onSurface,
+                maxLines = 1,
             )
-            Spacer(modifier = Modifier.height(4.dp))
+            Spacer(modifier = Modifier.height(2.dp))
             Text(
                 text = subtitle,
                 style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = alpha)
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                maxLines = 2,
             )
         }
-
-        Spacer(modifier = Modifier.width(16.dp))
 
         Switch(
             checked = checked,
             onCheckedChange = onCheckedChange,
-            enabled = enabled
+            enabled = enabled,
+            colors = SwitchDefaults.colors(
+                checkedThumbColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                checkedTrackColor = MaterialTheme.colorScheme.primaryContainer,
+                uncheckedThumbColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                uncheckedTrackColor = MaterialTheme.colorScheme.surfaceVariant,
+                disabledCheckedThumbColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f),
+                disabledCheckedTrackColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.12f),
+                disabledUncheckedThumbColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f),
+                disabledUncheckedTrackColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.12f)
+            )
         )
     }
 }
 
-// 🎯 PERFECT RIPPLE NAVIGATION ITEM
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingsNavigationItem(
@@ -263,14 +280,14 @@ fun SettingsNavigationItem(
     Surface(
         onClick = onClick,
         modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(12.dp), // 🎯 Match card corner radius
-        color = MaterialTheme.colorScheme.surfaceContainerLow, // 🎯 Match card background
-        interactionSource = remember { MutableInteractionSource() } // 🎯 Perfect ripple containment
+        shape = RoundedCornerShape(12.dp),
+        color = MaterialTheme.colorScheme.surfaceContainer,
+        interactionSource = remember { MutableInteractionSource() }
     ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(16.dp), // 🎯 Internal padding for ripple area
+                .padding(16.dp),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -280,7 +297,7 @@ fun SettingsNavigationItem(
                 Text(
                     text = title,
                     style = MaterialTheme.typography.bodyLarge,
-                    fontWeight = FontWeight.Medium, // 🎯 Slightly bolder for navigation items
+                    fontWeight = FontWeight.Medium,
                     color = MaterialTheme.colorScheme.onSurface
                 )
                 Spacer(modifier = Modifier.height(4.dp))

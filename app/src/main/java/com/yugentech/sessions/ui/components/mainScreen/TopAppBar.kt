@@ -3,7 +3,7 @@ package com.yugentech.sessions.ui.components.mainScreen
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ExitToApp
+import androidx.compose.material.icons.automirrored.outlined.Logout
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -15,7 +15,6 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
 import com.yugentech.sessions.navigation.AppScreens
-import com.yugentech.sessions.navigation.Screens
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -31,7 +30,6 @@ fun TopAppBar(
                 text = when (currentScreen) {
                     AppScreens.Home -> "Sessions"
                     AppScreens.Profile -> "Profile"
-                    Screens.Settings -> TODO()
                 },
                 style = MaterialTheme.typography.titleLarge
             )
@@ -41,7 +39,7 @@ fun TopAppBar(
                 AppScreens.Home -> {
                     IconButton(onClick = onLogout) {
                         Icon(
-                            imageVector = Icons.AutoMirrored.Filled.ExitToApp,
+                            imageVector = Icons.AutoMirrored.Outlined.Logout,
                             contentDescription = "Logout"
                         )
                     }
@@ -55,8 +53,6 @@ fun TopAppBar(
                         )
                     }
                 }
-
-                Screens.Settings -> TODO()
             }
         },
         windowInsets = WindowInsets.statusBars,
@@ -64,7 +60,7 @@ fun TopAppBar(
             containerColor = MaterialTheme.colorScheme.surface,
             scrolledContainerColor = MaterialTheme.colorScheme.surfaceContainer,
             titleContentColor = MaterialTheme.colorScheme.onSurface,
-            actionIconContentColor = MaterialTheme.colorScheme.onSurfaceVariant
+            actionIconContentColor = MaterialTheme.colorScheme.onSurface
         ),
         scrollBehavior = scrollBehavior
     )

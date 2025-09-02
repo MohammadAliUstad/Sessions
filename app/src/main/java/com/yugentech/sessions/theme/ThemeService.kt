@@ -12,7 +12,6 @@ import com.yugentech.sessions.theme.utils.ThemeMode
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
-import android.util.Log
 
 class ThemeService(
     private val dataStore: DataStore<Preferences>
@@ -21,84 +20,27 @@ class ThemeService(
         private val THEME_MODE_KEY = stringPreferencesKey("theme_mode")
         private val COLOR_THEME_KEY = stringPreferencesKey("color_theme")
         private val USE_DYNAMIC_COLORS_KEY = booleanPreferencesKey("use_dynamic_colors")
-        private const val TAG = "ThemeService"
     }
 
     val themeConfiguration: Flow<ThemeConfiguration> = dataStore.data
-        .catch { exception ->
-            emit(emptyPreferences())
-        }
-        .map { preferences ->
-            val config = ThemeConfiguration(
-                themeMode = try {
-                    ThemeMode.valueOf(
-                        preferences[THEME_MODE_KEY] ?: ThemeMode.LIGHT.name
-                    )
-                } catch (_: IllegalArgumentException) {
-                    ThemeMode.LIGHT
-                },
-                colorTheme = try {
-                    ColorTheme.valueOf(
-                        preferences[COLOR_THEME_KEY] ?: ColorTheme.DYNAMIC.name
-                    )
-                } catch (e: IllegalArgumentException) {
-                    Log.w(TAG, "Invalid color theme, using DYNAMIC", e)
-                    ColorTheme.DYNAMIC
-                },
-                useDynamicColors = preferences[USE_DYNAMIC_COLORS_KEY] ?: true
+        .catch { emit(emptyPreferences()) }
+        .map { prefs ->
+            ThemeConfiguration(
+                themeMode = ThemeMode.valueOf(prefs[THEME_MODE_KEY] ?: ThemeMode.LIGHT.name),
+                colorTheme = ColorTheme.valueOf(prefs[COLOR_THEME_KEY] ?: ColorTheme.DYNAMIC.name),
+                useDynamicColors = prefs[USE_DYNAMIC_COLORS_KEY] ?: true
             )
-            config
         }
 
-    suspend fun updateThemeMode(themeMode: ThemeMode) {
-        try {
-            dataStore.edit { preferences ->
-                preferences[THEME_MODE_KEY] = themeMode.name
-            }
-        } catch (e: Exception) {
-            throw e
-        }
-    }
-
-    suspend fun updateColorTheme(colorTheme: ColorTheme) {
-        try {
-            dataStore.edit { preferences ->
-                preferences[COLOR_THEME_KEY] = colorTheme.name
-            }
-        } catch (e: Exception) {
-            throw e
-        }
-    }
-
-    suspend fun updateUseDynamicColors(useDynamicColors: Boolean) {
-        try {
-            dataStore.edit { preferences ->
-                preferences[USE_DYNAMIC_COLORS_KEY] = useDynamicColors
-            }
-        } catch (e: Exception) {
-            throw e
-        }
-    }
-
-    suspend fun updateThemeConfig(themeConfiguration: ThemeConfiguration) {
-        try {
-            dataStore.edit { preferences ->
-                preferences[THEME_MODE_KEY] = themeConfiguration.themeMode.name
-                preferences[COLOR_THEME_KEY] = themeConfiguration.colorTheme.name
-                preferences[USE_DYNAMIC_COLORS_KEY] = themeConfiguration.useDynamicColors
-            }
-        } catch (e: Exception) {
-            throw e
+    suspend fun updateThemeConfig(config: ThemeConfiguration) {
+        dataStore.edit { prefs ->
+            prefs[THEME_MODE_KEY] = config.themeMode.name
+            prefs[COLOR_THEME_KEY] = config.colorTheme.name
+            prefs[USE_DYNAMIC_COLORS_KEY] = config.useDynamicColors
         }
     }
 
     suspend fun resetToDefaults() {
-        try {
-            dataStore.edit { preferences ->
-                preferences.clear()
-            }
-        } catch (e: Exception) {
-            throw e
-        }
+        dataStore.edit { it.clear() }
     }
 }

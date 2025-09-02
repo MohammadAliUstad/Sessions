@@ -40,7 +40,7 @@ fun ToastMessage(
             isVisible = true
             delay(duration)
             isVisible = false
-            delay(300) // Wait for exit animation
+            delay(300)
             onDismiss()
         }
     }

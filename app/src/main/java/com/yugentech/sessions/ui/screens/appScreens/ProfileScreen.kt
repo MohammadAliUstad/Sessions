@@ -15,18 +15,16 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Edit
-import androidx.compose.material.icons.outlined.BookmarkBorder
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
@@ -41,8 +39,6 @@ import com.yugentech.sessions.ui.components.profileScreen.StudyTimeSection
 import com.yugentech.sessions.user.UserViewModel
 import com.yugentech.sessions.utils.formatTime
 import com.yugentech.sessions.viewModels.ProfileViewModel
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 
 @Composable
 fun ProfileScreen(
@@ -53,31 +49,10 @@ fun ProfileScreen(
     onEditProfile: () -> Unit = {}
 ) {
     val uiState by profileViewModel.uiState.collectAsStateWithLifecycle()
-    val coroutineScope = rememberCoroutineScope()
 
     LaunchedEffect(userId) {
         profileViewModel.loadProfile(userId)
         userViewModel.loadUser(userId)
-    }
-
-    if (uiState.isLoading) {
-        Column(
-            modifier = modifier.fillMaxSize(),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
-        ) {
-            CircularProgressIndicator(
-                modifier = Modifier.size(48.dp),
-                color = MaterialTheme.colorScheme.primary
-            )
-            Spacer(modifier = Modifier.height(16.dp))
-            Text(
-                text = "Loading profile...",
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
-        }
-        return
     }
 
     LazyColumn(
@@ -94,40 +69,20 @@ fun ProfileScreen(
         }
 
         item {
-            Spacer(modifier = Modifier.height(8.dp))
-        }
-
-        item {
-            SectionHeader(
-                sessionCount = uiState.sessions.size
-            )
+            SectionHeader(sessionCount = uiState.sessions.size)
         }
 
         if (uiState.sessions.isEmpty()) {
-            item {
-                EmptySessionsCard()
-            }
+            item { EmptySessionsCard() }
         } else {
             items(
                 items = uiState.sessions,
-                key = { session -> session.sessionId }
+                key = { it.sessionId }
             ) { session ->
                 SessionCard(
                     session = session,
-                    onDelete = { sessionId ->
-                        coroutineScope.launch {
-                            delay(300) // Allow animation to complete
-                            profileViewModel.deleteSession(sessionId)
-                        }
-                    }
+                    onDelete = { sessionId -> profileViewModel.deleteSession(sessionId) }
                 )
-            }
-        }
-
-        // Show error message if any
-        uiState.errorMessage?.let { errorMessage ->
-            item {
-                ErrorCard(errorMessage = errorMessage)
             }
         }
     }
@@ -142,12 +97,10 @@ private fun ProfileCard(
     Card(
         modifier = Modifier.fillMaxWidth(),
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surfaceContainer
+            containerColor = MaterialTheme.colorScheme.surfaceContainer,
+            contentColor = MaterialTheme.colorScheme.onSurface
         ),
-        shape = RoundedCornerShape(20.dp),
-        elevation = CardDefaults.cardElevation(
-            defaultElevation = 4.dp
-        )
+        shape = RoundedCornerShape(20.dp)
     ) {
         Column(
             modifier = Modifier
@@ -161,21 +114,22 @@ private fun ProfileCard(
             ) {
                 IconButton(
                     onClick = onEditProfile,
-                    modifier = Modifier.size(48.dp)
+                    modifier = Modifier.size(48.dp),
+                    colors = IconButtonDefaults.iconButtonColors(
+                        containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                        contentColor = MaterialTheme.colorScheme.onSecondaryContainer
+                    )
                 ) {
                     Icon(
                         imageVector = Icons.Default.Edit,
                         contentDescription = "Edit Profile",
-                        tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                        tint = MaterialTheme.colorScheme.primary,
                         modifier = Modifier.size(24.dp)
                     )
                 }
             }
 
-            ProfileContent(
-                userData = userData,
-                totalTime = totalTime
-            )
+            ProfileContent(userData = userData, totalTime = totalTime)
         }
     }
 }
@@ -217,9 +171,7 @@ private fun ProfileContent(
 }
 
 @Composable
-private fun SectionHeader(
-    sessionCount: Int
-) {
+private fun SectionHeader(sessionCount: Int) {
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceBetween,
@@ -237,22 +189,5 @@ private fun SectionHeader(
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
         }
-    }
-}
-
-@Composable
-private fun ErrorCard(errorMessage: String) {
-    Card(
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.errorContainer
-        ),
-        shape = RoundedCornerShape(12.dp)
-    ) {
-        Text(
-            text = errorMessage,
-            style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.onErrorContainer,
-            modifier = Modifier.padding(16.dp)
-        )
     }
 }

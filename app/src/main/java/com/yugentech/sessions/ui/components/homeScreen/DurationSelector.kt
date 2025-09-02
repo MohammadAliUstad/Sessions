@@ -1,4 +1,3 @@
-// DurationSelector.kt
 package com.yugentech.sessions.ui.components.homeScreen
 
 import androidx.compose.foundation.background

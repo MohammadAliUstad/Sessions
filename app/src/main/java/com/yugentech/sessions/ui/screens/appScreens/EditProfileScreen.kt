@@ -24,6 +24,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -47,16 +48,11 @@ fun EditProfileScreen(
     onNavigateBack: () -> Unit = {}
 ) {
     val userState by userViewModel.userState.collectAsStateWithLifecycle()
-
     val user = userState.user
 
     if (user != null) {
-        var displayName by remember(user.userId) {
-            mutableStateOf(user.name.orEmpty())
-        }
-        var selectedAvatarId by remember(user.userId) {
-            mutableIntStateOf(user.avatarId ?: 0)
-        }
+        var displayName by remember(user.userId) { mutableStateOf(user.name.orEmpty()) }
+        var selectedAvatarId by remember(user.userId) { mutableIntStateOf(user.avatarId ?: 0) }
         var validationError by remember { mutableStateOf<String?>(null) }
 
         LaunchedEffect(displayName) {
@@ -100,15 +96,28 @@ fun EditProfileScreen(
                             if (isSaving) {
                                 CircularProgressIndicator(
                                     modifier = Modifier.size(16.dp),
-                                    strokeWidth = 2.dp
+                                    strokeWidth = 2.dp,
+                                    color = MaterialTheme.colorScheme.onPrimary
                                 )
                                 Spacer(modifier = Modifier.width(8.dp))
                             }
-                            Text(if (isSaving) "Saving..." else "Save")
+                            Text(
+                                text = if (isSaving) "Saving..." else "Save",
+                                color = MaterialTheme.colorScheme.onSurface
+                            )
                         }
-                    }
+                    },
+                    colors = TopAppBarDefaults.topAppBarColors(
+                        containerColor = MaterialTheme.colorScheme.surface,
+                        scrolledContainerColor = MaterialTheme.colorScheme.surfaceVariant,
+                        navigationIconContentColor = MaterialTheme.colorScheme.onSurface,
+                        titleContentColor = MaterialTheme.colorScheme.onSurface,
+                        actionIconContentColor = MaterialTheme.colorScheme.primary
+                    )
                 )
-            }
+            },
+            containerColor = MaterialTheme.colorScheme.surface,
+            contentColor = MaterialTheme.colorScheme.onSurface
         ) { paddingValues ->
             Column(
                 modifier = modifier

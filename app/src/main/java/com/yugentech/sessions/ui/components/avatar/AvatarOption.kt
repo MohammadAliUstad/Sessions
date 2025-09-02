@@ -2,6 +2,7 @@ package com.yugentech.sessions.ui.components.avatar
 
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -54,6 +55,7 @@ fun AvatarOption(
                         indication = ripple(bounded = true),
                         onClick = onSelect
                     )
+                    .background(MaterialTheme.colorScheme.secondaryContainer)
                     .border(
                         width = if (isSelected) 3.dp else 1.dp,
                         color = if (isSelected) {

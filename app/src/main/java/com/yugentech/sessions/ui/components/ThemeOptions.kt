@@ -45,7 +45,7 @@ fun themeOptions(
         )
     ),
     ThemeOption(
-        colorTheme = ColorTheme.ORANGE,
+        colorTheme = ColorTheme.GREEN,
         displayName = "Sunset",
         primaryColor = Color(0xFF8C4A00),
         gradientColors = listOf(

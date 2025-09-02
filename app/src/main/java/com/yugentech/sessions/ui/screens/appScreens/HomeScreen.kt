@@ -1,5 +1,6 @@
 package com.yugentech.sessions.ui.screens.appScreens
 
+import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
@@ -31,6 +32,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -63,7 +65,7 @@ fun HomeScreen(
 
     Surface(
         modifier = Modifier.fillMaxSize(),
-        color = MaterialTheme.colorScheme.background
+        color = MaterialTheme.colorScheme.background,
     ) {
         Column(
             modifier = Modifier
@@ -71,7 +73,6 @@ fun HomeScreen(
                 .padding(horizontal = 24.dp, vertical = 24.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            // Header area with fixed height
             Column(
                 modifier = Modifier.height(100.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
@@ -127,7 +128,6 @@ fun HomeScreen(
                 }
             }
 
-            // Timer area with fixed height and centered
             Box(
                 modifier = Modifier.height(300.dp),
                 contentAlignment = Alignment.Center
@@ -142,7 +142,6 @@ fun HomeScreen(
 
             Spacer(modifier = Modifier.height(36.dp))
 
-            // Bottom area with fixed spacing
             Box(
                 modifier = Modifier.height(200.dp),
                 contentAlignment = Alignment.TopCenter
@@ -150,7 +149,6 @@ fun HomeScreen(
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    // Duration selector
                     AnimatedVisibility(
                         visible = !uiState.isRunning,
                         enter = expandVertically() + fadeIn(),
@@ -167,7 +165,6 @@ fun HomeScreen(
 
                     Spacer(modifier = Modifier.height(16.dp))
 
-                    // Session action buttons
                     AnimatedVisibility(
                         visible = !uiState.isRunning || uiState.currentTime > 0,
                         enter = scaleIn() + fadeIn(),
@@ -187,19 +184,30 @@ fun HomeScreen(
 
                     Spacer(modifier = Modifier.height(16.dp))
 
-                    // Studying control buttons
                     AnimatedVisibility(
                         visible = uiState.isRunning,
                         enter = fadeIn() + expandVertically(),
                         exit = fadeOut() + shrinkVertically()
                     ) {
+                        val context = LocalContext.current
                         StudyingControlButtons(
                             onStop = { homeViewModel.stopAndDiscardSession() },
-                            onSave = { homeViewModel.stopAndSaveSession() }
+                            onSave = {
+                                val elapsed = homeViewModel.getElapsedTime()
+                                homeViewModel.stopTimer()
+                                if (elapsed < 60) {
+                                    Toast.makeText(
+                                        context,
+                                        "Please focus for at least 1 minute to save a session",
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+                                } else {
+                                    homeViewModel.stopAndSaveSession()
+                                }
+                            }
                         )
                     }
 
-                    // Error message if any
                     uiState.errorMessage?.let { error ->
                         Spacer(modifier = Modifier.height(12.dp))
                         Text(

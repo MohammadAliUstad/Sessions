@@ -27,9 +27,12 @@ class SessionsRepositoryImpl(
     }
 
     override fun getSessions(userId: String): Flow<List<Session>> {
-        return sessionsDao.getSessions(userId).map { entities ->
-            entities.map { it.toSession() }
-        }
+        return sessionsDao.getSessions(userId)
+            .map { entities ->
+                entities.map { entity ->
+                    entity.toSession().copy(sessionId = entity.sessionId)
+                }
+            }
     }
 
     override fun getTotalDuration(userId: String): Flow<Long> {
@@ -38,8 +41,12 @@ class SessionsRepositoryImpl(
 
     override suspend fun deleteSession(sessionId: String): SessionResult<Unit> {
         return try {
-            sessionsDao.deleteSession(sessionId)
-            SessionResult.Success(Unit)
+            val deletedRows = sessionsDao.deleteSession(sessionId)
+            if (deletedRows.equals(0)) {
+                SessionResult.Success(Unit)
+            } else {
+                SessionResult.Error("Session not found or already deleted")
+            }
         } catch (e: Exception) {
             SessionResult.Error(e.message ?: "Failed to delete session")
         }
@@ -55,21 +62,29 @@ class SessionsRepositoryImpl(
     }
 
     override suspend fun getPendingSessions(userId: String): List<Session> {
-        return sessionsDao.getPendingSessions(userId).map { it.toSession() }
+        val pendingSessions = sessionsDao.getPendingSessions(userId).map {
+            it.toSession().copy(sessionId = it.sessionId) // Use database sessionId
+        }
+        return pendingSessions
     }
 
     override suspend fun syncSessions(userId: String): SessionResult<Unit> {
         return try {
             val pendingSessions = sessionsDao.getPendingSessions(userId)
+
             if (pendingSessions.isNotEmpty()) {
-                val sessions = pendingSessions.map { it.toSession() }
+                val sessions = pendingSessions.map {
+                    it.toSession().copy(sessionId = it.sessionId) // Use database sessionId
+                }
                 when (val result = sessionService.uploadPendingSessions(userId, sessions)) {
                     is SessionResult.Success -> {
                         sessionsDao.syncSessions(userId)
                         SessionResult.Success(Unit)
                     }
 
-                    is SessionResult.Error -> result
+                    is SessionResult.Error -> {
+                        result
+                    }
                 }
             } else {
                 SessionResult.Success(Unit)
@@ -81,8 +96,7 @@ class SessionsRepositoryImpl(
 
     override suspend fun fetchSessionsOnce(userId: String): SessionResult<Unit> {
         return try {
-            val alreadyFetched = sessionPreferences.isInitialFetchDone()
-                .first() // Flow<Boolean> → Boolean
+            val alreadyFetched = sessionPreferences.isInitialFetchDone().first()
 
             if (alreadyFetched) {
                 return SessionResult.Success(Unit)
@@ -97,17 +111,20 @@ class SessionsRepositoryImpl(
                             SessionsEntity.fromSession(
                                 it,
                                 userId,
+                                sessionId = it.sessionId,
                                 pendingSync = false
                             )
                         }
-                        sessionsDao.saveSessions(entities) // DAO expects List<SessionsEntity>
+                        sessionsDao.saveSessions(entities)
                     }
 
                     sessionPreferences.setInitialFetchDone(true)
                     SessionResult.Success(Unit)
                 }
 
-                is SessionResult.Error -> result
+                is SessionResult.Error -> {
+                    result
+                }
             }
         } catch (e: Exception) {
             SessionResult.Error(e.message ?: "Failed to fetch sessions")
