@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 package com.yugentech.sessions.alerts
 
 import android.content.Context
@@ -5,6 +7,8 @@ import android.os.Build
 import android.os.VibrationEffect
 import android.os.Vibrator
 import android.os.VibratorManager
+import android.view.HapticFeedbackConstants
+import android.view.View
 
 class HapticService(
     private val context: Context
@@ -15,23 +19,15 @@ class HapticService(
                 context.getSystemService(Context.VIBRATOR_MANAGER_SERVICE) as VibratorManager
             vibratorManager.defaultVibrator
         } else {
-            @Suppress("DEPRECATION")
             context.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
         }
     }
 
-    fun performSessionStartHaptic() {
-        val pattern = longArrayOf(0, 100, 50, 100)
-        val amplitudes =
-            intArrayOf(0, VibrationEffect.DEFAULT_AMPLITUDE, 0, VibrationEffect.DEFAULT_AMPLITUDE)
-        vibrator.vibrate(VibrationEffect.createWaveform(pattern, amplitudes, -1))
-    }
-
-    fun performSessionStopHaptic() {
-        vibrator.vibrate(VibrationEffect.createOneShot(200, VibrationEffect.DEFAULT_AMPLITUDE))
-    }
-
-    fun performButtonTapHaptic() {
-        vibrator.vibrate(VibrationEffect.createOneShot(50, VibrationEffect.DEFAULT_AMPLITUDE))
+    fun performHaptic(view: View? = null) {
+        if (view != null) {
+            view.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
+        } else {
+            vibrator.vibrate(VibrationEffect.createOneShot(25, VibrationEffect.DEFAULT_AMPLITUDE))
+        }
     }
 }

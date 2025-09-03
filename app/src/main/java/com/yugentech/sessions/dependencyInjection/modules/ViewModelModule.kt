@@ -34,7 +34,8 @@ val viewModelModule = module {
 
     viewModel {
         SettingsViewModel(
-            alertsManager = get()
+            alertsManager = get(),
+            alertsRepository = get()
         )
     }
 }

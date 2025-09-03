@@ -1,8 +1,10 @@
 package com.yugentech.sessions.user
 
 import android.util.Log
+import android.view.View
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.yugentech.sessions.alerts.alertsDatastore.AlertsRepository
 import com.yugentech.sessions.models.UserData
 import com.yugentech.sessions.user.userRepository.UserRepository
 import com.yugentech.sessions.user.utils.UserState
@@ -17,7 +19,8 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class UserViewModel(
-    private val userRepository: UserRepository
+    private val userRepository: UserRepository,
+    private val alertsRepository: AlertsRepository
 ) : ViewModel() {
 
     private val _userState = MutableStateFlow(UserState())
@@ -29,18 +32,19 @@ class UserViewModel(
         loadUser(userState.value.user?.userId ?: "")
     }
 
+    fun performHaptic(view: View? = null) {
+        viewModelScope.launch{
+            alertsRepository.performHaptic(view)
+        }
+    }
+
     fun loadUser(userId: String) {
         if (currentUserId == userId) return
         currentUserId = userId
-
         _userState.update { it.copy(isLoading = true, errorMessage = null) }
-
-        Log.d("UserViewModel", "Loading user with ID: $userId")
-
         userRepository.getUserFlow(userId)
             .filterNotNull()
             .onEach { user ->
-                Log.d("UserViewModel", "Fetched user: $user")
                 _userState.update {
                     it.copy(
                         user = user,
@@ -50,7 +54,6 @@ class UserViewModel(
                 }
             }
             .catch { e ->
-                Log.e("UserViewModel", "Error fetching user: ${e.message}", e)
                 _userState.update { it.copy(isLoading = false, errorMessage = e.message) }
             }
             .launchIn(viewModelScope)
@@ -58,14 +61,8 @@ class UserViewModel(
 
     fun upsertUser(userData: UserData) {
         viewModelScope.launch {
-            Log.d("UserViewModel", "Upserting user: $userData")
-
             _userState.update { it.copy(isLoading = true, errorMessage = null) }
-
             userRepository.upsertUser(userData)
-
-            Log.d("UserViewModel", "User upsert completed for: ${userData.userId}")
-
             _userState.update { it.copy(isLoading = false) }
         }
     }
@@ -74,14 +71,8 @@ class UserViewModel(
         val user = _userState.value.user ?: return
 
         viewModelScope.launch {
-            Log.d("UserViewModel", "Syncing user: $user")
-
             _userState.update { it.copy(isLoading = true, errorMessage = null) }
-
             userRepository.syncUser(user)
-
-            Log.d("UserViewModel", "User sync completed for: ${user.userId}")
-
             _userState.update { it.copy(isLoading = false) }
         }
     }

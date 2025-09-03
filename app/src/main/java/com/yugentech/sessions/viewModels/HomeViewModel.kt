@@ -1,11 +1,12 @@
 package com.yugentech.sessions.viewModels
 
+import android.view.View
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.yugentech.sessions.alerts.alertsDatastore.AlertsRepository
 import com.yugentech.sessions.models.Session
 import com.yugentech.sessions.sessions.sessionsRepository.SessionsRepository
 import com.yugentech.sessions.sessions.sessionsUtils.SessionResult
-import com.yugentech.sessions.alerts.alertsDatastore.AlertsRepository
 import com.yugentech.sessions.timer.timerRepository.TimerRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -72,23 +73,23 @@ class HomeViewModel(
         }
     }
 
-    fun startTimer() {
+    fun startTimer(view: View? = null) {
         if (_uiState.value.isRunning) return
         viewModelScope.launch {
             sessionStartTime = System.currentTimeMillis()
             timerRepository.startTimer()
-            alertsRepository.playSessionStartAlert()
+            alertsRepository.playSessionStartAlert(view)
         }
     }
 
-    fun stopTimer() {
+    fun stopTimer(view: View? = null) {
         viewModelScope.launch {
             timerRepository.stopTimer()
-            alertsRepository.playSessionStopAlert()
+            alertsRepository.playSessionStopAlert(view)
         }
     }
 
-    fun stopAndSaveSession() {
+    fun stopAndSaveSession(view: View? = null) {
         val userId = currentUserId ?: return
         val elapsedTime = timerRepository.getElapsedTime()
         if (elapsedTime <= 0) {
@@ -103,7 +104,7 @@ class HomeViewModel(
                 timestamp = System.currentTimeMillis()
             )
 
-            alertsRepository.playButtonTapAlert()
+            alertsRepository.playSessionStopAlert(view)
 
             when (sessionsRepository.saveSession(userId, session)) {
                 is SessionResult.Success -> resetStudyState()
@@ -114,8 +115,11 @@ class HomeViewModel(
         }
     }
 
-    fun stopAndDiscardSession() {
+    fun stopAndDiscardSession(view: View? = null) {
         resetStudyState()
+        viewModelScope.launch {
+            alertsRepository.playSessionStopAlert(view)
+        }
     }
 
     private fun handleTimerComplete() {

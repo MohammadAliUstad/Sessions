@@ -41,6 +41,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.yugentech.sessions.ui.components.SettingsCard
@@ -58,6 +59,7 @@ fun SettingsScreen(
     var notificationsEnabled by remember { mutableStateOf(true) }
     var studyRemindersEnabled by remember { mutableStateOf(false) }
     var breakRemindersEnabled by remember { mutableStateOf(true) }
+    val view = LocalView.current
 
     Scaffold(
         topBar = {
@@ -107,7 +109,10 @@ fun SettingsScreen(
                         title = "Enable Notifications",
                         subtitle = "Allow Sessions to send you notifications",
                         checked = notificationsEnabled,
-                        onCheckedChange = { notificationsEnabled = it }
+                        onCheckedChange = {
+                            notificationsEnabled = it
+                            settingsViewModel.performHaptic(view)
+                        }
                     )
 
                     Spacer(modifier = Modifier.height(16.dp))
@@ -117,7 +122,10 @@ fun SettingsScreen(
                         subtitle = "Get notified to start your study sessions",
                         checked = studyRemindersEnabled,
                         enabled = notificationsEnabled,
-                        onCheckedChange = { studyRemindersEnabled = it }
+                        onCheckedChange = {
+                            studyRemindersEnabled = it
+                            settingsViewModel.performHaptic(view)
+                        }
                     )
 
                     Spacer(modifier = Modifier.height(16.dp))
@@ -127,7 +135,10 @@ fun SettingsScreen(
                         subtitle = "Get reminded to take breaks during long sessions",
                         checked = breakRemindersEnabled,
                         enabled = notificationsEnabled,
-                        onCheckedChange = { breakRemindersEnabled = it }
+                        onCheckedChange = {
+                            breakRemindersEnabled = it
+                            settingsViewModel.performHaptic(view)
+                        }
                     )
                 }
             }
@@ -146,6 +157,7 @@ fun SettingsScreen(
                         checked = alertConfig.soundEnabled,
                         onCheckedChange = {
                             settingsViewModel.setSoundEnabled(!alertConfig.soundEnabled)
+                            settingsViewModel.performHaptic(view)
                         }
                     )
 
@@ -157,6 +169,7 @@ fun SettingsScreen(
                         checked = alertConfig.hapticsEnabled,
                         onCheckedChange = { it: Boolean ->
                             settingsViewModel.setHapticsEnabled(!alertConfig.hapticsEnabled)
+                            settingsViewModel.performHaptic(view)
                         }
                     )
                 }

@@ -1,5 +1,6 @@
 package com.yugentech.sessions.alerts.alertsDatastore
 
+import android.view.View
 import com.yugentech.sessions.alerts.HapticService
 import com.yugentech.sessions.alerts.SoundService
 import kotlinx.coroutines.flow.first
@@ -9,7 +10,7 @@ class AlertsRepository(
     private val hapticService: HapticService,
     private val soundService: SoundService
 ) {
-    suspend fun playSessionStartAlert() {
+    suspend fun playSessionStartAlert(view: View? = null) {
         val config = alertsManager.alertConfiguration.first()
 
         if (config.soundEnabled) {
@@ -17,11 +18,11 @@ class AlertsRepository(
         }
 
         if (config.hapticsEnabled) {
-            hapticService.performSessionStartHaptic()
+            hapticService.performHaptic(view)
         }
     }
 
-    suspend fun playSessionStopAlert() {
+    suspend fun playSessionStopAlert(view: View? = null) {
         val config = alertsManager.alertConfiguration.first()
 
         if (config.soundEnabled) {
@@ -29,15 +30,15 @@ class AlertsRepository(
         }
 
         if (config.hapticsEnabled) {
-            hapticService.performSessionStopHaptic()
+            hapticService.performHaptic(view)
         }
     }
 
-    suspend fun playButtonTapAlert() {
+    suspend fun performHaptic(view: View? = null) {
         val config = alertsManager.alertConfiguration.first()
 
         if (config.hapticsEnabled) {
-            hapticService.performButtonTapHaptic()
+            hapticService.performHaptic(view)
         }
     }
 }
