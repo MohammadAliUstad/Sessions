@@ -34,6 +34,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.yugentech.sessions.ui.components.avatar.AvatarSection
@@ -48,6 +49,7 @@ fun EditProfileScreen(
     onNavigateBack: () -> Unit = {}
 ) {
     val userState by userViewModel.userState.collectAsStateWithLifecycle()
+    val view = LocalView.current
     val user = userState.user
 
     if (user != null) {
@@ -92,7 +94,13 @@ fun EditProfileScreen(
                         }
                     },
                     actions = {
-                        TextButton(onClick = { saveProfile() }, enabled = canSave) {
+                        TextButton(
+                            onClick = {
+                                saveProfile()
+                                userViewModel.performHaptic(view)
+                            },
+                            enabled = canSave
+                        ) {
                             if (isSaving) {
                                 CircularProgressIndicator(
                                     modifier = Modifier.size(16.dp),

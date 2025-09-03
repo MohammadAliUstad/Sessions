@@ -33,6 +33,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -170,13 +171,14 @@ fun HomeScreen(
                         enter = scaleIn() + fadeIn(),
                         exit = scaleOut() + fadeOut()
                     ) {
+                        val view = LocalView.current
                         SessionActionButtons(
                             isStudying = uiState.isRunning,
                             onPlayPause = {
                                 if (uiState.isRunning) {
-                                    homeViewModel.stopTimer()
+                                    homeViewModel.stopTimer(view)
                                 } else {
-                                    homeViewModel.startTimer()
+                                    homeViewModel.startTimer(view)
                                 }
                             }
                         )
@@ -190,19 +192,20 @@ fun HomeScreen(
                         exit = fadeOut() + shrinkVertically()
                     ) {
                         val context = LocalContext.current
+                        val view = LocalView.current
                         StudyingControlButtons(
-                            onStop = { homeViewModel.stopAndDiscardSession() },
+                            onStop = { homeViewModel.stopAndDiscardSession(view) },
                             onSave = {
                                 val elapsed = homeViewModel.getElapsedTime()
-                                homeViewModel.stopTimer()
                                 if (elapsed < 60) {
+                                    homeViewModel.stopAndDiscardSession(view)
                                     Toast.makeText(
                                         context,
                                         "Please focus for at least 1 minute to save a session",
                                         Toast.LENGTH_SHORT
                                     ).show()
                                 } else {
-                                    homeViewModel.stopAndSaveSession()
+                                    homeViewModel.stopAndSaveSession(view)
                                 }
                             }
                         )

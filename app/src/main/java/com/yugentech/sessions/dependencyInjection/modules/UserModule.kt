@@ -27,7 +27,8 @@ val userModule = module {
 
     viewModel {
         UserViewModel(
-            userRepository = get()
+            userRepository = get(),
+            alertsRepository = get()
         )
     }
 }
