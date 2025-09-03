@@ -2,12 +2,15 @@ package com.yugentech.sessions.viewModels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.yugentech.sessions.soundEffects.soundRepository.SoundRepository
 import com.yugentech.sessions.models.Session
 import com.yugentech.sessions.sessions.sessionsRepository.SessionsRepository
 import com.yugentech.sessions.sessions.sessionsUtils.SessionResult
+import com.yugentech.sessions.alerts.alertsDatastore.AlertsRepository
 import com.yugentech.sessions.timer.timerRepository.TimerRepository
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 import java.util.UUID
 
@@ -20,7 +23,7 @@ data class HomeUiState(
 
 class HomeViewModel(
     private val sessionsRepository: SessionsRepository,
-    private val soundRepository: SoundRepository,
+    private val alertsRepository: AlertsRepository,
     private val timerRepository: TimerRepository
 ) : ViewModel() {
 
@@ -74,14 +77,14 @@ class HomeViewModel(
         viewModelScope.launch {
             sessionStartTime = System.currentTimeMillis()
             timerRepository.startTimer()
-            soundRepository.playStart()
+            alertsRepository.playSessionStartAlert()
         }
     }
 
     fun stopTimer() {
         viewModelScope.launch {
             timerRepository.stopTimer()
-            soundRepository.playCompletion()
+            alertsRepository.playSessionStopAlert()
         }
     }
 
@@ -99,6 +102,8 @@ class HomeViewModel(
                 duration = elapsedTime,
                 timestamp = System.currentTimeMillis()
             )
+
+            alertsRepository.playButtonTapAlert()
 
             when (sessionsRepository.saveSession(userId, session)) {
                 is SessionResult.Success -> resetStudyState()

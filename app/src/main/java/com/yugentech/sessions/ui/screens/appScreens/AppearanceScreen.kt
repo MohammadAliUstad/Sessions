@@ -107,8 +107,13 @@ fun AppearanceScreen(
             verticalArrangement = Arrangement.spacedBy(20.dp),
             contentPadding = PaddingValues(vertical = 20.dp)
         ) {
-            item { ThemeModeSelector(viewModel = themeViewModel) }
-            item { ThemeSelector(viewModel = themeViewModel) }
+            item {
+                ThemeModeSelector(themeViewModel = themeViewModel)
+            }
+
+            item {
+                ThemeSelector(viewModel = themeViewModel)
+            }
         }
     }
 }
@@ -116,19 +121,24 @@ fun AppearanceScreen(
 @Composable
 fun ThemeModeSelector(
     modifier: Modifier = Modifier,
-    viewModel: ThemeViewModel = koinViewModel()
+    themeViewModel: ThemeViewModel = koinViewModel()
 ) {
-    val themeConfig by viewModel.themeConfiguration.collectAsStateWithLifecycle()
+    val themeConfig by themeViewModel.themeConfiguration.collectAsStateWithLifecycle()
 
-    PixelCard(modifier = modifier) {
-        PixelSectionHeader(icon = Icons.Default.Brightness6, title = "Theme Mode")
+    PixelCard(
+        modifier = modifier
+    ) {
+        PixelSectionHeader(
+            icon = Icons.Default.Brightness6,
+            title = "Theme Mode"
+        )
 
         Column(
             modifier = Modifier.selectableGroup(),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            ThemeMode.entries.forEach { mode ->
-                val (icon, title, subtitle) = when (mode) {
+            ThemeMode.entries.forEach { themeMode ->
+                val (icon, title, subtitle) = when (themeMode) {
                     ThemeMode.LIGHT -> Triple(
                         Icons.Default.LightMode,
                         "Light",
@@ -152,8 +162,11 @@ fun ThemeModeSelector(
                     icon = icon,
                     title = title,
                     subtitle = subtitle,
-                    isSelected = themeConfig.themeMode == mode,
-                    onClick = { viewModel.updateTheme(themeConfig) }
+                    isSelected = themeConfig.themeMode == themeMode,
+                    onClick = {
+                        val newConfig = themeConfig.copy(themeMode = themeMode)
+                        themeViewModel.updateTheme(newConfig)
+                    }
                 )
             }
         }
@@ -184,7 +197,10 @@ fun ThemeSelector(
                         PixelThemeCard(
                             themeOption = themeOption,
                             isSelected = themeConfig.colorTheme == themeOption.colorTheme,
-                            onClick = { viewModel.updateTheme(themeConfig) }
+                            onClick = {
+                                val newConfig = themeConfig.copy(colorTheme = themeOption.colorTheme)
+                                viewModel.updateTheme(newConfig)
+                            }
                         )
                     }
                 }
@@ -199,7 +215,10 @@ fun ThemeSelector(
                         PixelThemeCard(
                             themeOption = themeOption,
                             isSelected = themeConfig.colorTheme == themeOption.colorTheme,
-                            onClick = { viewModel.updateTheme(themeConfig) }
+                            onClick = {
+                                val newConfig = themeConfig.copy(colorTheme = themeOption.colorTheme)
+                                viewModel.updateTheme(newConfig)
+                            }
                         )
                     }
                 }
@@ -294,6 +313,7 @@ fun PixelThemeModeOption(
     title: String,
     subtitle: String,
     isSelected: Boolean,
+    isRadio: Boolean = true,
     onClick: () -> Unit
 ) {
     Surface(
@@ -347,14 +367,16 @@ fun PixelThemeModeOption(
                 )
             }
 
-            RadioButton(
-                selected = isSelected,
-                onClick = onClick,
-                colors = RadioButtonDefaults.colors(
-                    selectedColor = MaterialTheme.colorScheme.primary,
-                    unselectedColor = MaterialTheme.colorScheme.onSurfaceVariant
+            if (isRadio) {
+                RadioButton(
+                    selected = isSelected,
+                    onClick = onClick,
+                    colors = RadioButtonDefaults.colors(
+                        selectedColor = MaterialTheme.colorScheme.primary,
+                        unselectedColor = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
                 )
-            )
+            }
         }
     }
 }

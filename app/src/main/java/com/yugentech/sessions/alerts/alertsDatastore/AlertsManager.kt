@@ -1,4 +1,4 @@
-package com.yugentech.sessions.soundEffects.alertDatastore
+package com.yugentech.sessions.alerts.alertsDatastore
 
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
@@ -9,25 +9,30 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
 
-class AlertRepository(
+class AlertsManager(
     private val dataStore: DataStore<Preferences>
 ) {
     private val soundKey = booleanPreferencesKey("sound_enabled")
     private val hapticsKey = booleanPreferencesKey("haptics_enabled")
 
-    val alertConfiguration: Flow<AlertConfiguration> = dataStore.data
+    val alertConfiguration: Flow<AlertsConfiguration> = dataStore.data
         .catch { emit(emptyPreferences()) }
         .map {
-            AlertConfiguration(
+            AlertsConfiguration(
                 soundEnabled = it[soundKey] ?: true,
                 hapticsEnabled = it[hapticsKey] ?: true
             )
         }
 
-    suspend fun setConfig(config: AlertConfiguration) {
+    suspend fun setSoundEnabled(enabled: Boolean) {
         dataStore.edit {
-            it[soundKey] = config.soundEnabled
-            it[hapticsKey] = config.hapticsEnabled
+            it[soundKey] = enabled
+        }
+    }
+
+    suspend fun setHapticsEnabled(enabled: Boolean) {
+        dataStore.edit {
+            it[hapticsKey] = enabled
         }
     }
 }

@@ -8,14 +8,9 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.IntentSenderRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.ExperimentalAnimationApi
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
@@ -36,6 +31,7 @@ import com.yugentech.sessions.utils.defaultPopExitTransition
 import com.yugentech.sessions.viewModels.HomeViewModel
 import com.yugentech.sessions.viewModels.LoginViewModel
 import com.yugentech.sessions.viewModels.ProfileViewModel
+import com.yugentech.sessions.viewModels.SettingsViewModel
 
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
@@ -45,7 +41,8 @@ fun AppNavHost(
     loginViewModel: LoginViewModel,
     userViewModel: UserViewModel,
     homeViewModel: HomeViewModel,
-    profileViewModel: ProfileViewModel
+    profileViewModel: ProfileViewModel,
+    settingsViewModel: SettingsViewModel
 ) {
     val authState by loginViewModel.authState.collectAsStateWithLifecycle()
     val context = LocalContext.current
@@ -65,13 +62,11 @@ fun AppNavHost(
         }
     }
 
-    // Handle navigation based on auth state changes
     LaunchedEffect(authState.isUserLoggedIn, authState.userId) {
         if (!authState.isLoading) {
             val currentRoute = navController.currentDestination?.route
 
             if (authState.isUserLoggedIn && authState.userId != null) {
-                // User is authenticated, navigate to main if not already there
                 if (currentRoute != Screens.Main.route) {
                     navController.navigate(Screens.Main.route) {
                         popUpTo(0) { inclusive = true }
@@ -79,7 +74,6 @@ fun AppNavHost(
                     }
                 }
             } else {
-                // User is not authenticated, navigate to sign in if not already there
                 if (currentRoute != Screens.SignIn.route && currentRoute != Screens.SignUp.route) {
                     navController.navigate(Screens.SignIn.route) {
                         popUpTo(0) { inclusive = true }
@@ -90,18 +84,6 @@ fun AppNavHost(
         }
     }
 
-    // Show loading screen during initial authentication check
-    if (authState.isLoading && navController.currentDestination?.route == null) {
-        Box(
-            modifier = Modifier.fillMaxSize(),
-            contentAlignment = Alignment.Center
-        ) {
-            CircularProgressIndicator()
-        }
-        return
-    }
-
-    // Determine start destination only once when not loading
     val startDestination = if (authState.isUserLoggedIn && authState.userId != null) {
         Screens.Main.route
     } else {
@@ -177,6 +159,7 @@ fun AppNavHost(
 
         composable(Screens.Settings.route) {
             SettingsScreen(
+                settingsViewModel = settingsViewModel,
                 onAbout = {
                     navController.navigate(Screens.About.route)
                 },

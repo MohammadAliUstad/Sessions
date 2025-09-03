@@ -126,7 +126,6 @@ fun EditProfileScreen(
                     .padding(16.dp),
                 verticalArrangement = Arrangement.spacedBy(20.dp)
             ) {
-                // Error message from ViewModel
                 AnimatedVisibility(visible = userState.errorMessage != null) {
                     Card(
                         modifier = Modifier.fillMaxWidth(),

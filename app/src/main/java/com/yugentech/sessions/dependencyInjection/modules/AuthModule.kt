@@ -6,9 +6,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.yugentech.sessions.authentication.AuthService
 import com.yugentech.sessions.authentication.authRepository.AuthRepository
 import com.yugentech.sessions.authentication.authRepository.AuthRepositoryImpl
-import com.yugentech.sessions.viewModels.LoginViewModel
 import org.koin.android.ext.koin.androidContext
-import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
 
 val authModule = module {
@@ -35,13 +33,6 @@ val authModule = module {
     single<AuthRepository> {
         AuthRepositoryImpl(
             authService = get()
-        )
-    }
-
-    viewModel {
-        LoginViewModel(
-            authRepository = get(),
-            userRepository = get()
         )
     }
 }
