@@ -23,6 +23,7 @@ import com.yugentech.sessions.user.UserViewModel
 import com.yugentech.sessions.viewModels.HomeViewModel
 import com.yugentech.sessions.viewModels.LoginViewModel
 import com.yugentech.sessions.viewModels.ProfileViewModel
+import com.yugentech.sessions.viewModels.SettingsViewModel
 import org.koin.androidx.compose.koinViewModel
 
 class MainActivity : ComponentActivity() {
@@ -40,6 +41,7 @@ class MainActivity : ComponentActivity() {
             val homeViewModel: HomeViewModel = koinViewModel()
             val profileViewModel: ProfileViewModel = koinViewModel()
             val themeViewModel: ThemeViewModel = koinViewModel()
+            val settingsViewModel: SettingsViewModel = koinViewModel()
             val themeConfiguration by themeViewModel.themeConfiguration.collectAsStateWithLifecycle()
             val darkTheme = when (themeConfiguration.themeMode) {
                 ThemeMode.LIGHT -> false
@@ -66,7 +68,8 @@ class MainActivity : ComponentActivity() {
                         loginViewModel = loginViewModel,
                         userViewModel = userViewModel,
                         homeViewModel = homeViewModel,
-                        profileViewModel = profileViewModel
+                        profileViewModel = profileViewModel,
+                        settingsViewModel = settingsViewModel
                     )
                 }
             }

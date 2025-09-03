@@ -48,7 +48,6 @@ class LoginViewModel(
                     val firebaseUser = result.data
                     _userId.value = firebaseUser.uid
 
-                    // Create initial user profile
                     val userData = UserData(
                         userId = firebaseUser.uid,
                         name = name,
@@ -113,13 +112,8 @@ class LoginViewModel(
 
     fun signOut() {
         viewModelScope.launch {
-            // Set loading state briefly to prevent UI flicker
             _authState.value = _authState.value.copy(isLoading = true)
-
-            // Sign out from Firebase
             authRepository.signOut()
-
-            // Clear all state
             _authState.value = AuthState(
                 isUserLoggedIn = false,
                 userId = null,
@@ -182,8 +176,6 @@ class LoginViewModel(
                 is AuthResult.Success -> {
                     val firebaseUser = result.data
                     _userId.value = firebaseUser.uid
-
-                    // Load user profile
                     loadUserProfile(firebaseUser.uid)
                 }
 
@@ -234,11 +226,9 @@ class LoginViewModel(
                     error = null,
                     intent = null
                 )
-                // Sync user data in background
                 userRepository.syncUser(localUser)
 
             } else {
-                // Create user profile from Firebase Auth data
                 when (val authResult = authRepository.getCurrentUser()) {
                     is AuthResult.Success -> {
                         val firebaseUser = authResult.data
@@ -292,13 +282,8 @@ class LoginViewModel(
     fun clearError() {
         _authState.value = _authState.value.copy(error = null)
     }
-
-    fun clearIntent() {
-        _authState.value = _authState.value.copy(intent = null)
-    }
 }
 
-// Forgot Password State
 sealed class ForgotPasswordState {
     object Idle : ForgotPasswordState()
     object Loading : ForgotPasswordState()

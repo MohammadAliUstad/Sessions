@@ -33,6 +33,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -43,19 +44,20 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.yugentech.sessions.ui.components.SettingsCard
+import com.yugentech.sessions.viewModels.SettingsViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingsScreen(
+    settingsViewModel: SettingsViewModel,
     onNavigateBack: () -> Unit,
     onAbout: () -> Unit,
     onAppearance: () -> Unit,
 ) {
+    val alertConfig by settingsViewModel.alertConfig.collectAsState()
     var notificationsEnabled by remember { mutableStateOf(true) }
     var studyRemindersEnabled by remember { mutableStateOf(false) }
     var breakRemindersEnabled by remember { mutableStateOf(true) }
-    var vibrationEnabled by remember { mutableStateOf(true) }
-    var soundEnabled by remember { mutableStateOf(true) }
 
     Scaffold(
         topBar = {
@@ -141,8 +143,10 @@ fun SettingsScreen(
                     SettingsToggleItem(
                         title = "Sound Effects",
                         subtitle = "Play sounds for timer events and interactions",
-                        checked = soundEnabled,
-                        onCheckedChange = { soundEnabled = it }
+                        checked = alertConfig.soundEnabled,
+                        onCheckedChange = {
+                            settingsViewModel.setSoundEnabled(!alertConfig.soundEnabled)
+                        }
                     )
 
                     Spacer(modifier = Modifier.height(16.dp))
@@ -150,8 +154,10 @@ fun SettingsScreen(
                     SettingsToggleItem(
                         title = "Haptic Feedback",
                         subtitle = "Feel vibrations for timer events",
-                        checked = vibrationEnabled,
-                        onCheckedChange = { vibrationEnabled = it }
+                        checked = alertConfig.hapticsEnabled,
+                        onCheckedChange = { it: Boolean ->
+                            settingsViewModel.setHapticsEnabled(!alertConfig.hapticsEnabled)
+                        }
                     )
                 }
             }
@@ -172,7 +178,6 @@ fun SettingsScreen(
                 }
             }
 
-            // About Section
             item {
                 SettingsCard {
                     SettingsSectionHeader(

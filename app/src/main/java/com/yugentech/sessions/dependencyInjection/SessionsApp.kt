@@ -2,10 +2,13 @@ package com.yugentech.sessions.dependencyInjection
 
 import android.app.Application
 import com.google.firebase.FirebaseApp
+import com.yugentech.sessions.dependencyInjection.modules.alertsModule
 import com.yugentech.sessions.dependencyInjection.modules.authModule
+import com.yugentech.sessions.dependencyInjection.modules.dataStoreModule
 import com.yugentech.sessions.dependencyInjection.modules.databaseModule
 import com.yugentech.sessions.dependencyInjection.modules.sessionModule
 import com.yugentech.sessions.dependencyInjection.modules.themeModule
+import com.yugentech.sessions.dependencyInjection.modules.timerModule
 import com.yugentech.sessions.dependencyInjection.modules.userModule
 import com.yugentech.sessions.dependencyInjection.modules.viewModelModule
 import org.koin.android.ext.koin.androidContext
@@ -26,7 +29,10 @@ class SessionsApp : Application() {
                 sessionModule,
                 userModule,
                 themeModule,
-                viewModelModule
+                viewModelModule,
+                alertsModule,
+                timerModule,
+                dataStoreModule
             )
         }
     }

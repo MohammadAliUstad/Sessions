@@ -24,8 +24,4 @@ class ThemeViewModel(
     fun updateTheme(config: ThemeConfiguration) = viewModelScope.launch {
         repository.setThemeConfig(config)
     }
-
-    fun resetToDefaults() = viewModelScope.launch {
-        repository.resetThemeToDefaults()
-    }
 }
