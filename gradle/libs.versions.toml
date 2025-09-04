@@ -1,11 +1,10 @@
 [versions]
 accompanistNavigationAnimation = "0.36.0"
-accompanistSystemuicontroller = "0.34.0-alpha"
 agp = "8.13.0"
 coilCompose = "2.7.0"
 coreSplashscreen = "1.0.1"
 datastorePreferences = "1.1.7"
-firebaseBom = "33.5.1"  # Changed from 34.0.0 to stable version
+firebaseBom = "33.5.1"
 koinAndroid = "4.1.0"
 koinAndroidxCompose = "4.1.0"
 kotlin = "2.0.21"
@@ -17,7 +16,7 @@ kotlinxCoroutinesAndroid = "1.10.2"
 lifecycleRuntimeCompose = "2.9.2"
 lifecycleRuntimeKtx = "2.9.2"
 activityCompose = "1.10.1"
-composeBom = "2024.12.01"  # Changed from 2025.07.00 to current stable version
+composeBom = "2024.12.01"
 lifecycleViewmodelCompose = "2.9.2"
 navigationCompose = "2.9.3"
 playServicesAuth = "21.4.0"
@@ -30,7 +29,6 @@ datastoreCore = "1.1.7"
 
 [libraries]
 accompanist-navigation-animation = { module = "com.google.accompanist:accompanist-navigation-animation", version.ref = "accompanistNavigationAnimation" }
-accompanist-systemuicontroller = { module = "com.google.accompanist:accompanist-systemuicontroller", version.ref = "accompanistSystemuicontroller" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 androidx-core-splashscreen = { module = "androidx.core:core-splashscreen", version.ref = "coreSplashscreen" }
 androidx-datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastorePreferences" }

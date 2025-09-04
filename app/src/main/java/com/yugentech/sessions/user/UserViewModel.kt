@@ -1,6 +1,5 @@
 package com.yugentech.sessions.user
 
-import android.util.Log
 import android.view.View
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -33,7 +32,7 @@ class UserViewModel(
     }
 
     fun performHaptic(view: View? = null) {
-        viewModelScope.launch{
+        viewModelScope.launch {
             alertsRepository.performHaptic(view)
         }
     }

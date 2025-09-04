@@ -1,7 +1,13 @@
 package com.yugentech.sessions
 
+import android.Manifest
+import android.app.AlarmManager
+import android.content.Intent
+import android.content.pm.PackageManager
 import android.graphics.Color
+import android.os.Build
 import android.os.Bundle
+import android.provider.Settings
 import androidx.activity.ComponentActivity
 import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
@@ -12,6 +18,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.rememberNavController
@@ -30,13 +38,14 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val splashScreen = installSplashScreen()
+
+        requestNotificationPermission()
+        requestExactAlarmPermission()
+
         setContent {
             val webClientId = getString(R.string.web_client_id)
             val navController = rememberNavController()
             val loginViewModel: LoginViewModel = koinViewModel()
-            splashScreen.setKeepOnScreenCondition {
-                loginViewModel.authState.value.isLoading
-            }
             val userViewModel: UserViewModel = koinViewModel()
             val homeViewModel: HomeViewModel = koinViewModel()
             val profileViewModel: ProfileViewModel = koinViewModel()
@@ -48,6 +57,9 @@ class MainActivity : ComponentActivity() {
                 ThemeMode.DARK -> true
                 ThemeMode.SYSTEM -> isSystemInDarkTheme()
             }
+            splashScreen.setKeepOnScreenCondition {
+                loginViewModel.authState.value.isLoading
+            }
             enableEdgeToEdge(
                 statusBarStyle = if (darkTheme) {
                     SystemBarStyle.dark(scrim = Color.TRANSPARENT)
@@ -55,6 +67,7 @@ class MainActivity : ComponentActivity() {
                     SystemBarStyle.light(scrim = Color.TRANSPARENT, darkScrim = Color.WHITE)
                 }
             )
+
             SessionsTheme(
                 themeConfiguration = themeConfiguration
             ) {
@@ -72,6 +85,33 @@ class MainActivity : ComponentActivity() {
                         settingsViewModel = settingsViewModel
                     )
                 }
+            }
+        }
+    }
+
+    private fun requestNotificationPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            val hasPermission = ContextCompat.checkSelfPermission(
+                this,
+                Manifest.permission.POST_NOTIFICATIONS
+            ) == PackageManager.PERMISSION_GRANTED
+
+            if (!hasPermission) {
+                ActivityCompat.requestPermissions(
+                    this,
+                    arrayOf(Manifest.permission.POST_NOTIFICATIONS),
+                    1001
+                )
+            }
+        }
+    }
+
+    private fun requestExactAlarmPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            val alarmManager = getSystemService(ALARM_SERVICE) as AlarmManager
+            if (!alarmManager.canScheduleExactAlarms()) {
+                val intent = Intent(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM)
+                startActivity(intent)
             }
         }
     }
