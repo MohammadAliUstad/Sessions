@@ -15,8 +15,6 @@ import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
 import com.yugentech.sessions.MainActivity
 import com.yugentech.sessions.R
-import com.yugentech.sessions.notifications.utils.NotificationType
-import com.yugentech.sessions.notifications.utils.Notification
 import java.util.Calendar
 
 class NotificationService(private val context: Context) {
@@ -186,7 +184,8 @@ class NotificationService(private val context: Context) {
                 when (notification.type) {
                     NotificationType.ACTIVE_SESSION -> {
                         if (notification.timeRemainingMinutes != null && notification.totalMinutes != null) {
-                            val progressCurrent = notification.totalMinutes - notification.timeRemainingMinutes
+                            val progressCurrent =
+                                notification.totalMinutes - notification.timeRemainingMinutes
                             val progressMax = notification.totalMinutes
 
                             // Real progress bar
@@ -196,8 +195,10 @@ class NotificationService(private val context: Context) {
                             val timeText = when {
                                 notification.timeRemainingMinutes > 1 ->
                                     "${notification.timeRemainingMinutes} minutes left"
+
                                 notification.timeRemainingMinutes == 1 ->
                                     "1 minute left"
+
                                 else ->
                                     "Less than 1 minute"
                             }
@@ -211,6 +212,7 @@ class NotificationService(private val context: Context) {
                             setProgress(0, 0, true)
                         }
                     }
+
                     NotificationType.REMINDER -> {
                         setPriority(NotificationCompat.PRIORITY_HIGH)
                         setDefaults(NotificationCompat.DEFAULT_ALL)

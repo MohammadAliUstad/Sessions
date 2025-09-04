@@ -3,8 +3,6 @@ package com.yugentech.sessions.notifications
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import com.yugentech.sessions.notifications.utils.NotificationType
-import com.yugentech.sessions.notifications.utils.Notification
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
