@@ -1,9 +1,9 @@
-package com.yugentech.sessions.notifications.active
+package com.yugentech.sessions.notification.active
 
 import android.content.Context
 import android.content.Intent
 import androidx.core.content.ContextCompat
-import com.yugentech.sessions.notifications.Notification
+import com.yugentech.sessions.notification.model.Notification
 import com.yugentech.sessions.utils.AppConstants
 import org.koin.core.component.KoinComponent
 import timber.log.Timber
