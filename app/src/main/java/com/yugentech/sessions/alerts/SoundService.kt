@@ -22,22 +22,16 @@ class SoundService(
                 setOnCompletionListener { mediaPlayer ->
                     try {
                         mediaPlayer.release()
-                    } catch (_: Exception) {
-                        // Silently handle release errors
-                    }
+                    } catch (_: Exception) {}
                 }
                 setOnErrorListener { mediaPlayer, _, _ ->
                     try {
                         mediaPlayer.release()
-                    } catch (_: Exception) {
-                        // Silently handle release errors
-                    }
-                    true // Return true to indicate error was handled
+                    } catch (_: Exception) {}
+                    true
                 }
                 start()
             }
-        } catch (_: Exception) {
-            // Silently handle creation/start errors
-        }
+        } catch (_: Exception) {}
     }
 }
