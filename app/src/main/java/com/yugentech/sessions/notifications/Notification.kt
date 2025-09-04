@@ -1,4 +1,4 @@
-package com.yugentech.sessions.notifications.utils
+package com.yugentech.sessions.notifications
 
 data class Notification(
     val id: Int,
@@ -6,8 +6,8 @@ data class Notification(
     val message: String,
     val type: NotificationType,
     val isOngoing: Boolean,
-    val timeRemainingMinutes: Int? = null,  // For session notifications
-    val totalMinutes: Int? = null          // For progress calculation
+    val timeRemainingMinutes: Int? = null,
+    val totalMinutes: Int? = null
 )
 
 enum class NotificationType {
