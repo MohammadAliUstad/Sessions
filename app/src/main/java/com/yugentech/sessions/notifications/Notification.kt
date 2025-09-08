@@ -11,6 +11,6 @@ data class Notification(
 )
 
 enum class NotificationType {
-    ACTIVE_SESSION,
-    REMINDER
+    ACTIVE,
+    SCHEDULED
 }

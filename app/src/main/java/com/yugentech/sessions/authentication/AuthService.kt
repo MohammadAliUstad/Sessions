@@ -4,6 +4,7 @@ package com.yugentech.sessions.authentication
 
 import android.app.PendingIntent
 import android.content.Intent
+import android.util.Log
 import com.google.android.gms.auth.api.identity.BeginSignInRequest
 import com.google.android.gms.auth.api.identity.SignInClient
 import com.google.firebase.auth.FirebaseAuth
@@ -18,6 +19,10 @@ class AuthService(
     private val auth: FirebaseAuth,
     private val oneTapClient: SignInClient
 ) {
+
+    companion object {
+        private const val TAG = "AuthService"
+    }
 
     suspend fun signUp(name: String, email: String, password: String): AuthResult<FirebaseUser> {
         return try {
@@ -67,6 +72,8 @@ class AuthService(
 
     suspend fun getGoogleSignInIntent(webClientId: String): AuthResult<PendingIntent> {
         return try {
+            Log.d(TAG, "Starting Google Sign-In with webClientId=$webClientId")
+
             val signInRequest = BeginSignInRequest.builder()
                 .setGoogleIdTokenRequestOptions(
                     BeginSignInRequest.GoogleIdTokenRequestOptions.builder()
@@ -79,24 +86,35 @@ class AuthService(
                 .build()
 
             val result = oneTapClient.beginSignIn(signInRequest).await()
+            Log.d(TAG, "Google Sign-In PendingIntent retrieved successfully")
             AuthResult.Success(result.pendingIntent)
         } catch (e: Exception) {
+            Log.e(TAG, "Google Sign-In Intent failed: ${e.localizedMessage}", e)
             AuthResult.Error(AuthErrorMapper.mapGoogleSignInError(e))
         }
     }
 
     suspend fun handleGoogleSignInResult(data: Intent?): AuthResult<FirebaseUser> {
         return try {
-            if (data == null) return AuthResult.Error("Google Sign-In was cancelled. Please try again.")
+            if (data == null) {
+                Log.e(TAG, "Google Sign-In cancelled, intent data is null")
+                return AuthResult.Error("Google Sign-In was cancelled. Please try again.")
+            }
+
+            Log.d(TAG, "Handling Google Sign-In result...")
 
             val credential = oneTapClient.getSignInCredentialFromIntent(data)
             val idToken = credential.googleIdToken ?: throw Exception("Google ID token is null")
+            Log.d(TAG, "Google ID Token retrieved successfully")
+
             val firebaseCredential = GoogleAuthProvider.getCredential(idToken, null)
             val result = auth.signInWithCredential(firebaseCredential).await()
             val user = result.user!!
 
+            Log.d(TAG, "Google Sign-In successful. User: ${user.email}")
             AuthResult.Success(user)
         } catch (e: Exception) {
+            Log.e(TAG, "Error handling Google Sign-In result: ${e.localizedMessage}", e)
             AuthResult.Error(AuthErrorMapper.mapGoogleSignInError(e))
         }
     }

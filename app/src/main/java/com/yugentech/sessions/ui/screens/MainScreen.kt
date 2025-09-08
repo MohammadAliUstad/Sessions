@@ -26,6 +26,7 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import android.app.Activity
 import com.yugentech.sessions.navigation.AppScreens
+import com.yugentech.sessions.notifications.NotificationsViewModel
 import com.yugentech.sessions.ui.components.ExitConfirmationDialog
 import com.yugentech.sessions.ui.components.LogoutConfirmationDialog
 import com.yugentech.sessions.ui.components.mainScreen.BottomNavBar
@@ -53,6 +54,7 @@ fun MainScreen(
     homeViewModel: HomeViewModel,
     userViewModel: UserViewModel,
     profileViewModel: ProfileViewModel,
+    notificationsViewModel: NotificationsViewModel,
     onLogout: () -> Unit,
     onEditProfile: () -> Unit,
     onSettings: () -> Unit
@@ -144,7 +146,8 @@ fun MainScreen(
             when (screen) {
                 AppScreens.Home -> HomeScreen(
                     userId = userId,
-                    homeViewModel = homeViewModel
+                    homeViewModel = homeViewModel,
+                    notificationsViewModel = notificationsViewModel,
                 )
 
                 AppScreens.Profile -> ProfileScreen(
