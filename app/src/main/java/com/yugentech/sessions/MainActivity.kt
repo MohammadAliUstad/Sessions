@@ -1,13 +1,10 @@
 package com.yugentech.sessions
 
 import android.Manifest
-import android.app.AlarmManager
-import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
-import android.provider.Settings
 import androidx.activity.ComponentActivity
 import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
@@ -24,6 +21,7 @@ import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.rememberNavController
 import com.yugentech.sessions.navigation.AppNavHost
+import com.yugentech.sessions.notifications.NotificationsViewModel
 import com.yugentech.sessions.theme.ThemeViewModel
 import com.yugentech.sessions.theme.utils.SessionsTheme
 import com.yugentech.sessions.theme.utils.ThemeMode
@@ -38,9 +36,7 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val splashScreen = installSplashScreen()
-
         requestNotificationPermission()
-        requestExactAlarmPermission()
 
         setContent {
             val webClientId = getString(R.string.web_client_id)
@@ -49,6 +45,7 @@ class MainActivity : ComponentActivity() {
             val userViewModel: UserViewModel = koinViewModel()
             val homeViewModel: HomeViewModel = koinViewModel()
             val profileViewModel: ProfileViewModel = koinViewModel()
+            val notificationsViewModel: NotificationsViewModel = koinViewModel()
             val themeViewModel: ThemeViewModel = koinViewModel()
             val settingsViewModel: SettingsViewModel = koinViewModel()
             val themeConfiguration by themeViewModel.themeConfiguration.collectAsStateWithLifecycle()
@@ -82,7 +79,8 @@ class MainActivity : ComponentActivity() {
                         userViewModel = userViewModel,
                         homeViewModel = homeViewModel,
                         profileViewModel = profileViewModel,
-                        settingsViewModel = settingsViewModel
+                        settingsViewModel = settingsViewModel,
+                        notificationsViewModel = notificationsViewModel
                     )
                 }
             }
@@ -102,16 +100,6 @@ class MainActivity : ComponentActivity() {
                     arrayOf(Manifest.permission.POST_NOTIFICATIONS),
                     1001
                 )
-            }
-        }
-    }
-
-    private fun requestExactAlarmPermission() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            val alarmManager = getSystemService(ALARM_SERVICE) as AlarmManager
-            if (!alarmManager.canScheduleExactAlarms()) {
-                val intent = Intent(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM)
-                startActivity(intent)
             }
         }
     }

@@ -20,14 +20,9 @@
         android:theme="@style/Theme.Sessions">
 
         <service
-            android:name=".notifications.NotificationService"
+            android:name=".notifications.active.ActiveForeground"
             android:foregroundServiceType="dataSync"
             android:exported="false"/>
-
-        <receiver
-            android:name=".notifications.ReminderReceiver"
-            android:enabled="true"
-            android:exported="false" />
 
         <activity
             android:name=".MainActivity"

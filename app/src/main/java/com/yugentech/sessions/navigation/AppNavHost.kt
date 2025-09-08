@@ -21,6 +21,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import com.google.accompanist.navigation.animation.AnimatedNavHost
+import com.yugentech.sessions.notifications.NotificationsViewModel
 import com.yugentech.sessions.ui.screens.AboutScreen
 import com.yugentech.sessions.ui.screens.MainScreen
 import com.yugentech.sessions.ui.screens.SignInScreen
@@ -47,7 +48,8 @@ fun AppNavHost(
     userViewModel: UserViewModel,
     homeViewModel: HomeViewModel,
     profileViewModel: ProfileViewModel,
-    settingsViewModel: SettingsViewModel
+    settingsViewModel: SettingsViewModel,
+    notificationsViewModel: NotificationsViewModel
 ) {
     val authState by loginViewModel.authState.collectAsStateWithLifecycle()
     val context = LocalContext.current
@@ -156,7 +158,6 @@ fun AppNavHost(
                 MainScreen(
                     userId = currentUserId,
                     onLogout = {
-                        // Only call signOut, let the LaunchedEffect handle navigation
                         loginViewModel.signOut()
                     },
                     onEditProfile = {
@@ -167,7 +168,8 @@ fun AppNavHost(
                     },
                     homeViewModel = homeViewModel,
                     profileViewModel = profileViewModel,
-                    userViewModel = userViewModel
+                    userViewModel = userViewModel,
+                    notificationsViewModel = notificationsViewModel
                 )
             }
         }
@@ -183,7 +185,8 @@ fun AppNavHost(
                 },
                 onAppearance = {
                     navController.navigate(Screens.Appearance.route)
-                }
+                },
+                notificationsViewModel = notificationsViewModel
             )
         }
 

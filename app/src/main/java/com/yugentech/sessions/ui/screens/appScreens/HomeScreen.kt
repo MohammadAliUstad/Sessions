@@ -38,25 +38,24 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.yugentech.sessions.notifications.Notification
+import com.yugentech.sessions.notifications.NotificationType
+import com.yugentech.sessions.notifications.NotificationsViewModel
 import com.yugentech.sessions.ui.components.homeScreen.DurationSelector
 import com.yugentech.sessions.ui.components.homeScreen.SessionActionButtons
 import com.yugentech.sessions.ui.components.homeScreen.StudyingControlButtons
 import com.yugentech.sessions.ui.components.homeScreen.TimerDisplay
 import com.yugentech.sessions.viewModels.HomeViewModel
-import com.yugentech.sessions.notifications.NotificationViewModel
 import kotlinx.coroutines.delay
-import org.koin.androidx.compose.koinViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
     homeViewModel: HomeViewModel,
     userId: String,
-    notificationViewModel: NotificationViewModel = koinViewModel()
+    notificationsViewModel: NotificationsViewModel
 ) {
     val uiState by homeViewModel.uiState.collectAsStateWithLifecycle()
-    val notificationUiState by notificationViewModel.uiState.collectAsStateWithLifecycle()
-    val notificationPermission by notificationViewModel.notificationPermissionGranted.collectAsStateWithLifecycle()
 
     val displayTime = if (uiState.isRunning || uiState.currentTime > 0) {
         uiState.currentTime
@@ -66,22 +65,23 @@ fun HomeScreen(
 
     val availableDurations = remember { listOf(25, 50) }
 
-    // Initialize user ID
     LaunchedEffect(userId) {
         homeViewModel.setUserId(userId)
     }
 
-    // Handle session state changes for notifications
     LaunchedEffect(uiState.isRunning) {
         if (uiState.isRunning) {
-            // 🔧 FIXED: Calculate minutes and seconds correctly from milliseconds
-            val seconds = (displayTime / 1000 / 60).toInt()  // Convert ms to minutes
-            val minutes = uiState.selectedDuration  // This should already be in minutes
+            val seconds = (displayTime / 1000 / 60)
 
-            notificationViewModel.startSessionNotification(
-                sessionType = "Study",
-                timeRemainingMinutes = seconds,
-                totalMinutes = minutes
+            notificationsViewModel.startActiveSession(
+                Notification(
+                    id = 1001,
+                    title = "Study Session",
+                    message = "Session in progress",
+                    type = NotificationType.ACTIVE,
+                    isOngoing = true,
+                    timeRemainingMinutes = seconds
+                )
             )
 
             // 🔧 FIXED: Start the update loop AFTER initial notification
@@ -91,17 +91,23 @@ fun HomeScreen(
                 // Check again after delay
                 val updatedDisplayTime = uiState.currentTime
 
-                val seconds = (updatedDisplayTime / 1000 / 60).toInt()
+                val seconds = (updatedDisplayTime / 1000 / 60)
                 val minutes = uiState.selectedDuration
 
-                notificationViewModel.updateActiveSessionNotification(
-                    timeRemainingMinutes = seconds,
-                    totalMinutes = minutes
+                notificationsViewModel.updateActiveSession(
+                    Notification(
+                        id = 1001,
+                        title = "Study Session",
+                        message = "Session in progress",
+                        type = NotificationType.ACTIVE,
+                        isOngoing = true,
+                        timeRemainingMinutes = seconds,
+                        totalMinutes = minutes
+                    )
                 )
             }
         } else {
-            // Session ended - hide active notification
-            notificationViewModel.hideActiveSessionNotification()
+            notificationsViewModel.stopActiveSession()
         }
     }
 
@@ -109,13 +115,8 @@ fun HomeScreen(
     LaunchedEffect(uiState.currentTime) {
         // Check if timer just completed (was running but now at 0)
         if (uiState.currentTime == 0 && !uiState.isRunning) {
-            notificationViewModel.endSessionNotification("Study")
+            notificationsViewModel.stopActiveSession()
         }
-    }
-
-    // Update notification permission when it changes
-    LaunchedEffect(notificationPermission) {
-        // This will be updated when user grants/denies permission
     }
 
     Surface(
@@ -180,16 +181,6 @@ fun HomeScreen(
                                 MaterialTheme.colorScheme.onSurfaceVariant
                         )
                     }
-                }
-
-                // Show notification status if there are issues
-                if (!notificationPermission && uiState.isRunning) {
-                    Spacer(modifier = Modifier.height(4.dp))
-                    Text(
-                        text = "⚠️ Notification permission needed",
-                        style = MaterialTheme.typography.labelSmall,
-                        color = MaterialTheme.colorScheme.error
-                    )
                 }
             }
 
@@ -265,13 +256,13 @@ fun HomeScreen(
                             onStop = {
                                 homeViewModel.stopAndDiscardSession(view)
                                 // Hide notification when session is discarded
-                                notificationViewModel.hideActiveSessionNotification()
+                                notificationsViewModel.stopActiveSession()
                             },
                             onSave = {
                                 val elapsed = homeViewModel.getElapsedTime()
                                 if (elapsed < 60) {
                                     homeViewModel.stopAndDiscardSession(view)
-                                    notificationViewModel.hideActiveSessionNotification()
+                                    notificationsViewModel.stopActiveSession()
                                     Toast.makeText(
                                         context,
                                         "Please focus for at least 1 minute to save a session",
@@ -280,20 +271,9 @@ fun HomeScreen(
                                 } else {
                                     homeViewModel.stopAndSaveSession(view)
                                     // Show completion notification
-                                    notificationViewModel.endSessionNotification("Study")
+                                    notificationsViewModel.stopActiveSession()
                                 }
                             }
-                        )
-                    }
-
-                    // Show error messages from both ViewModels
-                    val errorMessage = uiState.errorMessage ?: notificationUiState.error
-                    errorMessage?.let { error ->
-                        Spacer(modifier = Modifier.height(12.dp))
-                        Text(
-                            text = error,
-                            color = MaterialTheme.colorScheme.error,
-                            style = MaterialTheme.typography.bodyMedium
                         )
                     }
                 }

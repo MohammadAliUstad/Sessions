@@ -1,23 +1,16 @@
 package com.yugentech.sessions.ui.screens.appScreens
 
-import androidx.compose.foundation.interaction.MutableInteractionSource
+import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.VolumeUp
-import androidx.compose.material.icons.filled.ChevronRight
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Palette
@@ -26,40 +19,94 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Switch
-import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.rememberTimePickerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.yugentech.sessions.notifications.NotificationsViewModel
 import com.yugentech.sessions.ui.components.SettingsCard
+import com.yugentech.sessions.ui.components.settingsScreen.SettingsNavigationItem
+import com.yugentech.sessions.ui.components.settingsScreen.SettingsSectionHeader
+import com.yugentech.sessions.ui.components.settingsScreen.SettingsToggleItem
+import com.yugentech.sessions.ui.components.settingsScreen.SettingsToggleItemWithTimePicker
+import com.yugentech.sessions.ui.components.settingsScreen.TimePickerDialog
 import com.yugentech.sessions.viewModels.SettingsViewModel
+import java.util.Calendar
+import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingsScreen(
     settingsViewModel: SettingsViewModel,
+    notificationsViewModel: NotificationsViewModel,
     onNavigateBack: () -> Unit,
     onAbout: () -> Unit,
     onAppearance: () -> Unit,
 ) {
     val alertConfig by settingsViewModel.alertConfig.collectAsState()
     var notificationsEnabled by remember { mutableStateOf(true) }
-    var studyRemindersEnabled by remember { mutableStateOf(false) }
-    var breakRemindersEnabled by remember { mutableStateOf(true) }
+    var focusRemindersEnabled by remember { mutableStateOf(false) }
+    var selectedReminderTime by remember { mutableStateOf<Pair<Int, Int>?>(null) }
+    var showTimePickerDialog by remember { mutableStateOf(false) }
     val view = LocalView.current
+
+    val timePickerState = rememberTimePickerState(
+        initialHour = selectedReminderTime?.first ?: Calendar.getInstance().get(Calendar.HOUR_OF_DAY),
+        initialMinute = selectedReminderTime?.second ?: Calendar.getInstance().get(Calendar.MINUTE),
+        is24Hour = true
+    )
+
+    val ekminute = 1
+
+    fun formatTime(hour: Int, minute: Int): String {
+        return String.format(Locale.getDefault(), "%02d:%02d", hour, minute)
+    }
+
+    fun calculateDelayMinutes(selectedTime: Pair<Int, Int>?): Long {
+        if (selectedTime == null) return 0L
+
+        val (hour, minute) = selectedTime
+        val calendar = Calendar.getInstance()
+        val currentTime = calendar.timeInMillis
+
+        val targetCalendar = Calendar.getInstance()
+        targetCalendar.set(Calendar.HOUR_OF_DAY, hour)
+        targetCalendar.set(Calendar.MINUTE, minute)
+        targetCalendar.set(Calendar.SECOND, 0)
+        targetCalendar.set(Calendar.MILLISECOND, 0)
+
+        // If the time has already passed today, schedule for tomorrow
+        if (targetCalendar.timeInMillis <= currentTime) {
+            targetCalendar.add(Calendar.DAY_OF_MONTH, 1)
+        }
+
+        return (targetCalendar.timeInMillis - currentTime) / (1000 * 60) // Convert to minutes
+    }
+
+    // Manage scheduling/cancelling reminder
+    LaunchedEffect(focusRemindersEnabled, selectedReminderTime, notificationsEnabled) {
+        if (notificationsEnabled && focusRemindersEnabled && selectedReminderTime != null) {
+            val delayMinutes = calculateDelayMinutes(selectedReminderTime)
+            Log.d("SettingsScreen", "Scheduling reminder for $ekminute minutes")
+            notificationsViewModel.scheduleReminder(
+                message = "Focus Reminder",
+                delayMinutes = ekminute.toLong()
+            )
+        } else {
+            notificationsViewModel.cancelAllReminders()
+        }
+    }
 
     Scaffold(
         topBar = {
@@ -112,32 +159,43 @@ fun SettingsScreen(
                         onCheckedChange = {
                             notificationsEnabled = it
                             settingsViewModel.performHaptic(view)
+                            // If turning off notifications, also disable focus reminders
+                            if (!it) {
+                                focusRemindersEnabled = false
+                                selectedReminderTime = null
+                            }
                         }
                     )
 
                     Spacer(modifier = Modifier.height(16.dp))
 
-                    SettingsToggleItem(
-                        title = "Study Reminders",
-                        subtitle = "Get notified to start your study sessions",
-                        checked = studyRemindersEnabled,
+                    SettingsToggleItemWithTimePicker(
+                        title = "Focus Reminders",
+                        subtitle = if (focusRemindersEnabled && selectedReminderTime != null) {
+                            "Reminder is set to ${
+                                formatTime(
+                                    selectedReminderTime!!.first,
+                                    selectedReminderTime!!.second
+                                )
+                            }"
+                        } else {
+                            "Get notified to start your focus sessions"
+                        },
+                        checked = focusRemindersEnabled,
                         enabled = notificationsEnabled,
-                        onCheckedChange = {
-                            studyRemindersEnabled = it
-                            settingsViewModel.performHaptic(view)
-                        }
-                    )
-
-                    Spacer(modifier = Modifier.height(16.dp))
-
-                    SettingsToggleItem(
-                        title = "Break Reminders",
-                        subtitle = "Get reminded to take breaks during long sessions",
-                        checked = breakRemindersEnabled,
-                        enabled = notificationsEnabled,
-                        onCheckedChange = {
-                            breakRemindersEnabled = it
-                            settingsViewModel.performHaptic(view)
+                        onCheckedChange = { isChecked ->
+                            if (isChecked) {
+                                showTimePickerDialog = true
+                            } else {
+                                focusRemindersEnabled = false
+                                selectedReminderTime = null
+                                settingsViewModel.performHaptic(view)
+                            }
+                        },
+                        onTitleClick = {
+                            if (focusRemindersEnabled && notificationsEnabled) {
+                                showTimePickerDialog = true
+                            }
                         }
                     )
                 }
@@ -206,133 +264,20 @@ fun SettingsScreen(
                 }
             }
         }
-    }
-}
 
-@Composable
-fun SettingsSectionHeader(
-    icon: ImageVector,
-    title: String
-) {
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier.padding(bottom = 16.dp)
-    ) {
-        Icon(
-            imageVector = icon,
-            contentDescription = null,
-            tint = MaterialTheme.colorScheme.primary,
-            modifier = Modifier.size(24.dp)
-        )
-
-        Spacer(modifier = Modifier.width(12.dp))
-        Text(
-            text = title,
-            style = MaterialTheme.typography.headlineSmall,
-            fontWeight = FontWeight.SemiBold,
-            color = MaterialTheme.colorScheme.onSurface
-        )
-    }
-}
-
-@Composable
-fun SettingsToggleItem(
-    title: String,
-    subtitle: String,
-    checked: Boolean,
-    enabled: Boolean = true,
-    onCheckedChange: (Boolean) -> Unit
-) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 8.dp),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Column(
-            modifier = Modifier
-                .weight(1f)
-                .padding(end = 16.dp)
-        ) {
-            Text(
-                text = title,
-                style = MaterialTheme.typography.bodyLarge,
-                color = MaterialTheme.colorScheme.onSurface,
-                maxLines = 1,
-            )
-            Spacer(modifier = Modifier.height(2.dp))
-            Text(
-                text = subtitle,
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                maxLines = 2,
-            )
-        }
-
-        Switch(
-            checked = checked,
-            onCheckedChange = onCheckedChange,
-            enabled = enabled,
-            colors = SwitchDefaults.colors(
-                checkedThumbColor = MaterialTheme.colorScheme.onPrimaryContainer,
-                checkedTrackColor = MaterialTheme.colorScheme.primaryContainer,
-                uncheckedThumbColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                uncheckedTrackColor = MaterialTheme.colorScheme.surfaceVariant,
-                disabledCheckedThumbColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f),
-                disabledCheckedTrackColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.12f),
-                disabledUncheckedThumbColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f),
-                disabledUncheckedTrackColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.12f)
-            )
-        )
-    }
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun SettingsNavigationItem(
-    title: String,
-    subtitle: String,
-    onClick: () -> Unit
-) {
-    Surface(
-        onClick = onClick,
-        modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(12.dp),
-        color = MaterialTheme.colorScheme.surfaceContainer,
-        interactionSource = remember { MutableInteractionSource() }
-    ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Column(
-                modifier = Modifier.weight(1f)
-            ) {
-                Text(
-                    text = title,
-                    style = MaterialTheme.typography.bodyLarge,
-                    fontWeight = FontWeight.Medium,
-                    color = MaterialTheme.colorScheme.onSurface
-                )
-                Spacer(modifier = Modifier.height(4.dp))
-                Text(
-                    text = subtitle,
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-            }
-
-            Spacer(modifier = Modifier.width(16.dp))
-
-            Icon(
-                imageVector = Icons.Default.ChevronRight,
-                contentDescription = "Navigate",
-                tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                modifier = Modifier.size(20.dp)
+        // Time Picker Dialog
+        if (showTimePickerDialog) {
+            TimePickerDialog(
+                timePickerState = timePickerState,
+                onConfirm = {
+                    selectedReminderTime = Pair(timePickerState.hour, timePickerState.minute)
+                    focusRemindersEnabled = true
+                    showTimePickerDialog = false
+                    settingsViewModel.performHaptic(view)
+                },
+                onDismiss = {
+                    showTimePickerDialog = false
+                }
             )
         }
     }
