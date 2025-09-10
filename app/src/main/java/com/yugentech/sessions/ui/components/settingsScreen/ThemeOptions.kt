@@ -1,4 +1,4 @@
-package com.yugentech.sessions.ui.components
+package com.yugentech.sessions.ui.components.settingsScreen
 
 import androidx.compose.ui.graphics.Color
 import com.yugentech.sessions.theme.utils.ColorTheme
