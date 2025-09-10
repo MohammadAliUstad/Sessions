@@ -1,4 +1,4 @@
-package com.yugentech.sessions.ui.components
+package com.yugentech.sessions.ui.components.signInUp
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.expandVertically

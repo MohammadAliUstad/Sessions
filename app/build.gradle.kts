@@ -48,7 +48,6 @@ dependencies {
 
     // Work Manager
     implementation(libs.androidx.work.runtime.ktx)
-    implementation(libs.koin.androidx.workmanager)
 
     // Lifecycle
     implementation(libs.androidx.lifecycle.runtime.compose)
