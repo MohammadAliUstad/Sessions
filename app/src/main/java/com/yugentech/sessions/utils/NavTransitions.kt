@@ -7,32 +7,44 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
+import com.yugentech.sessions.utils.Constants.DEFAULT_ANIMATION_DURATION
 
-// Standard Material Design animation duration
-private const val ANIMATION_DURATION = 300
+fun defaultEnterTransition(
+    duration: Int = DEFAULT_ANIMATION_DURATION,
+    initialOffsetX: Int = 1000
+): EnterTransition {
+    return slideInHorizontally(
+        animationSpec = tween(duration),
+        initialOffsetX = { initialOffsetX }
+    ) + fadeIn(animationSpec = tween(duration))
+}
 
-// Forward navigation (entering a new screen)
-val defaultEnterTransition: EnterTransition
-    get() = slideInHorizontally(
-        animationSpec = tween(ANIMATION_DURATION),
-        initialOffsetX = { it }
-    ) + fadeIn(animationSpec = tween(ANIMATION_DURATION))
+fun defaultExitTransition(
+    duration: Int = DEFAULT_ANIMATION_DURATION,
+    targetOffsetX: Int = -1000
+): ExitTransition {
+    return slideOutHorizontally(
+        animationSpec = tween(duration),
+        targetOffsetX = { targetOffsetX }
+    ) + fadeOut(animationSpec = tween(duration))
+}
 
-val defaultExitTransition: ExitTransition
-    get() = slideOutHorizontally(
-        animationSpec = tween(ANIMATION_DURATION),
-        targetOffsetX = { -it / 3 }
-    ) + fadeOut(animationSpec = tween(ANIMATION_DURATION))
+fun defaultPopEnterTransition(
+    duration: Int = DEFAULT_ANIMATION_DURATION,
+    initialOffsetX: Int = -1000
+): EnterTransition {
+    return slideInHorizontally(
+        animationSpec = tween(duration),
+        initialOffsetX = { initialOffsetX }
+    ) + fadeIn(animationSpec = tween(duration))
+}
 
-// Back navigation (returning to previous screen)
-val defaultPopEnterTransition: EnterTransition
-    get() = slideInHorizontally(
-        animationSpec = tween(ANIMATION_DURATION),
-        initialOffsetX = { -it / 3 }
-    ) + fadeIn(animationSpec = tween(ANIMATION_DURATION))
-
-val defaultPopExitTransition: ExitTransition
-    get() = slideOutHorizontally(
-        animationSpec = tween(ANIMATION_DURATION),
-        targetOffsetX = { it }
-    ) + fadeOut(animationSpec = tween(ANIMATION_DURATION))
+fun defaultPopExitTransition(
+    duration: Int = DEFAULT_ANIMATION_DURATION,
+    targetOffsetX: Int = 1000
+): ExitTransition {
+    return slideOutHorizontally(
+        animationSpec = tween(duration),
+        targetOffsetX = { targetOffsetX }
+    ) + fadeOut(animationSpec = tween(duration))
+}

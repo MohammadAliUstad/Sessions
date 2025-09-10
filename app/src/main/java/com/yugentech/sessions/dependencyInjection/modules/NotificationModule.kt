@@ -51,12 +51,4 @@ val notificationModule = module {
     single {
         KoinWorkerFactory()
     }
-
-    factory { (appContext: Context, params: WorkerParameters) ->
-        ReminderWorker(
-            context = appContext,
-            params = params,
-            activeService = get()
-        )
-    }
 }
