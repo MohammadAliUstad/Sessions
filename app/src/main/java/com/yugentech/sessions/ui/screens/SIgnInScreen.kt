@@ -52,11 +52,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
-import com.yugentech.sessions.ui.components.ActionButton
-import com.yugentech.sessions.ui.components.AppTextField
-import com.yugentech.sessions.ui.components.ForgotPasswordDialog
-import com.yugentech.sessions.ui.components.GoogleSignInButton
-import com.yugentech.sessions.ui.components.ToastMessage
+import com.yugentech.sessions.ui.components.signInUp.ActionButton
+import com.yugentech.sessions.ui.components.signInUp.AppTextField
+import com.yugentech.sessions.ui.components.signInUp.ForgotPasswordDialog
+import com.yugentech.sessions.ui.components.signInUp.GoogleSignInButton
+import com.yugentech.sessions.ui.components.common.ToastMessage
 import com.yugentech.sessions.viewModels.LoginViewModel
 import kotlinx.coroutines.launch
 import kotlin.math.cos
