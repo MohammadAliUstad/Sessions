@@ -1,5 +1,6 @@
-package com.yugentech.sessions.ui.components
+package com.yugentech.sessions.ui.components.signInUp
 
+import android.util.Patterns
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
@@ -13,7 +14,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CheckCircle
@@ -380,7 +380,7 @@ private fun ForgotPasswordError(
 private fun validateEmail(email: String): String {
     return when {
         email.isBlank() -> "Email cannot be empty"
-        !android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches() ->
+        !Patterns.EMAIL_ADDRESS.matcher(email).matches() ->
             "Please enter a valid email"
         else -> ""
     }
