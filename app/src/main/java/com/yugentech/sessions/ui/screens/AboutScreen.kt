@@ -40,9 +40,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
 import com.yugentech.sessions.R
-import com.yugentech.sessions.ui.screens.appScreens.PixelCard
-import com.yugentech.sessions.ui.screens.appScreens.PixelSectionHeader
-import com.yugentech.sessions.ui.screens.appScreens.PixelThemeModeOption
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
