@@ -1,4 +1,4 @@
-package com.yugentech.sessions.ui.components
+package com.yugentech.sessions.ui.components.settingsScreen
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope

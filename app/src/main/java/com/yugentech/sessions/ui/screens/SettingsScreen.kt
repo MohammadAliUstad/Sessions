@@ -1,4 +1,4 @@
-package com.yugentech.sessions.ui.screens.appScreens
+package com.yugentech.sessions.ui.screens
 
 import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
@@ -35,7 +35,7 @@ import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.yugentech.sessions.notifications.NotificationsViewModel
-import com.yugentech.sessions.ui.components.SettingsCard
+import com.yugentech.sessions.ui.components.settingsScreen.SettingsCard
 import com.yugentech.sessions.ui.components.settingsScreen.SettingsNavigationItem
 import com.yugentech.sessions.ui.components.settingsScreen.SettingsSectionHeader
 import com.yugentech.sessions.ui.components.settingsScreen.SettingsToggleItem
