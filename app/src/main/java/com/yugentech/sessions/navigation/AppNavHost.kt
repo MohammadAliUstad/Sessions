@@ -26,10 +26,11 @@ import com.yugentech.sessions.ui.screens.AboutScreen
 import com.yugentech.sessions.ui.screens.MainScreen
 import com.yugentech.sessions.ui.screens.SignInScreen
 import com.yugentech.sessions.ui.screens.SignUpScreen
-import com.yugentech.sessions.ui.screens.appScreens.AppearanceScreen
-import com.yugentech.sessions.ui.screens.appScreens.EditProfileScreen
-import com.yugentech.sessions.ui.screens.appScreens.SettingsScreen
+import com.yugentech.sessions.ui.screens.AppearanceScreen
+import com.yugentech.sessions.ui.screens.EditProfileScreen
+import com.yugentech.sessions.ui.screens.SettingsScreen
 import com.yugentech.sessions.user.UserViewModel
+import com.yugentech.sessions.utils.Constants.DEFAULT_ANIMATION_DURATION
 import com.yugentech.sessions.utils.defaultEnterTransition
 import com.yugentech.sessions.utils.defaultExitTransition
 import com.yugentech.sessions.utils.defaultPopEnterTransition
@@ -110,10 +111,10 @@ fun AppNavHost(
     AnimatedNavHost(
         navController = navController,
         startDestination = startDestination,
-        enterTransition = { defaultEnterTransition },
-        exitTransition = { defaultExitTransition },
-        popEnterTransition = { defaultPopEnterTransition },
-        popExitTransition = { defaultPopExitTransition }
+        enterTransition = { defaultEnterTransition(DEFAULT_ANIMATION_DURATION) },
+        exitTransition = { defaultExitTransition(DEFAULT_ANIMATION_DURATION) },
+        popEnterTransition = { defaultPopEnterTransition(DEFAULT_ANIMATION_DURATION) },
+        popExitTransition = { defaultPopExitTransition(DEFAULT_ANIMATION_DURATION) }
     ) {
         composable(Screens.SignIn.route) {
             BackHandler {

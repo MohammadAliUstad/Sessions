@@ -1,4 +1,4 @@
-package com.yugentech.sessions.ui.screens.appScreens
+package com.yugentech.sessions.ui.screens
 
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateFloatAsState
@@ -60,8 +60,8 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.yugentech.sessions.theme.ThemeViewModel
 import com.yugentech.sessions.theme.utils.ThemeMode
-import com.yugentech.sessions.ui.components.ThemeOption
-import com.yugentech.sessions.ui.components.themeOptions
+import com.yugentech.sessions.ui.components.settingsScreen.ThemeOption
+import com.yugentech.sessions.ui.components.settingsScreen.themeOptions
 import org.koin.androidx.compose.koinViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
