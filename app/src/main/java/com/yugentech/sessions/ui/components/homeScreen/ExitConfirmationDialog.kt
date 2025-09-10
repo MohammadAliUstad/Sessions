@@ -1,4 +1,4 @@
-package com.yugentech.sessions.ui.components
+package com.yugentech.sessions.ui.components.homeScreen
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column

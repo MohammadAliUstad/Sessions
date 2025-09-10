@@ -1,4 +1,4 @@
-package com.yugentech.sessions.ui.screens.appScreens
+package com.yugentech.sessions.ui.screens
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Arrangement
