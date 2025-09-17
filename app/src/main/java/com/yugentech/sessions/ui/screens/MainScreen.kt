@@ -25,20 +25,21 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import android.app.Activity
+import androidx.compose.animation.core.Transition
 import com.yugentech.sessions.navigation.AppScreens
 import com.yugentech.sessions.notifications.NotificationsViewModel
-import com.yugentech.sessions.ui.components.ExitConfirmationDialog
-import com.yugentech.sessions.ui.components.LogoutConfirmationDialog
+import com.yugentech.sessions.ui.components.homeScreen.ExitConfirmationDialog
+import com.yugentech.sessions.ui.components.homeScreen.LogoutConfirmationDialog
 import com.yugentech.sessions.ui.components.mainScreen.BottomNavBar
 import com.yugentech.sessions.ui.components.mainScreen.TopAppBar
-import com.yugentech.sessions.ui.screens.appScreens.HomeScreen
-import com.yugentech.sessions.ui.screens.appScreens.ProfileScreen
 import com.yugentech.sessions.user.UserViewModel
+import com.yugentech.sessions.utils.Constants.DEFAULT_ANIMATION_DURATION
+import com.yugentech.sessions.utils.defaultEnterTransition
+import com.yugentech.sessions.utils.defaultExitTransition
 import com.yugentech.sessions.viewModels.HomeViewModel
 import com.yugentech.sessions.viewModels.ProfileViewModel
 
 private const val ANIMATION_DURATION = 300
-private const val FADE_DURATION = 150
 
 private val bottomNavItems = listOf(AppScreens.Home, AppScreens.Profile)
 
@@ -71,11 +72,9 @@ fun MainScreen(
     BackHandler {
         when (currentScreen) {
             AppScreens.Profile -> {
-                // If on Profile screen, go back to Home screen
                 currentScreen = AppScreens.Home
             }
             AppScreens.Home -> {
-                // If on Home screen, show exit confirmation dialog
                 showExitDialog = true
             }
         }
@@ -131,17 +130,17 @@ fun MainScreen(
     ) { innerPadding ->
 
         AnimatedContent(
-            targetState = currentScreen,
-            transitionSpec = {
-                createScreenTransition(
-                    fromHome = initialState == AppScreens.Home,
-                    toHome = targetState == AppScreens.Home
-                )
-            },
             modifier = Modifier
                 .padding(innerPadding)
                 .fillMaxSize(),
-            label = "ScreenTransition"
+            targetState = currentScreen,
+            transitionSpec = {
+                if(initialState == AppScreens.Home) {
+                    defaultEnterTransition(DEFAULT_ANIMATION_DURATION)
+                } else {
+                    defaultExitTransition(DEFAULT_ANIMATION_DURATION)
+                }
+            }
         ) { screen ->
             when (screen) {
                 AppScreens.Home -> HomeScreen(
@@ -161,16 +160,10 @@ fun MainScreen(
     }
 }
 
-// Simplified and more readable transition logic
 private fun createScreenTransition(
     fromHome: Boolean,
-    toHome: Boolean
-): ContentTransform {
-    return when {
-        fromHome && !toHome -> createSlideTransition(slideFromRight = true)  // Home → Profile
-        !fromHome && toHome -> createSlideTransition(slideFromRight = false) // Profile → Home
-        else -> createFadeTransition() // Fallback
-    }
+): Transition<> {
+    return
 }
 
 private fun createSlideTransition(slideFromRight: Boolean): ContentTransform {
@@ -185,9 +178,4 @@ private fun createSlideTransition(slideFromRight: Boolean): ContentTransform {
                 targetOffsetX = { -it * offsetMultiplier }
             ).plus(fadeOut(animationSpec = tween(ANIMATION_DURATION)))
         )
-}
-
-private fun createFadeTransition(): ContentTransform {
-    return fadeIn(animationSpec = tween(FADE_DURATION))
-        .togetherWith(fadeOut(animationSpec = tween(FADE_DURATION)))
 }
