@@ -38,7 +38,54 @@ class MainActivity : ComponentActivity() {
         val splashScreen = installSplashScreen()
         requestNotificationPermission()
 
+        setContent {
+            val webClientId = getString(R.string.web_client_id)
+            val navController = rememberNavController()
+            val loginViewModel: LoginViewModel = koinViewModel()
+            val userViewModel: UserViewModel = koinViewModel()
+            val homeViewModel: HomeViewModel = koinViewModel()
+            val profileViewModel: ProfileViewModel = koinViewModel()
+            val notificationsViewModel: NotificationsViewModel = koinViewModel()
+            val themeViewModel: ThemeViewModel = koinViewModel()
+            val settingsViewModel: SettingsViewModel = koinViewModel()
+            val themeConfiguration by themeViewModel.themeConfiguration.collectAsStateWithLifecycle()
+            val darkTheme = when (themeConfiguration.themeMode) {
+                ThemeMode.LIGHT -> false
+                ThemeMode.DARK -> true
+                ThemeMode.SYSTEM -> isSystemInDarkTheme()
+            }
+            splashScreen.setKeepOnScreenCondition {
+                loginViewModel.authState.value.isLoading
+            }
+            enableEdgeToEdge(
+                statusBarStyle = if (darkTheme) {
+                    SystemBarStyle.dark(scrim = Color.TRANSPARENT)
+                } else {
+                    SystemBarStyle.light(scrim = Color.TRANSPARENT, darkScrim = Color.WHITE)
+                }
+            )
 
+            SessionsTheme(
+                themeConfiguration = themeConfiguration
+            ) {
+                Surface(
+                    modifier = Modifier.fillMaxSize(),
+                    color = MaterialTheme.colorScheme.background
+                ) {
+                    AppNavHost(
+                        navController = navController,
+                        webClientId = webClientId,
+                        loginViewModel = loginViewModel,
+                        userViewModel = userViewModel,
+                        homeViewModel = homeViewModel,
+                        profileViewModel = profileViewModel,
+                        settingsViewModel = settingsViewModel,
+                        notificationsViewModel = notificationsViewModel
+                    )
+                }
+            }
+        }
+    }
 
     private fun requestNotificationPermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
