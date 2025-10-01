@@ -9,10 +9,7 @@ class SessionsService(
     private val firestore: FirebaseFirestore
 ) {
 
-    private fun userSessionsCollection(userId: String) =
-        firestore.collection("users")
-            .document(userId)
-            .collection("sessions")
+
 
     suspend fun uploadPendingSessions(userId: String, sessions: List<Session>): SessionResult<Unit> {
         return try {
