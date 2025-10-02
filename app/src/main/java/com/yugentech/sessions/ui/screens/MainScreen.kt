@@ -1,13 +1,11 @@
 package com.yugentech.sessions.ui.screens
 
+import android.app.Activity
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.ContentTransform
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
-import androidx.compose.animation.slideInHorizontally
-import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -24,8 +22,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
-import android.app.Activity
-import androidx.compose.animation.core.Transition
 import com.yugentech.sessions.navigation.AppScreens
 import com.yugentech.sessions.notifications.NotificationsViewModel
 import com.yugentech.sessions.ui.components.homeScreen.ExitConfirmationDialog
@@ -36,10 +32,10 @@ import com.yugentech.sessions.user.UserViewModel
 import com.yugentech.sessions.utils.Constants.DEFAULT_ANIMATION_DURATION
 import com.yugentech.sessions.utils.defaultEnterTransition
 import com.yugentech.sessions.utils.defaultExitTransition
+import com.yugentech.sessions.utils.defaultPopEnterTransition
+import com.yugentech.sessions.utils.defaultPopExitTransition
 import com.yugentech.sessions.viewModels.HomeViewModel
 import com.yugentech.sessions.viewModels.ProfileViewModel
-
-private const val ANIMATION_DURATION = 300
 
 private val bottomNavItems = listOf(AppScreens.Home, AppScreens.Profile)
 
@@ -68,12 +64,12 @@ fun MainScreen(
     var showExitDialog by remember { mutableStateOf(false) }
     val context = LocalContext.current
 
-    // Handle back press based on current screen
     BackHandler {
         when (currentScreen) {
             AppScreens.Profile -> {
                 currentScreen = AppScreens.Home
             }
+
             AppScreens.Home -> {
                 showExitDialog = true
             }
@@ -135,10 +131,13 @@ fun MainScreen(
                 .fillMaxSize(),
             targetState = currentScreen,
             transitionSpec = {
-                if(initialState == AppScreens.Home) {
-                    defaultEnterTransition(DEFAULT_ANIMATION_DURATION)
+                if (initialState == AppScreens.Home && targetState == AppScreens.Profile) {
+                    defaultEnterTransition() togetherWith defaultExitTransition()
+                } else if (initialState == AppScreens.Profile && targetState == AppScreens.Home) {
+                    defaultPopEnterTransition() togetherWith defaultPopExitTransition()
                 } else {
-                    defaultExitTransition(DEFAULT_ANIMATION_DURATION)
+                    fadeIn(animationSpec = tween(DEFAULT_ANIMATION_DURATION)) togetherWith
+                            fadeOut(animationSpec = tween(DEFAULT_ANIMATION_DURATION))
                 }
             }
         ) { screen ->
@@ -158,24 +157,4 @@ fun MainScreen(
             }
         }
     }
-}
-
-private fun createScreenTransition(
-    fromHome: Boolean,
-): Transition<> {
-    return
-}
-
-private fun createSlideTransition(slideFromRight: Boolean): ContentTransform {
-    val offsetMultiplier = if (slideFromRight) 1 else -1
-    return slideInHorizontally(
-        animationSpec = tween(ANIMATION_DURATION),
-        initialOffsetX = { it * offsetMultiplier }
-    ).plus(fadeIn(animationSpec = tween(ANIMATION_DURATION)))
-        .togetherWith(
-            slideOutHorizontally(
-                animationSpec = tween(ANIMATION_DURATION),
-                targetOffsetX = { -it * offsetMultiplier }
-            ).plus(fadeOut(animationSpec = tween(ANIMATION_DURATION)))
-        )
 }

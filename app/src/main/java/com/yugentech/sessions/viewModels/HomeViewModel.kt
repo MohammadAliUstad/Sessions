@@ -1,5 +1,6 @@
 package com.yugentech.sessions.viewModels
 
+import android.util.Log
 import android.view.View
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -63,6 +64,27 @@ class HomeViewModel(
     fun setUserId(userId: String) {
         currentUserId = userId
     }
+
+    fun fetchPendingSessions(userId: String) {
+        viewModelScope.launch {
+            when (val result = sessionsRepository.fetchSessionsOnce(userId)) {
+                is SessionResult.Success -> Log.d("HomeViewModel", "Fetched remote sessions once")
+                is SessionResult.Error -> Log.e("HomeViewModel", "Failed to fetch remote sessions: ${result.message}")
+            }
+        }
+    }
+
+
+    fun syncPendingSessions(userId: String) {
+        viewModelScope.launch {
+            val result = sessionsRepository.syncSessions(userId)
+            when (result) {
+                is SessionResult.Success -> Log.d("HomeViewModel", "Pending sessions synced")
+                is SessionResult.Error -> Log.e("HomeViewModel", "Failed to sync: ${result.message}")
+            }
+        }
+    }
+
 
     fun updateSelectedDuration(minutes: Int) {
         val durationInSeconds = minutes * 60

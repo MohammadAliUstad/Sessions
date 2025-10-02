@@ -4,6 +4,8 @@ import androidx.room.*
 import com.yugentech.sessions.room.entities.SessionsEntity
 import kotlinx.coroutines.flow.Flow
 
+private const val TAG = "SessionsDao"
+
 @Dao
 interface SessionsDao {
 
@@ -31,7 +33,6 @@ interface SessionsDao {
     @Query("UPDATE sessions SET pendingSync = 0 WHERE userId = :userId AND pendingSync = 1")
     suspend fun syncSessions(userId: String)
 
-    // Add these debug queries
     @Query("SELECT sessionId FROM sessions WHERE userId = :userId")
     suspend fun getSessionIds(userId: String): List<String>
 

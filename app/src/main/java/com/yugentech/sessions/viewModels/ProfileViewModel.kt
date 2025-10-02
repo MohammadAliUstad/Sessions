@@ -52,14 +52,6 @@ class ProfileViewModel(
                 _uiState.update { state -> state.copy(totalTime = total) }
             }.launchIn(viewModelScope)
 
-            // Fetch sessions only once
-            when (val result = sessionsRepository.fetchSessionsOnce(userId)) {
-                is SessionResult.Error -> {
-                    _uiState.update { it.copy(errorMessage = result.message) }
-                }
-                else -> Unit
-            }
-
             _uiState.update { it.copy(isLoading = false) }
         }
     }

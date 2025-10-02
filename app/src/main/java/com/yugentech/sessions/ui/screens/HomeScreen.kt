@@ -67,6 +67,8 @@ fun HomeScreen(
 
     LaunchedEffect(userId) {
         homeViewModel.setUserId(userId)
+        homeViewModel.syncPendingSessions(userId)
+        homeViewModel.fetchPendingSessions(userId)
     }
 
     LaunchedEffect(uiState.isRunning) {
