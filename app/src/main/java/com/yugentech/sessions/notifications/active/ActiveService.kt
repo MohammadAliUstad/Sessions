@@ -20,18 +20,17 @@ import com.yugentech.sessions.notifications.NotificationType
 class ActiveService(
     private val context: Context
 ) {
-
     private val notificationManager = NotificationManagerCompat.from(context)
 
     companion object {
         const val ACTIVE_CHANNEL_ID = "active_session_channel"
         const val REMINDER_CHANNEL_ID = "reminder_channel"
-
         const val ACTIVE_NOTIFICATION_ID = 1001
         const val REMINDER_NOTIFICATION_ID = 1002
     }
 
     fun createNotificationChannels() {
+
         val manager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
         val activeChannel = NotificationChannel(
@@ -109,26 +108,8 @@ class ActiveService(
                         if (notification.timeRemainingMinutes != null &&
                             notification.totalMinutes != null
                         ) {
-                            val progressCurrent =
-                                notification.totalMinutes - notification.timeRemainingMinutes
-                            val progressMax = notification.totalMinutes
-
-                            setProgress(progressMax, progressCurrent, false)
-
-                            val timeText = when {
-                                notification.timeRemainingMinutes > 1 ->
-                                    "${notification.timeRemainingMinutes} minutes left"
-
-                                notification.timeRemainingMinutes == 1 ->
-                                    "1 minute left"
-
-                                else -> "Less than 1 minute"
-                            }
-
+                            val timeText = "${notification.timeRemainingMinutes} minutes left"
                             setContentText(timeText)
-                            setSubText(timeText)
-                        } else {
-                            setProgress(0, 0, true)
                         }
                     }
 
