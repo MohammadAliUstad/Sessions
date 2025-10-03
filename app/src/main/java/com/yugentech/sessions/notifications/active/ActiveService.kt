@@ -78,6 +78,7 @@ class ActiveService(
     }
 
     fun buildNotification(notification: Notification): android.app.Notification {
+
         val channelId = when (notification.type) {
             NotificationType.SCHEDULED -> REMINDER_CHANNEL_ID
             NotificationType.ACTIVE -> ACTIVE_CHANNEL_ID
@@ -97,7 +98,7 @@ class ActiveService(
         return NotificationCompat.Builder(context, channelId)
             .setContentTitle(notification.title)
             .setContentText(notification.message)
-            .setSmallIcon(R.drawable.sessions_timer_coral)
+            .setSmallIcon(android.R.drawable.ic_lock_idle_alarm)
             .setContentIntent(pendingIntent)
             .setOngoing(notification.isOngoing)
             .setAutoCancel(!notification.isOngoing)
