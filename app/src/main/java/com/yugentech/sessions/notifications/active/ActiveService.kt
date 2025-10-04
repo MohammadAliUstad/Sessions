@@ -98,7 +98,7 @@ class ActiveService(
         return NotificationCompat.Builder(context, channelId)
             .setContentTitle(notification.title)
             .setContentText(notification.message)
-            .setSmallIcon(android.R.drawable.ic_lock_idle_alarm)
+            .setSmallIcon(R.drawable.ic_stat_name)
             .setContentIntent(pendingIntent)
             .setOngoing(notification.isOngoing)
             .setAutoCancel(!notification.isOngoing)
