@@ -130,7 +130,7 @@ fun AppInfoCard() {
                     contentAlignment = Alignment.Center
                 ) {
                     Image(
-                        painter = painterResource(id = R.drawable.sessions_timer_coral),
+                        painter = painterResource(id = R.drawable.app_icon),
                         contentDescription = "Sessions App Icon",
                         modifier = Modifier
                             .fillMaxSize()
