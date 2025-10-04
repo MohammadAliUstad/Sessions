@@ -146,8 +146,8 @@ object AppColorSchemes {
 
         secondary = Color(0xFFD1C6A1),
         onSecondary = Color(0xFF363016),
-        secondaryContainer = Color(0xFF4A4226), // Better dark yellow navigation
-        onSecondaryContainer = Color(0xFFE8DDB3), // Improved contrast
+        secondaryContainer = Color(0xFF4A4226),
+        onSecondaryContainer = Color(0xFFE8DDB3),
 
         tertiary = Color(0xFFA9D0B3),
         onTertiary = Color(0xFF143723),

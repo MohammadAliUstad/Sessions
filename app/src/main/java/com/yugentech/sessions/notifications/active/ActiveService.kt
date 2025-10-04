@@ -98,7 +98,7 @@ class ActiveService(
         return NotificationCompat.Builder(context, channelId)
             .setContentTitle(notification.title)
             .setContentText(notification.message)
-            .setSmallIcon(R.drawable.ic_stat_name)
+            .setSmallIcon(R.drawable.ic_notification)
             .setContentIntent(pendingIntent)
             .setOngoing(notification.isOngoing)
             .setAutoCancel(!notification.isOngoing)
