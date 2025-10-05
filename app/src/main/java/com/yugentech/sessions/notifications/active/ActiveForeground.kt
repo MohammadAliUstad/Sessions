@@ -5,58 +5,57 @@ import android.content.Intent
 import android.content.pm.ServiceInfo
 import android.os.Build
 import android.os.IBinder
-import android.util.Log
 import androidx.core.app.ServiceCompat
 import com.yugentech.sessions.notifications.Notification
 import com.yugentech.sessions.notifications.NotificationType
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
 
 class ActiveForeground : Service() {
 
     companion object {
-        private const val TAG = "ActiveForeground"
-        private const val ACTION_START_SESSION = "START_SESSION"
-        private const val ACTION_STOP_SESSION = "STOP_SESSION"
-        private const val ACTION_UPDATE_SESSION = "UPDATE_SESSION"
+        const val ACTION_START_SESSION = "START_SESSION"
+        const val ACTION_STOP_SESSION = "STOP_SESSION"
+        const val ACTION_UPDATE_SESSION = "UPDATE_SESSION"
     }
 
     private val activeService: ActiveService by inject()
     private var isSessionActive = false
+    private var updateJob: Job? = null
+    private var remainingSeconds = 0
+    private var sessionTitle = "Focus Session"
 
     override fun onBind(intent: Intent?): IBinder? = null
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        Log.d(TAG, "🚀 ActiveForeground service command: ${intent?.action}")
-
         when (intent?.action) {
             ACTION_START_SESSION -> startSession(intent)
             ACTION_STOP_SESSION -> stopSession()
-            ACTION_UPDATE_SESSION -> updateSession(intent)
-            else -> startSession(intent) // Default behavior
+            ACTION_UPDATE_SESSION -> {
+                val newTime = intent.getIntExtra("remainingMinutes", remainingSeconds)
+                if (newTime != remainingSeconds) {
+                    remainingSeconds = newTime
+                }
+            }
+
+            else -> startSession(intent)
         }
 
-        // Return START_STICKY to restart if killed while session active
         return if (isSessionActive) START_STICKY else START_NOT_STICKY
     }
 
     private fun startSession(intent: Intent?) {
+        if (isSessionActive) return
+
         isSessionActive = true
+        sessionTitle = intent?.getStringExtra("title") ?: "Focus Session"
+        remainingSeconds = intent?.getIntExtra("remainingMinutes", 0) ?: 0
 
-        val title = intent?.getStringExtra("title") ?: "Study Session"
-        val message = intent?.getStringExtra("message") ?: "Session in progress"
-        val totalMinutes = intent?.getIntExtra("totalMinutes", 0)
-        val remainingMinutes = intent?.getIntExtra("remainingMinutes", 0)
-
-        val notification = Notification(
-            id = ActiveService.ACTIVE_NOTIFICATION_ID,
-            type = NotificationType.ACTIVE,
-            title = title,
-            message = message,
-            isOngoing = true,
-            totalMinutes = totalMinutes,
-            timeRemainingMinutes = remainingMinutes
-        )
-
+        val notification = createNotification(remainingSeconds)
         val androidNotification = activeService.buildNotification(notification)
 
         val serviceType = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
@@ -72,48 +71,55 @@ class ActiveForeground : Service() {
             serviceType
         )
 
-        Log.d(TAG, "✅ Session started - Service in foreground")
+        startCountdown()
     }
 
-    private fun updateSession(intent: Intent?) {
-        if (!isSessionActive) return
+    private fun startCountdown() {
+        updateJob?.cancel()
+        updateJob = CoroutineScope(Dispatchers.Default).launch {
+            while (isSessionActive && remainingSeconds > 0) {
+                delay(1000)
+                remainingSeconds--
 
-        // Update notification with new time/progress
-        startSession(intent) // Reuse start logic for updates
-        Log.d(TAG, "🔄 Session updated")
+                val notification = createNotification(remainingSeconds)
+                activeService.showNotification(notification)
+            }
+
+            if (remainingSeconds <= 0) {
+                stopSession()
+            }
+        }
+    }
+
+    private fun createNotification(seconds: Int): Notification {
+        return Notification(
+            id = ActiveService.ACTIVE_NOTIFICATION_ID,
+            type = NotificationType.ACTIVE,
+            title = sessionTitle,
+            message = "Session in progress",
+            isOngoing = true,
+            timeRemainingMinutes = seconds
+        )
     }
 
     private fun stopSession() {
         isSessionActive = false
-        Log.d(TAG, "🛑 Session stopped - Service will stop")
-
-        // Hide notification and stop service
+        updateJob?.cancel()
+        updateJob = null
         activeService.hideNotification(ActiveService.ACTIVE_NOTIFICATION_ID)
         stopForeground(STOP_FOREGROUND_REMOVE)
         stopSelf()
     }
 
     override fun onTaskRemoved(rootIntent: Intent?) {
-        Log.d(TAG, "📱 App removed from recent apps")
-
-        // User manually removed app - stop everything
         stopSession()
         super.onTaskRemoved(rootIntent)
     }
 
     override fun onDestroy() {
-        Log.d(TAG, "🔄 Service destroyed")
         isSessionActive = false
+        updateJob?.cancel()
         activeService.hideNotification(ActiveService.ACTIVE_NOTIFICATION_ID)
         super.onDestroy()
-    }
-
-    // Let system know if service can be safely killed
-    override fun onLowMemory() {
-        super.onLowMemory()
-        if (!isSessionActive) {
-            Log.d(TAG, "💾 Low memory - no active session, allowing kill")
-            stopSelf()
-        }
     }
 }

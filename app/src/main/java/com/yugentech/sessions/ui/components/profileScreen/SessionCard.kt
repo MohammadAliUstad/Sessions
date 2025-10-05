@@ -76,7 +76,7 @@ fun SessionCard(
                     verticalArrangement = Arrangement.spacedBy(4.dp)
                 ) {
                     val dateFormat = SimpleDateFormat("MMM dd, yyyy", Locale.getDefault())
-                    val timeFormat = SimpleDateFormat("HH:mm", Locale.getDefault())
+                    val timeFormat = SimpleDateFormat("hh:mm a", Locale.getDefault())
                     val formattedDate = dateFormat.format(Date(session.timestamp))
                     val formattedTime = timeFormat.format(Date(session.timestamp))
 

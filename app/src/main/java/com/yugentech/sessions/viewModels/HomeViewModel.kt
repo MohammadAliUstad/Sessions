@@ -74,7 +74,6 @@ class HomeViewModel(
         }
     }
 
-
     fun syncPendingSessions(userId: String) {
         viewModelScope.launch {
             val result = sessionsRepository.syncSessions(userId)
@@ -84,7 +83,6 @@ class HomeViewModel(
             }
         }
     }
-
 
     fun updateSelectedDuration(minutes: Int) {
         val durationInSeconds = minutes * 60
@@ -125,6 +123,7 @@ class HomeViewModel(
                 duration = elapsedTime,
                 timestamp = System.currentTimeMillis()
             )
+            syncPendingSessions(userId)
 
             alertsRepository.playSessionStopAlert(view)
 
