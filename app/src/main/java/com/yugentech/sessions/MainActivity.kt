@@ -5,6 +5,7 @@ import android.content.pm.PackageManager
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
+import android.view.animation.AccelerateDecelerateInterpolator
 import androidx.activity.ComponentActivity
 import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
@@ -14,6 +15,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Modifier
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -30,18 +32,39 @@ import com.yugentech.sessions.viewModels.HomeViewModel
 import com.yugentech.sessions.viewModels.LoginViewModel
 import com.yugentech.sessions.viewModels.ProfileViewModel
 import com.yugentech.sessions.viewModels.SettingsViewModel
+import org.koin.android.ext.android.get
 import org.koin.androidx.compose.koinViewModel
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        val loginViewModel: LoginViewModel = get()
         val splashScreen = installSplashScreen()
-        requestNotificationPermission()
+
+        splashScreen.setKeepOnScreenCondition {
+            loginViewModel.authState.value.isLoading
+        }
+
+        val splashExited = mutableStateOf(false)
+        splashScreen.setOnExitAnimationListener { splashScreenView ->
+            val icon = splashScreenView.iconView
+            icon.translationY = 0f
+            icon.alpha = 1f
+            icon.animate()
+                .translationY(-icon.height * 0.5f)
+                .alpha(0f)
+                .setDuration(150)
+                .setInterpolator(AccelerateDecelerateInterpolator())
+                .withEndAction {
+                    splashScreenView.remove()
+                    splashExited.value = true
+                }
+                .start()
+        }
 
         setContent {
             val webClientId = getString(R.string.web_client_id)
             val navController = rememberNavController()
-            val loginViewModel: LoginViewModel = koinViewModel()
             val userViewModel: UserViewModel = koinViewModel()
             val homeViewModel: HomeViewModel = koinViewModel()
             val profileViewModel: ProfileViewModel = koinViewModel()
@@ -54,16 +77,16 @@ class MainActivity : ComponentActivity() {
                 ThemeMode.DARK -> true
                 ThemeMode.SYSTEM -> isSystemInDarkTheme()
             }
-            splashScreen.setKeepOnScreenCondition {
-                loginViewModel.authState.value.isLoading
+
+            if (splashExited.value) {
+                enableEdgeToEdge(
+                    statusBarStyle = if (darkTheme) {
+                        SystemBarStyle.dark(scrim = Color.TRANSPARENT)
+                    } else {
+                        SystemBarStyle.light(scrim = Color.TRANSPARENT, darkScrim = Color.WHITE)
+                    }
+                )
             }
-            enableEdgeToEdge(
-                statusBarStyle = if (darkTheme) {
-                    SystemBarStyle.dark(scrim = Color.TRANSPARENT)
-                } else {
-                    SystemBarStyle.light(scrim = Color.TRANSPARENT, darkScrim = Color.WHITE)
-                }
-            )
 
             SessionsTheme(
                 themeConfiguration = themeConfiguration
@@ -82,6 +105,8 @@ class MainActivity : ComponentActivity() {
                         settingsViewModel = settingsViewModel,
                         notificationsViewModel = notificationsViewModel
                     )
+
+                    requestNotificationPermission()
                 }
             }
         }
