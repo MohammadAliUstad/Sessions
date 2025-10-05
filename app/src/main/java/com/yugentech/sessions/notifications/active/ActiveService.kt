@@ -15,6 +15,7 @@ import com.yugentech.sessions.MainActivity
 import com.yugentech.sessions.R
 import com.yugentech.sessions.notifications.Notification
 import com.yugentech.sessions.notifications.NotificationType
+import java.util.Locale
 
 
 class ActiveService(
@@ -33,12 +34,17 @@ class ActiveService(
 
         val manager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
+        // --- CORRECTION APPLIED HERE ---
+        // Changed IMPORTANCE_LOW to IMPORTANCE_DEFAULT to ensure the icon
+        // appears in the status bar on Android 8.0+
         val activeChannel = NotificationChannel(
             ACTIVE_CHANNEL_ID,
             "Active Session",
             NotificationManager.IMPORTANCE_DEFAULT
         ).apply {
             description = "Shows when a study session is active"
+            setSound(null, null)
+            enableVibration(false)
         }
 
         val reminderChannel = NotificationChannel(
@@ -78,7 +84,6 @@ class ActiveService(
     }
 
     fun buildNotification(notification: Notification): android.app.Notification {
-
         val channelId = when (notification.type) {
             NotificationType.SCHEDULED -> REMINDER_CHANNEL_ID
             NotificationType.ACTIVE -> ACTIVE_CHANNEL_ID
@@ -100,17 +105,23 @@ class ActiveService(
             .setContentText(notification.message)
             .setSmallIcon(R.drawable.ic_notification)
             .setContentIntent(pendingIntent)
+            .setOnlyAlertOnce(true)
+            .setShowWhen(false)
+            .setSilent(true)
             .setOngoing(notification.isOngoing)
             .setAutoCancel(!notification.isOngoing)
             .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
             .apply {
                 when (notification.type) {
                     NotificationType.ACTIVE -> {
-                        if (notification.timeRemainingMinutes != null &&
-                            notification.totalMinutes != null
-                        ) {
-                            val timeText = "${notification.timeRemainingMinutes} minutes left"
-                            setContentText(timeText)
+                        notification.timeRemainingMinutes?.let { seconds ->
+                            val formattedTime = String.format(
+                                Locale.US,
+                                "%02d:%02d",
+                                seconds / 60,  // minutes
+                                seconds % 60   // seconds
+                            )
+                            setContentText("$formattedTime time remaining")
                         }
                     }
 
