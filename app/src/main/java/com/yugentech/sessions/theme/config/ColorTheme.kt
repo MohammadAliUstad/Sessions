@@ -1,4 +1,4 @@
-package com.yugentech.sessions.theme.enums
+package com.yugentech.sessions.theme.config
 
 // Defines the base color palettes available in the app
 enum class ColorTheme {
