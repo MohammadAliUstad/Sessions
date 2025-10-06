@@ -1,4 +1,4 @@
-package com.yugentech.sessions.ui.dash.components.settingsScreen
+package com.yugentech.sessions.ui.dash.settingsScreen.components
 
 import android.content.Context
 import android.content.Intent
