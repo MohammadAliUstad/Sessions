@@ -12,10 +12,9 @@ import kotlinx.coroutines.flow.map
 import timber.log.Timber
 
 // Manages persistent storage for sound and haptic settings
-class AlertsPreferences(
+class AlertsDataStore(
     private val dataStore: DataStore<Preferences>
 ) {
-    // Keys to identify sound and haptic boolean values in storage
     private val soundKey = booleanPreferencesKey("sound_enabled")
     private val hapticsKey = booleanPreferencesKey("haptics_enabled")
 
