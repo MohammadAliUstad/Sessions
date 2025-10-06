@@ -1,4 +1,4 @@
-package com.yugentech.sessions.alerts.models
+package com.yugentech.sessions.alerts.model
 
 // Data model holding user preferences for sound, haptics, and background ambience
 data class AlertsConfiguration(
