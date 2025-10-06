@@ -10,13 +10,13 @@ import android.view.animation.LinearInterpolator
 import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
 import androidx.media3.exoplayer.ExoPlayer
-import com.yugentech.sessions.alerts.models.BackgroundSound
+import com.yugentech.sessions.alerts.model.BackgroundSound
 import timber.log.Timber
 import kotlin.math.cos
 import kotlin.math.sin
 
 // Manages playback of looping background sounds using two players for gapless crossfading
-class BackgroundSoundService(private val context: Context) {
+class BackgroundService(private val context: Context) {
 
     private var activePlayer: ExoPlayer? = null
     private var nextPlayer: ExoPlayer? = null
@@ -43,8 +43,8 @@ class BackgroundSoundService(private val context: Context) {
     }
 
     // Main entry point to start playing a specific sound
-    fun play(sound: BackgroundSound) {
-        Timber.d("play() called with sound: ${sound.id}")
+    fun play(sound: BackgroundSound, isBreakMode: Boolean = false) {
+        Timber.d("play() called with sound: ${sound.id}, isBreakMode: $isBreakMode")
 
         if (sound == BackgroundSound.NONE) {
             stop()
@@ -56,10 +56,11 @@ class BackgroundSoundService(private val context: Context) {
             isStopping = false
         }
 
-        // If the same sound is already playing, just ensure volume is up
+        val startVolume = if (isBreakMode) BREAK_VOLUME else FOCUS_VOLUME
+
         if (isLooping && currentSound == sound) {
-            Timber.d("Same sound already playing, fading to focus mode")
-            fadeToFocusMode()
+            Timber.d("Same sound already playing, adjusting volume for mode")
+            if (isBreakMode) fadeToBreakMode() else fadeToFocusMode()
             return
         }
 
@@ -71,7 +72,8 @@ class BackgroundSoundService(private val context: Context) {
                 val uri = "android.resource://${context.packageName}/$resId"
                 currentSound = sound
                 isLooping = true
-                targetVolume = FOCUS_VOLUME
+
+                targetVolume = startVolume
                 crossfadeScheduled = false
                 isStopping = false
 
@@ -83,7 +85,8 @@ class BackgroundSoundService(private val context: Context) {
                 nextPlayer = createPlayer(uri)
 
                 startPositionMonitoring(uri)
-                fadeVolume(0f, FOCUS_VOLUME)
+
+                fadeVolume(0f, startVolume)
             } catch (e: Exception) {
                 Timber.e(e, "Failed to start background sound")
                 release()
@@ -147,13 +150,13 @@ class BackgroundSoundService(private val context: Context) {
     // Lowers volume during break sessions
     fun fadeToBreakMode() {
         Timber.d("fadeToBreakMode() called")
-        fadeVolume(FOCUS_VOLUME, BREAK_VOLUME)
+        fadeVolume(targetVolume, BREAK_VOLUME)
     }
 
     // Restores full volume for focus sessions
     fun fadeToFocusMode() {
         Timber.d("fadeToFocusMode() called")
-        fadeVolume(BREAK_VOLUME, FOCUS_VOLUME)
+        fadeVolume(targetVolume, FOCUS_VOLUME)
     }
 
     // Gradually fades out audio and releases resources
