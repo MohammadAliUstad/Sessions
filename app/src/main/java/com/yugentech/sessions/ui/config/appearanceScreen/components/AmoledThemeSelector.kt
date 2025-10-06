@@ -1,5 +1,6 @@
-package com.yugentech.sessions.ui.config.components.appearanceScreen
+package com.yugentech.sessions.ui.config.appearanceScreen.components
 
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -39,7 +40,7 @@ fun AmoledThemeSelector(
     viewModel: ThemeViewModel = koinViewModel()
 ) {
     val themeConfig by viewModel.themeConfiguration.collectAsStateWithLifecycle()
-    val isSystemDark = androidx.compose.foundation.isSystemInDarkTheme()
+    val isSystemDark = isSystemInDarkTheme()
     val isDarkThemeActive =
         themeConfig.themeMode == ThemeMode.DARK || (themeConfig.themeMode == ThemeMode.SYSTEM && isSystemDark)
 
