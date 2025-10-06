@@ -1,7 +1,7 @@
-package com.yugentech.sessions.alerts.alertsRepository
+package com.yugentech.sessions.alerts.repository
 
 import android.view.View
-import com.yugentech.sessions.alerts.models.AlertsConfiguration
+import com.yugentech.sessions.alerts.model.AlertsConfiguration
 import kotlinx.coroutines.flow.StateFlow
 
 // Interface defining the contract for handling sounds and vibrations
