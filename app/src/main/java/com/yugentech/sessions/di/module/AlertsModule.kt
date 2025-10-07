@@ -1,8 +1,8 @@
-package com.yugentech.sessions.dependencyInjection.modules
+package com.yugentech.sessions.di.module
 
 import com.yugentech.sessions.alerts.service.HapticService
 import com.yugentech.sessions.alerts.service.SoundService
-import com.yugentech.sessions.alerts.datastore.AlertsPreferences
+import com.yugentech.sessions.alerts.datastore.AlertsDataStore
 import com.yugentech.sessions.alerts.repository.AlertsRepository
 import com.yugentech.sessions.alerts.service.BackgroundService
 import com.yugentech.sessions.alerts.repository.AlertsRepositoryImpl
@@ -33,7 +33,7 @@ val alertsModule = module {
 
     // Provides the preferences manager for alert settings using a named DataStore
     single {
-        AlertsPreferences(
+        AlertsDataStore(
             dataStore = get(named("alerts"))
         )
     }
@@ -41,7 +41,7 @@ val alertsModule = module {
     // Provides the main repository that coordinates sounds, haptics, and preferences
     single<AlertsRepository> {
         AlertsRepositoryImpl(
-            alertsPreferences = get(),
+            alertsDataStore = get(),
             hapticService = get(),
             soundService = get(),
             backgroundSoundService = get(),
