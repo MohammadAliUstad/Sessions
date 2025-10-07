@@ -1,4 +1,4 @@
-package com.yugentech.sessions.alerts.models
+package com.yugentech.sessions.alerts.model
 
 import androidx.annotation.RawRes
 import com.yugentech.sessions.R
