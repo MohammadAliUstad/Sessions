@@ -1,13 +1,14 @@
-package com.yugentech.sessions.alerts.alertsRepository
+package com.yugentech.sessions.alerts.repository
 
 import android.view.View
-import com.yugentech.sessions.alerts.BackgroundSoundService
-import com.yugentech.sessions.alerts.HapticService
-import com.yugentech.sessions.alerts.SoundService
-import com.yugentech.sessions.alerts.alertsDatastore.AlertsPreferences
-import com.yugentech.sessions.alerts.models.AlertsConfiguration
-import com.yugentech.sessions.alerts.models.BackgroundSound
-import com.yugentech.sessions.timer.timerRepository.TimerRepository
+import com.yugentech.sessions.alerts.service.BackgroundService
+import com.yugentech.sessions.alerts.service.HapticService
+import com.yugentech.sessions.alerts.service.SoundService
+import com.yugentech.sessions.alerts.datastore.AlertsDataStore
+import com.yugentech.sessions.alerts.model.AlertsConfiguration
+import com.yugentech.sessions.alerts.model.BackgroundSound
+import com.yugentech.sessions.timer.repository.TimerRepository
+import com.yugentech.sessions.timer.state.TimerMode // Added Import
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -18,15 +19,15 @@ import timber.log.Timber
 class AlertsRepositoryImpl(
     externalScope: CoroutineScope,
     private val timerRepository: TimerRepository,
-    private val alertsPreferences: AlertsPreferences,
+    private val alertsDataStore: AlertsDataStore,
     private val hapticService: HapticService,
     private val soundService: SoundService,
-    private val backgroundSoundService: BackgroundSoundService
+    private val backgroundSoundService: BackgroundService
 ) : AlertsRepository {
 
     // Hot flow keeping the latest alert configuration active
     override val alertConfiguration: StateFlow<AlertsConfiguration> =
-        alertsPreferences.alertConfiguration
+        alertsDataStore.alertConfiguration
             .stateIn(
                 scope = externalScope,
                 started = SharingStarted.Eagerly,
@@ -90,21 +91,24 @@ class AlertsRepositoryImpl(
 
     // Updates sound preference via the preferences manager
     override suspend fun setSoundEnabled(enabled: Boolean) {
-        alertsPreferences.setSoundEnabled(enabled)
+        alertsDataStore.setSoundEnabled(enabled)
     }
 
     // Updates haptics preference via the preferences manager
     override suspend fun setHapticsEnabled(enabled: Boolean) {
-        alertsPreferences.setHapticsEnabled(enabled)
+        alertsDataStore.setHapticsEnabled(enabled)
     }
 
     // Plays the active background sound if one is selected
     private fun startBackgroundSound() {
         val backgroundSound = BackgroundSound.fromId(currentSoundId)
+        val currentState = timerRepository.timerState.value
+        val isBreakMode = currentState.currentMode == TimerMode.ShortBreak ||
+                currentState.currentMode == TimerMode.LongBreak
 
         if (backgroundSound != BackgroundSound.NONE) {
-            Timber.d("Starting background ambience from TimerConfig: ${backgroundSound.id}")
-            backgroundSoundService.play(backgroundSound)
+            Timber.d("Starting background ambience from TimerConfig: ${backgroundSound.id} (Break Mode: $isBreakMode)")
+            backgroundSoundService.play(backgroundSound, isBreakMode)
         } else {
             Timber.d("Background ambience skipped (None selected)")
         }
