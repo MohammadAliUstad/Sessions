@@ -66,41 +66,9 @@ fun HomeScreen(
 
     LaunchedEffect(userId) {
         homeViewModel.setUserId(userId)
+        homeViewModel.fetchUserOnce(userId)
+        homeViewModel.fetchSessionsOnce(userId)
         homeViewModel.syncPendingSessions(userId)
-        homeViewModel.fetchPendingSessions(userId)
-    }
-
-    LaunchedEffect(uiState.isRunning) {
-        if (uiState.isRunning) {
-            notificationsViewModel.startActiveSession(
-                Notification(
-                    id = 1001,
-                    title = "Focus",
-                    message = "Session in progress",
-                    type = NotificationType.ACTIVE,
-                    isOngoing = true,
-                    timeRemainingMinutes = displayTime
-                )
-            )
-        } else {
-            notificationsViewModel.stopActiveSession()
-        }
-    }
-
-    // Update notification every second while running
-    LaunchedEffect(uiState.isRunning, displayTime) {
-        if (uiState.isRunning) {
-            notificationsViewModel.updateActiveSession(
-                Notification(
-                    id = 1001,
-                    title = "Focus",
-                    message = "Session in progress",
-                    type = NotificationType.ACTIVE,
-                    isOngoing = true,
-                    timeRemainingMinutes = displayTime
-                )
-            )
-        }
     }
 
     Surface(
@@ -216,8 +184,19 @@ fun HomeScreen(
                             onPlayPause = {
                                 if (uiState.isRunning) {
                                     homeViewModel.stopTimer(view)
+                                    notificationsViewModel.stopActiveSession()
                                 } else {
                                     homeViewModel.startTimer(view)
+                                    notificationsViewModel.startActiveSession(
+                                        Notification(
+                                            id = 1001,
+                                            title = "Focus",
+                                            message = "Session in progress",
+                                            type = NotificationType.ACTIVE,
+                                            isOngoing = true,
+                                            remainingSeconds = displayTime
+                                        )
+                                    )
                                 }
                             }
                         )
@@ -235,11 +214,13 @@ fun HomeScreen(
                         StudyingControlButtons(
                             onStop = {
                                 homeViewModel.stopAndDiscardSession(view)
+                                notificationsViewModel.stopActiveSession()
                             },
                             onSave = {
                                 val elapsed = homeViewModel.getElapsedTime()
                                 if (elapsed < 60) {
                                     homeViewModel.stopAndDiscardSession(view)
+                                    notificationsViewModel.stopActiveSession()
                                     Toast.makeText(
                                         context,
                                         "Please focus for at least 1 minute to save a session",
@@ -247,6 +228,7 @@ fun HomeScreen(
                                     ).show()
                                 } else {
                                     homeViewModel.stopAndSaveSession(view)
+                                    notificationsViewModel.stopActiveSession()
                                 }
                             }
                         )

@@ -6,8 +6,8 @@ data class Notification(
     val message: String,
     val type: NotificationType,
     val isOngoing: Boolean,
-    val timeRemainingMinutes: Int? = null,
-    val totalMinutes: Int? = null
+    val remainingSeconds: Int? = null,
+    val totalSeconds: Int? = null
 )
 
 enum class NotificationType {

@@ -1,5 +1,6 @@
 package com.yugentech.sessions.dependencyInjection.modules
 
+import com.yugentech.sessions.dependencyInjection.NotificationPrefsDataStore
 import com.yugentech.sessions.notifications.NotificationsViewModel
 import com.yugentech.sessions.notifications.active.ActiveService
 import com.yugentech.sessions.notifications.active.ActiveServiceManager
@@ -8,11 +9,12 @@ import com.yugentech.sessions.notifications.notificationRepository.NotificationR
 import com.yugentech.sessions.notifications.scheduled.KoinWorkerFactory
 import com.yugentech.sessions.notifications.scheduled.ReminderManager
 import org.koin.android.ext.koin.androidContext
+import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
 val notificationModule = module {
 
-    single {
+    single(createdAtStart = true) {
         ActiveService(
             context = androidContext()
         )
@@ -30,6 +32,9 @@ val notificationModule = module {
         )
     }
 
+    single {
+        NotificationPrefsDataStore(get(named("notification")))
+    }
 
     single<NotificationRepository> {
         NotificationRepositoryImpl(

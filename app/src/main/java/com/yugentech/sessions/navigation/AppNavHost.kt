@@ -21,6 +21,8 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import com.google.accompanist.navigation.animation.AnimatedNavHost
+import com.yugentech.sessions.notifications.Notification
+import com.yugentech.sessions.notifications.NotificationType
 import com.yugentech.sessions.notifications.NotificationsViewModel
 import com.yugentech.sessions.ui.screens.AboutScreen
 import com.yugentech.sessions.ui.screens.MainScreen
@@ -39,6 +41,7 @@ import com.yugentech.sessions.viewModels.HomeViewModel
 import com.yugentech.sessions.viewModels.LoginViewModel
 import com.yugentech.sessions.viewModels.ProfileViewModel
 import com.yugentech.sessions.viewModels.SettingsViewModel
+import kotlinx.coroutines.delay
 
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
@@ -68,6 +71,19 @@ fun AppNavHost(
         authState.intent?.let {
             launcher.launch(IntentSenderRequest.Builder(it).build())
         }
+        notificationsViewModel.startActiveSession(
+            notification = Notification(
+                id = 1001,
+                title = "Initializing...",
+                message = "Starting service",
+                type = NotificationType.ACTIVE,
+                isOngoing = true,
+                remainingSeconds = 1
+            )
+        )
+
+        delay(200)
+        notificationsViewModel.stopActiveSession()
     }
 
     LaunchedEffect(authState.isUserLoggedIn, authState.userId) {
@@ -158,8 +174,10 @@ fun AppNavHost(
             if (currentUserId != null) {
                 MainScreen(
                     userId = currentUserId,
-                    onLogout = {
+                    onSignOut = {
                         loginViewModel.signOut()
+                        notificationsViewModel.stopActiveSession()
+                        homeViewModel.resetStudyState()
                     },
                     onEditProfile = {
                         navController.navigate(Screens.EditProfile.route)

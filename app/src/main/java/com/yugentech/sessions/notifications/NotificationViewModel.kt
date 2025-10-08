@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.yugentech.sessions.notifications.notificationRepository.NotificationRepository
 import kotlinx.coroutines.launch
 
+
 class NotificationsViewModel(
     private val notificationRepository: NotificationRepository
 ) : ViewModel() {
@@ -12,12 +13,6 @@ class NotificationsViewModel(
     fun startActiveSession(notification: Notification) {
         viewModelScope.launch {
             notificationRepository.startActiveSession(notification)
-        }
-    }
-
-    fun updateActiveSession(notification: Notification) {
-        viewModelScope.launch {
-            notificationRepository.updateActiveSession(notification)
         }
     }
 

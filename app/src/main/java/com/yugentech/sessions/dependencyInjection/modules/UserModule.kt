@@ -21,7 +21,8 @@ val userModule = module {
     single<UserRepository> {
         UserRepositoryImpl(
             userDao = get(),
-            userService = get()
+            userService = get(),
+            syncPreferences = get()
         )
     }
 

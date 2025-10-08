@@ -8,26 +8,26 @@ import android.os.IBinder
 import androidx.core.app.ServiceCompat
 import com.yugentech.sessions.notifications.Notification
 import com.yugentech.sessions.notifications.NotificationType
+import com.yugentech.sessions.utils.Constants.ACTION_START_SESSION
+import com.yugentech.sessions.utils.Constants.ACTION_STOP_SESSION
+import com.yugentech.sessions.utils.Constants.ACTION_UPDATE_SESSION
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
+import java.util.Locale
+
 
 class ActiveForeground : Service() {
-
-    companion object {
-        const val ACTION_START_SESSION = "START_SESSION"
-        const val ACTION_STOP_SESSION = "STOP_SESSION"
-        const val ACTION_UPDATE_SESSION = "UPDATE_SESSION"
-    }
 
     private val activeService: ActiveService by inject()
     private var isSessionActive = false
     private var updateJob: Job? = null
     private var remainingSeconds = 0
     private var sessionTitle = "Focus Session"
+    private val serviceScope = CoroutineScope(Dispatchers.Default)
 
     override fun onBind(intent: Intent?): IBinder? = null
 
@@ -39,10 +39,11 @@ class ActiveForeground : Service() {
                 val newTime = intent.getIntExtra("remainingMinutes", remainingSeconds)
                 if (newTime != remainingSeconds) {
                     remainingSeconds = newTime
+                    if (isSessionActive) {
+                        updateNotification()
+                    }
                 }
             }
-
-            else -> startSession(intent)
         }
 
         return if (isSessionActive) START_STICKY else START_NOT_STICKY
@@ -55,57 +56,79 @@ class ActiveForeground : Service() {
         sessionTitle = intent?.getStringExtra("title") ?: "Focus Session"
         remainingSeconds = intent?.getIntExtra("remainingMinutes", 0) ?: 0
 
-        val notification = createNotification(remainingSeconds)
-        val androidNotification = activeService.buildNotification(notification)
-
-        val serviceType = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
-            ServiceInfo.FOREGROUND_SERVICE_TYPE_DATA_SYNC
-        } else {
-            0
-        }
-
-        ServiceCompat.startForeground(
-            this,
-            ActiveService.ACTIVE_NOTIFICATION_ID,
-            androidNotification,
-            serviceType
+        val placeholderNotification = Notification(
+            id = ActiveService.ACTIVE_NOTIFICATION_ID,
+            type = NotificationType.ACTIVE,
+            title = sessionTitle,
+            message = "Starting session...",
+            isOngoing = true,
+            remainingSeconds = remainingSeconds
         )
 
-        startCountdown()
+        val androidNotification = activeService.buildNotification(placeholderNotification)
+
+        try {
+            val serviceType = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+                ServiceInfo.FOREGROUND_SERVICE_TYPE_DATA_SYNC
+            } else 0
+
+            ServiceCompat.startForeground(
+                this,
+                ActiveService.ACTIVE_NOTIFICATION_ID,
+                androidNotification,
+                serviceType
+            )
+
+            startCountdown()
+
+        } catch (_: Exception) {
+            isSessionActive = false
+            stopSelf()
+        }
     }
 
     private fun startCountdown() {
         updateJob?.cancel()
-        updateJob = CoroutineScope(Dispatchers.Default).launch {
+        updateJob = serviceScope.launch {
             while (isSessionActive && remainingSeconds > 0) {
                 delay(1000)
                 remainingSeconds--
-
-                val notification = createNotification(remainingSeconds)
-                activeService.showNotification(notification)
+                updateNotification()
             }
-
-            if (remainingSeconds <= 0) {
-                stopSession()
-            }
+            if (remainingSeconds <= 0) stopSession()
         }
     }
 
+    private fun updateNotification() {
+        val notification = createNotification(remainingSeconds)
+        activeService.showNotification(notification)
+    }
+
     private fun createNotification(seconds: Int): Notification {
+        val formattedTime = String.format(
+            Locale.US,
+            "%02d:%02d",
+            seconds / 60,
+            seconds % 60
+        )
         return Notification(
             id = ActiveService.ACTIVE_NOTIFICATION_ID,
             type = NotificationType.ACTIVE,
             title = sessionTitle,
-            message = "Session in progress",
+            message = "$formattedTime remaining",
             isOngoing = true,
-            timeRemainingMinutes = seconds
+            remainingSeconds = seconds
         )
     }
 
     private fun stopSession() {
+        if (!isSessionActive && updateJob == null) return
+
         isSessionActive = false
+        remainingSeconds = 0
         updateJob?.cancel()
         updateJob = null
+
         activeService.hideNotification(ActiveService.ACTIVE_NOTIFICATION_ID)
         stopForeground(STOP_FOREGROUND_REMOVE)
         stopSelf()

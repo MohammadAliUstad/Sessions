@@ -7,6 +7,7 @@ import com.yugentech.sessions.authentication.authRepository.AuthRepository
 import com.yugentech.sessions.authentication.authUtils.AuthResult
 import com.yugentech.sessions.authentication.authUtils.AuthState
 import com.yugentech.sessions.models.UserData
+import com.yugentech.sessions.user.UserResult
 import com.yugentech.sessions.user.userRepository.UserRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -56,7 +57,7 @@ class LoginViewModel(
                     )
 
                     when (val createResult = userRepository.upsertUser(userData)) {
-                        is AuthResult.Success -> {
+                        is UserResult.Success -> {
                             _authState.value = AuthState(
                                 isUserLoggedIn = true,
                                 userId = firebaseUser.uid,
@@ -67,11 +68,18 @@ class LoginViewModel(
                             )
                         }
 
-                        is AuthResult.Error -> {
+                        is UserResult.Error -> {
                             _authState.value = _authState.value.copy(
                                 isLoading = false,
                                 isUserLoggedIn = false,
                                 error = "Failed to create user profile: ${createResult.message}"
+                            )
+                        }
+
+                        is UserResult.Loading -> {
+                            _authState.value = _authState.value.copy(
+                                isLoading = true,
+                                error = null
                             )
                         }
                     }
@@ -240,7 +248,7 @@ class LoginViewModel(
                         )
 
                         when (val createResult = userRepository.upsertUser(userData)) {
-                            is AuthResult.Success -> {
+                            is UserResult.Success -> {
                                 _authState.value = AuthState(
                                     isUserLoggedIn = true,
                                     userId = userId,
@@ -251,11 +259,18 @@ class LoginViewModel(
                                 )
                             }
 
-                            is AuthResult.Error -> {
+                            is UserResult.Error -> {
                                 _authState.value = _authState.value.copy(
                                     isLoading = false,
                                     isUserLoggedIn = false,
                                     error = "Failed to create user profile: ${createResult.message}"
+                                )
+                            }
+
+                            is UserResult.Loading -> {
+                                _authState.value = _authState.value.copy(
+                                    isLoading = true,
+                                    error = null
                                 )
                             }
                         }

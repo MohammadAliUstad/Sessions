@@ -4,8 +4,8 @@ import android.util.Log
 import com.yugentech.sessions.models.Session
 import com.yugentech.sessions.room.daos.SessionsDao
 import com.yugentech.sessions.room.entities.SessionsEntity
-import com.yugentech.sessions.sessions.SessionPreferences
 import com.yugentech.sessions.sessions.SessionsService
+import com.yugentech.sessions.sessions.SyncPreferences
 import com.yugentech.sessions.sessions.sessionsUtils.SessionResult
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
@@ -16,7 +16,7 @@ private const val TAG = "SessionsRepository"
 class SessionsRepositoryImpl(
     private val sessionsDao: SessionsDao,
     private val sessionService: SessionsService,
-    private val sessionPreferences: SessionPreferences
+    private val syncPreferences: SyncPreferences
 ) : SessionsRepository {
 
     override suspend fun saveSession(userId: String, session: Session): SessionResult<Unit> {
@@ -98,6 +98,7 @@ class SessionsRepositoryImpl(
                         Log.d(TAG, "Marked sessions as synced in local DB for user: $userId")
                         SessionResult.Success(Unit)
                     }
+
                     is SessionResult.Error -> {
                         Log.e(TAG, "Failed to upload sessions: ${result.message}")
                         result
@@ -116,7 +117,7 @@ class SessionsRepositoryImpl(
     override suspend fun fetchSessionsOnce(userId: String): SessionResult<Unit> {
         return try {
             Log.d(TAG, "Fetching sessions once for user: $userId")
-            val alreadyFetched = sessionPreferences.isInitialFetchDone().first()
+            val alreadyFetched = syncPreferences.isSessionsFetchDone().first()
             Log.d(TAG, "Already fetched before? $alreadyFetched")
 
             if (alreadyFetched) {
@@ -141,7 +142,7 @@ class SessionsRepositoryImpl(
                         Log.d(TAG, "Saved ${entities.size} sessions to local DB")
                     }
 
-                    sessionPreferences.setInitialFetchDone(true)
+                    syncPreferences.setSessionsFetchDone(true)
                     Log.d(TAG, "Marked initial fetch as done")
                     SessionResult.Success(Unit)
                 }
