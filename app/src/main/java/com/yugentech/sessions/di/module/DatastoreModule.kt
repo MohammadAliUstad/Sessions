@@ -1,4 +1,4 @@
-package com.yugentech.sessions.dependencyInjection.modules
+package com.yugentech.sessions.di.module
 
 import android.content.Context
 import androidx.datastore.core.DataStore
@@ -12,8 +12,10 @@ import org.koin.dsl.module
 private val Context.alertsDataStore: DataStore<Preferences> by preferencesDataStore(name = "alerts")
 private val Context.themeDataStore: DataStore<Preferences> by preferencesDataStore(name = "theme")
 private val Context.notificationDataStore: DataStore<Preferences> by preferencesDataStore(name = "notification")
-private val Context.userDataStore: DataStore<Preferences> by preferencesDataStore(name = "user_prefs")
-private val Context.timerDataStore: DataStore<Preferences> by preferencesDataStore(name = "timer_prefs")
+private val Context.userDataStore: DataStore<Preferences> by preferencesDataStore(name = "user")
+private val Context.timerDataStore: DataStore<Preferences> by preferencesDataStore(name = "timer")
+private val Context.syncDataStore: DataStore<Preferences> by preferencesDataStore(name = "sync")
+
 
 // Koin module providing named DataStore instances
 val dataStoreModule = module {
@@ -41,5 +43,9 @@ val dataStoreModule = module {
     // DataStore for timer configuration
     single<DataStore<Preferences>>(named("timer")) {
         androidContext().timerDataStore
+    }
+
+    single<DataStore<Preferences>>(named("sync")) {
+        androidContext().syncDataStore
     }
 }
