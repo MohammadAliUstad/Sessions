@@ -14,11 +14,11 @@
         tools:ignore="ForegroundServicesPolicy" />
 
     <application
-        android:name=".dependencyInjection.SessionsApp"
+        android:name=".di.SessionsApp"
         android:allowBackup="false"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="false"
-        android:icon="@drawable/ic_launcher_background"
+        android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
@@ -37,7 +37,7 @@
         </activity>
 
         <service
-            android:name=".notifications.active.ActiveForeground"
+            android:name=".notification.active.ActiveForeground"
             android:enabled="true"
             android:exported="false"
             android:foregroundServiceType="specialUse">
@@ -48,7 +48,7 @@
         </service>
 
         <receiver
-            android:name=".notifications.scheduled.AlarmReceiver"
+            android:name=".notification.scheduled.ScheduledReceiver"
             android:enabled="true"
             android:exported="false">
             <intent-filter>
