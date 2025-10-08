@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 import java.io.FileInputStream
 import java.util.Properties
 
@@ -6,8 +8,8 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.google.services)
-    id("com.google.firebase.crashlytics")
-    id("com.google.devtools.ksp")
+    alias(libs.plugins.firebase.crashlytics)
+    alias(libs.plugins.ksp)
 }
 
 val localProperties = Properties()
@@ -18,18 +20,27 @@ if (localPropertiesFile.exists()) {
 
 android {
     namespace = "com.yugentech.sessions"
-    compileSdk = 35
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "com.yugentech.sessions"
         minSdk = 26
         targetSdk = 36
-        versionCode = 14
-        versionName = "3.0.2"
+        versionCode = 18
+        versionName = "3.0.4"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
         val webClientId = localProperties.getProperty("WEB_CLIENT_ID") ?: ""
         resValue("string", "web_client_id", webClientId)
+    }
+
+    sourceSets {
+        getByName("main") {
+            res.srcDirs(
+                "src/main/res",
+                "src/main/res-avatars"
+            )
+        }
     }
 
     buildTypes {
@@ -64,6 +75,8 @@ android {
 }
 
 dependencies {
+
+    implementation(libs.lottie.compose)
 
     // Billing
     implementation(libs.billing)
@@ -116,6 +129,7 @@ dependencies {
     implementation(libs.androidx.room.runtime)
     implementation(libs.androidx.room.ktx)
     implementation(libs.androidx.compose.animation)
+    implementation(libs.androidx.compose.foundation.layout)
     ksp(libs.androidx.room.compiler)
 
     // DataStore
