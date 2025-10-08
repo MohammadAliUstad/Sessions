@@ -13,7 +13,8 @@ val viewModelModule = module {
         HomeViewModel(
             sessionsRepository = get(),
             timerRepository = get(),
-            alertsRepository = get()
+            alertsRepository = get(),
+            userRepository = get()
         )
     }
 

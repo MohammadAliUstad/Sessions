@@ -52,7 +52,7 @@ fun MainScreen(
     userViewModel: UserViewModel,
     profileViewModel: ProfileViewModel,
     notificationsViewModel: NotificationsViewModel,
-    onLogout: () -> Unit,
+    onSignOut: () -> Unit,
     onEditProfile: () -> Unit,
     onSettings: () -> Unit
 ) {
@@ -82,7 +82,7 @@ fun MainScreen(
         LogoutConfirmationDialog(
             onConfirm = {
                 showLogoutDialog = false
-                onLogout()
+                onSignOut()
             },
             onDismiss = {
                 showLogoutDialog = false

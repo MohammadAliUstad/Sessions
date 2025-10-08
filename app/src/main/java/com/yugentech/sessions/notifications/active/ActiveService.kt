@@ -8,6 +8,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
+import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
@@ -17,6 +18,7 @@ import com.yugentech.sessions.notifications.Notification
 import com.yugentech.sessions.notifications.NotificationType
 import java.util.Locale
 
+private const val TAG = "active service"
 
 class ActiveService(
     private val context: Context
@@ -31,12 +33,10 @@ class ActiveService(
     }
 
     fun createNotificationChannels() {
+        Log.d(TAG, "Creating notification channels...")
 
         val manager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
-        // --- CORRECTION APPLIED HERE ---
-        // Changed IMPORTANCE_LOW to IMPORTANCE_DEFAULT to ensure the icon
-        // appears in the status bar on Android 8.0+
         val activeChannel = NotificationChannel(
             ACTIVE_CHANNEL_ID,
             "Active Session",
@@ -56,16 +56,26 @@ class ActiveService(
         }
 
         manager.createNotificationChannel(activeChannel)
+        Log.d(TAG, "Active session channel created: id=$ACTIVE_CHANNEL_ID")
+
         manager.createNotificationChannel(reminderChannel)
+        Log.d(TAG, "Reminder session channel created: id=$REMINDER_CHANNEL_ID")
     }
 
     fun showNotification(notification: Notification) {
-        if (!hasNotificationPermission()) return
+        Log.d(TAG, "Attempting to show notification: id=${notification.id}, title='${notification.title}'")
+        if (!hasNotificationPermission()) {
+            Log.w(TAG, "Cannot show notification: permission denied")
+            return
+        }
 
         try {
             val androidNotification = buildNotification(notification)
             notificationManager.notify(notification.id, androidNotification)
-        } catch (_: SecurityException) {}
+            Log.d(TAG, "Notification shown: id=${notification.id}")
+        } catch (e: SecurityException) {
+            Log.e(TAG, "Failed to show notification due to SecurityException", e)
+        }
     }
 
     fun hideNotification(notificationId: Int) {
@@ -73,7 +83,7 @@ class ActiveService(
     }
 
     private fun hasNotificationPermission(): Boolean {
-        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+        val allowed = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             ContextCompat.checkSelfPermission(
                 context,
                 Manifest.permission.POST_NOTIFICATIONS
@@ -81,16 +91,18 @@ class ActiveService(
         } else {
             notificationManager.areNotificationsEnabled()
         }
+        return allowed
     }
 
     fun buildNotification(notification: Notification): android.app.Notification {
+
         val channelId = when (notification.type) {
             NotificationType.SCHEDULED -> REMINDER_CHANNEL_ID
             NotificationType.ACTIVE -> ACTIVE_CHANNEL_ID
         }
 
         val openAppIntent = Intent(context, MainActivity::class.java).apply {
-            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            flags = Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_CLEAR_TOP
         }
 
         val pendingIntent = PendingIntent.getActivity(
@@ -100,7 +112,7 @@ class ActiveService(
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
 
-        return NotificationCompat.Builder(context, channelId)
+        val builder = NotificationCompat.Builder(context, channelId)
             .setContentTitle(notification.title)
             .setContentText(notification.message)
             .setSmallIcon(R.drawable.ic_notification)
@@ -114,23 +126,23 @@ class ActiveService(
             .apply {
                 when (notification.type) {
                     NotificationType.ACTIVE -> {
-                        notification.timeRemainingMinutes?.let { seconds ->
+                        notification.remainingSeconds?.let { seconds ->
                             val formattedTime = String.format(
                                 Locale.US,
                                 "%02d:%02d",
-                                seconds / 60,  // minutes
-                                seconds % 60   // seconds
+                                seconds / 60,
+                                seconds % 60
                             )
                             setContentText("$formattedTime time remaining")
                         }
                     }
-
                     NotificationType.SCHEDULED -> {
                         setPriority(NotificationCompat.PRIORITY_HIGH)
                         setDefaults(NotificationCompat.DEFAULT_ALL)
                     }
                 }
             }
-            .build()
+
+        return builder.build()
     }
 }

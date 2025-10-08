@@ -46,6 +46,9 @@ android {
 
 dependencies {
 
+    // Material
+    implementation(libs.google.material)
+
     // Work Manager
     implementation(libs.androidx.work.runtime.ktx)
 

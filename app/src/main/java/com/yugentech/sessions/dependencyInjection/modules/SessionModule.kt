@@ -1,6 +1,6 @@
 package com.yugentech.sessions.dependencyInjection.modules
 
-import com.yugentech.sessions.sessions.SessionPreferences
+import com.yugentech.sessions.sessions.SyncPreferences
 import com.yugentech.sessions.sessions.SessionsService
 import com.yugentech.sessions.sessions.sessionsRepository.SessionsRepository
 import com.yugentech.sessions.sessions.sessionsRepository.SessionsRepositoryImpl
@@ -16,7 +16,7 @@ val sessionModule = module {
     }
 
     single {
-        SessionPreferences(
+        SyncPreferences(
             context = androidContext()
         )
     }
@@ -25,7 +25,7 @@ val sessionModule = module {
         SessionsRepositoryImpl(
             sessionsDao = get(),
             sessionService = get(),
-            sessionPreferences = get()
+            syncPreferences = get()
         )
     }
 }

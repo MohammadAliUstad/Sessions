@@ -4,25 +4,22 @@ import android.content.Context
 import android.content.Intent
 import androidx.core.content.ContextCompat
 import com.yugentech.sessions.notifications.Notification
+import com.yugentech.sessions.utils.Constants.ACTION_START_SESSION
+import com.yugentech.sessions.utils.Constants.ACTION_STOP_SESSION
+import com.yugentech.sessions.utils.Constants.ACTION_UPDATE_SESSION
 import org.koin.core.component.KoinComponent
 
 class ActiveServiceManager(
     private val context: Context
 ) : KoinComponent {
 
-    companion object {
-        const val ACTION_START_SESSION = "START_SESSION"
-        const val ACTION_STOP_SESSION = "STOP_SESSION"
-        const val ACTION_UPDATE_SESSION = "UPDATE_SESSION"
-    }
-
     fun startActiveSession(notification: Notification) {
         val intent = Intent(context, ActiveForeground::class.java).apply {
             action = ACTION_START_SESSION
             putExtra("title", notification.title)
             putExtra("message", notification.message)
-            putExtra("totalMinutes", notification.totalMinutes ?: 0)
-            putExtra("remainingMinutes", notification.timeRemainingMinutes ?: 0)
+            putExtra("totalMinutes", notification.totalSeconds ?: 0)
+            putExtra("remainingMinutes", notification.remainingSeconds ?: 0)
         }
 
         ContextCompat.startForegroundService(context, intent)
@@ -31,7 +28,7 @@ class ActiveServiceManager(
     fun updateActiveSession(notification: Notification) {
         val intent = Intent(context, ActiveForeground::class.java).apply {
             action = ACTION_UPDATE_SESSION
-            putExtra("remainingMinutes", notification.timeRemainingMinutes ?: 0)
+            putExtra("remainingMinutes", notification.remainingSeconds ?: 0)
         }
 
         context.startService(intent)

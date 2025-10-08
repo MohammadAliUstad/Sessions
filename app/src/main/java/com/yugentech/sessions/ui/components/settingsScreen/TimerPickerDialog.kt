@@ -35,7 +35,6 @@ fun TimePickerDialog(
                 state = timePickerState,
                 layoutType = TimePickerLayoutType.Vertical,
                 colors = TimePickerDefaults.colors(
-                    // Clean, professional color scheme
                     clockDialColor = MaterialTheme.colorScheme.surfaceContainer,
                     selectorColor = MaterialTheme.colorScheme.primary,
                     containerColor = MaterialTheme.colorScheme.surface,

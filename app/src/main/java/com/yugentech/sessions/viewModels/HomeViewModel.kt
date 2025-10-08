@@ -9,6 +9,8 @@ import com.yugentech.sessions.models.Session
 import com.yugentech.sessions.sessions.sessionsRepository.SessionsRepository
 import com.yugentech.sessions.sessions.sessionsUtils.SessionResult
 import com.yugentech.sessions.timer.timerRepository.TimerRepository
+import com.yugentech.sessions.user.UserResult
+import com.yugentech.sessions.user.userRepository.UserRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -26,7 +28,8 @@ data class HomeUiState(
 class HomeViewModel(
     private val sessionsRepository: SessionsRepository,
     private val alertsRepository: AlertsRepository,
-    private val timerRepository: TimerRepository
+    private val timerRepository: TimerRepository,
+    private val userRepository: UserRepository
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(HomeUiState())
@@ -65,11 +68,21 @@ class HomeViewModel(
         currentUserId = userId
     }
 
-    fun fetchPendingSessions(userId: String) {
+    fun fetchSessionsOnce(userId: String) {
         viewModelScope.launch {
             when (val result = sessionsRepository.fetchSessionsOnce(userId)) {
                 is SessionResult.Success -> Log.d("HomeViewModel", "Fetched remote sessions once")
                 is SessionResult.Error -> Log.e("HomeViewModel", "Failed to fetch remote sessions: ${result.message}")
+            }
+        }
+    }
+
+    fun fetchUserOnce(userId: String) {
+        viewModelScope.launch {
+            when (val result = userRepository.fetchUserOnce(userId)) {
+                is UserResult.Success -> Log.d("HomeViewModel", "Fetched remote user once")
+                is UserResult.Error -> Log.e("HomeViewModel", "Failed to fetch remote user: ${result.message}")
+                is UserResult.Loading -> Log.d("HomeViewModel", "Fetching remote user...")
             }
         }
     }
@@ -123,9 +136,9 @@ class HomeViewModel(
                 duration = elapsedTime,
                 timestamp = System.currentTimeMillis()
             )
+            alertsRepository.playSessionStopAlert(view)
             syncPendingSessions(userId)
 
-            alertsRepository.playSessionStopAlert(view)
 
             when (sessionsRepository.saveSession(userId, session)) {
                 is SessionResult.Success -> resetStudyState()
@@ -147,7 +160,7 @@ class HomeViewModel(
         stopAndSaveSession()
     }
 
-    private fun resetStudyState() {
+    fun resetStudyState() {
         timerRepository.stopTimer()
         timerRepository.resetTimer()
         sessionStartTime = null

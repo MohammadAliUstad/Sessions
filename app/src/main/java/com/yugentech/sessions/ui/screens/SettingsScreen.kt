@@ -62,12 +62,11 @@ fun SettingsScreen(
     val view = LocalView.current
 
     val timePickerState = rememberTimePickerState(
-        initialHour = selectedReminderTime?.first ?: Calendar.getInstance().get(Calendar.HOUR_OF_DAY),
+        initialHour = selectedReminderTime?.first ?: Calendar.getInstance()
+            .get(Calendar.HOUR_OF_DAY),
         initialMinute = selectedReminderTime?.second ?: Calendar.getInstance().get(Calendar.MINUTE),
         is24Hour = true
     )
-
-    val ekminute = 1
 
     fun formatTime(hour: Int, minute: Int): String {
         return String.format(Locale.getDefault(), "%02d:%02d", hour, minute)
@@ -98,10 +97,10 @@ fun SettingsScreen(
     LaunchedEffect(focusRemindersEnabled, selectedReminderTime, notificationsEnabled) {
         if (notificationsEnabled && focusRemindersEnabled && selectedReminderTime != null) {
             val delayMinutes = calculateDelayMinutes(selectedReminderTime)
-            Log.d("SettingsScreen", "Scheduling reminder for $ekminute minutes")
+            Log.d("SettingsScreen", "Scheduling reminder for $delayMinutes minutes")
             notificationsViewModel.scheduleReminder(
                 message = "Focus Reminder",
-                delayMinutes = ekminute.toLong()
+                delayMinutes = delayMinutes
             )
         } else {
             notificationsViewModel.cancelAllReminders()

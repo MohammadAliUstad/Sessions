@@ -60,19 +60,21 @@ class UserViewModel(
 
     fun upsertUser(userData: UserData) {
         viewModelScope.launch {
-            _userState.update { it.copy(isLoading = true, errorMessage = null) }
+            _userState.update {
+                it.copy(
+                    user = UserData(
+                        userId = userData.userId,
+                        name = userData.name,
+                        email = userData.email,
+                        avatarId = userData.avatarId
+                    ),
+                    isLoading = true,
+                    errorMessage = null
+                )
+            }
             userRepository.upsertUser(userData)
             _userState.update { it.copy(isLoading = false) }
         }
     }
 
-    fun syncUser() {
-        val user = _userState.value.user ?: return
-
-        viewModelScope.launch {
-            _userState.update { it.copy(isLoading = true, errorMessage = null) }
-            userRepository.syncUser(user)
-            _userState.update { it.copy(isLoading = false) }
-        }
-    }
 }

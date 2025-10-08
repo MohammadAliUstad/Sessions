@@ -2,6 +2,7 @@
 <resources>
 
     <style name="Theme.Sessions.SplashScreen" parent="Theme.SplashScreen">
+        <item name="android:windowLightStatusBar">true</item>
         <item name="android:windowActionBar">false</item>
         <item name="android:windowNoTitle">true</item>
         <item name="windowSplashScreenAnimatedIcon">@drawable/app_icon</item>
