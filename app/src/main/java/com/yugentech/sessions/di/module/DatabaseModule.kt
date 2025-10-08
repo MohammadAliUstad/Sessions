@@ -1,7 +1,7 @@
-package com.yugentech.sessions.dependencyInjection.modules
+package com.yugentech.sessions.di.module
 
 import androidx.room.Room
-import com.yugentech.sessions.room.AppDatabase
+import com.yugentech.sessions.room.database.AppDatabase
 import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module
 import timber.log.Timber
