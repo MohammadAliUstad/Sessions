@@ -45,7 +45,8 @@ val notificationModule = module {
 
     factory {
         NotificationsViewModel(
-            notificationRepository = get()
+            notificationRepository = get(),
+            notificationPrefsDataStore = get()
         )
     }
 

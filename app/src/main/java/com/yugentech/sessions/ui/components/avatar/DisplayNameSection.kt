@@ -51,7 +51,7 @@ fun DisplayNameSection(
             Spacer(modifier = Modifier.height(8.dp))
 
             Text(
-                text = "Pick a name that motivates your study sessions",
+                text = "Pick a name that motivates your sessions",
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )

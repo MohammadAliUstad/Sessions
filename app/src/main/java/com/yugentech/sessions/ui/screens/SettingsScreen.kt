@@ -22,7 +22,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.material3.rememberTimePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -42,8 +41,6 @@ import com.yugentech.sessions.ui.components.settingsScreen.SettingsToggleItem
 import com.yugentech.sessions.ui.components.settingsScreen.SettingsToggleItemWithTimePicker
 import com.yugentech.sessions.ui.components.settingsScreen.TimePickerDialog
 import com.yugentech.sessions.viewModels.SettingsViewModel
-import java.util.Calendar
-import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -54,57 +51,17 @@ fun SettingsScreen(
     onAbout: () -> Unit,
     onAppearance: () -> Unit,
 ) {
+    // Get state from ViewModels
     val alertConfig by settingsViewModel.alertConfig.collectAsState()
-    var notificationsEnabled by remember { mutableStateOf(true) }
-    var focusRemindersEnabled by remember { mutableStateOf(false) }
-    var selectedReminderTime by remember { mutableStateOf<Pair<Int, Int>?>(null) }
+    val notificationConfig by notificationsViewModel.notificationConfig.collectAsState()
+
+    // UI state for dialog
     var showTimePickerDialog by remember { mutableStateOf(false) }
     val view = LocalView.current
 
-    val timePickerState = rememberTimePickerState(
-        initialHour = selectedReminderTime?.first ?: Calendar.getInstance()
-            .get(Calendar.HOUR_OF_DAY),
-        initialMinute = selectedReminderTime?.second ?: Calendar.getInstance().get(Calendar.MINUTE),
-        is24Hour = true
-    )
-
-    fun formatTime(hour: Int, minute: Int): String {
-        return String.format(Locale.getDefault(), "%02d:%02d", hour, minute)
-    }
-
-    fun calculateDelayMinutes(selectedTime: Pair<Int, Int>?): Long {
-        if (selectedTime == null) return 0L
-
-        val (hour, minute) = selectedTime
-        val calendar = Calendar.getInstance()
-        val currentTime = calendar.timeInMillis
-
-        val targetCalendar = Calendar.getInstance()
-        targetCalendar.set(Calendar.HOUR_OF_DAY, hour)
-        targetCalendar.set(Calendar.MINUTE, minute)
-        targetCalendar.set(Calendar.SECOND, 0)
-        targetCalendar.set(Calendar.MILLISECOND, 0)
-
-        // If the time has already passed today, schedule for tomorrow
-        if (targetCalendar.timeInMillis <= currentTime) {
-            targetCalendar.add(Calendar.DAY_OF_MONTH, 1)
-        }
-
-        return (targetCalendar.timeInMillis - currentTime) / (1000 * 60) // Convert to minutes
-    }
-
-    // Manage scheduling/cancelling reminder
-    LaunchedEffect(focusRemindersEnabled, selectedReminderTime, notificationsEnabled) {
-        if (notificationsEnabled && focusRemindersEnabled && selectedReminderTime != null) {
-            val delayMinutes = calculateDelayMinutes(selectedReminderTime)
-            Log.d("SettingsScreen", "Scheduling reminder for $delayMinutes minutes")
-            notificationsViewModel.scheduleReminder(
-                message = "Focus Reminder",
-                delayMinutes = delayMinutes
-            )
-        } else {
-            notificationsViewModel.cancelAllReminders()
-        }
+    // Add in SettingsScreen near where the focus reminder toggle is rendered
+    LaunchedEffect(notificationConfig) {
+        Log.d("SettingsScreen", "Notification config updated: $notificationConfig")
     }
 
     Scaffold(
@@ -154,15 +111,10 @@ fun SettingsScreen(
                     SettingsToggleItem(
                         title = "Enable Notifications",
                         subtitle = "Allow Sessions to send you notifications",
-                        checked = notificationsEnabled,
-                        onCheckedChange = {
-                            notificationsEnabled = it
+                        checked = notificationConfig.notificationsEnabled,
+                        onCheckedChange = { enabled ->
+                            notificationsViewModel.setNotificationsEnabled(enabled)
                             settingsViewModel.performHaptic(view)
-                            // If turning off notifications, also disable focus reminders
-                            if (!it) {
-                                focusRemindersEnabled = false
-                                selectedReminderTime = null
-                            }
                         }
                     )
 
@@ -170,29 +122,19 @@ fun SettingsScreen(
 
                     SettingsToggleItemWithTimePicker(
                         title = "Focus Reminders",
-                        subtitle = if (focusRemindersEnabled && selectedReminderTime != null) {
-                            "Reminder is set to ${
-                                formatTime(
-                                    selectedReminderTime!!.first,
-                                    selectedReminderTime!!.second
-                                )
-                            }"
-                        } else {
-                            "Get notified to start your focus sessions"
-                        },
-                        checked = focusRemindersEnabled,
-                        enabled = notificationsEnabled,
+                        subtitle = notificationsViewModel.formatReminderTime(),
+                        checked = notificationConfig.focusRemindersEnabled,
+                        enabled = notificationConfig.notificationsEnabled,
                         onCheckedChange = { isChecked ->
                             if (isChecked) {
                                 showTimePickerDialog = true
                             } else {
-                                focusRemindersEnabled = false
-                                selectedReminderTime = null
+                                notificationsViewModel.setFocusRemindersEnabled(false)
                                 settingsViewModel.performHaptic(view)
                             }
                         },
                         onTitleClick = {
-                            if (focusRemindersEnabled && notificationsEnabled) {
+                            if (notificationConfig.notificationsEnabled) {
                                 showTimePickerDialog = true
                             }
                         }
@@ -224,7 +166,7 @@ fun SettingsScreen(
                         title = "Haptic Feedback",
                         subtitle = "Feel vibrations for timer events",
                         checked = alertConfig.hapticsEnabled,
-                        onCheckedChange = { it: Boolean ->
+                        onCheckedChange = {
                             settingsViewModel.setHapticsEnabled(!alertConfig.hapticsEnabled)
                             settingsViewModel.performHaptic(view)
                         }
@@ -267,12 +209,12 @@ fun SettingsScreen(
         // Time Picker Dialog
         if (showTimePickerDialog) {
             TimePickerDialog(
-                timePickerState = timePickerState,
-                onConfirm = {
-                    selectedReminderTime = Pair(timePickerState.hour, timePickerState.minute)
-                    focusRemindersEnabled = true
-                    showTimePickerDialog = false
+                initialHour = notificationConfig.reminderTimeHour,
+                initialMinute = notificationConfig.reminderTimeMinute,
+                onTimeSelected = { hour, minute ->
+                    notificationsViewModel.setReminderTime(hour, minute)
                     settingsViewModel.performHaptic(view)
+                    showTimePickerDialog = false
                 },
                 onDismiss = {
                     showTimePickerDialog = false

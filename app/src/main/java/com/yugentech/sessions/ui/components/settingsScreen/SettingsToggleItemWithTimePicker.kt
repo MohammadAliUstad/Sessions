@@ -43,7 +43,7 @@ fun SettingsToggleItemWithTimePicker(
             Text(
                 text = title,
                 style = MaterialTheme.typography.bodyLarge,
-                color = if (checked && enabled) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface,
+                color = MaterialTheme.colorScheme.onSurface,
                 maxLines = 1,
                 modifier = Modifier.clickable(
                     enabled = enabled,

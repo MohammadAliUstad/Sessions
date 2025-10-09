@@ -73,8 +73,9 @@ class UserViewModel(
                 )
             }
             userRepository.upsertUser(userData)
+            userRepository.syncUser(userData)
+
             _userState.update { it.copy(isLoading = false) }
         }
     }
-
 }

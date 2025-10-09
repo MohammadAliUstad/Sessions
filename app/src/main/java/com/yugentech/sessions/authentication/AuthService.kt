@@ -4,7 +4,6 @@ package com.yugentech.sessions.authentication
 
 import android.app.PendingIntent
 import android.content.Intent
-import android.util.Log
 import com.google.android.gms.auth.api.identity.BeginSignInRequest
 import com.google.android.gms.auth.api.identity.SignInClient
 import com.google.firebase.auth.FirebaseAuth

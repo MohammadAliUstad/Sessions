@@ -8,17 +8,26 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.TimePicker
 import androidx.compose.material3.TimePickerDefaults
 import androidx.compose.material3.TimePickerLayoutType
-import androidx.compose.material3.TimePickerState
+import androidx.compose.material3.rememberTimePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.text.font.FontWeight
+import java.util.Calendar
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TimePickerDialog(
-    timePickerState: TimePickerState,
-    onConfirm: () -> Unit,
+    initialHour: Int = Calendar.getInstance().get(Calendar.HOUR_OF_DAY),
+    initialMinute: Int = 0,
+    onTimeSelected: (hour: Int, minute: Int) -> Unit,
     onDismiss: () -> Unit
 ) {
+    // Create the time picker state here, with the initial values passed in
+    val timePickerState = rememberTimePickerState(
+        initialHour = initialHour,
+        initialMinute = initialMinute,
+        is24Hour = false
+    )
+
     AlertDialog(
         onDismissRequest = onDismiss,
         title = {
@@ -56,7 +65,9 @@ fun TimePickerDialog(
         },
         confirmButton = {
             TextButton(
-                onClick = onConfirm
+                onClick = {
+                    onTimeSelected(timePickerState.hour, timePickerState.minute)
+                }
             ) {
                 Text(
                     text = "Set Time",

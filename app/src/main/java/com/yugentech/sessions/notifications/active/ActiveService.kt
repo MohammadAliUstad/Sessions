@@ -137,6 +137,7 @@ class ActiveService(
                         }
                     }
                     NotificationType.SCHEDULED -> {
+                        setContentText("Time to focus and be productive")
                         setPriority(NotificationCompat.PRIORITY_HIGH)
                         setDefaults(NotificationCompat.DEFAULT_ALL)
                     }
