@@ -1,11 +1,11 @@
-package com.yugentech.sessions.dependencyInjection.modules
+package com.yugentech.sessions.di.module
 
 import com.google.android.gms.auth.api.identity.Identity
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
-import com.yugentech.sessions.authentication.service.AuthService
-import com.yugentech.sessions.authentication.repository.AuthRepository
-import com.yugentech.sessions.authentication.repository.AuthRepositoryImpl
+import com.yugentech.sessions.auth.service.AuthService
+import com.yugentech.sessions.auth.repository.AuthRepository
+import com.yugentech.sessions.auth.repository.AuthRepositoryImpl
 import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module
 
