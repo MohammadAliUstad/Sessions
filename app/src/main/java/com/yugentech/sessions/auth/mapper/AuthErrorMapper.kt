@@ -1,4 +1,4 @@
-package com.yugentech.sessions.authentication.mapper
+package com.yugentech.sessions.auth.mapper
 
 import com.google.firebase.auth.FirebaseAuthException
 
