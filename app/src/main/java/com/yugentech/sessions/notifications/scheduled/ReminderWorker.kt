@@ -23,7 +23,7 @@ class ReminderWorker(
         val notification = Notification(
             id = ActiveService.REMINDER_NOTIFICATION_ID,
             type = NotificationType.SCHEDULED,
-            title = "Study Reminder",
+            title = "Reminder",
             message = message,
             isOngoing = false
         )

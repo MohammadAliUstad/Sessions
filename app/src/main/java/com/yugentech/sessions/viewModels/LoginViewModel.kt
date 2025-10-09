@@ -1,6 +1,7 @@
 package com.yugentech.sessions.viewModels
 
 import android.content.Intent
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.yugentech.sessions.authentication.authRepository.AuthRepository
@@ -12,6 +13,8 @@ import com.yugentech.sessions.user.userRepository.UserRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+
+private const val TAG = "LoginViewModel"
 
 class LoginViewModel(
     private val authRepository: AuthRepository,
@@ -56,32 +59,44 @@ class LoginViewModel(
                         avatarId = 1
                     )
 
-                    when (val createResult = userRepository.upsertUser(userData)) {
-                        is UserResult.Success -> {
-                            _authState.value = AuthState(
-                                isUserLoggedIn = true,
-                                userId = firebaseUser.uid,
-                                userData = userData,
-                                isLoading = false,
-                                error = null,
-                                intent = null
-                            )
-                        }
+                    try {
+                        // Save locally first
+                        userRepository.upsertUser(userData)
 
-                        is UserResult.Error -> {
-                            _authState.value = _authState.value.copy(
-                                isLoading = false,
-                                isUserLoggedIn = false,
-                                error = "Failed to create user profile: ${createResult.message}"
-                            )
-                        }
+                        // Then sync to Firestore
+                        when (val syncResult = userRepository.syncUser(userData)) {
+                            is UserResult.Success -> {
+                                _authState.value = AuthState(
+                                    isUserLoggedIn = true,
+                                    userId = firebaseUser.uid,
+                                    userData = userData,
+                                    isLoading = false,
+                                    error = null,
+                                    intent = null
+                                )
+                            }
 
-                        is UserResult.Loading -> {
-                            _authState.value = _authState.value.copy(
-                                isLoading = true,
-                                error = null
-                            )
+                            is UserResult.Error -> {
+                                _authState.value = _authState.value.copy(
+                                    isLoading = false,
+                                    isUserLoggedIn = false,
+                                    error = "Failed to sync user profile: ${syncResult.message}"
+                                )
+                            }
+
+                            is UserResult.Loading -> {
+                                _authState.value = _authState.value.copy(
+                                    isLoading = true,
+                                    error = null
+                                )
+                            }
                         }
+                    } catch (e: Exception) {
+                        _authState.value = _authState.value.copy(
+                            isLoading = false,
+                            isUserLoggedIn = false,
+                            error = "Failed to create user profile: ${e.message}"
+                        )
                     }
                 }
 
@@ -224,68 +239,105 @@ class LoginViewModel(
 
     private suspend fun loadUserProfile(userId: String) {
         try {
-            val localUser = userRepository.getUser(userId)
-            if (localUser != null) {
-                _authState.value = AuthState(
-                    isUserLoggedIn = true,
-                    userId = userId,
-                    userData = localUser,
-                    isLoading = false,
-                    error = null,
-                    intent = null
-                )
-                userRepository.syncUser(localUser)
-
-            } else {
-                when (val authResult = authRepository.getCurrentUser()) {
-                    is AuthResult.Success -> {
-                        val firebaseUser = authResult.data
-                        val userData = UserData(
-                            userId = firebaseUser.uid,
-                            name = firebaseUser.displayName ?: "User",
-                            email = firebaseUser.email ?: "",
-                            avatarId = 0
+            // First, try to fetch from Firestore (this also saves locally)
+            Log.d(TAG, "Attempting to fetch user from Firestore: $userId")
+            when (val fetchResult = userRepository.fetchUserOnce(userId)) {
+                is UserResult.Success -> {
+                    Log.d(TAG, "User fetched successfully, loading from local DB")
+                    // Now load from local database
+                    val localUser = userRepository.getUser(userId)
+                    if (localUser != null) {
+                        _authState.value = AuthState(
+                            isUserLoggedIn = true,
+                            userId = userId,
+                            userData = localUser,
+                            isLoading = false,
+                            error = null,
+                            intent = null
                         )
-
-                        when (val createResult = userRepository.upsertUser(userData)) {
-                            is UserResult.Success -> {
-                                _authState.value = AuthState(
-                                    isUserLoggedIn = true,
-                                    userId = userId,
-                                    userData = userData,
-                                    isLoading = false,
-                                    error = null,
-                                    intent = null
-                                )
-                            }
-
-                            is UserResult.Error -> {
-                                _authState.value = _authState.value.copy(
-                                    isLoading = false,
-                                    isUserLoggedIn = false,
-                                    error = "Failed to create user profile: ${createResult.message}"
-                                )
-                            }
-
-                            is UserResult.Loading -> {
-                                _authState.value = _authState.value.copy(
-                                    isLoading = true,
-                                    error = null
-                                )
-                            }
-                        }
-                    }
-
-                    is AuthResult.Error -> {
+                    } else {
+                        Log.e(TAG, "User fetched but not found in local DB")
                         _authState.value = _authState.value.copy(
                             isLoading = false,
                             isUserLoggedIn = false,
-                            error = "User not found"
+                            error = "Failed to load user profile"
                         )
                     }
                 }
+
+                is UserResult.Error -> {
+                    Log.w(TAG, "User not found in Firestore, creating new profile")
+                    // User doesn't exist in Firestore, create new profile
+                    when (val authResult = authRepository.getCurrentUser()) {
+                        is AuthResult.Success -> {
+                            val firebaseUser = authResult.data
+                            val userData = UserData(
+                                userId = firebaseUser.uid,
+                                name = firebaseUser.displayName ?: "User",
+                                email = firebaseUser.email ?: "",
+                                avatarId = 0
+                            )
+
+                            try {
+                                // Save locally
+                                userRepository.upsertUser(userData)
+
+                                // Sync to Firestore
+                                when (val syncResult = userRepository.syncUser(userData)) {
+                                    is UserResult.Success -> {
+                                        _authState.value = AuthState(
+                                            isUserLoggedIn = true,
+                                            userId = userId,
+                                            userData = userData,
+                                            isLoading = false,
+                                            error = null,
+                                            intent = null
+                                        )
+                                    }
+
+                                    is UserResult.Error -> {
+                                        _authState.value = _authState.value.copy(
+                                            isLoading = false,
+                                            isUserLoggedIn = false,
+                                            error = "Failed to sync user profile: ${syncResult.message}"
+                                        )
+                                    }
+
+                                    is UserResult.Loading -> {
+                                        _authState.value = _authState.value.copy(
+                                            isLoading = true,
+                                            error = null
+                                        )
+                                    }
+                                }
+                            } catch (e: Exception) {
+                                _authState.value = _authState.value.copy(
+                                    isLoading = false,
+                                    isUserLoggedIn = false,
+                                    error = "Failed to create user profile: ${e.message}"
+                                )
+                            }
+                        }
+
+                        is AuthResult.Error -> {
+                            _authState.value = _authState.value.copy(
+                                isLoading = false,
+                                isUserLoggedIn = false,
+                                error = "User not found"
+                            )
+                        }
+                    }
+                }
+
+                is UserResult.Loading -> {
+                    _authState.value = _authState.value.copy(
+                        isLoading = true,
+                        error = null
+                    )
+                }
             }
         } catch (e: Exception) {
+            Log.e(TAG, "Error loading user profile", e)
             _authState.value = _authState.value.copy(
                 isLoading = false,
                 isUserLoggedIn = false,

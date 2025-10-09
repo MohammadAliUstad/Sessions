@@ -1,10 +1,11 @@
 package com.yugentech.sessions.room.daos
 
-import androidx.room.*
+import androidx.room.Dao
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy
+import androidx.room.Query
 import com.yugentech.sessions.room.entities.SessionsEntity
 import kotlinx.coroutines.flow.Flow
-
-private const val TAG = "SessionsDao"
 
 @Dao
 interface SessionsDao {
