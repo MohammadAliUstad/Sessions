@@ -4,13 +4,9 @@ import android.content.Context
 import androidx.work.ListenableWorker
 import androidx.work.WorkerFactory
 import androidx.work.WorkerParameters
-import com.yugentech.sessions.notifications.active.ActiveService
 import org.koin.core.component.KoinComponent
-import org.koin.core.component.inject
 
 class KoinWorkerFactory : WorkerFactory(), KoinComponent {
-
-    private val activeService: ActiveService by inject()
 
     override fun createWorker(
         appContext: Context,
@@ -22,11 +18,9 @@ class KoinWorkerFactory : WorkerFactory(), KoinComponent {
             ReminderWorker::class.java.name -> {
                 ReminderWorker(
                     context = appContext,
-                    params = workerParameters,
-                    activeService = activeService
+                    params = workerParameters
                 )
             }
-
             else -> {
                 null
             }

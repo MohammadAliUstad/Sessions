@@ -7,12 +7,16 @@ import androidx.work.WorkerParameters
 import com.yugentech.sessions.notifications.Notification
 import com.yugentech.sessions.notifications.NotificationType
 import com.yugentech.sessions.notifications.active.ActiveService
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 
 class ReminderWorker(
     context: Context,
-    params: WorkerParameters,
-    private val activeService: ActiveService
-) : CoroutineWorker(context, params) {
+    params: WorkerParameters
+) : CoroutineWorker(context, params), KoinComponent {
+
+    // Properly inject ActiveService using Koin
+    private val activeService: ActiveService by inject()
 
     override suspend fun doWork(): Result {
         Log.d(TAG, "ReminderWorker started")
