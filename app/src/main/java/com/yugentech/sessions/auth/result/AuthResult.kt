@@ -1,4 +1,4 @@
-package com.yugentech.sessions.authentication.result
+package com.yugentech.sessions.auth.result
 
 // Sealed class representing the success or failure outcome of an auth operation
 sealed class AuthResult<out T> {
