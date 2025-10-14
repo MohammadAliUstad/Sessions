@@ -1,9 +1,9 @@
-package com.yugentech.sessions.authentication.repository
+package com.yugentech.sessions.auth.repository
 
 import android.content.Intent
 import com.google.firebase.auth.FirebaseUser
-import com.yugentech.sessions.authentication.service.AuthService
-import com.yugentech.sessions.authentication.result.AuthResult
+import com.yugentech.sessions.auth.service.AuthService
+import com.yugentech.sessions.auth.result.AuthResult
 import kotlinx.coroutines.flow.Flow
 import timber.log.Timber
 
