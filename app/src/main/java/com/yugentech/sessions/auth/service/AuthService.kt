@@ -1,4 +1,4 @@
-package com.yugentech.sessions.authentication.service
+package com.yugentech.sessions.auth.service
 
 import android.app.PendingIntent
 import android.content.Intent
@@ -8,8 +8,8 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.UserProfileChangeRequest
-import com.yugentech.sessions.authentication.mapper.AuthErrorMapper
-import com.yugentech.sessions.authentication.result.AuthResult
+import com.yugentech.sessions.auth.mapper.AuthErrorMapper
+import com.yugentech.sessions.auth.result.AuthResult
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
@@ -25,7 +25,7 @@ class AuthService(
     val authStateFlow: Flow<FirebaseUser?> = callbackFlow {
         val authStateListener = FirebaseAuth.AuthStateListener { firebaseAuth ->
             val user = firebaseAuth.currentUser
-            Timber.Forest.d("Auth state changed. User: ${user?.uid ?: "null"}")
+            Timber.d("Auth state changed. User: ${user?.uid ?: "null"}")
             trySend(user)
         }
         auth.addAuthStateListener(authStateListener)
@@ -39,7 +39,7 @@ class AuthService(
     // Creates a new account with email and password and updates the display name
     suspend fun signUp(name: String, email: String, password: String): AuthResult<FirebaseUser> {
         return try {
-            Timber.Forest.d("Attempting sign up for email: $email")
+            Timber.d("Attempting sign up for email: $email")
             val result = auth.createUserWithEmailAndPassword(email, password).await()
             val user = result.user!!
 
@@ -47,10 +47,10 @@ class AuthService(
                 UserProfileChangeRequest.Builder().setDisplayName(name).build()
             ).await()
 
-            Timber.Forest.i("User signed up successfully: ${user.uid}")
+            Timber.i("User signed up successfully: ${user.uid}")
             AuthResult.Success(user)
         } catch (e: Exception) {
-            Timber.Forest.e(e, "Sign up failed")
+            Timber.e(e, "Sign up failed")
             AuthResult.Error(AuthErrorMapper.mapFirebaseAuthError(e))
         }
     }
@@ -58,12 +58,12 @@ class AuthService(
     // Authenticates an existing user using email and password
     suspend fun signIn(email: String, password: String): AuthResult<FirebaseUser> {
         return try {
-            Timber.Forest.d("Attempting sign in for email: $email")
+            Timber.d("Attempting sign in for email: $email")
             val result = auth.signInWithEmailAndPassword(email, password).await()
-            Timber.Forest.i("User signed in successfully: ${result.user?.uid}")
+            Timber.i("User signed in successfully: ${result.user?.uid}")
             AuthResult.Success(result.user!!)
         } catch (e: Exception) {
-            Timber.Forest.w(e, "Sign in failed")
+            Timber.w(e, "Sign in failed")
             AuthResult.Error(AuthErrorMapper.mapFirebaseAuthError(e))
         }
     }
@@ -71,18 +71,18 @@ class AuthService(
     // Sends a password recovery email to the specified address
     suspend fun sendPasswordResetEmail(email: String): AuthResult<Unit> {
         return try {
-            Timber.Forest.d("Sending password reset email to: $email")
+            Timber.d("Sending password reset email to: $email")
             auth.sendPasswordResetEmail(email).await()
             AuthResult.Success(Unit)
         } catch (e: Exception) {
-            Timber.Forest.e(e, "Failed to send reset email")
+            Timber.e(e, "Failed to send reset email")
             AuthResult.Error(AuthErrorMapper.mapFirebaseAuthError(e))
         }
     }
 
     // Logs the user out of Firebase and the Google One Tap client
     fun signOut() {
-        Timber.Forest.i("Signing out user")
+        Timber.i("Signing out user")
         auth.signOut()
         oneTapClient.signOut()
     }
@@ -90,7 +90,7 @@ class AuthService(
     // Builds the Google One Tap sign-in request and returns the pending intent to launch it
     suspend fun getGoogleSignInIntent(webClientId: String): AuthResult<PendingIntent> {
         return try {
-            Timber.Forest.d("Preparing Google One Tap Sign-In intent")
+            Timber.d("Preparing Google One Tap Sign-In intent")
             val signInRequest = BeginSignInRequest.builder()
                 .setGoogleIdTokenRequestOptions(
                     BeginSignInRequest.GoogleIdTokenRequestOptions.builder()
@@ -105,7 +105,7 @@ class AuthService(
             val result = oneTapClient.beginSignIn(signInRequest).await()
             AuthResult.Success(result.pendingIntent)
         } catch (e: Exception) {
-            Timber.Forest.e(e, "Failed to get Google Sign-In intent")
+            Timber.e(e, "Failed to get Google Sign-In intent")
             AuthResult.Error(AuthErrorMapper.mapGoogleSignInError(e))
         }
     }
@@ -114,22 +114,22 @@ class AuthService(
     suspend fun handleGoogleSignInResult(data: Intent?): AuthResult<FirebaseUser> {
         return try {
             if (data == null) {
-                Timber.Forest.w("Google Sign-In result data was null")
+                Timber.w("Google Sign-In result data was null")
                 return AuthResult.Error("Google Sign-In cancelled")
             }
 
             val credential = oneTapClient.getSignInCredentialFromIntent(data)
             val idToken = credential.googleIdToken
-                ?: return AuthResult.Error("Google ID token is missing").also { Timber.Forest.e("Missing Google ID Token") }
+                ?: return AuthResult.Error("Google ID token is missing").also { Timber.e("Missing Google ID Token") }
 
-            Timber.Forest.d("Google ID Token retrieved, exchanging for Firebase Credential")
+            Timber.d("Google ID Token retrieved, exchanging for Firebase Credential")
             val firebaseCredential = GoogleAuthProvider.getCredential(idToken, null)
             val result = auth.signInWithCredential(firebaseCredential).await()
 
-            Timber.Forest.i("Google Sign-In successful: ${result.user?.uid}")
+            Timber.i("Google Sign-In successful: ${result.user?.uid}")
             AuthResult.Success(result.user!!)
         } catch (e: Exception) {
-            Timber.Forest.e(e, "Google Sign-In handling failed")
+            Timber.e(e, "Google Sign-In handling failed")
             AuthResult.Error(AuthErrorMapper.mapGoogleSignInError(e))
         }
     }
