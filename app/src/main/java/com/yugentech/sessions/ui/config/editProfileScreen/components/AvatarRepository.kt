@@ -1,4 +1,4 @@
-package com.yugentech.sessions.ui.config.components.editProfileScreen
+package com.yugentech.sessions.ui.config.editProfileScreen.components
 
 import androidx.annotation.DrawableRes
 import com.yugentech.sessions.R
