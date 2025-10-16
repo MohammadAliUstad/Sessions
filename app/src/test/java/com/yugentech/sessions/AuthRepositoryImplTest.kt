@@ -2,9 +2,9 @@ package com.yugentech.sessions
 
 import android.app.PendingIntent
 import com.google.firebase.auth.FirebaseUser
-import com.yugentech.sessions.authentication.AuthService
-import com.yugentech.sessions.authentication.authRepository.AuthRepositoryImpl
-import com.yugentech.sessions.authentication.authUtils.AuthResult
+import com.yugentech.sessions.auth.service.AuthService
+import com.yugentech.sessions.auth.repository.AuthRepositoryImpl
+import com.yugentech.sessions.auth.result.AuthResult
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
