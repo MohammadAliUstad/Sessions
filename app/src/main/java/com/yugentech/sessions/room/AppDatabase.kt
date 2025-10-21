@@ -16,6 +16,6 @@ import com.yugentech.sessions.room.entities.UserEntity
     exportSchema = false
 )
 abstract class AppDatabase : RoomDatabase() {
-    abstract fun userDao(): UserDao
+
     abstract fun sessionDao(): SessionsDao
 }

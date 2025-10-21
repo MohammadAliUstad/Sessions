@@ -15,11 +15,11 @@
       },
       "oauth_client": [
         {
-          "client_id": "364008177026-34lddl6a4jqq9ucq4uqvb53535khflfq.apps.googleusercontent.com",
+          "client_id": "364008177026-e2b323vkq8ilqi4u77jga8qndttlir7h.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.yugentech.sessions",
-            "certificate_hash": "a2a5d1346d18291b7109b14ace4a406812245225"
+            "certificate_hash": "7fa0e424b07a9e7f72a2c4cd317da15fa7fad0f9"
           }
         },
         {
