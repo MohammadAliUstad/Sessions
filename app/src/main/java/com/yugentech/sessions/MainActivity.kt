@@ -43,7 +43,6 @@ class MainActivity : ComponentActivity() {
             loginViewModel.authState.value.isLoading
         }
 
-
         setContent {
             val webClientId = getString(R.string.web_client_id)
             val navController = rememberNavController()

@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -21,7 +22,9 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import com.yugentech.sessions.ui.ResponsiveDimensions
 
 @Composable
 fun SessionActionButtons(
@@ -29,9 +32,12 @@ fun SessionActionButtons(
     onPlayPause: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val buttonSize = ResponsiveDimensions.playButtonSize()
+    val iconSize = ResponsiveDimensions.playButtonIconSize()
+
     FloatingActionButton(
         onClick = onPlayPause,
-        modifier = modifier.size(64.dp),
+        modifier = modifier.size(buttonSize),
         shape = CircleShape,
         containerColor = if (isStudying)
             MaterialTheme.colorScheme.tertiaryContainer
@@ -41,12 +47,14 @@ fun SessionActionButtons(
             MaterialTheme.colorScheme.onTertiaryContainer
         else
             MaterialTheme.colorScheme.onPrimary,
-        elevation = FloatingActionButtonDefaults.elevation(defaultElevation = 0.dp)  // Remove shadow
+        elevation = FloatingActionButtonDefaults.elevation(
+            defaultElevation = ResponsiveDimensions.cardElevation()
+        )
     ) {
         Icon(
             imageVector = if (isStudying) Icons.Default.Pause else Icons.Default.PlayArrow,
             contentDescription = if (isStudying) "Pause" else "Start",
-            modifier = Modifier.size(28.dp)
+            modifier = Modifier.size(iconSize)
         )
     }
 }
@@ -57,25 +65,37 @@ fun StudyingControlButtons(
     onSave: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val spacing = ResponsiveDimensions.spacing()
+    val cornerRadius = ResponsiveDimensions.cornerRadius()
+
     Row(
-        modifier = modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.spacedBy(12.dp)
+        modifier = modifier
+            .fillMaxWidth()
+            .widthIn(max = 500.dp),
+        horizontalArrangement = Arrangement.spacedBy(spacing.small)
     ) {
         ExtendedFloatingActionButton(
             onClick = onStop,
             modifier = Modifier.weight(1f),
             containerColor = MaterialTheme.colorScheme.errorContainer,
             contentColor = MaterialTheme.colorScheme.onErrorContainer,
-            shape = RoundedCornerShape(30.dp),
-            elevation = FloatingActionButtonDefaults.elevation(defaultElevation = 0.dp)  // Remove shadow
+            shape = RoundedCornerShape(cornerRadius),
+            elevation = FloatingActionButtonDefaults.elevation(
+                defaultElevation = ResponsiveDimensions.cardElevation()
+            )
         ) {
             Icon(
                 imageVector = Icons.Default.Stop,
                 contentDescription = "Stop",
                 modifier = Modifier.size(18.dp)
             )
-            Spacer(modifier = Modifier.width(6.dp))
-            Text("Stop", style = MaterialTheme.typography.labelMedium)
+            Spacer(modifier = Modifier.width(spacing.extraSmall))
+            Text(
+                "Stop",
+                style = MaterialTheme.typography.labelMedium,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
         }
 
         ExtendedFloatingActionButton(
@@ -83,16 +103,23 @@ fun StudyingControlButtons(
             modifier = Modifier.weight(1f),
             containerColor = MaterialTheme.colorScheme.primaryContainer,
             contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
-            shape = RoundedCornerShape(30.dp),
-            elevation = FloatingActionButtonDefaults.elevation(defaultElevation = 0.dp)  // Remove shadow
+            shape = RoundedCornerShape(cornerRadius),
+            elevation = FloatingActionButtonDefaults.elevation(
+                defaultElevation = ResponsiveDimensions.cardElevation()
+            )
         ) {
             Icon(
                 imageVector = Icons.Default.Save,
                 contentDescription = "Save",
                 modifier = Modifier.size(18.dp)
             )
-            Spacer(modifier = Modifier.width(6.dp))
-            Text("Save", style = MaterialTheme.typography.labelMedium)
+            Spacer(modifier = Modifier.width(spacing.extraSmall))
+            Text(
+                "Save",
+                style = MaterialTheme.typography.labelMedium,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
         }
     }
 }
