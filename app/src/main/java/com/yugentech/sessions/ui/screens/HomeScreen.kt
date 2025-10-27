@@ -14,12 +14,15 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -35,12 +38,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.yugentech.sessions.notifications.Notification
 import com.yugentech.sessions.notifications.NotificationType
 import com.yugentech.sessions.notifications.NotificationsViewModel
+import com.yugentech.sessions.ui.ResponsiveDimensions
 import com.yugentech.sessions.ui.components.homeScreen.DurationSelector
 import com.yugentech.sessions.ui.components.homeScreen.SessionActionButtons
 import com.yugentech.sessions.ui.components.homeScreen.StudyingControlButtons
@@ -64,6 +69,13 @@ fun HomeScreen(
 
     val availableDurations = remember { listOf(25, 50) }
 
+    // Get responsive dimensions
+    val spacing = ResponsiveDimensions.spacing()
+    val horizontalPadding = ResponsiveDimensions.horizontalPadding()
+    val verticalPadding = ResponsiveDimensions.verticalPadding()
+    val titleSize = ResponsiveDimensions.titleTextSize()
+    val cornerRadius = ResponsiveDimensions.cornerRadius()
+
     LaunchedEffect(userId) {
         homeViewModel.setUserId(userId)
         homeViewModel.fetchUserOnce(userId)
@@ -78,36 +90,41 @@ fun HomeScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(horizontal = 24.dp, vertical = 24.dp),
+                .verticalScroll(rememberScrollState())
+                .padding(horizontal = horizontalPadding, vertical = verticalPadding),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
+            // Header Section
             Column(
-                modifier = Modifier.height(100.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier.fillMaxWidth()
             ) {
                 Text(
                     text = if (uiState.isRunning) "Focus" else "Ready to Focus?",
-                    style = MaterialTheme.typography.headlineMedium.copy(
-                        fontWeight = FontWeight.Medium,
-                        letterSpacing = 0.5.sp
-                    ),
-                    color = MaterialTheme.colorScheme.onSurface
+                    fontSize = titleSize,
+                    fontWeight = FontWeight.Medium,
+                    letterSpacing = 0.5.sp,
+                    color = MaterialTheme.colorScheme.onSurface,
+                    textAlign = TextAlign.Center
                 )
 
-                Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(spacing.small))
 
                 Card(
-                    modifier = Modifier.padding(horizontal = 16.dp),
+                    modifier = Modifier.padding(horizontal = spacing.medium),
                     colors = CardDefaults.cardColors(
                         containerColor = if (uiState.isRunning)
                             MaterialTheme.colorScheme.primaryContainer
                         else
                             MaterialTheme.colorScheme.surfaceVariant
                     ),
-                    shape = RoundedCornerShape(20.dp)
+                    shape = RoundedCornerShape(cornerRadius)
                 ) {
                     Row(
-                        modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+                        modifier = Modifier.padding(
+                            horizontal = spacing.medium,
+                            vertical = spacing.small
+                        ),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Box(
@@ -122,7 +139,7 @@ fun HomeScreen(
                                 )
                         )
 
-                        Spacer(modifier = Modifier.width(8.dp))
+                        Spacer(modifier = Modifier.width(spacing.small))
 
                         Text(
                             text = if (uiState.isRunning) "In Session" else "Idle",
@@ -136,8 +153,13 @@ fun HomeScreen(
                 }
             }
 
+            Spacer(modifier = Modifier.height(spacing.large))
+
+            // Timer Display
             Box(
-                modifier = Modifier.height(300.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = spacing.medium),
                 contentAlignment = Alignment.Center
             ) {
                 TimerDisplay(
@@ -148,92 +170,91 @@ fun HomeScreen(
                 )
             }
 
-            Spacer(modifier = Modifier.height(36.dp))
+            Spacer(modifier = Modifier.height(spacing.large))
 
-            Box(
-                modifier = Modifier.height(200.dp),
-                contentAlignment = Alignment.TopCenter
+            // Controls Section
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier.fillMaxWidth()
             ) {
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally
+                AnimatedVisibility(
+                    visible = !uiState.isRunning,
+                    enter = expandVertically() + fadeIn(),
+                    exit = shrinkVertically() + fadeOut()
                 ) {
-                    AnimatedVisibility(
-                        visible = !uiState.isRunning,
-                        enter = expandVertically() + fadeIn(),
-                        exit = shrinkVertically() + fadeOut()
-                    ) {
-                        DurationSelector(
-                            selectedDuration = uiState.selectedDuration,
-                            availableDurations = availableDurations,
-                            onDurationSelected = {
-                                homeViewModel.updateSelectedDuration(it)
-                            }
-                        )
-                    }
+                    DurationSelector(
+                        selectedDuration = uiState.selectedDuration,
+                        availableDurations = availableDurations,
+                        onDurationSelected = {
+                            homeViewModel.updateSelectedDuration(it)
+                        }
+                    )
+                }
 
-                    Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(spacing.large))
 
-                    AnimatedVisibility(
-                        visible = !uiState.isRunning || uiState.currentTime > 0,
-                        enter = scaleIn() + fadeIn(),
-                        exit = scaleOut() + fadeOut()
-                    ) {
-                        val view = LocalView.current
-                        SessionActionButtons(
-                            isStudying = uiState.isRunning,
-                            onPlayPause = {
-                                if (uiState.isRunning) {
-                                    homeViewModel.stopTimer(view)
-                                    notificationsViewModel.stopActiveSession()
-                                } else {
-                                    homeViewModel.startTimer(view)
-                                    notificationsViewModel.startActiveSession(
-                                        Notification(
-                                            id = 1001,
-                                            title = "Focus",
-                                            message = "Session in progress",
-                                            type = NotificationType.ACTIVE,
-                                            isOngoing = true,
-                                            remainingSeconds = displayTime
-                                        )
+                AnimatedVisibility(
+                    visible = !uiState.isRunning || uiState.currentTime > 0,
+                    enter = scaleIn() + fadeIn(),
+                    exit = scaleOut() + fadeOut()
+                ) {
+                    val view = LocalView.current
+                    SessionActionButtons(
+                        isStudying = uiState.isRunning,
+                        onPlayPause = {
+                            if (uiState.isRunning) {
+                                homeViewModel.stopTimer(view)
+                                notificationsViewModel.stopActiveSession()
+                            } else {
+                                homeViewModel.startTimer(view)
+                                notificationsViewModel.startActiveSession(
+                                    Notification(
+                                        id = 1001,
+                                        title = "Focus",
+                                        message = "Session in progress",
+                                        type = NotificationType.ACTIVE,
+                                        isOngoing = true,
+                                        remainingSeconds = displayTime
                                     )
-                                }
+                                )
                             }
-                        )
-                    }
+                        }
+                    )
+                }
 
-                    Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(spacing.large))
 
-                    AnimatedVisibility(
-                        visible = uiState.isRunning,
-                        enter = fadeIn() + expandVertically(),
-                        exit = fadeOut() + shrinkVertically()
-                    ) {
-                        val context = LocalContext.current
-                        val view = LocalView.current
-                        StudyingControlButtons(
-                            onStop = {
+                AnimatedVisibility(
+                    visible = uiState.isRunning,
+                    enter = fadeIn() + expandVertically(),
+                    exit = fadeOut() + shrinkVertically()
+                ) {
+                    val context = LocalContext.current
+                    val view = LocalView.current
+                    StudyingControlButtons(
+                        onStop = {
+                            homeViewModel.stopAndDiscardSession(view)
+                            notificationsViewModel.stopActiveSession()
+                        },
+                        onSave = {
+                            val elapsed = homeViewModel.getElapsedTime()
+                            if (elapsed < 60) {
                                 homeViewModel.stopAndDiscardSession(view)
                                 notificationsViewModel.stopActiveSession()
-                            },
-                            onSave = {
-                                val elapsed = homeViewModel.getElapsedTime()
-                                if (elapsed < 60) {
-                                    homeViewModel.stopAndDiscardSession(view)
-                                    notificationsViewModel.stopActiveSession()
-                                    Toast.makeText(
-                                        context,
-                                        "Please focus for at least 1 minute to save a session",
-                                        Toast.LENGTH_SHORT
-                                    ).show()
-                                } else {
-                                    homeViewModel.stopAndSaveSession(view)
-                                    notificationsViewModel.stopActiveSession()
-                                }
+                                Toast.makeText(
+                                    context,
+                                    "Please focus for at least 1 minute to save a session",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            } else {
+                                homeViewModel.stopAndSaveSession(view)
+                                notificationsViewModel.stopActiveSession()
                             }
-                        )
-                    }
+                        }
+                    )
                 }
+
+                Spacer(modifier = Modifier.height(spacing.large))
             }
         }
     }
