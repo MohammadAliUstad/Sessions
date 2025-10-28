@@ -1,6 +1,5 @@
 package com.yugentech.sessions.ui.screens
 
-import android.app.Activity
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.core.tween
@@ -21,7 +20,6 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
-import androidx.compose.ui.platform.LocalContext
 import com.yugentech.sessions.navigation.AppScreens
 import com.yugentech.sessions.notifications.NotificationsViewModel
 import com.yugentech.sessions.ui.components.homeScreen.ExitConfirmationDialog
@@ -53,6 +51,7 @@ fun MainScreen(
     profileViewModel: ProfileViewModel,
     notificationsViewModel: NotificationsViewModel,
     onSignOut: () -> Unit,
+    onExit: () -> Unit,
     onEditProfile: () -> Unit,
     onSettings: () -> Unit
 ) {
@@ -62,7 +61,6 @@ fun MainScreen(
 
     var showLogoutDialog by remember { mutableStateOf(false) }
     var showExitDialog by remember { mutableStateOf(false) }
-    val context = LocalContext.current
 
     BackHandler {
         when (currentScreen) {
@@ -94,7 +92,7 @@ fun MainScreen(
         ExitConfirmationDialog(
             onConfirm = {
                 showExitDialog = false
-                (context as? Activity)?.finish()
+                onExit()
             },
             onDismiss = {
                 showExitDialog = false

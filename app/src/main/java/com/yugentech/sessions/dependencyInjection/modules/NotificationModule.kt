@@ -6,7 +6,6 @@ import com.yugentech.sessions.notifications.active.ActiveService
 import com.yugentech.sessions.notifications.active.ActiveServiceManager
 import com.yugentech.sessions.notifications.notificationRepository.NotificationRepository
 import com.yugentech.sessions.notifications.notificationRepository.NotificationRepositoryImpl
-import com.yugentech.sessions.notifications.scheduled.KoinWorkerFactory
 import com.yugentech.sessions.notifications.scheduled.ReminderManager
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.qualifier.named
@@ -48,9 +47,5 @@ val notificationModule = module {
             notificationRepository = get(),
             notificationPrefsDataStore = get()
         )
-    }
-
-    single {
-        KoinWorkerFactory()
     }
 }
