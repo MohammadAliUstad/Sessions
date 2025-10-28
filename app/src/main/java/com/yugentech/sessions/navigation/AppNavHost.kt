@@ -179,6 +179,11 @@ fun AppNavHost(
                         notificationsViewModel.stopActiveSession()
                         homeViewModel.resetStudyState()
                     },
+                    onExit = {
+                        (context as? Activity)?.finish()
+                        notificationsViewModel.stopActiveSession()
+                        homeViewModel.resetStudyState()
+                    },
                     onEditProfile = {
                         navController.navigate(Screens.EditProfile.route)
                     },
