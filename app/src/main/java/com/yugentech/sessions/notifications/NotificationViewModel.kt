@@ -145,11 +145,11 @@ class NotificationsViewModel(
     }
 
     // Schedule reminder with a specific message and delay
-    fun scheduleReminder(message: String, delayMinutes: Long) {
-        Log.d(TAG, "Scheduling reminder with message: '$message', delay: $delayMinutes minutes")
+    fun scheduleReminder(message: String, delayMillis: Long) {
+        Log.d(TAG, "Scheduling reminder with message: '$message', delay: $delayMillis minutes")
         viewModelScope.launch {
             try {
-                notificationRepository.scheduleReminder(message, delayMinutes)
+                notificationRepository.scheduleReminder(message, delayMillis)
                 Log.d(TAG, "Reminder scheduled successfully")
             } catch (e: Exception) {
                 Log.e(TAG, "Failed to schedule reminder", e)
@@ -176,19 +176,19 @@ class NotificationsViewModel(
         Log.d(TAG, "Updating reminders with config: $config")
 
         if (config.notificationsEnabled && config.focusRemindersEnabled) {
-            val delayMinutes = calculateDelayMinutes(
+            val delayMillis = calculateDelayMillis(
                 config.reminderTimeHour,
                 config.reminderTimeMinute
             )
 
             Log.d(
                 TAG,
-                "Notifications and focus reminders are enabled. Calculated delay: $delayMinutes minutes"
+                "Notifications and focus reminders are enabled. Calculated delay: $delayMillis millis"
             )
 
             scheduleReminder(
                 message = "Focus Reminder",
-                delayMinutes = delayMinutes
+                delayMillis = delayMillis
             )
         } else {
             Log.d(TAG, "Notifications or focus reminders are disabled. Cancelling all reminders.")
@@ -201,7 +201,8 @@ class NotificationsViewModel(
     }
 
     // Calculate minutes until next reminder time
-    private fun calculateDelayMinutes(hour: Int, minute: Int): Long {
+    // Rename the function to reflect what it actually returns now
+    private fun calculateDelayMillis(hour: Int, minute: Int): Long {
         val calendar = Calendar.getInstance()
         val currentTime = calendar.timeInMillis
         val currentTimeFormatted =
@@ -228,13 +229,13 @@ class NotificationsViewModel(
             java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US)
                 .format(targetCalendar.time)
 
-        val delayMinutes = (targetCalendar.timeInMillis - currentTime) / (1000 * 60)
+        val delayMillis = targetCalendar.timeInMillis - currentTime
 
         Log.d(TAG, "Calculate delay: Current time: $currentTimeFormatted")
         Log.d(TAG, "Calculate delay: Initial target time: $targetTimeFormatted")
         Log.d(TAG, "Calculate delay: Final target time: $updatedTargetTimeFormatted")
-        Log.d(TAG, "Calculate delay: Delay in minutes: $delayMinutes")
+        Log.d(TAG, "Calculate delay: Delay in milliseconds: $delayMillis")
 
-        return delayMinutes
+        return delayMillis
     }
 }
