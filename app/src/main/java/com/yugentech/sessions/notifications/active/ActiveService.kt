@@ -49,7 +49,7 @@ class ActiveService(
 
         val reminderChannel = NotificationChannel(
             REMINDER_CHANNEL_ID,
-            "Session Reminders",
+            "Reminder",
             NotificationManager.IMPORTANCE_HIGH
         ).apply {
             description = "Reminds you to start or resume a study session"
@@ -119,13 +119,13 @@ class ActiveService(
             .setContentIntent(pendingIntent)
             .setOnlyAlertOnce(true)
             .setShowWhen(false)
-            .setSilent(true)
             .setOngoing(notification.isOngoing)
             .setAutoCancel(!notification.isOngoing)
             .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
             .apply {
                 when (notification.type) {
                     NotificationType.ACTIVE -> {
+                        setSilent(true)
                         notification.remainingSeconds?.let { seconds ->
                             val formattedTime = String.format(
                                 Locale.US,
