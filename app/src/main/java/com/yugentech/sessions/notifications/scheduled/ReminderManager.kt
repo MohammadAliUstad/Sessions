@@ -21,9 +21,6 @@ class ReminderManager(private val context: Context) {
     ) {
         val triggerTimeMillis = System.currentTimeMillis() + delayMillis
 
-        Log.d(TAG, "Scheduling reminder with message: '$message' for $delayMillis minutes from now")
-        Log.d(TAG, "Trigger time: $triggerTimeMillis (current: ${System.currentTimeMillis()})")
-
         val intent = Intent(context, AlarmReceiver::class.java).apply {
             putExtra(AlarmReceiver.EXTRA_MESSAGE, message)
         }
@@ -35,20 +32,14 @@ class ReminderManager(private val context: Context) {
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
 
-        // Use setExactAndAllowWhileIdle for precise timing even in Doze mode
         alarmManager.setExactAndAllowWhileIdle(
             AlarmManager.RTC_WAKEUP,
             triggerTimeMillis,
             pendingIntent
         )
-        Log.d(TAG, "Using setExactAndAllowWhileIdle")
-
-        Log.d(TAG, "Reminder scheduled with request code: $requestCode")
     }
 
     fun cancelReminder(requestCode: Int) {
-        Log.d(TAG, "Cancelling reminder with request code: $requestCode")
-
         val intent = Intent(context, AlarmReceiver::class.java)
         val pendingIntent = PendingIntent.getBroadcast(
             context,
@@ -67,9 +58,5 @@ class ReminderManager(private val context: Context) {
         } else {
             true
         }
-    }
-
-    companion object {
-        private const val TAG = "ReminderManager"
     }
 }

@@ -1,62 +1,27 @@
 package com.yugentech.sessions.ui.screens
 
-import androidx.compose.animation.core.LinearEasing
-import androidx.compose.animation.core.RepeatMode
-import androidx.compose.animation.core.animateFloat
-import androidx.compose.animation.core.infiniteRepeatable
-import androidx.compose.animation.core.rememberInfiniteTransition
-import androidx.compose.animation.core.tween
+import androidx.compose.animation.core.*
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Assignment
-import androidx.compose.material.icons.filled.Email
-import androidx.compose.material.icons.filled.Lightbulb
-import androidx.compose.material.icons.filled.Lock
-import androidx.compose.material.icons.filled.School
-import androidx.compose.material.icons.filled.Timer
-import androidx.compose.material.icons.filled.Work
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
+import androidx.compose.material.icons.filled.*
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
-import com.yugentech.sessions.ui.components.signInUp.ActionButton
-import com.yugentech.sessions.ui.components.signInUp.AppTextField
-import com.yugentech.sessions.ui.components.signInUp.ForgotPasswordDialog
-import com.yugentech.sessions.ui.components.signInUp.GoogleSignInButton
+import com.yugentech.sessions.ui.AppTokens
 import com.yugentech.sessions.ui.components.common.ToastMessage
+import com.yugentech.sessions.ui.components.signInUp.*
 import com.yugentech.sessions.viewModels.LoginViewModel
 import kotlinx.coroutines.launch
 import kotlin.math.cos
@@ -69,6 +34,7 @@ fun SignInScreen(
     onGoogleSignInClick: () -> Unit,
     onNavigateToSignUp: () -> Unit,
 ) {
+    val tokens = AppTokens.current()
     val state by loginViewModel.authState.collectAsState()
     val forgotPasswordState by loginViewModel.forgotPasswordState.collectAsState()
     val scrollState = rememberScrollState()
@@ -81,7 +47,7 @@ fun SignInScreen(
             onDismiss = { loginViewModel.clearError() },
             modifier = Modifier
                 .align(Alignment.TopCenter)
-                .padding(top = 60.dp)
+                .padding(top = tokens.spacing.xl)
                 .zIndex(1f)
         )
 
@@ -93,34 +59,38 @@ fun SignInScreen(
                 modifier = Modifier
                     .fillMaxSize()
                     .verticalScroll(scrollState)
-                    .padding(horizontal = 24.dp),
+                    .padding(horizontal = tokens.spacing.l),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Spacer(modifier = Modifier.height(56.dp))
+                Spacer(modifier = Modifier.height(tokens.spacing.xxl))
 
                 IconCarousel(
-                    modifier = Modifier.padding(vertical = 8.dp)
+                    modifier = Modifier.padding(vertical = tokens.spacing.s)
                 )
 
-                Spacer(modifier = Modifier.height(12.dp))
+                Spacer(modifier = Modifier.height(tokens.spacing.m))
 
                 Text(
                     text = "Sessions",
-                    style = MaterialTheme.typography.headlineMedium,
-                    fontWeight = FontWeight.Medium,
+                    style = MaterialTheme.typography.headlineMedium.copy(
+                        fontSize = tokens.typography.title.sp,
+                        fontWeight = FontWeight.Medium
+                    ),
                     color = MaterialTheme.colorScheme.onBackground
                 )
 
-                Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(tokens.spacing.s))
 
                 Text(
                     text = "Ready to focus and be productive?",
-                    style = MaterialTheme.typography.titleMedium,
+                    style = MaterialTheme.typography.titleMedium.copy(
+                        fontSize = tokens.typography.subtitle.sp
+                    ),
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     textAlign = TextAlign.Center
                 )
 
-                Spacer(modifier = Modifier.height(24.dp))
+                Spacer(modifier = Modifier.height(tokens.spacing.l))
 
                 SignInForm(
                     isLoading = state.isLoading,
@@ -136,17 +106,19 @@ fun SignInScreen(
 
                 TextButton(
                     onClick = onNavigateToSignUp,
-                    modifier = Modifier.padding(vertical = 4.dp)
+                    modifier = Modifier.padding(vertical = tokens.spacing.xs)
                 ) {
                     Text(
                         text = "Don't have an account? Sign Up",
-                        style = MaterialTheme.typography.labelLarge,
+                        style = MaterialTheme.typography.labelLarge.copy(
+                            fontSize = tokens.typography.label.sp
+                        ),
                         fontWeight = FontWeight.Medium,
                         color = MaterialTheme.colorScheme.primary
                     )
                 }
 
-                Spacer(modifier = Modifier.height(24.dp))
+                Spacer(modifier = Modifier.height(tokens.spacing.l))
             }
 
             ForgotPasswordDialog(
@@ -172,6 +144,7 @@ fun SignInScreen(
 private fun IconCarousel(
     modifier: Modifier = Modifier
 ) {
+    val tokens = AppTokens.current()
     val icons = listOf(
         Icons.Filled.School,
         Icons.Filled.Work,
@@ -193,9 +166,12 @@ private fun IconCarousel(
         label = "rotation"
     )
 
+    val circleSize = tokens.components.imageSizeLarge
+    val iconSize = tokens.components.iconMedium
+
     Box(
         modifier = modifier
-            .size(200.dp)
+            .size(circleSize)
             .background(
                 color = MaterialTheme.colorScheme.surfaceContainer,
                 shape = CircleShape
@@ -204,7 +180,7 @@ private fun IconCarousel(
     ) {
         icons.forEachIndexed { index, icon ->
             val iconAngle = angle + (360f / icons.size * index)
-            val radius = 200f
+            val radius = with(LocalDensity.current) { (circleSize.toPx() / 2f) }
 
             val x = with(LocalDensity.current) {
                 (radius * cos(Math.toRadians(iconAngle.toDouble()))).toFloat().toDp()
@@ -217,7 +193,7 @@ private fun IconCarousel(
                 imageVector = icon,
                 contentDescription = null,
                 modifier = Modifier
-                    .size(48.dp)
+                    .size(iconSize)
                     .offset(x, y),
                 tint = MaterialTheme.colorScheme.primary
             )
@@ -226,7 +202,7 @@ private fun IconCarousel(
         Icon(
             imageVector = Icons.Filled.Timer,
             contentDescription = null,
-            modifier = Modifier.size(36.dp),
+            modifier = Modifier.size(tokens.components.iconLarge),
             tint = MaterialTheme.colorScheme.primary
         )
     }
@@ -241,34 +217,36 @@ private fun SignInForm(
     onClearError: () -> Unit,
     onEmailChange: (String) -> Unit
 ) {
+    val tokens = AppTokens.current()
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var emailError by remember { mutableStateOf("") }
     var passwordError by remember { mutableStateOf("") }
     val scope = rememberCoroutineScope()
 
-    LaunchedEffect(email, password) {
-        onClearError()
-    }
+    LaunchedEffect(email, password) { onClearError() }
 
     Card(
         modifier = Modifier.fillMaxWidth(),
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surfaceContainer
         ),
-        shape = RoundedCornerShape(28.dp)
+        shape = RoundedCornerShape(tokens.corners.large),
+        elevation = CardDefaults.cardElevation(tokens.elevation.level1)
     ) {
         Column(
-            modifier = Modifier.padding(24.dp)
+            modifier = Modifier.padding(tokens.spacing.l)
         ) {
             Text(
                 text = "Welcome back",
-                style = MaterialTheme.typography.headlineMedium,
-                fontWeight = FontWeight.W200,
+                style = MaterialTheme.typography.headlineMedium.copy(
+                    fontSize = tokens.typography.title.sp,
+                    fontWeight = FontWeight.W200
+                ),
                 color = MaterialTheme.colorScheme.onSurface
             )
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(tokens.spacing.m))
 
             AppTextField(
                 value = email,
@@ -282,7 +260,7 @@ private fun SignInForm(
                 error = emailError
             )
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(tokens.spacing.m))
 
             AppTextField(
                 value = password,
@@ -296,24 +274,24 @@ private fun SignInForm(
                 isPassword = true
             )
 
-            Spacer(modifier = Modifier.height(4.dp))
+            Spacer(modifier = Modifier.height(tokens.spacing.s))
 
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.End
             ) {
-                TextButton(
-                    onClick = { onForgotPasswordClick(email) }
-                ) {
+                TextButton(onClick = { onForgotPasswordClick(email) }) {
                     Text(
                         text = "Forgot Password?",
-                        style = MaterialTheme.typography.labelLarge,
+                        style = MaterialTheme.typography.labelLarge.copy(
+                            fontSize = tokens.typography.label.sp
+                        ),
                         color = MaterialTheme.colorScheme.primary
                     )
                 }
             }
 
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(tokens.spacing.s))
 
             ActionButton(
                 text = "Sign In",
@@ -326,14 +304,12 @@ private fun SignInForm(
                             onPasswordError = { passwordError = it }
                         )
                     ) {
-                        scope.launch {
-                            onSignInClick(email, password)
-                        }
+                        scope.launch { onSignInClick(email, password) }
                     }
                 }
             )
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(tokens.spacing.m))
 
             GoogleSignInButton(
                 isLoading = isLoading,

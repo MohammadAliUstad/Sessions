@@ -27,7 +27,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
-import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.yugentech.sessions.ui.AppTokens
 
 @Composable
 fun AppTextField(
@@ -39,18 +40,28 @@ fun AppTextField(
     error: String = "",
     isPassword: Boolean = false
 ) {
+    val tokens = AppTokens.current()
     var passwordVisible by remember { mutableStateOf(false) }
 
     Column(modifier = modifier) {
         OutlinedTextField(
             value = value,
             onValueChange = onValueChange,
-            label = { Text(label) },
+            label = {
+                Text(
+                    text = label,
+                    style = MaterialTheme.typography.bodyLarge.copy(
+                        fontSize = tokens.typography.label.sp
+                    )
+                )
+            },
             isError = error.isNotEmpty(),
-            shape = RoundedCornerShape(12.dp),
+            shape = RoundedCornerShape(tokens.corners.small),
             modifier = Modifier.fillMaxWidth(),
             singleLine = true,
-            textStyle = MaterialTheme.typography.bodyLarge,
+            textStyle = MaterialTheme.typography.bodyLarge.copy(
+                fontSize = tokens.typography.body.sp
+            ),
             colors = OutlinedTextFieldDefaults.colors(
                 focusedBorderColor = MaterialTheme.colorScheme.primary,
                 unfocusedBorderColor = MaterialTheme.colorScheme.outline,
@@ -67,9 +78,7 @@ fun AppTextField(
             },
             trailingIcon = if (isPassword) {
                 {
-                    IconButton(
-                        onClick = { passwordVisible = !passwordVisible }
-                    ) {
+                    IconButton(onClick = { passwordVisible = !passwordVisible }) {
                         Icon(
                             imageVector = if (passwordVisible)
                                 Icons.Default.Visibility
@@ -92,9 +101,9 @@ fun AppTextField(
 }
 
 @Composable
-private fun ErrorText(
-    error: String
-) {
+private fun ErrorText(error: String) {
+    val tokens = AppTokens.current()
+
     AnimatedVisibility(
         visible = error.isNotEmpty(),
         enter = expandVertically() + fadeIn(),
@@ -103,8 +112,13 @@ private fun ErrorText(
         Text(
             text = error,
             color = MaterialTheme.colorScheme.error,
-            style = MaterialTheme.typography.bodySmall,
-            modifier = Modifier.padding(start = 8.dp, top = 4.dp)
+            style = MaterialTheme.typography.bodySmall.copy(
+                fontSize = tokens.typography.caption.sp
+            ),
+            modifier = Modifier.padding(
+                start = tokens.spacing.xs,
+                top = tokens.spacing.xs
+            )
         )
     }
 }
