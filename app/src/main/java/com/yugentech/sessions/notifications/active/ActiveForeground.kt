@@ -11,6 +11,7 @@ import com.yugentech.sessions.notifications.NotificationType
 import com.yugentech.sessions.utils.Constants.ACTION_START_SESSION
 import com.yugentech.sessions.utils.Constants.ACTION_STOP_SESSION
 import com.yugentech.sessions.utils.Constants.ACTION_UPDATE_SESSION
+import com.yugentech.sessions.viewModels.HomeViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -22,7 +23,8 @@ import java.util.Locale
 
 class ActiveForeground : Service() {
 
-    private val activeService: ActiveService by inject()
+    private val notificationService: NotificationService by inject()
+    private val homeViewModel: HomeViewModel by inject()
     private var isSessionActive = false
     private var updateJob: Job? = null
     private var remainingSeconds = 0
@@ -57,7 +59,7 @@ class ActiveForeground : Service() {
         remainingSeconds = intent?.getIntExtra("remainingMinutes", 0) ?: 0
 
         val placeholderNotification = Notification(
-            id = ActiveService.ACTIVE_NOTIFICATION_ID,
+            id = NotificationService.ACTIVE_NOTIFICATION_ID,
             type = NotificationType.ACTIVE,
             title = sessionTitle,
             message = "Starting session...",
@@ -65,7 +67,7 @@ class ActiveForeground : Service() {
             remainingSeconds = remainingSeconds
         )
 
-        val androidNotification = activeService.buildNotification(placeholderNotification)
+        val androidNotification = notificationService.buildNotification(placeholderNotification)
 
         try {
             val serviceType = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
@@ -74,7 +76,7 @@ class ActiveForeground : Service() {
 
             ServiceCompat.startForeground(
                 this,
-                ActiveService.ACTIVE_NOTIFICATION_ID,
+                NotificationService.ACTIVE_NOTIFICATION_ID,
                 androidNotification,
                 serviceType
             )
@@ -101,7 +103,7 @@ class ActiveForeground : Service() {
 
     private fun updateNotification() {
         val notification = createNotification(remainingSeconds)
-        activeService.showNotification(notification)
+        notificationService.showNotification(notification)
     }
 
     private fun createNotification(seconds: Int): Notification {
@@ -112,7 +114,7 @@ class ActiveForeground : Service() {
             seconds % 60
         )
         return Notification(
-            id = ActiveService.ACTIVE_NOTIFICATION_ID,
+            id = NotificationService.ACTIVE_NOTIFICATION_ID,
             type = NotificationType.ACTIVE,
             title = sessionTitle,
             message = "$formattedTime remaining",
@@ -123,14 +125,14 @@ class ActiveForeground : Service() {
 
     private fun stopSession() {
         if (!isSessionActive && updateJob == null) return
-
         isSessionActive = false
         remainingSeconds = 0
         updateJob?.cancel()
         updateJob = null
 
-        activeService.hideNotification(ActiveService.ACTIVE_NOTIFICATION_ID)
+        notificationService.hideNotification(NotificationService.ACTIVE_NOTIFICATION_ID)
         stopForeground(STOP_FOREGROUND_REMOVE)
+        homeViewModel.resetStudyState()
         stopSelf()
     }
 
@@ -142,7 +144,7 @@ class ActiveForeground : Service() {
     override fun onDestroy() {
         isSessionActive = false
         updateJob?.cancel()
-        activeService.hideNotification(ActiveService.ACTIVE_NOTIFICATION_ID)
+        notificationService.hideNotification(NotificationService.ACTIVE_NOTIFICATION_ID)
         super.onDestroy()
     }
 }
