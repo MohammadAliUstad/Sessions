@@ -2,11 +2,11 @@ package com.yugentech.sessions.notifications.notificationRepository
 
 import android.util.Log
 import com.yugentech.sessions.notifications.Notification
-import com.yugentech.sessions.notifications.active.ActiveServiceManager
+import com.yugentech.sessions.notifications.active.ActiveManager
 import com.yugentech.sessions.notifications.scheduled.ReminderManager
 
 class NotificationRepositoryImpl(
-    private val activeServiceManager: ActiveServiceManager,
+    private val activeManager: ActiveManager,
     private val reminderManager: ReminderManager
 ) : NotificationRepository {
 
@@ -17,15 +17,15 @@ class NotificationRepositoryImpl(
     }
 
     override suspend fun startActiveSession(notification: Notification) {
-        activeServiceManager.startActiveSession(notification)
+        activeManager.startActiveSession(notification)
     }
 
     override suspend fun updateActiveSession(notification: Notification) {
-        activeServiceManager.updateActiveSession(notification)
+        activeManager.updateActiveSession(notification)
     }
 
     override suspend fun stopActiveSession() {
-        activeServiceManager.stopActiveSession()
+        activeManager.stopActiveSession()
     }
 
     override suspend fun scheduleReminder(message: String, delayMillis: Long) {
