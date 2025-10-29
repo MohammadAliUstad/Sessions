@@ -1,15 +1,15 @@
 package com.yugentech.sessions.dependencyInjection
 
-import com.yugentech.sessions.notifications.active.ActiveService
+import com.yugentech.sessions.notifications.active.NotificationService
 import kotlinx.coroutines.runBlocking
 
 class NotificationInitializer(
     private val prefs: NotificationPrefsDataStore,
-    private val activeService: ActiveService
+    private val notificationService: NotificationService
 ) {
     fun initialize() = runBlocking {
         if (!prefs.areChannelsCreated()) {
-            activeService.createNotificationChannels()
+            notificationService.createNotificationChannels()
             prefs.setChannelsCreated(true)
         }
     }
