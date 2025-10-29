@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Timer
@@ -27,7 +26,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.yugentech.sessions.ui.ResponsiveDimensions
 
 @Composable
 fun DurationSelector(
@@ -36,25 +34,19 @@ fun DurationSelector(
     onDurationSelected: (Int) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val spacing = ResponsiveDimensions.spacing()
-    val cornerRadius = ResponsiveDimensions.cornerRadius()
-    val smallCornerRadius = ResponsiveDimensions.smallCornerRadius()
-
     Card(
-        modifier = modifier
-            .fillMaxWidth()
-            .widthIn(max = 500.dp), // Prevent too wide on tablets
+        modifier = modifier.fillMaxWidth(),
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surfaceContainer
         ),
-        shape = RoundedCornerShape(cornerRadius)
+        shape = RoundedCornerShape(24.dp)
     ) {
         Column(
-            modifier = Modifier.padding(spacing.medium)
+            modifier = Modifier.padding(16.dp)
         ) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.padding(bottom = spacing.small)
+                modifier = Modifier.padding(bottom = 12.dp)
             ) {
                 Icon(
                     imageVector = Icons.Default.Timer,
@@ -62,7 +54,7 @@ fun DurationSelector(
                     tint = MaterialTheme.colorScheme.primary,
                     modifier = Modifier.size(20.dp)
                 )
-                Spacer(modifier = Modifier.width(spacing.small))
+                Spacer(modifier = Modifier.width(8.dp))
                 Text(
                     text = "Duration",
                     style = MaterialTheme.typography.titleSmall.copy(
@@ -77,10 +69,10 @@ fun DurationSelector(
                     .fillMaxWidth()
                     .background(
                         color = MaterialTheme.colorScheme.surface,
-                        shape = RoundedCornerShape(smallCornerRadius)
+                        shape = RoundedCornerShape(16.dp)
                     )
-                    .padding(spacing.extraSmall),
-                horizontalArrangement = Arrangement.spacedBy(spacing.extraSmall)
+                    .padding(4.dp),
+                horizontalArrangement = Arrangement.spacedBy(4.dp)
             ) {
                 availableDurations.forEach { min ->
                     val isSelected = selectedDuration == (min * 60)
@@ -89,7 +81,7 @@ fun DurationSelector(
                         modifier = Modifier
                             .weight(1f)
                             .height(40.dp)
-                            .clip(RoundedCornerShape(smallCornerRadius))
+                            .clip(RoundedCornerShape(12.dp))
                             .background(
                                 color = if (isSelected)
                                     MaterialTheme.colorScheme.primaryContainer

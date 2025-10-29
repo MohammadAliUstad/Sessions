@@ -9,7 +9,7 @@ import com.yugentech.sessions.utils.Constants.ACTION_STOP_SESSION
 import com.yugentech.sessions.utils.Constants.ACTION_UPDATE_SESSION
 import org.koin.core.component.KoinComponent
 
-class ActiveServiceManager(
+class ActiveManager(
     private val context: Context
 ) : KoinComponent {
 
