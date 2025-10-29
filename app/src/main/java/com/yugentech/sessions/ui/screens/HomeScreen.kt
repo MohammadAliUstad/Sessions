@@ -45,7 +45,8 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.yugentech.sessions.notifications.Notification
 import com.yugentech.sessions.notifications.NotificationType
 import com.yugentech.sessions.notifications.NotificationsViewModel
-import com.yugentech.sessions.ui.ResponsiveDimensions
+// Removed this import
+// import com.yugentech.sessions.ui.ResponsiveDimensions
 import com.yugentech.sessions.ui.components.homeScreen.DurationSelector
 import com.yugentech.sessions.ui.components.homeScreen.SessionActionButtons
 import com.yugentech.sessions.ui.components.homeScreen.StudyingControlButtons
@@ -69,12 +70,7 @@ fun HomeScreen(
 
     val availableDurations = remember { listOf(25, 50) }
 
-    // Get responsive dimensions
-    val spacing = ResponsiveDimensions.spacing()
-    val horizontalPadding = ResponsiveDimensions.horizontalPadding()
-    val verticalPadding = ResponsiveDimensions.verticalPadding()
-    val titleSize = ResponsiveDimensions.titleTextSize()
-    val cornerRadius = ResponsiveDimensions.cornerRadius()
+    // Removed the ResponsiveDimensions variables
 
     LaunchedEffect(userId) {
         homeViewModel.setUserId(userId)
@@ -91,7 +87,8 @@ fun HomeScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState())
-                .padding(horizontal = horizontalPadding, vertical = verticalPadding),
+                // Replaced variables with standard 16.dp padding
+                .padding(horizontal = 16.dp, vertical = 16.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             // Header Section
@@ -101,29 +98,34 @@ fun HomeScreen(
             ) {
                 Text(
                     text = if (uiState.isRunning) "Focus" else "Ready to Focus?",
-                    fontSize = titleSize,
+                    // Replaced titleSize with 28.sp
+                    fontSize = 28.sp,
                     fontWeight = FontWeight.Medium,
                     letterSpacing = 0.5.sp,
                     color = MaterialTheme.colorScheme.onSurface,
                     textAlign = TextAlign.Center
                 )
 
-                Spacer(modifier = Modifier.height(spacing.small))
+                // Replaced spacing.small with 8.dp
+                Spacer(modifier = Modifier.height(8.dp))
 
                 Card(
-                    modifier = Modifier.padding(horizontal = spacing.medium),
+                    // Replaced spacing.medium with 16.dp
+                    modifier = Modifier.padding(horizontal = 16.dp),
                     colors = CardDefaults.cardColors(
                         containerColor = if (uiState.isRunning)
                             MaterialTheme.colorScheme.primaryContainer
                         else
                             MaterialTheme.colorScheme.surfaceVariant
                     ),
-                    shape = RoundedCornerShape(cornerRadius)
+                    // Replaced cornerRadius with 12.dp
+                    shape = RoundedCornerShape(12.dp)
                 ) {
                     Row(
                         modifier = Modifier.padding(
-                            horizontal = spacing.medium,
-                            vertical = spacing.small
+                            // Replaced spacing.medium and spacing.small
+                            horizontal = 16.dp,
+                            vertical = 8.dp
                         ),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
@@ -139,7 +141,8 @@ fun HomeScreen(
                                 )
                         )
 
-                        Spacer(modifier = Modifier.width(spacing.small))
+                        // Replaced spacing.small with 8.dp
+                        Spacer(modifier = Modifier.width(8.dp))
 
                         Text(
                             text = if (uiState.isRunning) "In Session" else "Idle",
@@ -153,13 +156,15 @@ fun HomeScreen(
                 }
             }
 
-            Spacer(modifier = Modifier.height(spacing.large))
+            // Replaced spacing.large with 24.dp
+            Spacer(modifier = Modifier.height(24.dp))
 
             // Timer Display
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(vertical = spacing.medium),
+                    // Replaced spacing.medium with 16.dp
+                    .padding(vertical = 16.dp),
                 contentAlignment = Alignment.Center
             ) {
                 TimerDisplay(
@@ -170,7 +175,8 @@ fun HomeScreen(
                 )
             }
 
-            Spacer(modifier = Modifier.height(spacing.large))
+            // Replaced spacing.large with 24.dp
+            Spacer(modifier = Modifier.height(24.dp))
 
             // Controls Section
             Column(
@@ -191,7 +197,8 @@ fun HomeScreen(
                     )
                 }
 
-                Spacer(modifier = Modifier.height(spacing.large))
+                // Replaced spacing.large with 24.dp
+                Spacer(modifier = Modifier.height(24.dp))
 
                 AnimatedVisibility(
                     visible = !uiState.isRunning || uiState.currentTime > 0,
@@ -222,7 +229,8 @@ fun HomeScreen(
                     )
                 }
 
-                Spacer(modifier = Modifier.height(spacing.large))
+                // Replaced spacing.large with 24.dp
+                Spacer(modifier = Modifier.height(24.dp))
 
                 AnimatedVisibility(
                     visible = uiState.isRunning,
@@ -254,7 +262,8 @@ fun HomeScreen(
                     )
                 }
 
-                Spacer(modifier = Modifier.height(spacing.large))
+                // Replaced spacing.large with 24.dp
+                Spacer(modifier = Modifier.height(24.dp))
             }
         }
     }

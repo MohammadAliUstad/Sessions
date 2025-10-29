@@ -8,7 +8,6 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
-import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
@@ -18,9 +17,7 @@ import com.yugentech.sessions.notifications.Notification
 import com.yugentech.sessions.notifications.NotificationType
 import java.util.Locale
 
-private const val TAG = "active service"
-
-class ActiveService(
+class NotificationService(
     private val context: Context
 ) {
     private val notificationManager = NotificationManagerCompat.from(context)
@@ -33,8 +30,6 @@ class ActiveService(
     }
 
     fun createNotificationChannels() {
-        Log.d(TAG, "Creating notification channels...")
-
         val manager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
         val activeChannel = NotificationChannel(
@@ -56,25 +51,18 @@ class ActiveService(
         }
 
         manager.createNotificationChannel(activeChannel)
-        Log.d(TAG, "Active session channel created: id=$ACTIVE_CHANNEL_ID")
-
         manager.createNotificationChannel(reminderChannel)
-        Log.d(TAG, "Reminder session channel created: id=$REMINDER_CHANNEL_ID")
     }
 
     fun showNotification(notification: Notification) {
-        Log.d(TAG, "Attempting to show notification: id=${notification.id}, title='${notification.title}'")
         if (!hasNotificationPermission()) {
-            Log.w(TAG, "Cannot show notification: permission denied")
             return
         }
 
         try {
             val androidNotification = buildNotification(notification)
             notificationManager.notify(notification.id, androidNotification)
-            Log.d(TAG, "Notification shown: id=${notification.id}")
-        } catch (e: SecurityException) {
-            Log.e(TAG, "Failed to show notification due to SecurityException", e)
+        } catch (_: SecurityException) {
         }
     }
 
