@@ -14,8 +14,8 @@ object AppColorSchemes {
 
         secondary = Color(0xFF575E71),
         onSecondary = Color(0xFFFFFFFF),
-        secondaryContainer = Color(0xFFD1D8F0), // Improved contrast
-        onSecondaryContainer = Color(0xFF141B2C), // Better contrast
+        secondaryContainer = Color(0xFFD1D8F0),
+        onSecondaryContainer = Color(0xFF141B2C),
 
         tertiary = Color(0xFF715573),
         onTertiary = Color(0xFFFFFFFF),
@@ -45,7 +45,7 @@ object AppColorSchemes {
         surfaceBright = Color(0xFFF9F9FF),
         surfaceContainerLowest = Color(0xFFFFFFFF),
         surfaceContainerLow = Color(0xFFF3F3FA),
-        surfaceContainer = Color(0xFFECEDF4), // Better navigation background
+        surfaceContainer = Color(0xFFECEDF4),
         surfaceContainerHigh = Color(0xFFE8E7EE),
         surfaceContainerHighest = Color(0xFFE2E2E9)
     )
@@ -58,8 +58,8 @@ object AppColorSchemes {
 
         secondary = Color(0xFFBFC6DC),
         onSecondary = Color(0xFF293041),
-        secondaryContainer = Color(0xFF404764), // Better navigation selection
-        onSecondaryContainer = Color(0xFFDBE2F9), // Improved contrast
+        secondaryContainer = Color(0xFF404764),
+        onSecondaryContainer = Color(0xFFDBE2F9),
 
         tertiary = Color(0xFFDEBCDF),
         onTertiary = Color(0xFF402843),
@@ -89,7 +89,7 @@ object AppColorSchemes {
         surfaceBright = Color(0xFF37393E),
         surfaceContainerLowest = Color(0xFF0C0E13),
         surfaceContainerLow = Color(0xFF1A1B20),
-        surfaceContainer = Color(0xFF21222A), // Better dark navigation background
+        surfaceContainer = Color(0xFF21222A),
         surfaceContainerHigh = Color(0xFF282A2F),
         surfaceContainerHighest = Color(0xFF33353A)
     )
@@ -102,8 +102,8 @@ object AppColorSchemes {
 
         secondary = Color(0xFF665E40),
         onSecondary = Color(0xFFFFFFFF),
-        secondaryContainer = Color(0xFFE8DDB3), // Improved yellow navigation
-        onSecondaryContainer = Color(0xFF2A2419), // Better contrast
+        secondaryContainer = Color(0xFFE8DDB3),
+        onSecondaryContainer = Color(0xFF2A2419),
 
         tertiary = Color(0xFF43664E),
         onTertiary = Color(0xFFFFFFFF),
@@ -133,7 +133,7 @@ object AppColorSchemes {
         surfaceBright = Color(0xFFFFF9EE),
         surfaceContainerLowest = Color(0xFFFFFFFF),
         surfaceContainerLow = Color(0xFFFAF3E5),
-        surfaceContainer = Color(0xFFF2EBD9), // Better warm navigation
+        surfaceContainer = Color(0xFFF2EBD9),
         surfaceContainerHigh = Color(0xFFEEE8DA),
         surfaceContainerHighest = Color(0xFFE8E2D4)
     )
@@ -177,7 +177,7 @@ object AppColorSchemes {
         surfaceBright = Color(0xFF3C3930),
         surfaceContainerLowest = Color(0xFF100E07),
         surfaceContainerLow = Color(0xFF1E1B13),
-        surfaceContainer = Color(0xFF26241A), // Better dark warm navigation
+        surfaceContainer = Color(0xFF26241A),
         surfaceContainerHigh = Color(0xFF2D2A21),
         surfaceContainerHighest = Color(0xFF38352B)
     )
@@ -190,8 +190,8 @@ object AppColorSchemes {
 
         secondary = Color(0xFF5F5E5E),
         onSecondary = Color(0xFFFFFFFF),
-        secondaryContainer = Color(0xFFE0E0E0), // Much better gray navigation
-        onSecondaryContainer = Color(0xFF1A1A1A), // Excellent contrast
+        secondaryContainer = Color(0xFFE0E0E0),
+        onSecondaryContainer = Color(0xFF1A1A1A),
 
         tertiary = Color(0xFF5E5E5F),
         onTertiary = Color(0xFFFFFFFF),
@@ -221,7 +221,7 @@ object AppColorSchemes {
         surfaceBright = Color(0xFFFDF8F8),
         surfaceContainerLowest = Color(0xFFFFFFFF),
         surfaceContainerLow = Color(0xFFF7F3F2),
-        surfaceContainer = Color(0xFFF0F0F0), // Clean gray navigation
+        surfaceContainer = Color(0xFFF0F0F0),
         surfaceContainerHigh = Color(0xFFEBE7E7),
         surfaceContainerHighest = Color(0xFFE5E2E1)
     )
@@ -234,8 +234,8 @@ object AppColorSchemes {
 
         secondary = Color(0xFFC8C6C5),
         onSecondary = Color(0xFF313030),
-        secondaryContainer = Color(0xFF484848), // Much better dark gray navigation
-        onSecondaryContainer = Color(0xFFE0E0E0), // Excellent contrast
+        secondaryContainer = Color(0xFF484848),
+        onSecondaryContainer = Color(0xFFE0E0E0),
 
         tertiary = Color(0xFFC9C6C7),
         onTertiary = Color(0xFF313031),
@@ -265,7 +265,7 @@ object AppColorSchemes {
         surfaceBright = Color(0xFF3A3939),
         surfaceContainerLowest = Color(0xFF0E0E0E),
         surfaceContainerLow = Color(0xFF1C1B1B),
-        surfaceContainer = Color(0xFF242424), // Clean dark gray navigation
+        surfaceContainer = Color(0xFF242424),
         surfaceContainerHigh = Color(0xFF2B2A2A),
         surfaceContainerHighest = Color(0xFF353434)
     )
