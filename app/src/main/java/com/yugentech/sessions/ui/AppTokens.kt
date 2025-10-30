@@ -52,13 +52,21 @@ data class ElevationTokens(
     val level4: Dp
 )
 
+/** ---------------------- TYPOGRAPHY ---------------------- */
+data class TypographyTokens(
+    val body: Int,
+    val label: Int,
+    val caption: Int
+)
+
 /** ---------------------- DESIGN TOKEN MODEL ---------------------- */
 data class DesignTokens(
     val spacing: SpacingTokens,
     val corners: CornerTokens,
     val components: ComponentTokens,
     val elevation: ElevationTokens,
-    val strokeWidths: StrokeTokens
+    val strokeWidths: StrokeTokens,
+    val typography: TypographyTokens // Added this line
 )
 
 /** ---------------------- COMPACT ---------------------- */
@@ -73,7 +81,12 @@ val TokensCompact = DesignTokens(
         imageSizeSmall = 48.dp, imageSizeMedium = 96.dp, imageSizeLarge = 160.dp
     ),
     elevation = ElevationTokens(0.dp, 2.dp, 4.dp, 8.dp, 12.dp),
-    strokeWidths = StrokeTokens(1.dp, 2.dp, 4.dp)
+    strokeWidths = StrokeTokens(1.dp, 2.dp, 4.dp),
+    typography = TypographyTokens(  // Added this block
+        body = 16,
+        label = 16,
+        caption = 12
+    )
 )
 
 /** ---------------------- MEDIUM ---------------------- */
@@ -88,7 +101,12 @@ val TokensMedium = DesignTokens(
         imageSizeSmall = 64.dp, imageSizeMedium = 128.dp, imageSizeLarge = 200.dp
     ),
     elevation = ElevationTokens(0.dp, 3.dp, 6.dp, 10.dp, 16.dp),
-    strokeWidths = StrokeTokens(1.dp, 3.dp, 5.dp)
+    strokeWidths = StrokeTokens(1.dp, 3.dp, 5.dp),
+    typography = TypographyTokens(  // Added this block
+        body = 18,
+        label = 18,
+        caption = 14
+    )
 )
 
 /** ---------------------- EXPANDED ---------------------- */
@@ -103,5 +121,10 @@ val TokensExpanded = DesignTokens(
         imageSizeSmall = 80.dp, imageSizeMedium = 160.dp, imageSizeLarge = 240.dp
     ),
     elevation = ElevationTokens(0.dp, 4.dp, 8.dp, 12.dp, 20.dp),
-    strokeWidths = StrokeTokens(1.dp, 4.dp, 6.dp)
+    strokeWidths = StrokeTokens(1.dp, 4.dp, 6.dp),
+    typography = TypographyTokens(  // Added this block
+        body = 20,
+        label = 20,
+        caption = 16
+    )
 )

@@ -28,7 +28,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.sp
-import com.yugentech.sessions.ui.AppTokens
+import com.yugentech.sessions.ui.Tokens
 
 @Composable
 fun AppTextField(
@@ -40,7 +40,7 @@ fun AppTextField(
     error: String = "",
     isPassword: Boolean = false
 ) {
-    val tokens = AppTokens.current()
+    val tokens = Tokens
     var passwordVisible by remember { mutableStateOf(false) }
 
     Column(modifier = modifier) {
@@ -71,9 +71,10 @@ fun AppTextField(
             leadingIcon = {
                 Icon(
                     imageVector = leadingIcon,
-                    contentDescription = null,
-                    tint = if (error.isNotEmpty()) MaterialTheme.colorScheme.error
-                    else MaterialTheme.colorScheme.primary
+                    contentDescription = null
+                    // FIX: Removed hardcoded tint.
+                    // The 'colors' parameter in OutlinedTextFieldDefaults
+                    // will now correctly handle the tint for focus, unfocus, and error states.
                 )
             },
             trailingIcon = if (isPassword) {
@@ -102,7 +103,7 @@ fun AppTextField(
 
 @Composable
 private fun ErrorText(error: String) {
-    val tokens = AppTokens.current()
+    val tokens = Tokens
 
     AnimatedVisibility(
         visible = error.isNotEmpty(),

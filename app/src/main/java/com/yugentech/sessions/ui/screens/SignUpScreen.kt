@@ -283,7 +283,7 @@ private fun validateName(name: String): String {
     }
 }
 
-private fun validateEmail(email: String): String {
+fun validateEmail(email: String): String {
     return when {
         email.isBlank() -> "Email cannot be empty"
         !android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches() ->
@@ -292,7 +292,7 @@ private fun validateEmail(email: String): String {
     }
 }
 
-private fun validatePassword(password: String): String {
+fun validatePassword(password: String): String {
     return when {
         password.isBlank() -> "Password cannot be empty"
         password.length < 8 -> "Password must be at least 8 characters"
