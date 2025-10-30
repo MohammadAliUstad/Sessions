@@ -9,6 +9,7 @@ import androidx.compose.animation.scaleIn
 import androidx.compose.animation.scaleOut
 import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -19,10 +20,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -39,14 +38,12 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.yugentech.sessions.notifications.Notification
 import com.yugentech.sessions.notifications.NotificationType
 import com.yugentech.sessions.notifications.NotificationsViewModel
-// Removed this import
-// import com.yugentech.sessions.ui.ResponsiveDimensions
+import com.yugentech.sessions.ui.Tokens // Import your tokens
 import com.yugentech.sessions.ui.components.homeScreen.DurationSelector
 import com.yugentech.sessions.ui.components.homeScreen.SessionActionButtons
 import com.yugentech.sessions.ui.components.homeScreen.StudyingControlButtons
@@ -61,6 +58,7 @@ fun HomeScreen(
     notificationsViewModel: NotificationsViewModel
 ) {
     val uiState by homeViewModel.uiState.collectAsStateWithLifecycle()
+    val tokens = Tokens // Initialize your tokens
 
     val displayTime = if (uiState.isRunning || uiState.currentTime > 0) {
         uiState.currentTime
@@ -70,7 +68,6 @@ fun HomeScreen(
 
     val availableDurations = remember { listOf(25, 50) }
 
-    // Removed the ResponsiveDimensions variables
 
     LaunchedEffect(userId) {
         homeViewModel.setUserId(userId)
@@ -86,9 +83,8 @@ fun HomeScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .verticalScroll(rememberScrollState())
-                // Replaced variables with standard 16.dp padding
-                .padding(horizontal = 16.dp, vertical = 16.dp),
+                // Removed .verticalScroll()
+                .padding(tokens.spacing.m), // Use token for screen padding
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             // Header Section
@@ -98,40 +94,35 @@ fun HomeScreen(
             ) {
                 Text(
                     text = if (uiState.isRunning) "Focus" else "Ready to Focus?",
-                    // Replaced titleSize with 28.sp
-                    fontSize = 28.sp,
+                    fontSize = tokens.typography.headline.sp, // Use token
                     fontWeight = FontWeight.Medium,
                     letterSpacing = 0.5.sp,
                     color = MaterialTheme.colorScheme.onSurface,
                     textAlign = TextAlign.Center
                 )
 
-                // Replaced spacing.small with 8.dp
-                Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(tokens.spacing.s)) // Use token
 
                 Card(
-                    // Replaced spacing.medium with 16.dp
-                    modifier = Modifier.padding(horizontal = 16.dp),
+                    modifier = Modifier.padding(horizontal = tokens.spacing.m), // Use token
                     colors = CardDefaults.cardColors(
                         containerColor = if (uiState.isRunning)
                             MaterialTheme.colorScheme.primaryContainer
                         else
                             MaterialTheme.colorScheme.surfaceVariant
                     ),
-                    // Replaced cornerRadius with 12.dp
-                    shape = RoundedCornerShape(12.dp)
+                    shape = RoundedCornerShape(tokens.corners.smallMedium) // Use token
                 ) {
                     Row(
                         modifier = Modifier.padding(
-                            // Replaced spacing.medium and spacing.small
-                            horizontal = 16.dp,
-                            vertical = 8.dp
+                            horizontal = tokens.spacing.m, // Use token
+                            vertical = tokens.spacing.s   // Use token
                         ),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Box(
                             modifier = Modifier
-                                .size(8.dp)
+                                .size(tokens.components.dotSize) // Use token
                                 .background(
                                     color = if (uiState.isRunning)
                                         MaterialTheme.colorScheme.primary
@@ -141,8 +132,7 @@ fun HomeScreen(
                                 )
                         )
 
-                        // Replaced spacing.small with 8.dp
-                        Spacer(modifier = Modifier.width(8.dp))
+                        Spacer(modifier = Modifier.width(tokens.spacing.s)) // Use token
 
                         Text(
                             text = if (uiState.isRunning) "In Session" else "Idle",
@@ -156,16 +146,16 @@ fun HomeScreen(
                 }
             }
 
-            // Replaced spacing.large with 24.dp
-            Spacer(modifier = Modifier.height(24.dp))
-
-            // Timer Display
-            Box(
+            // KEY LAYOUT FIX:
+            // This Column takes up all the available space (weight = 1f)
+            // and centers the TimerDisplay within it.
+            // This replaces the old Spacer + Box + Spacer structure.
+            Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    // Replaced spacing.medium with 16.dp
-                    .padding(vertical = 16.dp),
-                contentAlignment = Alignment.Center
+                    .weight(1f), // This makes the timer area flexible
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center // This centers the timer vertically
             ) {
                 TimerDisplay(
                     displayTime = displayTime,
@@ -175,10 +165,9 @@ fun HomeScreen(
                 )
             }
 
-            // Replaced spacing.large with 24.dp
-            Spacer(modifier = Modifier.height(24.dp))
-
             // Controls Section
+            // This section is now naturally pushed to the bottom
+            // by the weighted Column above.
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier.fillMaxWidth()
@@ -197,8 +186,7 @@ fun HomeScreen(
                     )
                 }
 
-                // Replaced spacing.large with 24.dp
-                Spacer(modifier = Modifier.height(24.dp))
+                Spacer(modifier = Modifier.height(tokens.spacing.l)) // Use token
 
                 AnimatedVisibility(
                     visible = !uiState.isRunning || uiState.currentTime > 0,
@@ -229,8 +217,7 @@ fun HomeScreen(
                     )
                 }
 
-                // Replaced spacing.large with 24.dp
-                Spacer(modifier = Modifier.height(24.dp))
+                Spacer(modifier = Modifier.height(tokens.spacing.l)) // Use token
 
                 AnimatedVisibility(
                     visible = uiState.isRunning,
@@ -262,8 +249,8 @@ fun HomeScreen(
                     )
                 }
 
-                // Replaced spacing.large with 24.dp
-                Spacer(modifier = Modifier.height(24.dp))
+                // This spacer gives some final padding at the bottom
+                Spacer(modifier = Modifier.height(tokens.spacing.l)) // Use token
             }
         }
     }
