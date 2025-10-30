@@ -26,6 +26,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.yugentech.sessions.ui.Tokens // Added import
 
 @Composable
 fun DurationSelector(
@@ -34,27 +35,29 @@ fun DurationSelector(
     onDurationSelected: (Int) -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val tokens = Tokens
+
     Card(
         modifier = modifier.fillMaxWidth(),
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surfaceContainer
         ),
-        shape = RoundedCornerShape(24.dp)
+        shape = RoundedCornerShape(tokens.corners.large) // Use token
     ) {
         Column(
-            modifier = Modifier.padding(16.dp)
+            modifier = Modifier.padding(tokens.spacing.m) // Use token
         ) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.padding(bottom = 12.dp)
+                modifier = Modifier.padding(bottom = tokens.spacing.sm) // Use token
             ) {
                 Icon(
                     imageVector = Icons.Default.Timer,
                     contentDescription = "Session Duration",
                     tint = MaterialTheme.colorScheme.primary,
-                    modifier = Modifier.size(20.dp)
+                    modifier = Modifier.size(tokens.components.iconMediumSmall) // Use token
                 )
-                Spacer(modifier = Modifier.width(8.dp))
+                Spacer(modifier = Modifier.width(tokens.spacing.s)) // Use token
                 Text(
                     text = "Duration",
                     style = MaterialTheme.typography.titleSmall.copy(
@@ -69,10 +72,10 @@ fun DurationSelector(
                     .fillMaxWidth()
                     .background(
                         color = MaterialTheme.colorScheme.surface,
-                        shape = RoundedCornerShape(16.dp)
+                        shape = RoundedCornerShape(tokens.corners.medium) // Use token
                     )
-                    .padding(4.dp),
-                horizontalArrangement = Arrangement.spacedBy(4.dp)
+                    .padding(tokens.spacing.xs), // Use token
+                horizontalArrangement = Arrangement.spacedBy(tokens.spacing.xs) // Use token
             ) {
                 availableDurations.forEach { min ->
                     val isSelected = selectedDuration == (min * 60)
@@ -80,8 +83,8 @@ fun DurationSelector(
                     Box(
                         modifier = Modifier
                             .weight(1f)
-                            .height(40.dp)
-                            .clip(RoundedCornerShape(12.dp))
+                            .height(tokens.components.buttonSmall) // Use token
+                            .clip(RoundedCornerShape(tokens.corners.smallMedium)) // Use token
                             .background(
                                 color = if (isSelected)
                                     MaterialTheme.colorScheme.primaryContainer

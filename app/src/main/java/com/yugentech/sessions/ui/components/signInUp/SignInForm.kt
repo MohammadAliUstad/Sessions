@@ -1,14 +1,35 @@
 package com.yugentech.sessions.ui.components.signInUp
 
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Email
+import androidx.compose.material.icons.filled.Lock
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import com.yugentech.sessions.ui.Tokens
+import com.yugentech.sessions.ui.screens.validateEmail
+import com.yugentech.sessions.ui.screens.validatePassword
+import com.yugentech.sessions.utils.validateSignInForm
+import kotlinx.coroutines.launch
 
 @Composable
 fun SignInForm(
@@ -33,27 +54,19 @@ fun SignInForm(
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surfaceContainer
         ),
-        // This is a correct use of your tokens
-        shape = RoundedCornerShape(tokens.corners.large),
-        // This is also a correct use of your tokens
-        elevation = CardDefaults.cardElevation(tokens.elevation.level1)
+        shape = RoundedCornerShape(tokens.corners.large)
     ) {
         Column(
-            // Correct token usage for padding
             modifier = Modifier.padding(tokens.spacing.l)
         ) {
             Text(
                 text = "Welcome back",
-                // MODIFIED: Removed 'fontSize = tokens.typography.title.sp'
-                // 'tokens.typography' is not defined in your provided Tokens.kt file.
-                // This now uses the MaterialTheme's headlineMedium style and applies your desired font weight.
                 style = MaterialTheme.typography.headlineMedium.copy(
                     fontWeight = FontWeight.W200
                 ),
                 color = MaterialTheme.colorScheme.onSurface
             )
 
-            // Correct token usage
             Spacer(modifier = Modifier.height(tokens.spacing.m))
 
             AppTextField(
@@ -68,7 +81,6 @@ fun SignInForm(
                 error = emailError
             )
 
-            // Correct token usage
             Spacer(modifier = Modifier.height(tokens.spacing.m))
 
             AppTextField(
@@ -83,7 +95,6 @@ fun SignInForm(
                 isPassword = true
             )
 
-            // Correct token usage
             Spacer(modifier = Modifier.height(tokens.spacing.s))
 
             Row(
@@ -93,15 +104,12 @@ fun SignInForm(
                 TextButton(onClick = { onForgotPasswordClick(email) }) {
                     Text(
                         text = "Forgot Password?",
-                        // MODIFIED: Removed 'fontSize = tokens.typography.label.sp'
-                        // This now correctly uses the MaterialTheme's labelLarge style.
                         style = MaterialTheme.typography.labelLarge,
                         color = MaterialTheme.colorScheme.primary
                     )
                 }
             }
 
-            // Correct token usage
             Spacer(modifier = Modifier.height(tokens.spacing.s))
 
             ActionButton(
@@ -120,7 +128,6 @@ fun SignInForm(
                 }
             )
 
-            // Correct token usage
             Spacer(modifier = Modifier.height(tokens.spacing.m))
 
             GoogleSignInButton(

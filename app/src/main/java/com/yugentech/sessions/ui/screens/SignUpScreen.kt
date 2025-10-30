@@ -37,15 +37,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
-import androidx.lifecycle.viewmodel.compose.viewModel
-import com.yugentech.sessions.theme.utils.SessionsTheme
+import com.yugentech.sessions.ui.components.common.ToastMessage
 import com.yugentech.sessions.ui.components.signInUp.ActionButton
 import com.yugentech.sessions.ui.components.signInUp.AppTextField
 import com.yugentech.sessions.ui.components.signInUp.GoogleSignInButton
-import com.yugentech.sessions.ui.components.common.ToastMessage
 import com.yugentech.sessions.viewModels.LoginViewModel
 import kotlinx.coroutines.launch
 

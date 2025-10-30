@@ -22,8 +22,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.yugentech.sessions.ui.Tokens
 import java.util.Locale
 
 @Composable
@@ -33,6 +33,10 @@ fun TimerDisplay(
     isStudying: Boolean,
     modifier: Modifier = Modifier
 ) {
+    // Assuming 'Tokens' is provided via CompositionLocal or is a static object
+    // as seen in your other files.
+    val tokens = Tokens
+
     val safeProgress = remember(displayTime, selectedDuration) {
         if (selectedDuration > 0)
             (1f - (displayTime / selectedDuration.toFloat())).coerceIn(0f, 1f)
@@ -45,8 +49,8 @@ fun TimerDisplay(
         label = "TimerProgress"
     )
 
-    // Fixed size for the timer circle
-    val timerSize = 280.dp
+    // Use token for timer size
+    val timerSize = tokens.components.timerSize
 
     Box(
         modifier = modifier.fillMaxWidth(),
@@ -57,7 +61,7 @@ fun TimerDisplay(
             progress = { 1f },
             modifier = Modifier.size(timerSize),
             color = MaterialTheme.colorScheme.surfaceContainer,
-            strokeWidth = 6.dp,
+            strokeWidth = tokens.strokeWidths.extraThick, // Use token
             trackColor = Color.Transparent,
             strokeCap = StrokeCap.Round,
         )
@@ -67,7 +71,7 @@ fun TimerDisplay(
             progress = { animatedProgress },
             modifier = Modifier.size(timerSize),
             color = MaterialTheme.colorScheme.primary,
-            strokeWidth = 6.dp,
+            strokeWidth = tokens.strokeWidths.extraThick, // Use token
             trackColor = Color.Transparent,
             strokeCap = StrokeCap.Round,
         )
@@ -83,17 +87,19 @@ fun TimerDisplay(
                     displayTime / 60, displayTime % 60
                 ),
                 style = MaterialTheme.typography.displayLarge.copy(
-                    fontSize = 56.sp,
+                    fontSize = tokens.typography.display.sp, // Use token
                     fontWeight = FontWeight.Light
                 ),
                 textAlign = TextAlign.Center
             )
 
-            Spacer(modifier = Modifier.height(12.dp))
+            Spacer(modifier = Modifier.height(tokens.spacing.sm)) // Use token
 
             Text(
                 text = if (isStudying) "time remaining" else "session duration",
-                style = MaterialTheme.typography.bodyLarge,
+                style = MaterialTheme.typography.bodyLarge.copy(
+                    fontSize = tokens.typography.body.sp // Use token
+                ),
                 color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f),
                 textAlign = TextAlign.Center
             )
