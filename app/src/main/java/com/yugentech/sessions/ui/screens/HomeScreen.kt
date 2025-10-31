@@ -217,7 +217,7 @@ fun HomeScreen(
                     )
                 }
 
-                Spacer(modifier = Modifier.height(tokens.spacing.l)) // Use token
+                Spacer(modifier = Modifier.height(tokens.spacing.l))
 
                 AnimatedVisibility(
                     visible = uiState.isRunning,
