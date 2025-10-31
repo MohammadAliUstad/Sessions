@@ -21,8 +21,11 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
-import com.yugentech.sessions.ui.Tokens // Added import
+import com.yugentech.sessions.ui.components
+import com.yugentech.sessions.ui.corners
+import com.yugentech.sessions.ui.elevation
+import com.yugentech.sessions.ui.icons
+import com.yugentech.sessions.ui.spacing
 
 @Composable
 fun SessionActionButtons(
@@ -30,11 +33,9 @@ fun SessionActionButtons(
     onPlayPause: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val tokens = Tokens
-
     FloatingActionButton(
         onClick = onPlayPause,
-        modifier = modifier.size(tokens.components.fabSize), // Use token
+        modifier = modifier.size(MaterialTheme.components.fabSize),
         shape = CircleShape,
         containerColor = if (isStudying)
             MaterialTheme.colorScheme.tertiaryContainer
@@ -44,12 +45,14 @@ fun SessionActionButtons(
             MaterialTheme.colorScheme.onTertiaryContainer
         else
             MaterialTheme.colorScheme.onPrimary,
-        elevation = FloatingActionButtonDefaults.elevation(defaultElevation = tokens.elevation.level0) // Use token
+        elevation = FloatingActionButtonDefaults.elevation(
+            defaultElevation = MaterialTheme.elevation.level0
+        )
     ) {
         Icon(
             imageVector = if (isStudying) Icons.Default.Pause else Icons.Default.PlayArrow,
             contentDescription = if (isStudying) "Pause" else "Start",
-            modifier = Modifier.size(tokens.components.iconMediumLarge) // Use token
+            modifier = Modifier.size(MaterialTheme.icons.mediumLarge)
         )
     }
 }
@@ -60,26 +63,26 @@ fun StudyingControlButtons(
     onSave: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val tokens = Tokens
-
     Row(
         modifier = modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.spacedBy(tokens.spacing.sm) // Use token
+        horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.sm)
     ) {
         ExtendedFloatingActionButton(
             onClick = onStop,
             modifier = Modifier.weight(1f),
             containerColor = MaterialTheme.colorScheme.errorContainer,
             contentColor = MaterialTheme.colorScheme.onErrorContainer,
-            shape = RoundedCornerShape(tokens.corners.extraLarge), // Use token
-            elevation = FloatingActionButtonDefaults.elevation(defaultElevation = tokens.elevation.level0) // Use token
+            shape = RoundedCornerShape(MaterialTheme.corners.extraLarge),
+            elevation = FloatingActionButtonDefaults.elevation(
+                defaultElevation = MaterialTheme.elevation.level0
+            )
         ) {
             Icon(
                 imageVector = Icons.Default.Stop,
                 contentDescription = "Stop",
-                modifier = Modifier.size(tokens.components.iconSmallMedium) // Use token
+                modifier = Modifier.size(MaterialTheme.icons.smallMedium)
             )
-            Spacer(modifier = Modifier.width(tokens.spacing.xsSmall)) // Use token
+            Spacer(modifier = Modifier.width(MaterialTheme.spacing.xsSmall))
             Text("Stop", style = MaterialTheme.typography.labelMedium)
         }
 
@@ -88,15 +91,17 @@ fun StudyingControlButtons(
             modifier = Modifier.weight(1f),
             containerColor = MaterialTheme.colorScheme.primaryContainer,
             contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
-            shape = RoundedCornerShape(tokens.corners.extraLarge), // Use token
-            elevation = FloatingActionButtonDefaults.elevation(defaultElevation = tokens.elevation.level0) // Use token
+            shape = RoundedCornerShape(MaterialTheme.corners.extraLarge),
+            elevation = FloatingActionButtonDefaults.elevation(
+                defaultElevation = MaterialTheme.elevation.level0
+            )
         ) {
             Icon(
                 imageVector = Icons.Default.Save,
                 contentDescription = "Save",
-                modifier = Modifier.size(tokens.components.iconSmallMedium) // Use token
+                modifier = Modifier.size(MaterialTheme.icons.smallMedium)
             )
-            Spacer(modifier = Modifier.width(tokens.spacing.xsSmall)) // Use token
+            Spacer(modifier = Modifier.width(MaterialTheme.spacing.xsSmall))
             Text("Save", style = MaterialTheme.typography.labelMedium)
         }
     }

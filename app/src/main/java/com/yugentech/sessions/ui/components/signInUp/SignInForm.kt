@@ -25,9 +25,10 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
-import com.yugentech.sessions.ui.Tokens
+import com.yugentech.sessions.ui.corners
 import com.yugentech.sessions.ui.screens.validateEmail
 import com.yugentech.sessions.ui.screens.validatePassword
+import com.yugentech.sessions.ui.spacing
 import com.yugentech.sessions.utils.validateSignInForm
 import kotlinx.coroutines.launch
 
@@ -40,7 +41,6 @@ fun SignInForm(
     onClearError: () -> Unit,
     onEmailChange: (String) -> Unit
 ) {
-    val tokens = Tokens
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var emailError by remember { mutableStateOf("") }
@@ -54,10 +54,10 @@ fun SignInForm(
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surfaceContainer
         ),
-        shape = RoundedCornerShape(tokens.corners.large)
+        shape = RoundedCornerShape(MaterialTheme.corners.large)
     ) {
         Column(
-            modifier = Modifier.padding(tokens.spacing.l)
+            modifier = Modifier.padding(MaterialTheme.spacing.l)
         ) {
             Text(
                 text = "Welcome back",
@@ -67,7 +67,7 @@ fun SignInForm(
                 color = MaterialTheme.colorScheme.onSurface
             )
 
-            Spacer(modifier = Modifier.height(tokens.spacing.m))
+            Spacer(modifier = Modifier.height(MaterialTheme.spacing.m))
 
             AppTextField(
                 value = email,
@@ -81,7 +81,7 @@ fun SignInForm(
                 error = emailError
             )
 
-            Spacer(modifier = Modifier.height(tokens.spacing.m))
+            Spacer(modifier = Modifier.height(MaterialTheme.spacing.m))
 
             AppTextField(
                 value = password,
@@ -95,7 +95,7 @@ fun SignInForm(
                 isPassword = true
             )
 
-            Spacer(modifier = Modifier.height(tokens.spacing.s))
+            Spacer(modifier = Modifier.height(MaterialTheme.spacing.s))
 
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -110,7 +110,7 @@ fun SignInForm(
                 }
             }
 
-            Spacer(modifier = Modifier.height(tokens.spacing.s))
+            Spacer(modifier = Modifier.height(MaterialTheme.spacing.s))
 
             ActionButton(
                 text = "Sign In",
@@ -128,7 +128,7 @@ fun SignInForm(
                 }
             )
 
-            Spacer(modifier = Modifier.height(tokens.spacing.m))
+            Spacer(modifier = Modifier.height(MaterialTheme.spacing.m))
 
             GoogleSignInButton(
                 isLoading = isLoading,

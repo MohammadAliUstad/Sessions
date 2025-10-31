@@ -15,21 +15,22 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import com.yugentech.sessions.R
-import com.yugentech.sessions.ui.Tokens
+import com.yugentech.sessions.ui.components
+import com.yugentech.sessions.ui.corners
+import com.yugentech.sessions.ui.icons
+import com.yugentech.sessions.ui.spacing
 
 @Composable
 fun GoogleSignInButton(
     isLoading: Boolean,
     onClick: () -> Unit
 ) {
-    val tokens = Tokens
-
     OutlinedButton(
         onClick = onClick,
         modifier = Modifier
             .fillMaxWidth()
-            .height(tokens.components.buttonHeight),
-        shape = RoundedCornerShape(tokens.corners.medium),
+            .height(MaterialTheme.components.buttonHeight),
+        shape = RoundedCornerShape(MaterialTheme.corners.medium),
         enabled = !isLoading,
         colors = ButtonDefaults.outlinedButtonColors(
             contentColor = MaterialTheme.colorScheme.primary
@@ -39,9 +40,9 @@ fun GoogleSignInButton(
             painter = painterResource(id = R.drawable.ic_google_icon),
             contentDescription = null,
             tint = MaterialTheme.colorScheme.primary,
-            modifier = Modifier.size(tokens.components.iconSmall)
+            modifier = Modifier.size(MaterialTheme.icons.small)
         )
-        Spacer(modifier = Modifier.width(tokens.spacing.s))
+        Spacer(modifier = Modifier.width(MaterialTheme.spacing.s))
         Text(
             text = "Continue with Google",
             style = MaterialTheme.typography.titleMedium

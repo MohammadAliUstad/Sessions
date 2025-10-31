@@ -25,8 +25,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
-import com.yugentech.sessions.ui.Tokens // Added import
+import com.yugentech.sessions.ui.components
+import com.yugentech.sessions.ui.corners
+import com.yugentech.sessions.ui.icons
+import com.yugentech.sessions.ui.spacing
 
 @Composable
 fun DurationSelector(
@@ -35,29 +37,27 @@ fun DurationSelector(
     onDurationSelected: (Int) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val tokens = Tokens
-
     Card(
         modifier = modifier.fillMaxWidth(),
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surfaceContainer
         ),
-        shape = RoundedCornerShape(tokens.corners.large) // Use token
+        shape = RoundedCornerShape(MaterialTheme.corners.large)
     ) {
         Column(
-            modifier = Modifier.padding(tokens.spacing.m) // Use token
+            modifier = Modifier.padding(MaterialTheme.spacing.m)
         ) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.padding(bottom = tokens.spacing.sm) // Use token
+                modifier = Modifier.padding(bottom = MaterialTheme.spacing.sm)
             ) {
                 Icon(
                     imageVector = Icons.Default.Timer,
                     contentDescription = "Session Duration",
                     tint = MaterialTheme.colorScheme.primary,
-                    modifier = Modifier.size(tokens.components.iconMediumSmall) // Use token
+                    modifier = Modifier.size(MaterialTheme.icons.mediumSmall)
                 )
-                Spacer(modifier = Modifier.width(tokens.spacing.s)) // Use token
+                Spacer(modifier = Modifier.width(MaterialTheme.spacing.s))
                 Text(
                     text = "Duration",
                     style = MaterialTheme.typography.titleSmall.copy(
@@ -72,10 +72,10 @@ fun DurationSelector(
                     .fillMaxWidth()
                     .background(
                         color = MaterialTheme.colorScheme.surface,
-                        shape = RoundedCornerShape(tokens.corners.medium) // Use token
+                        shape = RoundedCornerShape(MaterialTheme.corners.medium)
                     )
-                    .padding(tokens.spacing.xs), // Use token
-                horizontalArrangement = Arrangement.spacedBy(tokens.spacing.xs) // Use token
+                    .padding(MaterialTheme.spacing.xs),
+                horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.xs)
             ) {
                 availableDurations.forEach { min ->
                     val isSelected = selectedDuration == (min * 60)
@@ -83,8 +83,8 @@ fun DurationSelector(
                     Box(
                         modifier = Modifier
                             .weight(1f)
-                            .height(tokens.components.buttonSmall) // Use token
-                            .clip(RoundedCornerShape(tokens.corners.smallMedium)) // Use token
+                            .height(MaterialTheme.components.buttonSmall)
+                            .clip(RoundedCornerShape(MaterialTheme.corners.smallMedium))
                             .background(
                                 color = if (isSelected)
                                     MaterialTheme.colorScheme.primaryContainer
