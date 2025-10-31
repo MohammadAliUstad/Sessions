@@ -24,8 +24,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.unit.dp
-import com.yugentech.sessions.ui.Tokens
+import com.yugentech.sessions.ui.components
+import com.yugentech.sessions.ui.icons
 import kotlin.math.cos
 import kotlin.math.sin
 
@@ -33,7 +33,6 @@ import kotlin.math.sin
 fun IconCarousel(
     modifier: Modifier = Modifier
 ) {
-    val tokens = Tokens
     val icons = listOf(
         Icons.Filled.School,
         Icons.Filled.Work,
@@ -56,10 +55,10 @@ fun IconCarousel(
         label = "rotation"
     )
 
-    // Use tokens for sizing
-    val circleSize = tokens.components.imageSizeLarge
-    val iconSize = tokens.components.iconMediumLarge
-    val centerIconSize = tokens.components.iconLarge
+    // Use MaterialTheme tokens for all sizing
+    val circleSize = MaterialTheme.components.imageSizeLarge
+    val orbitingIconSize = MaterialTheme.icons.mediumLarge
+    val centerIconSize = MaterialTheme.icons.large
 
     val density = LocalDensity.current
 
@@ -84,7 +83,7 @@ fun IconCarousel(
                 imageVector = icon,
                 contentDescription = null,
                 modifier = Modifier
-                    .size(48.dp)
+                    .size(orbitingIconSize)
                     .offset(
                         x = with(density) { x.toDp() },
                         y = with(density) { y.toDp() }
