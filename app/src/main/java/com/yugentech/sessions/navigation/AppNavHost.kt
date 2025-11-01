@@ -24,13 +24,13 @@ import com.google.accompanist.navigation.animation.AnimatedNavHost
 import com.yugentech.sessions.notifications.Notification
 import com.yugentech.sessions.notifications.NotificationType
 import com.yugentech.sessions.notifications.NotificationsViewModel
-import com.yugentech.sessions.ui.screens.AboutScreen
-import com.yugentech.sessions.ui.screens.MainScreen
-import com.yugentech.sessions.ui.screens.SignInScreen
-import com.yugentech.sessions.ui.screens.SignUpScreen
-import com.yugentech.sessions.ui.screens.AppearanceScreen
-import com.yugentech.sessions.ui.screens.EditProfileScreen
-import com.yugentech.sessions.ui.screens.SettingsScreen
+import com.yugentech.sessions.ui.auth.screens.SignInScreen
+import com.yugentech.sessions.ui.auth.screens.SignUpScreen
+import com.yugentech.sessions.ui.config.screens.AboutScreen
+import com.yugentech.sessions.ui.config.screens.AppearanceScreen
+import com.yugentech.sessions.ui.dash.screens.EditProfileScreen
+import com.yugentech.sessions.ui.dash.screens.MainScreen
+import com.yugentech.sessions.ui.config.screens.SettingsScreen
 import com.yugentech.sessions.user.UserViewModel
 import com.yugentech.sessions.utils.Constants.DEFAULT_ANIMATION_DURATION
 import com.yugentech.sessions.utils.defaultEnterTransition
@@ -139,14 +139,17 @@ fun AppNavHost(
 
             SignInScreen(
                 loginViewModel = loginViewModel,
-                onSignInClick = { email, password ->
+                onSignIn = { email, password ->
                     loginViewModel.signIn(email, password)
                 },
-                onGoogleSignInClick = {
+                onGoogleSignIn = {
                     loginViewModel.getGoogleSignInIntent(webClientId)
                 },
                 onNavigateToSignUp = {
                     navController.navigate(Screens.SignUp.route)
+                },
+                onForgotPassword = { email ->
+                    loginViewModel.forgotPassword(email)
                 }
             )
         }
@@ -154,15 +157,15 @@ fun AppNavHost(
         composable(Screens.SignUp.route) {
             SignUpScreen(
                 loginViewModel = loginViewModel,
-                onSignUpClick = { name, email, password ->
+                onSignUp = { name, email, password ->
                     loginViewModel.signUp(name, email, password)
                 },
-                onGoogleSignInClick = {
+                onGoogleSignIn = {
                     loginViewModel.getGoogleSignInIntent(webClientId)
                 },
                 onNavigateToSignIn = {
                     navController.popBackStack()
-                },
+                }
             )
             BackHandler {
                 navController.popBackStack()
