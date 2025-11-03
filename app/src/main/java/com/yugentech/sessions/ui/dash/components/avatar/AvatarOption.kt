@@ -6,10 +6,9 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.MaterialTheme
@@ -24,7 +23,9 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
+import com.yugentech.sessions.theme.tokens.components
+import com.yugentech.sessions.theme.tokens.spacing
+import com.yugentech.sessions.theme.tokens.strokes
 
 @Composable
 fun AvatarOption(
@@ -39,11 +40,15 @@ fun AvatarOption(
     )
 
     Box(
-        modifier = Modifier.size(width = 90.dp, height = 110.dp),
+        modifier = Modifier.size(
+            width = MaterialTheme.components.cardMinWidth,
+            height = MaterialTheme.components.imageSizeMedium
+        ),
         contentAlignment = Alignment.TopCenter
     ) {
         Column(
-            horizontalAlignment = Alignment.CenterHorizontally
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.xs)
         ) {
             AvatarImage(
                 avatarId = avatar.id,
@@ -57,7 +62,11 @@ fun AvatarOption(
                     )
                     .background(MaterialTheme.colorScheme.secondaryContainer)
                     .border(
-                        width = if (isSelected) 3.dp else 1.dp,
+                        width = if (isSelected) {
+                            MaterialTheme.strokes.medium
+                        } else {
+                            MaterialTheme.strokes.thin
+                        },
                         color = if (isSelected) {
                             MaterialTheme.colorScheme.primary
                         } else {
@@ -65,10 +74,8 @@ fun AvatarOption(
                         },
                         shape = CircleShape
                     ),
-                size = 72.dp
+                size = MaterialTheme.components.imageSizeSmall
             )
-
-            Spacer(modifier = Modifier.height(8.dp))
 
             Text(
                 text = avatar.name,
