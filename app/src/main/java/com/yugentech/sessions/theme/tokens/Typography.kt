@@ -8,18 +8,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import com.yugentech.sessions.R
 
-/**
- * Font family - same for all screen sizes
- */
 val ProductSansFontFamily = FontFamily(
     Font(R.font.product_sans_regular, FontWeight.Normal),
     Font(R.font.product_sans_bold, FontWeight.Bold)
 )
 
-/**
- * COMPACT Typography - For phones (< 600dp)
- * Smaller, tighter typography for limited space
- */
 val TypographyCompact = Typography(
     // Display styles - Large headers
     displayLarge = TextStyle(
@@ -137,10 +130,6 @@ val TypographyCompact = Typography(
     )
 )
 
-/**
- * MEDIUM Typography - For tablets portrait (600-839dp)
- * Slightly larger for better readability
- */
 val TypographyMedium = Typography(
     displayLarge = TextStyle(
         fontFamily = ProductSansFontFamily,
@@ -253,10 +242,6 @@ val TypographyMedium = Typography(
     )
 )
 
-/**
- * EXPANDED Typography - For tablets landscape/desktop (840dp+)
- * Larger, more comfortable for big screens
- */
 val TypographyExpanded = Typography(
     displayLarge = TextStyle(
         fontFamily = ProductSansFontFamily,

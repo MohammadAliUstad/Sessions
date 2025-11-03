@@ -1,9 +1,8 @@
 package com.yugentech.sessions.ui.auth.components
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -22,11 +21,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.font.FontWeight
-import com.yugentech.sessions.ui.auth.utils.FormValidator
-import com.yugentech.sessions.ui.auth.utils.SignUpFormState
 import com.yugentech.sessions.theme.tokens.corners
 import com.yugentech.sessions.theme.tokens.spacing
+import com.yugentech.sessions.ui.auth.utils.FormValidator
+import com.yugentech.sessions.ui.auth.utils.SignUpFormState
 import kotlinx.coroutines.launch
 
 @Composable
@@ -40,7 +38,6 @@ fun SignUpForm(
     var formState by remember { mutableStateOf(SignUpFormState()) }
     val scope = rememberCoroutineScope()
 
-    // Clear external errors when user types
     LaunchedEffect(
         formState.name,
         formState.email,
@@ -58,19 +55,15 @@ fun SignUpForm(
         shape = RoundedCornerShape(MaterialTheme.corners.large)
     ) {
         Column(
-            modifier = Modifier.padding(MaterialTheme.spacing.l)
+            modifier = Modifier.padding(MaterialTheme.spacing.l),
+            verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.m)
         ) {
             Text(
                 text = "Create Account",
-                style = MaterialTheme.typography.headlineMedium.copy(
-                    fontWeight = FontWeight.W200
-                ),
+                style = MaterialTheme.typography.headlineMedium,
                 color = MaterialTheme.colorScheme.onSurface
             )
 
-            Spacer(modifier = Modifier.height(MaterialTheme.spacing.m))
-
-            // Name field
             AppTextField(
                 value = formState.name,
                 onValueChange = { newName ->
@@ -84,9 +77,6 @@ fun SignUpForm(
                 error = formState.nameError
             )
 
-            Spacer(modifier = Modifier.height(MaterialTheme.spacing.m))
-
-            // Email field
             AppTextField(
                 value = formState.email,
                 onValueChange = { newEmail ->
@@ -100,16 +90,12 @@ fun SignUpForm(
                 error = formState.emailError
             )
 
-            Spacer(modifier = Modifier.height(MaterialTheme.spacing.m))
-
-            // Password field
             AppTextField(
                 value = formState.password,
                 onValueChange = { newPassword ->
                     formState = formState.copy(
                         password = newPassword,
                         passwordError = FormValidator.validatePassword(newPassword),
-                        // Also revalidate confirm password if it's not empty
                         confirmPasswordError = if (formState.confirmPassword.isNotEmpty()) {
                             FormValidator.validateConfirmPassword(
                                 newPassword,
@@ -126,9 +112,6 @@ fun SignUpForm(
                 isPassword = true
             )
 
-            Spacer(modifier = Modifier.height(MaterialTheme.spacing.m))
-
-            // Confirm password field
             AppTextField(
                 value = formState.confirmPassword,
                 onValueChange = { newConfirmPassword ->
@@ -146,9 +129,6 @@ fun SignUpForm(
                 isPassword = true
             )
 
-            Spacer(modifier = Modifier.height(MaterialTheme.spacing.l))
-
-            // Create account button
             ActionButton(
                 text = "Create Account",
                 isLoading = isLoading,
@@ -183,8 +163,6 @@ fun SignUpForm(
                     }
                 }
             )
-
-            Spacer(modifier = Modifier.height(MaterialTheme.spacing.m))
 
             GoogleSignInButton(
                 isLoading = isLoading,
