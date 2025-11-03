@@ -13,19 +13,21 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.dp
+import com.yugentech.sessions.theme.tokens.components
 
 @Composable
 fun AvatarImage(
     avatarId: Int?,
     modifier: Modifier = Modifier,
-    size: Dp = 100.dp,
+    size: Dp = MaterialTheme.components.imageSizeMedium,
     contentDescription: String? = null
 ) {
     val avatar = AvatarRepository.getAvatarById(avatarId) ?: AvatarRepository.getDefaultAvatar()
 
     Surface(
-        modifier = modifier.size(size).clip(CircleShape),
+        modifier = modifier
+            .size(size)
+            .clip(CircleShape),
         color = MaterialTheme.colorScheme.secondaryContainer
     ) {
         Box(

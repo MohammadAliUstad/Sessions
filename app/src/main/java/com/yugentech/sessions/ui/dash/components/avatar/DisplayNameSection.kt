@@ -1,10 +1,10 @@
 package com.yugentech.sessions.ui.dash.components.avatar
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -22,7 +22,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.unit.dp
+import com.yugentech.sessions.theme.tokens.corners
+import com.yugentech.sessions.theme.tokens.icons
+import com.yugentech.sessions.theme.tokens.spacing
 
 @Composable
 fun DisplayNameSection(
@@ -35,28 +37,30 @@ fun DisplayNameSection(
         modifier = Modifier.fillMaxWidth(),
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surfaceContainer
-        )
+        ),
+        shape = RoundedCornerShape(MaterialTheme.corners.large)
     ) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(24.dp)
+                .padding(MaterialTheme.spacing.l),
+            verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.m)
         ) {
-            Text(
-                text = "Display Name",
-                style = MaterialTheme.typography.headlineSmall,
-                color = MaterialTheme.colorScheme.onSurface
-            )
+            Column(
+                verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.xs)
+            ) {
+                Text(
+                    text = "Display Name",
+                    style = MaterialTheme.typography.headlineSmall,
+                    color = MaterialTheme.colorScheme.onSurface
+                )
 
-            Spacer(modifier = Modifier.height(8.dp))
-
-            Text(
-                text = "Pick a name that motivates your sessions",
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
-
-            Spacer(modifier = Modifier.height(24.dp))
+                Text(
+                    text = "Pick a name that motivates your sessions",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
 
             val focusManager = LocalFocusManager.current
 
@@ -65,12 +69,16 @@ fun DisplayNameSection(
                 onValueChange = onDisplayNameChange,
                 modifier = Modifier.fillMaxWidth(),
                 label = {
-                    Text("Enter your display name")
+                    Text(
+                        text = "Enter your display name",
+                        style = MaterialTheme.typography.bodyMedium
+                    )
                 },
                 leadingIcon = {
                     Icon(
                         imageVector = Icons.Default.Person,
-                        contentDescription = "Name"
+                        contentDescription = "Name",
+                        modifier = Modifier.size(MaterialTheme.icons.medium)
                     )
                 },
                 singleLine = true,
@@ -91,22 +99,17 @@ fun DisplayNameSection(
                     focusedLeadingIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
                     unfocusedLeadingIconColor = MaterialTheme.colorScheme.onSurfaceVariant
                 ),
-                shape = RoundedCornerShape(12.dp),
+                shape = RoundedCornerShape(MaterialTheme.corners.small),
                 isError = validationError != null,
                 supportingText = {
-                    if (validationError != null) {
-                        Text(
-                            text = validationError,
-                            color = MaterialTheme.colorScheme.error,
-                            style = MaterialTheme.typography.bodySmall
-                        )
-                    } else {
-                        Text(
-                            text = "${displayName.length}/20 characters",
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                            style = MaterialTheme.typography.bodySmall
-                        )
-                    }
+                    Text(
+                        text = validationError ?: "${displayName.length}/20 characters",
+                        color = if (validationError != null)
+                            MaterialTheme.colorScheme.error
+                        else
+                            MaterialTheme.colorScheme.onSurfaceVariant,
+                        style = MaterialTheme.typography.bodySmall
+                    )
                 }
             )
         }
