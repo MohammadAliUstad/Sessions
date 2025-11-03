@@ -16,9 +16,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.sp
-import com.yugentech.sessions.theme.tokens.Tokens
 import com.yugentech.sessions.theme.tokens.components
 import com.yugentech.sessions.theme.tokens.corners
 import com.yugentech.sessions.theme.tokens.icons
@@ -34,7 +31,7 @@ fun ActionButton(
         onClick = onClick,
         modifier = Modifier
             .fillMaxWidth()
-            .height(MaterialTheme.components.buttonHeight),
+            .height(MaterialTheme.components.buttonMedium),
         shape = RoundedCornerShape(MaterialTheme.corners.medium),
         enabled = !isLoading,
         colors = ButtonDefaults.buttonColors(
@@ -51,17 +48,14 @@ fun ActionButton(
         ) { loading ->
             if (loading) {
                 CircularProgressIndicator(
-                    modifier = Modifier.size(MaterialTheme.icons.small),
+                    modifier = Modifier.size(MaterialTheme.icons.mediumSmall),
                     color = MaterialTheme.colorScheme.onPrimary,
                     strokeWidth = MaterialTheme.strokes.thin
                 )
             } else {
                 Text(
                     text = text,
-                    style = MaterialTheme.typography.titleMedium.copy(
-                        fontSize = Tokens.typography.label.sp,
-                        fontWeight = FontWeight.Medium
-                    )
+                    style = MaterialTheme.typography.labelLarge
                 )
             }
         }

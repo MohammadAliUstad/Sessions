@@ -8,6 +8,7 @@ import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Visibility
@@ -27,8 +28,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
-import androidx.compose.ui.unit.sp
-import com.yugentech.sessions.theme.tokens.Tokens
+import com.yugentech.sessions.theme.tokens.components
+import com.yugentech.sessions.theme.tokens.corners
+import com.yugentech.sessions.theme.tokens.icons
+import com.yugentech.sessions.theme.tokens.spacing
 
 @Composable
 fun AppTextField(
@@ -40,7 +43,6 @@ fun AppTextField(
     error: String = "",
     isPassword: Boolean = false
 ) {
-    val tokens = Tokens
     var passwordVisible by remember { mutableStateOf(false) }
 
     Column(modifier = modifier) {
@@ -50,18 +52,14 @@ fun AppTextField(
             label = {
                 Text(
                     text = label,
-                    style = MaterialTheme.typography.bodyLarge.copy(
-                        fontSize = tokens.typography.label.sp
-                    )
+                    style = MaterialTheme.typography.labelLarge
                 )
             },
             isError = error.isNotEmpty(),
-            shape = RoundedCornerShape(tokens.corners.small),
+            shape = RoundedCornerShape(MaterialTheme.corners.small),
             modifier = Modifier.fillMaxWidth(),
             singleLine = true,
-            textStyle = MaterialTheme.typography.bodyLarge.copy(
-                fontSize = tokens.typography.body.sp
-            ),
+            textStyle = MaterialTheme.typography.bodyLarge,
             colors = OutlinedTextFieldDefaults.colors(
                 focusedBorderColor = MaterialTheme.colorScheme.primary,
                 unfocusedBorderColor = MaterialTheme.colorScheme.outline,
@@ -71,19 +69,24 @@ fun AppTextField(
             leadingIcon = {
                 Icon(
                     imageVector = leadingIcon,
-                    contentDescription = null
+                    contentDescription = null,
+                    modifier = Modifier.size(MaterialTheme.icons.medium)
                 )
             },
             trailingIcon = if (isPassword) {
                 {
-                    IconButton(onClick = { passwordVisible = !passwordVisible }) {
+                    IconButton(
+                        onClick = { passwordVisible = !passwordVisible },
+                        modifier = Modifier.size(MaterialTheme.components.buttonSmall)
+                    ) {
                         Icon(
                             imageVector = if (passwordVisible)
                                 Icons.Default.Visibility
                             else
                                 Icons.Default.VisibilityOff,
                             contentDescription = "Toggle Password Visibility",
-                            tint = MaterialTheme.colorScheme.onSurfaceVariant
+                            tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                            modifier = Modifier.size(MaterialTheme.icons.medium)
                         )
                     }
                 }
@@ -99,9 +102,9 @@ fun AppTextField(
 }
 
 @Composable
-private fun ErrorText(error: String) {
-    val tokens = Tokens
-
+private fun ErrorText(
+    error: String
+) {
     AnimatedVisibility(
         visible = error.isNotEmpty(),
         enter = expandVertically() + fadeIn(),
@@ -110,12 +113,10 @@ private fun ErrorText(error: String) {
         Text(
             text = error,
             color = MaterialTheme.colorScheme.error,
-            style = MaterialTheme.typography.bodySmall.copy(
-                fontSize = tokens.typography.caption.sp
-            ),
+            style = MaterialTheme.typography.bodySmall,
             modifier = Modifier.padding(
-                start = tokens.spacing.xs,
-                top = tokens.spacing.xs
+                start = MaterialTheme.spacing.xs,
+                top = MaterialTheme.spacing.xs
             )
         )
     }

@@ -96,7 +96,7 @@ fun AboutScreen(
                 AboutContactCard(
                     onEmailClick = {
                         val intent = Intent(Intent.ACTION_SENDTO).apply {
-                            Intent.setData = "mailto:mohammadaliustad".toUri()
+                            data = "mailto:mohammadaliustad@example.com".toUri()
                         }
                         context.startActivity(intent)
                     },
