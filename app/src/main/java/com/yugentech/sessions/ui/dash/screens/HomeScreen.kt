@@ -43,11 +43,11 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.yugentech.sessions.notifications.Notification
 import com.yugentech.sessions.notifications.NotificationType
 import com.yugentech.sessions.notifications.NotificationsViewModel
-import com.yugentech.sessions.theme.tokens.Tokens // Import your tokens
-import com.yugentech.sessions.ui.components.homeScreen.DurationSelector
-import com.yugentech.sessions.ui.components.homeScreen.SessionActionButtons
-import com.yugentech.sessions.ui.components.homeScreen.StudyingControlButtons
-import com.yugentech.sessions.ui.components.homeScreen.TimerDisplay
+import com.yugentech.sessions.theme.tokens.Tokens
+import com.yugentech.sessions.ui.dash.components.homeScreen.DurationSelector
+import com.yugentech.sessions.ui.dash.components.homeScreen.SessionActionButtons
+import com.yugentech.sessions.ui.dash.components.homeScreen.StudyingControlButtons
+import com.yugentech.sessions.ui.dash.components.homeScreen.TimerDisplay
 import com.yugentech.sessions.viewModels.HomeViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
