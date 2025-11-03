@@ -18,12 +18,11 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.zIndex
 import com.yugentech.sessions.theme.tokens.spacing
-import com.yugentech.sessions.ui.auth.components.SignInForm
 import com.yugentech.sessions.ui.auth.components.IconCarousel
+import com.yugentech.sessions.ui.auth.components.SignInForm
 import com.yugentech.sessions.ui.dash.components.common.ToastMessage
 import com.yugentech.sessions.viewModels.LoginViewModel
 
@@ -70,9 +69,7 @@ fun SignInScreen(
 
                 Text(
                     text = "Sessions",
-                    style = MaterialTheme.typography.headlineMedium.copy(
-                        fontWeight = FontWeight.Bold
-                    ),
+                    style = MaterialTheme.typography.headlineMedium,
                     color = MaterialTheme.colorScheme.onBackground
                 )
 
@@ -80,7 +77,7 @@ fun SignInScreen(
 
                 Text(
                     text = "Ready to focus and be productive?",
-                    style = MaterialTheme.typography.bodyLarge,
+                    style = MaterialTheme.typography.titleMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     textAlign = TextAlign.Center
                 )
@@ -101,12 +98,12 @@ fun SignInScreen(
                 ) {
                     Text(
                         text = "Don't have an account? Sign Up",
-                        style = MaterialTheme.typography.labelLarge.copy(
-                            fontWeight = FontWeight.Medium
-                        ),
+                        style = MaterialTheme.typography.labelLarge,
                         color = MaterialTheme.colorScheme.primary
                     )
                 }
+
+                Spacer(modifier = Modifier.height(MaterialTheme.spacing.l))
             }
         }
     }

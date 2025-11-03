@@ -23,10 +23,11 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
+import com.yugentech.sessions.theme.tokens.components
+import com.yugentech.sessions.theme.tokens.icons
+import com.yugentech.sessions.theme.tokens.spacing
 import com.yugentech.sessions.ui.auth.components.SignUpForm
 import com.yugentech.sessions.ui.dash.components.common.ToastMessage
 import com.yugentech.sessions.viewModels.LoginViewModel
@@ -47,7 +48,7 @@ fun SignUpScreen(
             onDismiss = { loginViewModel.clearError() },
             modifier = Modifier
                 .align(Alignment.TopCenter)
-                .padding(top = 60.dp)
+                .padding(top = MaterialTheme.spacing.xxl)
                 .zIndex(1f)
         )
 
@@ -59,14 +60,14 @@ fun SignUpScreen(
                 modifier = Modifier
                     .fillMaxSize()
                     .verticalScroll(scrollState)
-                    .padding(24.dp),
+                    .padding(MaterialTheme.spacing.l),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Spacer(modifier = Modifier.height(40.dp))
+                Spacer(modifier = Modifier.height(MaterialTheme.spacing.xl))
 
                 Box(
                     modifier = Modifier
-                        .size(96.dp)
+                        .size(MaterialTheme.components.imageSizeMedium)
                         .background(
                             color = MaterialTheme.colorScheme.surfaceContainer,
                             shape = CircleShape
@@ -76,21 +77,20 @@ fun SignUpScreen(
                     Icon(
                         imageVector = Icons.Default.Timer,
                         contentDescription = null,
-                        modifier = Modifier.size(48.dp),
+                        modifier = Modifier.size(MaterialTheme.icons.extraLarge),
                         tint = MaterialTheme.colorScheme.primary
                     )
                 }
 
-                Spacer(modifier = Modifier.height(12.dp))
+                Spacer(modifier = Modifier.height(MaterialTheme.spacing.sm))
 
                 Text(
                     text = "Sessions",
                     style = MaterialTheme.typography.headlineMedium,
-                    fontWeight = FontWeight.Medium,
                     color = MaterialTheme.colorScheme.onBackground
                 )
 
-                Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(MaterialTheme.spacing.xs))
 
                 Text(
                     text = "Start your productivity journey",
@@ -99,7 +99,7 @@ fun SignUpScreen(
                     textAlign = TextAlign.Center
                 )
 
-                Spacer(modifier = Modifier.height(24.dp))
+                Spacer(modifier = Modifier.height(MaterialTheme.spacing.l))
 
                 SignUpForm(
                     isLoading = state.isLoading,
@@ -110,17 +110,16 @@ fun SignUpScreen(
 
                 TextButton(
                     onClick = onNavigateToSignIn,
-                    modifier = Modifier.padding(vertical = 4.dp)
+                    modifier = Modifier.padding(vertical = MaterialTheme.spacing.xs)
                 ) {
                     Text(
                         text = "Already have an account? Sign In",
                         style = MaterialTheme.typography.labelLarge,
-                        fontWeight = FontWeight.Medium,
                         color = MaterialTheme.colorScheme.primary
                     )
                 }
 
-                Spacer(modifier = Modifier.height(24.dp))
+                Spacer(modifier = Modifier.height(MaterialTheme.spacing.l))
             }
         }
     }
