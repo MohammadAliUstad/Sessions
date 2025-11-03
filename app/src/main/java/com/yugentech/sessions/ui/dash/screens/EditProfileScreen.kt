@@ -37,6 +37,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.yugentech.sessions.theme.tokens.spacing
 import com.yugentech.sessions.ui.dash.components.avatar.AvatarSection
 import com.yugentech.sessions.ui.dash.components.avatar.DisplayNameSection
 import com.yugentech.sessions.user.UserViewModel
@@ -131,7 +132,7 @@ fun EditProfileScreen(
                 modifier = modifier
                     .fillMaxSize()
                     .padding(paddingValues)
-                    .padding(16.dp),
+                    .padding(horizontal = MaterialTheme.spacing.s),
                 verticalArrangement = Arrangement.spacedBy(20.dp)
             ) {
                 AnimatedVisibility(visible = userState.errorMessage != null) {

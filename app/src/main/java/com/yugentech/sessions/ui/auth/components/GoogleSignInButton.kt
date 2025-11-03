@@ -29,7 +29,7 @@ fun GoogleSignInButton(
         onClick = onClick,
         modifier = Modifier
             .fillMaxWidth()
-            .height(MaterialTheme.components.buttonHeight),
+            .height(MaterialTheme.components.buttonMedium),
         shape = RoundedCornerShape(MaterialTheme.corners.medium),
         enabled = !isLoading,
         colors = ButtonDefaults.outlinedButtonColors(
@@ -40,12 +40,12 @@ fun GoogleSignInButton(
             painter = painterResource(id = R.drawable.ic_google_icon),
             contentDescription = null,
             tint = MaterialTheme.colorScheme.primary,
-            modifier = Modifier.size(MaterialTheme.icons.small)
+            modifier = Modifier.size(MaterialTheme.icons.mediumSmall)
         )
         Spacer(modifier = Modifier.width(MaterialTheme.spacing.s))
         Text(
             text = "Continue with Google",
-            style = MaterialTheme.typography.titleMedium
+            style = MaterialTheme.typography.labelLarge
         )
     }
 }
