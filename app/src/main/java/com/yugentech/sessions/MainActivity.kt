@@ -23,7 +23,7 @@ import androidx.navigation.compose.rememberNavController
 import com.yugentech.sessions.navigation.AppNavHost
 import com.yugentech.sessions.notifications.NotificationsViewModel
 import com.yugentech.sessions.theme.ThemeViewModel
-import com.yugentech.sessions.theme.utils.SessionsTheme
+import com.yugentech.sessions.theme.SessionsTheme
 import com.yugentech.sessions.theme.utils.ThemeMode
 import com.yugentech.sessions.user.UserViewModel
 import com.yugentech.sessions.viewModels.HomeViewModel

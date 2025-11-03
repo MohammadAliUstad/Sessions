@@ -40,7 +40,6 @@ fun IconCarousel(
         Icons.AutoMirrored.Filled.Assignment
     )
 
-    // Animation
     val infiniteTransition = rememberInfiniteTransition(label = "carousel")
     val angle by infiniteTransition.animateFloat(
         initialValue = 0f,
@@ -55,7 +54,6 @@ fun IconCarousel(
         label = "rotation"
     )
 
-    // Use MaterialTheme tokens for all sizing
     val circleSize = MaterialTheme.components.imageSizeLarge
     val orbitingIconSize = MaterialTheme.icons.extraLarge
     val centerIconSize = MaterialTheme.icons.large
@@ -71,7 +69,6 @@ fun IconCarousel(
             ),
         contentAlignment = Alignment.Center
     ) {
-        // Orbiting icons
         icons.forEachIndexed { index, icon ->
             val iconAngle = angle + (360f / icons.size * index)
             val radiusPx = with(density) { circleSize.toPx() / 2f }
@@ -92,7 +89,6 @@ fun IconCarousel(
             )
         }
 
-        // Center icon
         Icon(
             imageVector = Icons.Filled.Timer,
             contentDescription = null,

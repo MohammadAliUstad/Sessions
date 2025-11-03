@@ -31,6 +31,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.yugentech.sessions.models.UserData
+import com.yugentech.sessions.theme.tokens.spacing
 import com.yugentech.sessions.ui.dash.components.avatar.AvatarImage
 import com.yugentech.sessions.ui.dash.components.avatar.AvatarRepository
 import com.yugentech.sessions.ui.dash.components.profileScreen.EmptySessionsCard
@@ -57,8 +58,8 @@ fun ProfileScreen(
 
     LazyColumn(
         modifier = modifier.fillMaxSize(),
-        contentPadding = PaddingValues(16.dp),
-        verticalArrangement = Arrangement.spacedBy(16.dp)
+        contentPadding = PaddingValues(MaterialTheme.spacing.s),
+        verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.m)
     ) {
         item {
             ProfileCard(
