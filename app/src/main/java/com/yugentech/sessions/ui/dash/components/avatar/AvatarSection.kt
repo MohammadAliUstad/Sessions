@@ -50,13 +50,10 @@ fun AvatarSection(
                 textAlign = TextAlign.Center
             )
 
-//            Box(modifier = Modifier
-//                .fillMaxWidth()) {
-                AvatarGrid(
+            AvatarGrid(
                     selectedAvatarId = selectedAvatarId,
                     onAvatarSelected = onAvatarSelected
-                )
-//            }
+            )
         }
     }
 }
