@@ -25,10 +25,8 @@ fun AvatarGrid(
     ) {
         rows.forEach { rowAvatars ->
             Row(
-                horizontalArrangement = Arrangement.spacedBy(
-                    MaterialTheme.spacing.l,
-                    Alignment.CenterHorizontally
-                ),
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceEvenly,
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 rowAvatars.forEach { avatar ->
