@@ -43,8 +43,8 @@ fun AvatarOption(
 
     Column(
         modifier = Modifier
-            .widthIn(max = 100.dp)
-            .padding(horizontal = MaterialTheme.spacing.xs),
+            .widthIn(min = 96.dp, max = 110.dp)
+            .padding(horizontal = 4.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.xs)
     ) {
@@ -72,7 +72,7 @@ fun AvatarOption(
                     },
                     shape = CircleShape
                 ),
-            size = MaterialTheme.components.imageSizeSmall
+            size = MaterialTheme.components.imageSizeMedium
         )
 
         Text(
