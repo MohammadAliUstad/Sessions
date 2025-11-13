@@ -6,12 +6,10 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Timer
@@ -45,11 +43,12 @@ fun DurationSelector(
         shape = RoundedCornerShape(MaterialTheme.corners.large)
     ) {
         Column(
-            modifier = Modifier.padding(MaterialTheme.spacing.m)
+            modifier = Modifier.padding(MaterialTheme.spacing.m),
+            verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.sm)
         ) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.padding(bottom = MaterialTheme.spacing.sm)
+                horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.s)
             ) {
                 Icon(
                     imageVector = Icons.Default.Timer,
@@ -57,12 +56,10 @@ fun DurationSelector(
                     tint = MaterialTheme.colorScheme.primary,
                     modifier = Modifier.size(MaterialTheme.icons.mediumSmall)
                 )
-                Spacer(modifier = Modifier.width(MaterialTheme.spacing.s))
                 Text(
                     text = "Duration",
-                    style = MaterialTheme.typography.titleSmall.copy(
-                        fontWeight = FontWeight.Medium
-                    ),
+                    style = MaterialTheme.typography.titleSmall,
+                    fontWeight = FontWeight.Medium,
                     color = MaterialTheme.colorScheme.onSurface
                 )
             }
@@ -86,23 +83,24 @@ fun DurationSelector(
                             .height(MaterialTheme.components.buttonSmall)
                             .clip(RoundedCornerShape(MaterialTheme.corners.smallMedium))
                             .background(
-                                color = if (isSelected)
+                                color = if (isSelected) {
                                     MaterialTheme.colorScheme.primaryContainer
-                                else
+                                } else {
                                     MaterialTheme.colorScheme.surface
+                                }
                             )
                             .clickable { onDurationSelected(min) },
                         contentAlignment = Alignment.Center
                     ) {
                         Text(
                             text = "$min min",
-                            style = MaterialTheme.typography.labelLarge.copy(
-                                fontWeight = if (isSelected) FontWeight.Medium else FontWeight.Normal
-                            ),
-                            color = if (isSelected)
+                            style = MaterialTheme.typography.labelLarge,
+                            fontWeight = if (isSelected) FontWeight.Medium else FontWeight.Normal,
+                            color = if (isSelected) {
                                 MaterialTheme.colorScheme.onPrimaryContainer
-                            else
+                            } else {
                                 MaterialTheme.colorScheme.onSurface
+                            }
                         )
                     }
                 }
