@@ -8,6 +8,8 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.CircleShape
@@ -74,6 +76,8 @@ fun AvatarOption(
                 ),
             size = MaterialTheme.components.imageSizeMedium
         )
+
+        Spacer(modifier = Modifier.height(MaterialTheme.spacing.xs))
 
         Text(
             text = avatar.name,

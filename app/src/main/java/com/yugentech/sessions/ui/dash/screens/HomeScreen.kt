@@ -93,7 +93,7 @@ fun HomeScreen(
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Text(
-                    text = if (uiState.isRunning) "Focus" else "Ready to Focus?",
+                    text = if (uiState.isRunning) "Focus" else "Ready to Start?",
                     fontSize = tokens.typography.headline.sp, // Use token
                     fontWeight = FontWeight.Medium,
                     letterSpacing = 0.5.sp,
