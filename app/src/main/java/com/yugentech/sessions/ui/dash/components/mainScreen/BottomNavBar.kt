@@ -10,8 +10,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.unit.dp
 import com.yugentech.sessions.navigation.AppScreens
+import com.yugentech.sessions.theme.tokens.corners
 
 @Composable
 fun BottomNavBar(
@@ -21,8 +21,12 @@ fun BottomNavBar(
 ) {
     NavigationBar(
         containerColor = MaterialTheme.colorScheme.surfaceContainer,
-        modifier = Modifier.clip(RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp))
-
+        modifier = Modifier.clip(
+            RoundedCornerShape(
+                topStart = MaterialTheme.corners.large,
+                topEnd = MaterialTheme.corners.large
+            )
+        )
     ) {
         items.forEach { screen ->
             NavigationBarItem(

@@ -42,7 +42,7 @@ class ActiveForeground : Service() {
                 if (newTime != remainingSeconds) {
                     remainingSeconds = newTime
                     if (isSessionActive) {
-                        updateNotification()
+                        updateNotification(currentSeconds = remainingSeconds)
                     }
                 }
             }
@@ -92,19 +92,20 @@ class ActiveForeground : Service() {
     private fun startCountdown() {
         updateJob?.cancel()
         updateJob = serviceScope.launch {
-            while (isSessionActive && remainingSeconds > 0) {
-                delay(1000)
-                remainingSeconds--
-                updateNotification()
+            while (isSessionActive) {
+                delay(500) // update every 5 seconds, not every tick
+                val syncedSeconds = homeViewModel.uiState.value.currentTime
+                updateNotification(syncedSeconds)
             }
-            if (remainingSeconds <= 0) stopSession()
         }
     }
 
-    private fun updateNotification() {
-        val notification = createNotification(remainingSeconds)
+
+    private fun updateNotification(currentSeconds: Int) {
+        val notification = createNotification(currentSeconds)
         notificationService.showNotification(notification)
     }
+
 
     private fun createNotification(seconds: Int): Notification {
         val formattedTime = String.format(
@@ -132,12 +133,12 @@ class ActiveForeground : Service() {
 
         notificationService.hideNotification(NotificationService.ACTIVE_NOTIFICATION_ID)
         stopForeground(STOP_FOREGROUND_REMOVE)
-        homeViewModel.resetStudyState()
         stopSelf()
     }
 
     override fun onTaskRemoved(rootIntent: Intent?) {
         stopSession()
+        homeViewModel.resetStudyState()
         super.onTaskRemoved(rootIntent)
     }
 
