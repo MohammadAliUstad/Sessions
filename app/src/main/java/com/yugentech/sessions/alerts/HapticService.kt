@@ -7,6 +7,7 @@ import android.os.Build
 import android.os.VibrationEffect
 import android.os.Vibrator
 import android.os.VibratorManager
+import android.util.Log
 import android.view.HapticFeedbackConstants
 import android.view.View
 
@@ -24,6 +25,7 @@ class HapticService(
     }
 
     fun performHaptic(view: View? = null) {
+        Log.e("HapticService", "performHaptic")
         if (view != null) {
             view.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
         } else {

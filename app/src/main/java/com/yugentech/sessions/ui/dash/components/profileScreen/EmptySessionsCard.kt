@@ -18,8 +18,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
 import com.yugentech.sessions.R
+import com.yugentech.sessions.theme.tokens.components
+import com.yugentech.sessions.theme.tokens.spacing
 
 @Composable
 fun EmptySessionsCard(
@@ -28,7 +29,7 @@ fun EmptySessionsCard(
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .padding(24.dp),
+            .padding(MaterialTheme.spacing.l),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
@@ -44,7 +45,7 @@ fun EmptySessionsCard(
                 textAlign = TextAlign.Start
             )
 
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(MaterialTheme.spacing.s))
 
             Text(
                 text = "Start your first session to track your progress and build productive habits!",
@@ -54,12 +55,12 @@ fun EmptySessionsCard(
             )
         }
 
-        Spacer(modifier = Modifier.width(16.dp))
+        Spacer(modifier = Modifier.width(MaterialTheme.spacing.m))
 
         Image(
             painter = painterResource(id = R.drawable.new_beginnings),
             contentDescription = "No sessions illustration",
-            modifier = Modifier.size(150.dp),
+            modifier = Modifier.size(MaterialTheme.components.imageSizeMedium),
             contentScale = ContentScale.Fit
         )
     }
