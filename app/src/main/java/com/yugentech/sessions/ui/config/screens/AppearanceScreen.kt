@@ -18,8 +18,8 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
 import com.yugentech.sessions.theme.ThemeViewModel
+import com.yugentech.sessions.theme.tokens.spacing
 import com.yugentech.sessions.ui.config.components.appearanceScreen.ThemeModeSelector
 import com.yugentech.sessions.ui.config.components.appearanceScreen.ThemeSelector
 import org.koin.androidx.compose.koinViewModel
@@ -63,9 +63,9 @@ fun AppearanceScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
-                .padding(horizontal = 16.dp),
-            verticalArrangement = Arrangement.spacedBy(20.dp),
-            contentPadding = PaddingValues(vertical = 20.dp)
+                .padding(horizontal = MaterialTheme.spacing.m),
+            verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.l),
+            contentPadding = PaddingValues(vertical = MaterialTheme.spacing.l)
         ) {
             item {
                 ThemeModeSelector(themeViewModel = themeViewModel)

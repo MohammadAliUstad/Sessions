@@ -26,7 +26,6 @@ fun ActionButton(
     onPlayPause: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    // Animated container color
     val containerColor by animateColorAsState(
         targetValue = if (isStudying)
             MaterialTheme.colorScheme.tertiaryContainer
@@ -36,7 +35,6 @@ fun ActionButton(
         label = "button-container-color"
     )
 
-    // Animated content color
     val contentColor by animateColorAsState(
         targetValue = if (isStudying)
             MaterialTheme.colorScheme.onTertiaryContainer
@@ -53,10 +51,7 @@ fun ActionButton(
             .padding(MaterialTheme.spacing.xsSmall),
         shape = CircleShape,
         containerColor = containerColor,
-        contentColor = contentColor,
-        elevation = FloatingActionButtonDefaults.elevation(
-            defaultElevation = MaterialTheme.elevation.level0
-        )
+        contentColor = contentColor
     ) {
         Icon(
             imageVector = if (isStudying) Icons.Default.Pause else Icons.Default.PlayArrow,
