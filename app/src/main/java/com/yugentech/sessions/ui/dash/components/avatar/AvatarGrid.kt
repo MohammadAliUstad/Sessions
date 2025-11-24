@@ -1,6 +1,7 @@
 package com.yugentech.sessions.ui.dash.components.avatar
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -26,17 +27,24 @@ fun AvatarGrid(
         rows.forEach { rowAvatars ->
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceEvenly,
+                horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.s),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 rowAvatars.forEach { avatar ->
-                    AvatarOption(
-                        avatar = avatar,
-                        isSelected = selectedAvatarId == avatar.id,
-                        onSelect = { onAvatarSelected(avatar.id) }
-                    )
+                    Box(
+                        modifier = Modifier
+                            .weight(1f),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        AvatarOption(
+                            avatar = avatar,
+                            isSelected = selectedAvatarId == avatar.id,
+                            onSelect = { onAvatarSelected(avatar.id) }
+                        )
+                    }
                 }
             }
+
         }
     }
 }
