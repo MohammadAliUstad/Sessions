@@ -8,10 +8,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -26,7 +23,6 @@ import androidx.compose.ui.draw.scale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.unit.dp
 import com.yugentech.sessions.theme.tokens.components
 import com.yugentech.sessions.theme.tokens.spacing
 import com.yugentech.sessions.theme.tokens.strokes
@@ -45,10 +41,9 @@ fun AvatarOption(
 
     Column(
         modifier = Modifier
-            .widthIn(min = 96.dp, max = 110.dp)
-            .padding(horizontal = 4.dp),
+            .padding(horizontal = MaterialTheme.spacing.xs),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.xs)
+        verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.s)
     ) {
         AvatarImage(
             avatarId = avatar.id,
@@ -76,8 +71,6 @@ fun AvatarOption(
                 ),
             size = MaterialTheme.components.imageSizeMedium
         )
-
-        Spacer(modifier = Modifier.height(MaterialTheme.spacing.xs))
 
         Text(
             text = avatar.name,
