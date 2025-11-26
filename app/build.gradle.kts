@@ -3,6 +3,7 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.google.services)
+    id("com.google.firebase.crashlytics")
     id("com.google.devtools.ksp")
 }
 
@@ -45,6 +46,11 @@ android {
 }
 
 dependencies {
+
+    // Crashlytics and Analytics
+    implementation(platform("com.google.firebase:firebase-bom:33.1.2"))
+    implementation("com.google.firebase:firebase-crashlytics")
+    implementation("com.google.firebase:firebase-analytics")
 
     // Material
     implementation(libs.google.material)
@@ -97,6 +103,7 @@ dependencies {
     implementation(libs.androidx.datastore.core)
     implementation(libs.androidx.compose.material3.window.size.class1)
     implementation(libs.androidx.compose.runtime)
+    implementation(libs.androidx.compose.foundation)
     ksp(libs.androidx.room.compiler)
     implementation(libs.androidx.room.ktx)
 
