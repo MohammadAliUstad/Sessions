@@ -3,41 +3,46 @@ package com.yugentech.sessions.alerts.alertsDatastore
 import android.view.View
 import com.yugentech.sessions.alerts.HapticService
 import com.yugentech.sessions.alerts.SoundService
-import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 
 class AlertsRepository(
-    private val alertsManager: AlertsManager,
+    alertsManager: AlertsManager,
     private val hapticService: HapticService,
     private val soundService: SoundService
 ) {
-    suspend fun playSessionStartAlert(view: View? = null) {
-        val config = alertsManager.alertConfiguration.first()
+    private var isSoundEnabled: Boolean = true
+    private var isHapticsEnabled: Boolean = true
 
-        if (config.soundEnabled) {
+    init {
+        alertsManager.alertConfiguration.onEach { config ->
+            isSoundEnabled = config.soundEnabled
+            isHapticsEnabled = config.hapticsEnabled
+        }.launchIn(CoroutineScope(Dispatchers.IO))
+    }
+
+    fun playSessionStartAlert(view: View? = null) {
+        if (isSoundEnabled) {
             soundService.playSessionStartSound()
         }
-
-        if (config.hapticsEnabled) {
+        if (isHapticsEnabled) {
             hapticService.performHaptic(view)
         }
     }
 
-    suspend fun playSessionStopAlert(view: View? = null) {
-        val config = alertsManager.alertConfiguration.first()
-
-        if (config.soundEnabled) {
+    fun playSessionStopAlert(view: View? = null) {
+        if (isSoundEnabled) {
             soundService.playSessionStopSound()
         }
-
-        if (config.hapticsEnabled) {
+        if (isHapticsEnabled) {
             hapticService.performHaptic(view)
         }
     }
 
-    suspend fun performHaptic(view: View? = null) {
-        val config = alertsManager.alertConfiguration.first()
-
-        if (config.hapticsEnabled) {
+    fun performHaptic(view: View? = null) {
+        if (isHapticsEnabled) {
             hapticService.performHaptic(view)
         }
     }

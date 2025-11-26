@@ -9,14 +9,12 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Pause
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material3.FloatingActionButton
-import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import com.yugentech.sessions.theme.tokens.components
-import com.yugentech.sessions.theme.tokens.elevation
 import com.yugentech.sessions.theme.tokens.icons
 import com.yugentech.sessions.theme.tokens.spacing
 
@@ -46,8 +44,8 @@ fun ActionButton(
 
     FloatingActionButton(
         onClick = onPlayPause,
-        modifier = modifier.
-        size(MaterialTheme.components.fabSize)
+        modifier = modifier
+            .size(MaterialTheme.components.fabSize)
             .padding(MaterialTheme.spacing.xsSmall),
         shape = CircleShape,
         containerColor = containerColor,
