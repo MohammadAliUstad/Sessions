@@ -30,5 +30,6 @@ class AlarmReceiver : BroadcastReceiver(), KoinComponent {
 
     companion object {
         const val EXTRA_MESSAGE = "message"
+        const val EXTRA_REQUEST_CODE = "request_code"
     }
 }
