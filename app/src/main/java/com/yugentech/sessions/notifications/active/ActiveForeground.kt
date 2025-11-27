@@ -138,7 +138,7 @@ class ActiveForeground : Service() {
 
     override fun onTaskRemoved(rootIntent: Intent?) {
         stopSession()
-        homeViewModel.resetStudyState()
+        homeViewModel.resetSessionState()
         super.onTaskRemoved(rootIntent)
     }
 
