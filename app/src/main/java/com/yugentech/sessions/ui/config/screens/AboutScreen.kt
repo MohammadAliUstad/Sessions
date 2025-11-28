@@ -23,7 +23,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.res.stringResource
 import androidx.core.net.toUri
+import com.yugentech.sessions.R
 import com.yugentech.sessions.theme.tokens.spacing
 import com.yugentech.sessions.ui.config.components.aboutScreen.AboutContactCard
 import com.yugentech.sessions.ui.config.components.aboutScreen.AppInfoCard
@@ -41,8 +43,8 @@ fun AboutScreen(
             TopAppBar(
                 title = {
                     Text(
-                        text = "About",
-                        style = MaterialTheme.typography.titleLarge,
+                        text = stringResource(R.string.about),
+                        style = MaterialTheme.typography.headlineSmall,
                         color = MaterialTheme.colorScheme.onSurface
                     )
                 },
@@ -50,7 +52,7 @@ fun AboutScreen(
                     IconButton(onClick = onNavigateBack) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = "Back",
+                            contentDescription = stringResource(R.string.back),
                             tint = MaterialTheme.colorScheme.onSurface
                         )
                     }
@@ -65,17 +67,17 @@ fun AboutScreen(
         containerColor = MaterialTheme.colorScheme.background
     ) { scaffoldPadding ->
 
-        // Calculate bottom padding for navigation bar
         val navBarPadding = WindowInsets.navigationBars.asPaddingValues()
 
         LazyColumn(
             modifier = Modifier.fillMaxSize(),
             verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.l),
-            // FIX: Combine Scaffold padding (top) with WindowInsets (bottom)
             contentPadding = androidx.compose.foundation.layout.PaddingValues(
                 top = scaffoldPadding.calculateTopPadding() + MaterialTheme.spacing.m,
                 bottom = navBarPadding.calculateBottomPadding() + MaterialTheme.spacing.l,
-                start = MaterialTheme.spacing.m + scaffoldPadding.calculateStartPadding(layoutDirection),
+                start = MaterialTheme.spacing.m + scaffoldPadding.calculateStartPadding(
+                    layoutDirection
+                ),
                 end = MaterialTheme.spacing.m + scaffoldPadding.calculateEndPadding(layoutDirection)
             )
         ) {
@@ -86,12 +88,10 @@ fun AboutScreen(
             item {
                 AboutContactCard(
                     onEmailClick = {
-                        // UPDATE: New Email Address
                         val intent = Intent(Intent.ACTION_SENDTO).apply {
-                            data = "mailto:yugentech.kazuki@gmail.com".toUri()
-                            putExtra(Intent.EXTRA_SUBJECT, "Sessions App Feedback")
+                            data = context.getString(R.string.mail).toUri()
+                            putExtra(Intent.EXTRA_SUBJECT, context.getString(R.string.feedback_sub))
                         }
-                        // Safety check in case no email client is installed
                         try {
                             context.startActivity(intent)
                         } catch (e: Exception) {
@@ -99,10 +99,9 @@ fun AboutScreen(
                         }
                     },
                     onGitHubClick = {
-                        // UPDATE: New GitHub Repository Link
                         val urlIntent = Intent(
                             Intent.ACTION_VIEW,
-                            "https://github.com/MohammadAliUstad/Sessions".toUri()
+                            context.getString(R.string.github).toUri()
                         )
                         context.startActivity(urlIntent)
                     }
