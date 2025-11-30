@@ -1,4 +1,4 @@
-package com.yugentech.sessions.ui.dash.components.homeScreen.durationSelection
+package com.yugentech.sessions.ui.dash.homeScreen.components.durationSelection
 
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.animateContentSize
@@ -45,9 +45,9 @@ import com.yugentech.sessions.theme.tokens.corners
 import com.yugentech.sessions.theme.tokens.dimensions.AppAnimations
 import com.yugentech.sessions.theme.tokens.icons
 import com.yugentech.sessions.theme.tokens.spacing
-import com.yugentech.sessions.ui.dash.states.ItemStatus
-import com.yugentech.sessions.ui.dash.states.SessionDashboardState
-import com.yugentech.sessions.ui.dash.states.SessionVisualItem
+import com.yugentech.sessions.ui.dash.state.ItemStatus
+import com.yugentech.sessions.ui.dash.state.SessionDashboardState
+import com.yugentech.sessions.ui.dash.state.SessionVisualItem
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
