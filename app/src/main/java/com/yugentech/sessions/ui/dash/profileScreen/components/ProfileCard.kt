@@ -1,4 +1,4 @@
-package com.yugentech.sessions.ui.dash.components.profileScreen
+package com.yugentech.sessions.ui.dash.profileScreen.components
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -35,8 +35,8 @@ import com.yugentech.sessions.theme.tokens.components
 import com.yugentech.sessions.theme.tokens.corners
 import com.yugentech.sessions.theme.tokens.icons
 import com.yugentech.sessions.theme.tokens.spacing
-import com.yugentech.sessions.ui.config.components.editProfileScreen.AvatarImage
-import com.yugentech.sessions.ui.config.components.editProfileScreen.AvatarRepository
+import com.yugentech.sessions.ui.config.editProfileScreen.components.AvatarImage
+import com.yugentech.sessions.ui.config.editProfileScreen.components.AvatarRepository
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
@@ -158,10 +158,15 @@ fun ProfileCard(
 
                     Spacer(modifier = Modifier.width(MaterialTheme.spacing.s))
 
-                    val unit = if (streakCount == 1) "Day" else "Days"
+                    val streakText = if (streakCount > 0) {
+                        val unit = if (streakCount == 1) "Day" else "Days"
+                        "$streakCount $unit"
+                    } else {
+                        "No Streak"
+                    }
 
                     Text(
-                        text = "$streakCount $unit",
+                        text = streakText,
                         style = MaterialTheme.typography.labelLarge,
                         fontWeight = FontWeight.Bold
                     )
