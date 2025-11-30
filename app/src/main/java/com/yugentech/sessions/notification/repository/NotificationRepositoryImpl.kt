@@ -1,14 +1,14 @@
-package com.yugentech.sessions.notification.notificationRepository
+package com.yugentech.sessions.notification.repository
 
-import com.yugentech.sessions.notification.Notification
+import com.yugentech.sessions.notification.model.Notification
 import com.yugentech.sessions.notification.active.ActiveNotificationManager
-import com.yugentech.sessions.notification.scheduled.ReminderNotificationManager
+import com.yugentech.sessions.notification.scheduled.ScheduledNotificationManager
 import timber.log.Timber
 
 // Implementation that delegates notification tasks to specific managers for active vs scheduled types
 class NotificationRepositoryImpl(
     private val activeNotificationManager: ActiveNotificationManager,
-    private val reminderNotificationManager: ReminderNotificationManager
+    private val scheduledNotificationManager: ScheduledNotificationManager
 ) : NotificationRepository {
 
     // Delegates start request to the active manager
@@ -33,7 +33,7 @@ class NotificationRepositoryImpl(
     override suspend fun scheduleReminder(message: String, hour: Int, minute: Int) {
         try {
             Timber.i("Scheduling reminder '$message' for $hour:$minute")
-            reminderNotificationManager.scheduleReminder(
+            scheduledNotificationManager.scheduleReminder(
                 message = message,
                 hour = hour,
                 minute = minute
@@ -48,7 +48,7 @@ class NotificationRepositoryImpl(
     override suspend fun cancelReminders() {
         try {
             Timber.i("Cancelling all scheduled reminders")
-            reminderNotificationManager.cancelReminders()
+            scheduledNotificationManager.cancelReminders()
         } catch (e: Exception) {
             Timber.e(e, "Failed to cancel reminders")
             throw e
@@ -57,6 +57,6 @@ class NotificationRepositoryImpl(
 
     // Checks permission status via the reminder manager
     override fun hasExactAlarmPermission(): Boolean {
-        return reminderNotificationManager.canScheduleExactAlarms()
+        return scheduledNotificationManager.canScheduleExactAlarms()
     }
 }
