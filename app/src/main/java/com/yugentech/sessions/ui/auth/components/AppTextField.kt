@@ -26,10 +26,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
+import com.yugentech.sessions.R
 import com.yugentech.sessions.theme.tokens.components
 import com.yugentech.sessions.theme.tokens.corners
+import com.yugentech.sessions.theme.tokens.dimensions.AppConstants
 import com.yugentech.sessions.theme.tokens.icons
 import com.yugentech.sessions.theme.tokens.spacing
 
@@ -40,7 +43,7 @@ fun AppTextField(
     label: String,
     leadingIcon: ImageVector,
     modifier: Modifier = Modifier,
-    error: String = "",
+    error: String = AppConstants.EMPTY_STRING,
     isPassword: Boolean = false
 ) {
     var passwordVisible by remember { mutableStateOf(false) }
@@ -49,12 +52,7 @@ fun AppTextField(
         OutlinedTextField(
             value = value,
             onValueChange = onValueChange,
-            label = {
-                Text(
-                    text = label,
-                    style = MaterialTheme.typography.labelLarge
-                )
-            },
+            label = { Text(text = label) },
             isError = error.isNotEmpty(),
             shape = RoundedCornerShape(MaterialTheme.corners.small),
             modifier = Modifier.fillMaxWidth(),
@@ -84,7 +82,7 @@ fun AppTextField(
                                 Icons.Default.Visibility
                             else
                                 Icons.Default.VisibilityOff,
-                            contentDescription = "Toggle Password Visibility",
+                            contentDescription = stringResource(R.string.toggle_password_visibility),
                             tint = MaterialTheme.colorScheme.onSurfaceVariant,
                             modifier = Modifier.size(MaterialTheme.icons.medium)
                         )

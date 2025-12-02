@@ -7,8 +7,10 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
@@ -17,24 +19,36 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.scale
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
 import com.yugentech.sessions.R
+import com.yugentech.sessions.theme.tokens.corners
+import com.yugentech.sessions.theme.tokens.dimensions.AppConstants
 import com.yugentech.sessions.theme.tokens.spacing
-import com.yugentech.sessions.ui.config.components.appearanceScreen.PixelCard
 
 @Composable
 fun AppInfoCard() {
-    PixelCard {
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surfaceContainer,
+            contentColor = MaterialTheme.colorScheme.onSurface
+        ),
+        shape = RoundedCornerShape(MaterialTheme.corners.medium)
+    ) {
         Column(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(MaterialTheme.spacing.l),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Card(
                 modifier = Modifier
-                    .size(120.dp)
+                    .size(AppConstants.IMAGE_SIZE)
                     .clip(CircleShape),
                 colors = CardDefaults.cardColors(
                     containerColor = MaterialTheme.colorScheme.primaryContainer
@@ -45,10 +59,13 @@ fun AppInfoCard() {
                     contentAlignment = Alignment.Center
                 ) {
                     Image(
-                        painter = painterResource(id = R.drawable.app_icon),
-                        contentDescription = "Sessions App Icon",
-                        modifier = Modifier.clip(CircleShape),
-                        contentScale = ContentScale.FillBounds
+                        painter = painterResource(R.drawable.ic_launcher_foreground),
+                        contentDescription = null,
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .scale(AppConstants.ONEPOINT_FIVEF),
+                        contentScale = ContentScale.Fit,
+                        colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.primary)
                     )
                 }
             }
@@ -56,16 +73,16 @@ fun AppInfoCard() {
             Spacer(modifier = Modifier.height(MaterialTheme.spacing.xl))
 
             Text(
-                text = "Sessions",
-                style = MaterialTheme.typography.headlineLarge,
+                text = stringResource(R.string.app_name),
+                style = MaterialTheme.typography.headlineMedium,
                 color = MaterialTheme.colorScheme.primary
             )
 
             Spacer(modifier = Modifier.height(MaterialTheme.spacing.s))
 
             Text(
-                text = "Master Time, Master Learning",
-                style = MaterialTheme.typography.titleMedium,
+                text = stringResource(R.string.tagline),
+                style = MaterialTheme.typography.bodyLarge,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 textAlign = TextAlign.Center
             )
@@ -73,7 +90,7 @@ fun AppInfoCard() {
             Spacer(modifier = Modifier.height(MaterialTheme.spacing.m))
 
             Text(
-                text = "Sessions helps you build focus, consistency, and discipline by tracking study time and promoting mindful self-growth. Every session brings you closer to your best self.",
+                text = stringResource(R.string.app_description),
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 textAlign = TextAlign.Center,
@@ -83,15 +100,15 @@ fun AppInfoCard() {
             Spacer(modifier = Modifier.height(MaterialTheme.spacing.l))
 
             Text(
-                text = "Made by Yugen Tech",
-                style = MaterialTheme.typography.bodyLarge,
+                text = stringResource(R.string.branding),
+                style = MaterialTheme.typography.labelLarge,
                 color = MaterialTheme.colorScheme.onSurface
             )
 
             Spacer(modifier = Modifier.height(MaterialTheme.spacing.xs))
 
             Text(
-                text = "Version 1.0.0",
+                text = stringResource(R.string.version),
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
