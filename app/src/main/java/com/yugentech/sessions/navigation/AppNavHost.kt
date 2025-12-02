@@ -31,7 +31,6 @@ import com.yugentech.sessions.ui.config.screens.AppearanceScreen
 import com.yugentech.sessions.ui.dash.screens.EditProfileScreen
 import com.yugentech.sessions.ui.dash.screens.MainScreen
 import com.yugentech.sessions.ui.config.screens.SettingsScreen
-import com.yugentech.sessions.user.UserViewModel
 import com.yugentech.sessions.utils.Constants.DEFAULT_ANIMATION_DURATION
 import com.yugentech.sessions.utils.defaultEnterTransition
 import com.yugentech.sessions.utils.defaultExitTransition
@@ -42,20 +41,21 @@ import com.yugentech.sessions.viewModels.LoginViewModel
 import com.yugentech.sessions.viewModels.ProfileViewModel
 import com.yugentech.sessions.viewModels.SettingsViewModel
 import kotlinx.coroutines.delay
+import org.koin.androidx.compose.koinViewModel
 
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun AppNavHost(
     navController: NavHostController,
     webClientId: String,
-    loginViewModel: LoginViewModel,
-    userViewModel: UserViewModel,
-    homeViewModel: HomeViewModel,
-    profileViewModel: ProfileViewModel,
-    settingsViewModel: SettingsViewModel,
-    notificationsViewModel: NotificationsViewModel
+    loginViewModel: LoginViewModel
 ) {
+    val notificationsViewModel: NotificationsViewModel = koinViewModel()
+    val profileViewModel: ProfileViewModel = koinViewModel()
+
+
     val authState by loginViewModel.authState.collectAsStateWithLifecycle()
+
     val context = LocalContext.current
 
     val launcher = rememberLauncherForActivityResult(
@@ -71,19 +71,6 @@ fun AppNavHost(
         authState.intent?.let {
             launcher.launch(IntentSenderRequest.Builder(it).build())
         }
-        notificationsViewModel.startActiveSession(
-            notification = Notification(
-                id = 1001,
-                title = "Initializing...",
-                message = "Starting service",
-                type = NotificationType.ACTIVE,
-                isOngoing = true,
-                remainingSeconds = 1
-            )
-        )
-
-        delay(200)
-        notificationsViewModel.stopActiveSession()
     }
 
     LaunchedEffect(authState.isUserLoggedIn, authState.userId) {
@@ -106,6 +93,22 @@ fun AppNavHost(
                 }
             }
         }
+    }
+
+    LaunchedEffect(Unit) {
+        notificationsViewModel.startActiveSession(
+            notification = Notification(
+                id = 1001,
+                title = "Initializing...",
+                message = "Starting service",
+                type = NotificationType.ACTIVE,
+                isOngoing = true,
+                remainingSeconds = 1
+            )
+        )
+
+        delay(100)
+        notificationsViewModel.stopActiveSession()
     }
 
     if (authState.isLoading && navController.currentDestination?.route == null) {
@@ -174,18 +177,22 @@ fun AppNavHost(
 
         composable(Screens.Main.route) {
             val currentUserId = authState.userId
+            val homeViewModel: HomeViewModel = koinViewModel()
+            val notificationsViewModel: NotificationsViewModel = koinViewModel()
+
             if (currentUserId != null) {
                 MainScreen(
                     userId = currentUserId,
                     onSignOut = {
-                        loginViewModel.signOut()
+                        homeViewModel.resetSessionState()
                         notificationsViewModel.stopActiveSession()
-                        homeViewModel.resetStudyState()
+                        notificationsViewModel.cancelReminders()
+                        loginViewModel.signOut()
                     },
                     onExit = {
-                        (context as? Activity)?.finish()
+                        homeViewModel.resetSessionState()
                         notificationsViewModel.stopActiveSession()
-                        homeViewModel.resetStudyState()
+                        (context as? Activity)?.finish()
                     },
                     onEditProfile = {
                         navController.navigate(Screens.EditProfile.route)
@@ -195,13 +202,16 @@ fun AppNavHost(
                     },
                     homeViewModel = homeViewModel,
                     profileViewModel = profileViewModel,
-                    userViewModel = userViewModel,
                     notificationsViewModel = notificationsViewModel
                 )
             }
         }
 
         composable(Screens.Settings.route) {
+
+            val settingsViewModel: SettingsViewModel = koinViewModel()
+            val notificationsViewModel: NotificationsViewModel = koinViewModel()
+
             SettingsScreen(
                 settingsViewModel = settingsViewModel,
                 onAbout = {
@@ -234,10 +244,13 @@ fun AppNavHost(
         }
 
         composable(Screens.EditProfile.route) {
+
             val currentUserId = authState.userId
+
             if (currentUserId != null) {
                 EditProfileScreen(
-                    userViewModel = userViewModel,
+                    profileViewModel = profileViewModel,
+                    userId = currentUserId,
                     onNavigateBack = {
                         navController.popBackStack()
                     }
