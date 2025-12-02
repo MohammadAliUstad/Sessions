@@ -71,7 +71,7 @@ class ActiveForeground : Service() {
 
         try {
             val serviceType = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
-                ServiceInfo.FOREGROUND_SERVICE_TYPE_DATA_SYNC
+                ServiceInfo.FOREGROUND_SERVICE_TYPE_SPECIAL_USE
             } else 0
 
             ServiceCompat.startForeground(
@@ -93,7 +93,7 @@ class ActiveForeground : Service() {
         updateJob?.cancel()
         updateJob = serviceScope.launch {
             while (isSessionActive) {
-                delay(500) // update every 5 seconds, not every tick
+                delay(500)
                 val syncedSeconds = homeViewModel.uiState.value.currentTime
                 updateNotification(syncedSeconds)
             }
