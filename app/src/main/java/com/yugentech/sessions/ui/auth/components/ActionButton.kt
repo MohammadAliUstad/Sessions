@@ -18,6 +18,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.yugentech.sessions.theme.tokens.components
 import com.yugentech.sessions.theme.tokens.corners
+import com.yugentech.sessions.theme.tokens.dimensions.AnimationLabels
+import com.yugentech.sessions.theme.tokens.dimensions.AppAnimations
 import com.yugentech.sessions.theme.tokens.icons
 import com.yugentech.sessions.theme.tokens.strokes
 
@@ -43,8 +45,14 @@ fun ActionButton(
     ) {
         AnimatedContent(
             targetState = isLoading,
-            transitionSpec = { fadeIn(tween(200)) togetherWith fadeOut(tween(200)) },
-            label = "loading_animation"
+            transitionSpec = {
+                fadeIn(
+                    tween(AppAnimations.Durations.STANDARD)
+                ) togetherWith fadeOut(
+                    tween(AppAnimations.Durations.STANDARD)
+                )
+            },
+            label = AnimationLabels.LOADING_ANIMATION
         ) { loading ->
             if (loading) {
                 CircularProgressIndicator(
