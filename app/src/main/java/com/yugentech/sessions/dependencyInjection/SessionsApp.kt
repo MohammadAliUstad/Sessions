@@ -6,14 +6,12 @@ import com.yugentech.sessions.dependencyInjection.modules.alertsModule
 import com.yugentech.sessions.dependencyInjection.modules.authModule
 import com.yugentech.sessions.dependencyInjection.modules.dataStoreModule
 import com.yugentech.sessions.dependencyInjection.modules.databaseModule
-import com.yugentech.sessions.dependencyInjection.modules.startModule
 import com.yugentech.sessions.dependencyInjection.modules.notificationModule
 import com.yugentech.sessions.dependencyInjection.modules.sessionModule
 import com.yugentech.sessions.dependencyInjection.modules.themeModule
 import com.yugentech.sessions.dependencyInjection.modules.timerModule
 import com.yugentech.sessions.dependencyInjection.modules.userModule
 import com.yugentech.sessions.dependencyInjection.modules.viewModelModule
-import org.koin.android.ext.android.get
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
 import org.koin.core.context.startKoin
@@ -37,10 +35,8 @@ class SessionsApp : Application() {
                 alertsModule,
                 timerModule,
                 dataStoreModule,
-                notificationModule,
-                startModule
+                notificationModule
             )
         }
-        get<AppInitializer>().initializeAll()
     }
 }
