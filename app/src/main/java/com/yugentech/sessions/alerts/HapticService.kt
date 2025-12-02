@@ -7,29 +7,28 @@ import android.os.Build
 import android.os.VibrationEffect
 import android.os.Vibrator
 import android.os.VibratorManager
-import android.util.Log
 import android.view.HapticFeedbackConstants
 import android.view.View
 
-class HapticService(
-    private val context: Context
-) {
+class HapticService(context: Context) {
+
     private val vibrator: Vibrator by lazy {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            val vibratorManager =
-                context.getSystemService(Context.VIBRATOR_MANAGER_SERVICE) as VibratorManager
-            vibratorManager.defaultVibrator
+            (context.getSystemService(Context.VIBRATOR_MANAGER_SERVICE) as VibratorManager).defaultVibrator
         } else {
             context.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
         }
     }
 
     fun performHaptic(view: View? = null) {
-        Log.e("HapticService", "performHaptic")
         if (view != null) {
-            view.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
+            view.performHapticFeedback(HapticFeedbackConstants.CONFIRM)
         } else {
-            vibrator.vibrate(VibrationEffect.createOneShot(25, VibrationEffect.DEFAULT_AMPLITUDE))
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                vibrator.vibrate(VibrationEffect.createPredefined(VibrationEffect.EFFECT_CLICK))
+            } else {
+                vibrator.vibrate(VibrationEffect.createOneShot(20, VibrationEffect.DEFAULT_AMPLITUDE))
+            }
         }
     }
 }
