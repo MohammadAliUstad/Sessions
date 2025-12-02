@@ -28,9 +28,9 @@ import com.yugentech.sessions.ui.auth.screens.SignInScreen
 import com.yugentech.sessions.ui.auth.screens.SignUpScreen
 import com.yugentech.sessions.ui.config.screens.AboutScreen
 import com.yugentech.sessions.ui.config.screens.AppearanceScreen
+import com.yugentech.sessions.ui.config.screens.SettingsScreen
 import com.yugentech.sessions.ui.dash.screens.EditProfileScreen
 import com.yugentech.sessions.ui.dash.screens.MainScreen
-import com.yugentech.sessions.ui.config.screens.SettingsScreen
 import com.yugentech.sessions.utils.Constants.DEFAULT_ANIMATION_DURATION
 import com.yugentech.sessions.utils.defaultEnterTransition
 import com.yugentech.sessions.utils.defaultExitTransition
@@ -51,8 +51,6 @@ fun AppNavHost(
     loginViewModel: LoginViewModel
 ) {
     val notificationsViewModel: NotificationsViewModel = koinViewModel()
-    val profileViewModel: ProfileViewModel = koinViewModel()
-
 
     val authState by loginViewModel.authState.collectAsStateWithLifecycle()
 
@@ -179,6 +177,7 @@ fun AppNavHost(
             val currentUserId = authState.userId
             val homeViewModel: HomeViewModel = koinViewModel()
             val notificationsViewModel: NotificationsViewModel = koinViewModel()
+            val profileViewModel: ProfileViewModel = koinViewModel()
 
             if (currentUserId != null) {
                 MainScreen(
@@ -244,8 +243,8 @@ fun AppNavHost(
         }
 
         composable(Screens.EditProfile.route) {
-
             val currentUserId = authState.userId
+            val profileViewModel: ProfileViewModel = koinViewModel()
 
             if (currentUserId != null) {
                 EditProfileScreen(
