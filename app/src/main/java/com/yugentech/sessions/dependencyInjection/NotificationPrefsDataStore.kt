@@ -16,21 +16,9 @@ class NotificationPrefsDataStore(
 ) {
 
     companion object {
-        private val CHANNELS_CREATED = booleanPreferencesKey("channels_created")
         private val NOTIFICATIONS_ENABLED = booleanPreferencesKey("notifications_enabled")
         private val FOCUS_REMINDER_TIME = stringPreferencesKey("focus_reminder_time")
         private val FOCUS_REMINDERS_ENABLED = booleanPreferencesKey("focus_reminders_enabled")
-    }
-
-    suspend fun areChannelsCreated(): Boolean {
-        val prefs = dataStore.data.first()
-        return prefs[CHANNELS_CREATED] ?: false
-    }
-
-    suspend fun setChannelsCreated(created: Boolean) {
-        dataStore.edit { prefs ->
-            prefs[CHANNELS_CREATED] = created
-        }
     }
 
     suspend fun getInitialConfig(): NotificationConfig {
