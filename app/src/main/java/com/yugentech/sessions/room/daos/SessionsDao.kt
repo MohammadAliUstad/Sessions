@@ -17,7 +17,7 @@ interface SessionsDao {
     suspend fun saveSessions(sessions: List<SessionsEntity>)
 
     @Query("SELECT * FROM sessions WHERE userId = :userId ORDER BY timestamp DESC")
-    fun getSessions(userId: String): Flow<List<SessionsEntity>>
+    fun getSessionsFlow(userId: String): Flow<List<SessionsEntity>>
 
     @Query("DELETE FROM sessions WHERE sessionId = :sessionId")
     suspend fun deleteSession(sessionId: String)
