@@ -6,6 +6,6 @@ interface NotificationRepository {
     suspend fun startActiveSession(notification: Notification)
     suspend fun updateActiveSession(notification: Notification)
     suspend fun stopActiveSession()
-    suspend fun scheduleReminder(message: String, delayMillis: Long)
-    suspend fun cancelAllReminders()
+    suspend fun scheduleReminder(message: String, hour: Int, minute: Int)
+    suspend fun cancelReminders()
 }
