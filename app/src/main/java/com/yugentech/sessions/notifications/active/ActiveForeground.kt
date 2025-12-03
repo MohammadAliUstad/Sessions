@@ -7,6 +7,7 @@ import android.os.Build
 import android.os.IBinder
 import androidx.core.app.ServiceCompat
 import com.yugentech.sessions.notifications.Notification
+import com.yugentech.sessions.notifications.NotificationService
 import com.yugentech.sessions.notifications.NotificationType
 import com.yugentech.sessions.utils.Constants.ACTION_START_SESSION
 import com.yugentech.sessions.utils.Constants.ACTION_STOP_SESSION
@@ -93,9 +94,9 @@ class ActiveForeground : Service() {
         updateJob?.cancel()
         updateJob = serviceScope.launch {
             while (isSessionActive) {
-                delay(500)
                 val syncedSeconds = homeViewModel.uiState.value.currentTime
                 updateNotification(syncedSeconds)
+                delay(500)
             }
         }
     }

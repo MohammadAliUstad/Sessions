@@ -14,7 +14,8 @@ android {
     defaultConfig {
         applicationId = "com.yugentech.sessions"
         minSdk = 26
-        targetSdk = 36
+        //noinspection OldTargetApi
+        targetSdk = 35
         versionCode = 1
         versionName = "1.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
@@ -23,6 +24,7 @@ android {
     buildTypes {
         release {
             isMinifyEnabled = false
+            isShrinkResources = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
@@ -48,9 +50,9 @@ android {
 dependencies {
 
     // Crashlytics and Analytics
-    implementation(platform("com.google.firebase:firebase-bom:33.1.2"))
-    implementation("com.google.firebase:firebase-crashlytics")
-    implementation("com.google.firebase:firebase-analytics")
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.crashlytics)
+    implementation(libs.firebase.analytics)
 
     // Material
     implementation(libs.google.material)
