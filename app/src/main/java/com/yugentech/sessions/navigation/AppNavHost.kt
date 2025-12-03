@@ -52,6 +52,7 @@ fun AppNavHost(
 ) {
     val notificationsViewModel: NotificationsViewModel = koinViewModel()
 
+
     val authState by loginViewModel.authState.collectAsStateWithLifecycle()
 
     val context = LocalContext.current
@@ -93,21 +94,21 @@ fun AppNavHost(
         }
     }
 
-    LaunchedEffect(Unit) {
-        notificationsViewModel.startActiveSession(
-            notification = Notification(
-                id = 1001,
-                title = "Initializing...",
-                message = "Starting service",
-                type = NotificationType.ACTIVE,
-                isOngoing = true,
-                remainingSeconds = 1
-            )
-        )
-
-        delay(100)
-        notificationsViewModel.stopActiveSession()
-    }
+//    LaunchedEffect(Unit) {
+//        notificationsViewModel.startActiveSession(
+//            notification = Notification(
+//                id = 1001,
+//                title = "Initializing...",
+//                message = "Starting service",
+//                type = NotificationType.ACTIVE,
+//                isOngoing = true,
+//                remainingSeconds = 1
+//            )
+//        )
+//
+//        delay(100)
+//        notificationsViewModel.stopActiveSession()
+//    }
 
     if (authState.isLoading && navController.currentDestination?.route == null) {
         Box(
@@ -179,6 +180,7 @@ fun AppNavHost(
             val notificationsViewModel: NotificationsViewModel = koinViewModel()
             val profileViewModel: ProfileViewModel = koinViewModel()
 
+
             if (currentUserId != null) {
                 MainScreen(
                     userId = currentUserId,
@@ -245,6 +247,7 @@ fun AppNavHost(
         composable(Screens.EditProfile.route) {
             val currentUserId = authState.userId
             val profileViewModel: ProfileViewModel = koinViewModel()
+
 
             if (currentUserId != null) {
                 EditProfileScreen(

@@ -1,7 +1,6 @@
 package com.yugentech.sessions.ui.dash.components.avatar
 
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -39,7 +38,8 @@ fun AvatarSection(
         ) {
             Text(
                 text = "Choose Your Avatar",
-                style = MaterialTheme.typography.headlineSmall,
+                // Standard M3 Role for Card/Section Headers
+                style = MaterialTheme.typography.titleMedium,
                 color = MaterialTheme.colorScheme.onSurface
             )
 
@@ -51,8 +51,8 @@ fun AvatarSection(
             )
 
             AvatarGrid(
-                    selectedAvatarId = selectedAvatarId,
-                    onAvatarSelected = onAvatarSelected
+                selectedAvatarId = selectedAvatarId,
+                onAvatarSelected = onAvatarSelected
             )
         }
     }
