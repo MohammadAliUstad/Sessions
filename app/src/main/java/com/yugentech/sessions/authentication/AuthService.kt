@@ -16,14 +16,18 @@ import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.tasks.await
+import timber.log.Timber
 
 class AuthService(
     private val auth: FirebaseAuth,
     private val oneTapClient: SignInClient
 ) {
+    // Observes Firebase Auth state changes (Logged In / Out)
     val authStateFlow: Flow<FirebaseUser?> = callbackFlow {
         val authStateListener = FirebaseAuth.AuthStateListener { firebaseAuth ->
-            trySend(firebaseAuth.currentUser)
+            val user = firebaseAuth.currentUser
+            Timber.d("Auth state changed. User: ${user?.uid ?: "null"}")
+            trySend(user)
         }
         auth.addAuthStateListener(authStateListener)
         awaitClose { auth.removeAuthStateListener(authStateListener) }
@@ -34,44 +38,55 @@ class AuthService(
 
     suspend fun signUp(name: String, email: String, password: String): AuthResult<FirebaseUser> {
         return try {
+            Timber.d("Attempting sign up for email: $email")
             val result = auth.createUserWithEmailAndPassword(email, password).await()
             val user = result.user!!
 
+            // Update display name immediately after creation
             user.updateProfile(
                 UserProfileChangeRequest.Builder().setDisplayName(name).build()
             ).await()
 
+            Timber.i("User signed up successfully: ${user.uid}")
             AuthResult.Success(user)
         } catch (e: Exception) {
+            Timber.e(e, "Sign up failed")
             AuthResult.Error(AuthErrorMapper.mapFirebaseAuthError(e))
         }
     }
 
     suspend fun signIn(email: String, password: String): AuthResult<FirebaseUser> {
         return try {
+            Timber.d("Attempting sign in for email: $email")
             val result = auth.signInWithEmailAndPassword(email, password).await()
+            Timber.i("User signed in successfully: ${result.user?.uid}")
             AuthResult.Success(result.user!!)
         } catch (e: Exception) {
+            Timber.w(e, "Sign in failed") // Warning level as this is often user error (wrong pass)
             AuthResult.Error(AuthErrorMapper.mapFirebaseAuthError(e))
         }
     }
 
     suspend fun sendPasswordResetEmail(email: String): AuthResult<Unit> {
         return try {
+            Timber.d("Sending password reset email to: $email")
             auth.sendPasswordResetEmail(email).await()
             AuthResult.Success(Unit)
         } catch (e: Exception) {
+            Timber.e(e, "Failed to send reset email")
             AuthResult.Error(AuthErrorMapper.mapFirebaseAuthError(e))
         }
     }
 
     fun signOut() {
+        Timber.i("Signing out user")
         auth.signOut()
         oneTapClient.signOut()
     }
 
     suspend fun getGoogleSignInIntent(webClientId: String): AuthResult<PendingIntent> {
         return try {
+            Timber.d("Preparing Google One Tap Sign-In intent")
             val signInRequest = BeginSignInRequest.builder()
                 .setGoogleIdTokenRequestOptions(
                     BeginSignInRequest.GoogleIdTokenRequestOptions.builder()
@@ -86,22 +101,30 @@ class AuthService(
             val result = oneTapClient.beginSignIn(signInRequest).await()
             AuthResult.Success(result.pendingIntent)
         } catch (e: Exception) {
+            Timber.e(e, "Failed to get Google Sign-In intent")
             AuthResult.Error(AuthErrorMapper.mapGoogleSignInError(e))
         }
     }
 
     suspend fun handleGoogleSignInResult(data: Intent?): AuthResult<FirebaseUser> {
         return try {
-            if (data == null) return AuthResult.Error("Google Sign-In cancelled")
+            if (data == null) {
+                Timber.w("Google Sign-In result data was null")
+                return AuthResult.Error("Google Sign-In cancelled")
+            }
 
             val credential = oneTapClient.getSignInCredentialFromIntent(data)
             val idToken = credential.googleIdToken
-                ?: return AuthResult.Error("Google ID token is missing")
+                ?: return AuthResult.Error("Google ID token is missing").also { Timber.e("Missing Google ID Token") }
 
+            Timber.d("Google ID Token retrieved, exchanging for Firebase Credential")
             val firebaseCredential = GoogleAuthProvider.getCredential(idToken, null)
             val result = auth.signInWithCredential(firebaseCredential).await()
+
+            Timber.i("Google Sign-In successful: ${result.user?.uid}")
             AuthResult.Success(result.user!!)
         } catch (e: Exception) {
+            Timber.e(e, "Google Sign-In handling failed")
             AuthResult.Error(AuthErrorMapper.mapGoogleSignInError(e))
         }
     }

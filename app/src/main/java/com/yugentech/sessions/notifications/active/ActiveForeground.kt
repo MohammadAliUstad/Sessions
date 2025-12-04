@@ -19,8 +19,8 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
+import timber.log.Timber
 import java.util.Locale
-
 
 class ActiveForeground : Service() {
 
@@ -31,6 +31,13 @@ class ActiveForeground : Service() {
     private var remainingSeconds = 0
     private var sessionTitle = "Focus Session"
     private val serviceScope = CoroutineScope(Dispatchers.Default)
+
+    override fun onCreate() {
+        super.onCreate()
+        Timber.d("ActiveForeground Service Created")
+        // Ensure notification channels exist before service starts
+        notificationService.createNotificationChannels()
+    }
 
     override fun onBind(intent: Intent?): IBinder? = null
 
@@ -48,7 +55,6 @@ class ActiveForeground : Service() {
                 }
             }
         }
-
         return if (isSessionActive) START_STICKY else START_NOT_STICKY
     }
 
@@ -58,6 +64,8 @@ class ActiveForeground : Service() {
         isSessionActive = true
         sessionTitle = intent?.getStringExtra("title") ?: "Focus Session"
         remainingSeconds = intent?.getIntExtra("remainingMinutes", 0) ?: 0
+
+        Timber.i("Starting session in foreground: $sessionTitle")
 
         val placeholderNotification = Notification(
             id = NotificationService.ACTIVE_NOTIFICATION_ID,
@@ -84,7 +92,8 @@ class ActiveForeground : Service() {
 
             startCountdown()
 
-        } catch (_: Exception) {
+        } catch (e: Exception) {
+            Timber.e(e, "Failed to start foreground service")
             isSessionActive = false
             stopSelf()
         }
@@ -94,19 +103,19 @@ class ActiveForeground : Service() {
         updateJob?.cancel()
         updateJob = serviceScope.launch {
             while (isSessionActive) {
+                // Fetch latest time from ViewModel
                 val syncedSeconds = homeViewModel.uiState.value.currentTime
                 updateNotification(syncedSeconds)
+                // Delay at end of loop ensures immediate first update
                 delay(500)
             }
         }
     }
 
-
     private fun updateNotification(currentSeconds: Int) {
         val notification = createNotification(currentSeconds)
         notificationService.showNotification(notification)
     }
-
 
     private fun createNotification(seconds: Int): Notification {
         val formattedTime = String.format(
@@ -127,6 +136,8 @@ class ActiveForeground : Service() {
 
     private fun stopSession() {
         if (!isSessionActive && updateJob == null) return
+
+        Timber.i("Stopping session in foreground")
         isSessionActive = false
         remainingSeconds = 0
         updateJob?.cancel()
@@ -138,12 +149,14 @@ class ActiveForeground : Service() {
     }
 
     override fun onTaskRemoved(rootIntent: Intent?) {
+        Timber.d("Task removed, stopping service")
         stopSession()
         homeViewModel.resetSessionState()
         super.onTaskRemoved(rootIntent)
     }
 
     override fun onDestroy() {
+        Timber.d("ActiveForeground Service Destroyed")
         isSessionActive = false
         updateJob?.cancel()
         notificationService.hideNotification(NotificationService.ACTIVE_NOTIFICATION_ID)

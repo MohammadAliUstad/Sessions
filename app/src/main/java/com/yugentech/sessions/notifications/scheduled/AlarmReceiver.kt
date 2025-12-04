@@ -4,7 +4,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.util.Log
-import com.yugentech.sessions.dependencyInjection.NotificationPrefsDataStore
+import com.yugentech.sessions.notifications.NotificationPrefsDataStore
 import com.yugentech.sessions.notifications.Notification
 import com.yugentech.sessions.notifications.NotificationService
 import com.yugentech.sessions.notifications.NotificationType

@@ -21,8 +21,6 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import com.google.accompanist.navigation.animation.AnimatedNavHost
-import com.yugentech.sessions.notifications.Notification
-import com.yugentech.sessions.notifications.NotificationType
 import com.yugentech.sessions.notifications.NotificationsViewModel
 import com.yugentech.sessions.ui.auth.screens.SignInScreen
 import com.yugentech.sessions.ui.auth.screens.SignUpScreen
@@ -40,8 +38,8 @@ import com.yugentech.sessions.viewModels.HomeViewModel
 import com.yugentech.sessions.viewModels.LoginViewModel
 import com.yugentech.sessions.viewModels.ProfileViewModel
 import com.yugentech.sessions.viewModels.SettingsViewModel
-import kotlinx.coroutines.delay
 import org.koin.androidx.compose.koinViewModel
+import timber.log.Timber
 
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
@@ -50,34 +48,39 @@ fun AppNavHost(
     webClientId: String,
     loginViewModel: LoginViewModel
 ) {
-    val notificationsViewModel: NotificationsViewModel = koinViewModel()
-
-
+    // Collect Auth State to drive navigation logic
     val authState by loginViewModel.authState.collectAsStateWithLifecycle()
-
     val context = LocalContext.current
 
+    // Handle Google Sign-In Intent launching
     val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.StartIntentSenderForResult(),
         onResult = { result ->
             if (result.resultCode == Activity.RESULT_OK) {
+                Timber.d("Google Sign-In Activity Result OK")
                 loginViewModel.handleGoogleSignInResult(result.data)
+            } else {
+                Timber.w("Google Sign-In Activity Result Cancelled or Failed")
             }
         }
     )
 
+    // Trigger Google Sign-In Launcher when Intent is ready
     LaunchedEffect(authState.intent) {
         authState.intent?.let {
+            Timber.d("Launching Google Sign-In Intent")
             launcher.launch(IntentSenderRequest.Builder(it).build())
         }
     }
 
+    // Main Navigation Logic: Route to Main or SignIn based on Auth State
     LaunchedEffect(authState.isUserLoggedIn, authState.userId) {
         if (!authState.isLoading) {
             val currentRoute = navController.currentDestination?.route
 
             if (authState.isUserLoggedIn && authState.userId != null) {
                 if (currentRoute != Screens.Main.route) {
+                    Timber.i("User authenticated, navigating to Main Screen")
                     navController.navigate(Screens.Main.route) {
                         popUpTo(0) { inclusive = true }
                         launchSingleTop = true
@@ -85,6 +88,7 @@ fun AppNavHost(
                 }
             } else {
                 if (currentRoute != Screens.SignIn.route && currentRoute != Screens.SignUp.route) {
+                    Timber.i("User not authenticated, navigating to Sign In Screen")
                     navController.navigate(Screens.SignIn.route) {
                         popUpTo(0) { inclusive = true }
                         launchSingleTop = true
@@ -94,22 +98,7 @@ fun AppNavHost(
         }
     }
 
-//    LaunchedEffect(Unit) {
-//        notificationsViewModel.startActiveSession(
-//            notification = Notification(
-//                id = 1001,
-//                title = "Initializing...",
-//                message = "Starting service",
-//                type = NotificationType.ACTIVE,
-//                isOngoing = true,
-//                remainingSeconds = 1
-//            )
-//        )
-//
-//        delay(100)
-//        notificationsViewModel.stopActiveSession()
-//    }
-
+    // Show loading spinner while determining auth state
     if (authState.isLoading && navController.currentDestination?.route == null) {
         Box(
             modifier = Modifier.fillMaxSize(),
@@ -135,6 +124,7 @@ fun AppNavHost(
         popExitTransition = { defaultPopExitTransition(DEFAULT_ANIMATION_DURATION) }
     ) {
         composable(Screens.SignIn.route) {
+            Timber.v("Composing SignIn Screen")
             BackHandler {
                 (context as? Activity)?.finish()
             }
@@ -157,6 +147,7 @@ fun AppNavHost(
         }
 
         composable(Screens.SignUp.route) {
+            Timber.v("Composing SignUp Screen")
             SignUpScreen(
                 loginViewModel = loginViewModel,
                 onSignUp = { name, email, password ->
@@ -175,22 +166,26 @@ fun AppNavHost(
         }
 
         composable(Screens.Main.route) {
+            Timber.v("Composing Main Screen")
             val currentUserId = authState.userId
+
+            // ViewModels scoped to Main Screen flow
             val homeViewModel: HomeViewModel = koinViewModel()
             val notificationsViewModel: NotificationsViewModel = koinViewModel()
             val profileViewModel: ProfileViewModel = koinViewModel()
-
 
             if (currentUserId != null) {
                 MainScreen(
                     userId = currentUserId,
                     onSignOut = {
+                        Timber.i("User requested Sign Out")
                         homeViewModel.resetSessionState()
                         notificationsViewModel.stopActiveSession()
                         notificationsViewModel.cancelReminders()
                         loginViewModel.signOut()
                     },
                     onExit = {
+                        Timber.i("User requested App Exit")
                         homeViewModel.resetSessionState()
                         notificationsViewModel.stopActiveSession()
                         (context as? Activity)?.finish()
@@ -209,7 +204,7 @@ fun AppNavHost(
         }
 
         composable(Screens.Settings.route) {
-
+            Timber.v("Composing Settings Screen")
             val settingsViewModel: SettingsViewModel = koinViewModel()
             val notificationsViewModel: NotificationsViewModel = koinViewModel()
 
@@ -245,9 +240,9 @@ fun AppNavHost(
         }
 
         composable(Screens.EditProfile.route) {
+            Timber.v("Composing EditProfile Screen")
             val currentUserId = authState.userId
             val profileViewModel: ProfileViewModel = koinViewModel()
-
 
             if (currentUserId != null) {
                 EditProfileScreen(
@@ -258,6 +253,7 @@ fun AppNavHost(
                     }
                 )
             } else {
+                Timber.w("Navigated to EditProfile without valid User ID")
                 LaunchedEffect(Unit) {
                     navController.popBackStack()
                 }
