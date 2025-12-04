@@ -22,6 +22,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import com.google.accompanist.navigation.animation.AnimatedNavHost
 import com.yugentech.sessions.notifications.NotificationsViewModel
+import com.yugentech.sessions.theme.tokens.dimensions.AppConstants
 import com.yugentech.sessions.ui.auth.screens.SignInScreen
 import com.yugentech.sessions.ui.auth.screens.SignUpScreen
 import com.yugentech.sessions.ui.config.screens.AboutScreen
@@ -29,7 +30,6 @@ import com.yugentech.sessions.ui.config.screens.AppearanceScreen
 import com.yugentech.sessions.ui.config.screens.SettingsScreen
 import com.yugentech.sessions.ui.dash.screens.EditProfileScreen
 import com.yugentech.sessions.ui.dash.screens.MainScreen
-import com.yugentech.sessions.utils.Constants.DEFAULT_ANIMATION_DURATION
 import com.yugentech.sessions.utils.defaultEnterTransition
 import com.yugentech.sessions.utils.defaultExitTransition
 import com.yugentech.sessions.utils.defaultPopEnterTransition
@@ -118,10 +118,10 @@ fun AppNavHost(
     AnimatedNavHost(
         navController = navController,
         startDestination = startDestination,
-        enterTransition = { defaultEnterTransition(DEFAULT_ANIMATION_DURATION) },
-        exitTransition = { defaultExitTransition(DEFAULT_ANIMATION_DURATION) },
-        popEnterTransition = { defaultPopEnterTransition(DEFAULT_ANIMATION_DURATION) },
-        popExitTransition = { defaultPopExitTransition(DEFAULT_ANIMATION_DURATION) }
+        enterTransition = { defaultEnterTransition(AppConstants.DEFAULT_ANIMATION_DURATION) },
+        exitTransition = { defaultExitTransition(AppConstants.DEFAULT_ANIMATION_DURATION) },
+        popEnterTransition = { defaultPopEnterTransition(AppConstants.DEFAULT_ANIMATION_DURATION) },
+        popExitTransition = { defaultPopExitTransition(AppConstants.DEFAULT_ANIMATION_DURATION) }
     ) {
         composable(Screens.SignIn.route) {
             Timber.v("Composing SignIn Screen")

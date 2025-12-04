@@ -18,7 +18,7 @@ class AuthRepositoryImpl(
         get() = authService.currentUser
 
     override suspend fun signUp(name: String, email: String, password: String): AuthResult<FirebaseUser> {
-        Timber.i("Sign up requested") // Log action but NOT PII (email/password)
+        Timber.i("Sign up requested")
         return authService.signUp(name, email, password)
     }
 
