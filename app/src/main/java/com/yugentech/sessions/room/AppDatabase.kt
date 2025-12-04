@@ -7,6 +7,7 @@ import com.yugentech.sessions.room.daos.UserDao
 import com.yugentech.sessions.room.entities.SessionsEntity
 import com.yugentech.sessions.room.entities.UserEntity
 
+// Central database definition for Room, managing local data persistence
 @Database(
     entities = [
         UserEntity::class,

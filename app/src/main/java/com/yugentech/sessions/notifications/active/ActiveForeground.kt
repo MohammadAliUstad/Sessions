@@ -9,9 +9,7 @@ import androidx.core.app.ServiceCompat
 import com.yugentech.sessions.notifications.Notification
 import com.yugentech.sessions.notifications.NotificationService
 import com.yugentech.sessions.notifications.NotificationType
-import com.yugentech.sessions.utils.Constants.ACTION_START_SESSION
-import com.yugentech.sessions.utils.Constants.ACTION_STOP_SESSION
-import com.yugentech.sessions.utils.Constants.ACTION_UPDATE_SESSION
+import com.yugentech.sessions.theme.tokens.dimensions.AppConstants
 import com.yugentech.sessions.viewModels.HomeViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -22,6 +20,7 @@ import org.koin.android.ext.android.inject
 import timber.log.Timber
 import java.util.Locale
 
+// Foreground service to keep the session active and show a persistent notification
 class ActiveForeground : Service() {
 
     private val notificationService: NotificationService by inject()
@@ -35,7 +34,7 @@ class ActiveForeground : Service() {
     override fun onCreate() {
         super.onCreate()
         Timber.d("ActiveForeground Service Created")
-        // Ensure notification channels exist before service starts
+        // Initialize channels immediately to prevent invisible service crashes
         notificationService.createNotificationChannels()
     }
 
@@ -43,9 +42,9 @@ class ActiveForeground : Service() {
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         when (intent?.action) {
-            ACTION_START_SESSION -> startSession(intent)
-            ACTION_STOP_SESSION -> stopSession()
-            ACTION_UPDATE_SESSION -> {
+            AppConstants.ACTION_START_SESSION -> startSession(intent)
+            AppConstants.ACTION_STOP_SESSION -> stopSession()
+            AppConstants.ACTION_UPDATE_SESSION -> {
                 val newTime = intent.getIntExtra("remainingMinutes", remainingSeconds)
                 if (newTime != remainingSeconds) {
                     remainingSeconds = newTime
@@ -83,6 +82,7 @@ class ActiveForeground : Service() {
                 ServiceInfo.FOREGROUND_SERVICE_TYPE_SPECIAL_USE
             } else 0
 
+            // Promote service to foreground to prevent system kill
             ServiceCompat.startForeground(
                 this,
                 NotificationService.ACTIVE_NOTIFICATION_ID,
@@ -103,10 +103,10 @@ class ActiveForeground : Service() {
         updateJob?.cancel()
         updateJob = serviceScope.launch {
             while (isSessionActive) {
-                // Fetch latest time from ViewModel
+                // Fetch latest state directly from ViewModel
                 val syncedSeconds = homeViewModel.uiState.value.currentTime
                 updateNotification(syncedSeconds)
-                // Delay at end of loop ensures immediate first update
+                // Delay at end of loop ensures UI updates immediately on start
                 delay(500)
             }
         }
@@ -149,7 +149,7 @@ class ActiveForeground : Service() {
     }
 
     override fun onTaskRemoved(rootIntent: Intent?) {
-        Timber.d("Task removed, stopping service")
+        Timber.d("Task removed, performing cleanup")
         stopSession()
         homeViewModel.resetSessionState()
         super.onTaskRemoved(rootIntent)

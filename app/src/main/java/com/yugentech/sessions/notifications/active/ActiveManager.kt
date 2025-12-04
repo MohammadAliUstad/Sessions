@@ -4,21 +4,20 @@ import android.content.Context
 import android.content.Intent
 import androidx.core.content.ContextCompat
 import com.yugentech.sessions.notifications.Notification
-import com.yugentech.sessions.utils.Constants.ACTION_START_SESSION
-import com.yugentech.sessions.utils.Constants.ACTION_STOP_SESSION
-import com.yugentech.sessions.utils.Constants.ACTION_UPDATE_SESSION
+import com.yugentech.sessions.theme.tokens.dimensions.AppConstants
 import org.koin.core.component.KoinComponent
 import timber.log.Timber
 
-// Helper class to manage Intents for the ActiveForeground Service
+// Helper class to construct and launch Intents for the ActiveForeground Service
 class ActiveManager(
     private val context: Context
 ) : KoinComponent {
 
+    // Starts the foreground service with initial session data
     fun startActiveSession(notification: Notification) {
-        Timber.d("Starting ActiveForeground service")
+        Timber.d("Starting ActiveForeground service for: ${notification.title}")
         val intent = Intent(context, ActiveForeground::class.java).apply {
-            action = ACTION_START_SESSION
+            action = AppConstants.ACTION_START_SESSION
             putExtra("title", notification.title)
             putExtra("message", notification.message)
             putExtra("totalMinutes", notification.totalSeconds ?: 0)
@@ -27,18 +26,20 @@ class ActiveManager(
         ContextCompat.startForegroundService(context, intent)
     }
 
+    // Sends an update command to the running service (e.g., time tick)
     fun updateActiveSession(notification: Notification) {
         val intent = Intent(context, ActiveForeground::class.java).apply {
-            action = ACTION_UPDATE_SESSION
+            action = AppConstants.ACTION_UPDATE_SESSION
             putExtra("remainingMinutes", notification.remainingSeconds ?: 0)
         }
         context.startService(intent)
     }
 
+    // Signals the service to stop and remove the notification
     fun stopActiveSession() {
         Timber.d("Stopping ActiveForeground service")
         val intent = Intent(context, ActiveForeground::class.java).apply {
-            action = ACTION_STOP_SESSION
+            action = AppConstants.ACTION_STOP_SESSION
         }
         context.startService(intent)
     }

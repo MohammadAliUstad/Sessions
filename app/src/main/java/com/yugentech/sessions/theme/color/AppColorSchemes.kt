@@ -6,6 +6,7 @@ import androidx.compose.ui.graphics.Color
 
 object AppColorSchemes {
 
+    // Ocean Theme Light
     val LightBlueScheme = lightColorScheme(
         primary = Color(0xFF445E91),
         onPrimary = Color(0xFFFFFFFF),
@@ -50,6 +51,7 @@ object AppColorSchemes {
         surfaceContainerHighest = Color(0xFFE2E2E9)
     )
 
+    // Ocean Theme Dark
     val DarkBlueScheme = darkColorScheme(
         primary = Color(0xFFADC6FF),
         onPrimary = Color(0xFF102F60),
@@ -94,6 +96,7 @@ object AppColorSchemes {
         surfaceContainerHighest = Color(0xFF33353A)
     )
 
+    // Sunset Theme Light
     val YellowLightColorScheme = lightColorScheme(
         primary = Color(0xFF6D5E0F),
         onPrimary = Color(0xFFFFFFFF),
@@ -138,6 +141,7 @@ object AppColorSchemes {
         surfaceContainerHighest = Color(0xFFE8E2D4)
     )
 
+    // Sunset Theme Dark
     val YellowDarkColorScheme = darkColorScheme(
         primary = Color(0xFFDBC66E),
         onPrimary = Color(0xFF3A3000),
@@ -182,6 +186,7 @@ object AppColorSchemes {
         surfaceContainerHighest = Color(0xFF38352B)
     )
 
+    // Monochrome Theme Light
     val GrayLightColorScheme = lightColorScheme(
         primary = Color(0xFF5F5F5F),
         onPrimary = Color(0xFFFFFFFF),
@@ -226,6 +231,7 @@ object AppColorSchemes {
         surfaceContainerHighest = Color(0xFFE5E2E1)
     )
 
+    // Monochrome Theme Dark
     val GrayDarkColorScheme = darkColorScheme(
         primary = Color(0xFFC8C6C6),
         onPrimary = Color(0xFF303030),
