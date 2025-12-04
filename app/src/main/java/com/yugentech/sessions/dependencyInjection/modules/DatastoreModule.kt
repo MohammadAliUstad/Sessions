@@ -8,26 +8,24 @@ import org.koin.android.ext.koin.androidContext
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
-private val Context.alertsDataStore:
-        DataStore<Preferences> by preferencesDataStore(name = "alerts")
-
-private val Context.themeDataStore:
-        DataStore<Preferences> by preferencesDataStore(name = "theme")
-
-private val Context.notificationDataStore:
-        DataStore<Preferences> by preferencesDataStore(name = "notification")
-
+// Extension delegates for creating separate DataStore files
+private val Context.alertsDataStore: DataStore<Preferences> by preferencesDataStore(name = "alerts")
+private val Context.themeDataStore: DataStore<Preferences> by preferencesDataStore(name = "theme")
+private val Context.notificationDataStore: DataStore<Preferences> by preferencesDataStore(name = "notification")
 
 val dataStoreModule = module {
 
+    // Provides the DataStore instance for Alert settings (Sound/Haptics)
     single<DataStore<Preferences>>(named("alerts")) {
         androidContext().alertsDataStore
     }
 
+    // Provides the DataStore instance for Theme settings (Light/Dark mode)
     single<DataStore<Preferences>>(named("theme")) {
         androidContext().themeDataStore
     }
 
+    // Provides the DataStore instance for Notification preferences
     single<DataStore<Preferences>>(named("notification")) {
         androidContext().notificationDataStore
     }
