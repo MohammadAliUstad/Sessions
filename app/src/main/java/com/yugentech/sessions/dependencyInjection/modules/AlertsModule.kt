@@ -10,20 +10,24 @@ import org.koin.dsl.module
 
 val alertsModule = module {
 
+    // Service for playing audio alerts
     single {
         SoundService(androidContext())
     }
 
+    // Service for performing haptic feedback
     single {
         HapticService(androidContext())
     }
 
+    // Manages persistence of alert preferences
     single {
         AlertsManager(
             dataStore = get(named("alerts"))
         )
     }
 
+    // Repository coordinating hardware feedback based on user settings
     single {
         AlertsRepository(
             alertsManager = get(),

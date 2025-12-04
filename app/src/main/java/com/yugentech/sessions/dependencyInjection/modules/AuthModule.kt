@@ -11,18 +11,22 @@ import org.koin.dsl.module
 
 val authModule = module {
 
+    // Singleton instance of Firebase Auth
     single {
         FirebaseAuth.getInstance()
     }
 
+    // Singleton instance of Firestore
     single {
         FirebaseFirestore.getInstance()
     }
 
+    // Google Sign-In Client for One Tap authentication
     single {
         Identity.getSignInClient(androidContext())
     }
 
+    // Service handling lower-level auth operations
     single {
         AuthService(
             auth = get(),
@@ -30,6 +34,7 @@ val authModule = module {
         )
     }
 
+    // Repository implementation exposing auth domain logic
     single<AuthRepository> {
         AuthRepositoryImpl(
             authService = get()

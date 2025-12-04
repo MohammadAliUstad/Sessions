@@ -8,12 +8,15 @@ import com.yugentech.sessions.utils.Constants.ACTION_START_SESSION
 import com.yugentech.sessions.utils.Constants.ACTION_STOP_SESSION
 import com.yugentech.sessions.utils.Constants.ACTION_UPDATE_SESSION
 import org.koin.core.component.KoinComponent
+import timber.log.Timber
 
+// Helper class to manage Intents for the ActiveForeground Service
 class ActiveManager(
     private val context: Context
 ) : KoinComponent {
 
     fun startActiveSession(notification: Notification) {
+        Timber.d("Starting ActiveForeground service")
         val intent = Intent(context, ActiveForeground::class.java).apply {
             action = ACTION_START_SESSION
             putExtra("title", notification.title)
@@ -21,7 +24,6 @@ class ActiveManager(
             putExtra("totalMinutes", notification.totalSeconds ?: 0)
             putExtra("remainingMinutes", notification.remainingSeconds ?: 0)
         }
-
         ContextCompat.startForegroundService(context, intent)
     }
 
@@ -30,11 +32,11 @@ class ActiveManager(
             action = ACTION_UPDATE_SESSION
             putExtra("remainingMinutes", notification.remainingSeconds ?: 0)
         }
-
         context.startService(intent)
     }
 
     fun stopActiveSession() {
+        Timber.d("Stopping ActiveForeground service")
         val intent = Intent(context, ActiveForeground::class.java).apply {
             action = ACTION_STOP_SESSION
         }
