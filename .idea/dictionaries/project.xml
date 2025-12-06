@@ -2,14 +2,29 @@
   <dictionary name="project">
     <words>
       <w>composables</w>
+      <w>crashlyltics</w>
+      <w>displaytime</w>
+      <w>easings</w>
+      <w>fivef</w>
       <w>fnksancr</w>
       <w>googleusercontent</w>
       <w>hijabi</w>
+      <w>homeviewmodel</w>
       <w>mohammadaliustad</w>
+      <w>mthousand</w>
+      <w>onef</w>
+      <w>onepoint</w>
+      <w>onepointfivef</w>
+      <w>onepointtwof</w>
       <w>phtrgd</w>
+      <w>pthousand</w>
       <w>snackbar</w>
+      <w>threesixtyf</w>
+      <w>twof</w>
       <w>xxxl</w>
       <w>yugentech</w>
+      <w>zerof</w>
+      <w>zindex</w>
     </words>
   </dictionary>
 </component>
