@@ -33,9 +33,11 @@ class AuthService(
         awaitClose { auth.removeAuthStateListener(authStateListener) }
     }
 
+    // Returns the currently signed-in user or null
     val currentUser: FirebaseUser?
         get() = auth.currentUser
 
+    // Creates a new account with email and password
     suspend fun signUp(name: String, email: String, password: String): AuthResult<FirebaseUser> {
         return try {
             Timber.d("Attempting sign up for email: $email")
@@ -55,6 +57,7 @@ class AuthService(
         }
     }
 
+    // Signs in an existing user with email and password
     suspend fun signIn(email: String, password: String): AuthResult<FirebaseUser> {
         return try {
             Timber.d("Attempting sign in for email: $email")
@@ -62,11 +65,12 @@ class AuthService(
             Timber.i("User signed in successfully: ${result.user?.uid}")
             AuthResult.Success(result.user!!)
         } catch (e: Exception) {
-            Timber.w(e, "Sign in failed") // Warning level as this is often user error (wrong pass)
+            Timber.w(e, "Sign in failed")
             AuthResult.Error(AuthErrorMapper.mapFirebaseAuthError(e))
         }
     }
 
+    // Sends a password reset email to the specified address
     suspend fun sendPasswordResetEmail(email: String): AuthResult<Unit> {
         return try {
             Timber.d("Sending password reset email to: $email")
@@ -78,12 +82,14 @@ class AuthService(
         }
     }
 
+    // Signs out from both Firebase and Google One Tap client
     fun signOut() {
         Timber.i("Signing out user")
         auth.signOut()
         oneTapClient.signOut()
     }
 
+    // Prepares the Intent for Google One Tap sign-in
     suspend fun getGoogleSignInIntent(webClientId: String): AuthResult<PendingIntent> {
         return try {
             Timber.d("Preparing Google One Tap Sign-In intent")
@@ -106,6 +112,7 @@ class AuthService(
         }
     }
 
+    // Processes the result from the Google Sign-In activity
     suspend fun handleGoogleSignInResult(data: Intent?): AuthResult<FirebaseUser> {
         return try {
             if (data == null) {

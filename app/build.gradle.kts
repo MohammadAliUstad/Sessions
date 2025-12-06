@@ -1,3 +1,6 @@
+import java.io.FileInputStream
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -5,6 +8,13 @@ plugins {
     alias(libs.plugins.google.services)
     id("com.google.firebase.crashlytics")
     id("com.google.devtools.ksp")
+    id("com.gorylenko.gradle-git-properties") version "2.4.2"
+}
+
+val localProperties = Properties()
+val localPropertiesFile = rootProject.file("local.properties")
+if (localPropertiesFile.exists()) {
+    localProperties.load(FileInputStream(localPropertiesFile))
 }
 
 android {
@@ -19,12 +29,26 @@ android {
         versionCode = 1
         versionName = "1.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        val webClientId = localProperties.getProperty("WEB_CLIENT_ID") ?: ""
+        resValue("string", "web_client_id", webClientId)
+    }
+
+    sourceSets {
+        getByName("main") {
+            assets.srcDir(layout.buildDirectory.dir("generated/assets/gitProperties"))
+        }
     }
 
     buildTypes {
         release {
-            isMinifyEnabled = false
-            isShrinkResources = false
+            isMinifyEnabled = true
+            isShrinkResources = true
+
+            configure<com.google.firebase.crashlytics.buildtools.gradle.CrashlyticsExtension> {
+                mappingFileUploadEnabled = true
+            }
+
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
@@ -48,7 +72,19 @@ android {
     }
 }
 
+// This generates the file into the folder registered above
+gitProperties {
+    gitPropertiesResourceDir = layout.buildDirectory.dir("generated/assets/gitProperties")
+    dateFormat = "yyyy-MM-dd'T'HH:mm:ssZ"
+    dateFormatTimeZone = "UTC"
+}
+
 dependencies {
+
+    // Tests
+    testImplementation(libs.mockk)
+    testImplementation(libs.kotlinx.coroutines.test)
+    testImplementation(libs.truth)
 
     // Crashlytics and Analytics
     implementation(platform(libs.firebase.bom))
@@ -132,4 +168,10 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+}
+
+val generateGitProperties by tasks.existing
+
+tasks.named("preBuild") {
+    dependsOn(generateGitProperties)
 }
