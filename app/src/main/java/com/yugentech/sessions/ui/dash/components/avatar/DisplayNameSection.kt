@@ -51,7 +51,8 @@ fun DisplayNameSection(
             ) {
                 Text(
                     text = "Display Name",
-                    style = MaterialTheme.typography.headlineSmall,
+                    // Standard M3 Role for Card/Section Headers
+                    style = MaterialTheme.typography.titleMedium,
                     color = MaterialTheme.colorScheme.onSurface
                 )
 
@@ -70,8 +71,8 @@ fun DisplayNameSection(
                 modifier = Modifier.fillMaxWidth(),
                 label = {
                     Text(
-                        text = "Enter your display name",
-                        style = MaterialTheme.typography.bodyMedium
+                        text = "Enter your display name"
+                        // Removed hardcoded style to allow standard animation
                     )
                 },
                 leadingIcon = {
@@ -83,6 +84,7 @@ fun DisplayNameSection(
                 },
                 singleLine = true,
                 enabled = !isSaving,
+                textStyle = MaterialTheme.typography.bodyLarge, // Standard input text role
                 keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
                 keyboardActions = KeyboardActions(
                     onDone = { focusManager.clearFocus() }
