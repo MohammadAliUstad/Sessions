@@ -68,8 +68,8 @@ fun ExitConfirmationDialog(
 
                     Text(
                         text = "Exit App",
+                        // Standard M3 Dialog Title
                         style = MaterialTheme.typography.headlineSmall,
-                        fontWeight = FontWeight.SemiBold,
                         color = MaterialTheme.colorScheme.onSurface,
                         textAlign = TextAlign.Center
                     )
@@ -78,10 +78,10 @@ fun ExitConfirmationDialog(
 
                     Text(
                         text = "Are you sure you want to exit the app?",
+                        // Standard M3 Dialog Body
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        textAlign = TextAlign.Center,
-                        lineHeight = MaterialTheme.typography.bodyMedium.lineHeight
+                        textAlign = TextAlign.Center
                     )
 
                     Spacer(modifier = Modifier.height(MaterialTheme.spacing.l))
@@ -96,6 +96,7 @@ fun ExitConfirmationDialog(
                         ) {
                             Text(
                                 text = "Cancel",
+                                // Standard M3 Button Text
                                 style = MaterialTheme.typography.labelLarge,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant
                             )
@@ -108,6 +109,7 @@ fun ExitConfirmationDialog(
                             Text(
                                 text = "Exit",
                                 style = MaterialTheme.typography.labelLarge,
+                                // Kept explicit weight here for "Danger" emphasis
                                 fontWeight = FontWeight.Medium,
                                 color = MaterialTheme.colorScheme.error
                             )

@@ -7,6 +7,6 @@ fun formatTime(seconds: Long): String {
         hours > 0 && minutes > 0 -> "$hours hr $minutes min"
         hours > 0 -> "$hours hr"
         minutes > 0 -> "$minutes min"
-        else -> "No sessions yet"
+        else -> "0"
     }
 }

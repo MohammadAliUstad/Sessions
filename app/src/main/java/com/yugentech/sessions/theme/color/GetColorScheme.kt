@@ -7,9 +7,10 @@ import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
-import com.yugentech.sessions.theme.utils.ColorTheme
-import com.yugentech.sessions.theme.utils.ThemeConfiguration
-import com.yugentech.sessions.theme.utils.ThemeMode
+import com.yugentech.sessions.theme.models.ColorTheme
+import com.yugentech.sessions.theme.models.ThemeConfiguration
+import com.yugentech.sessions.theme.models.ThemeMode
+import timber.log.Timber
 
 @Composable
 fun getColorScheme(
@@ -17,13 +18,17 @@ fun getColorScheme(
     isSystemInDarkTheme: Boolean = isSystemInDarkTheme()
 ): ColorScheme {
 
+    // Determine effective dark mode based on user override or system default
     val isDarkMode = when (themeConfiguration.themeMode) {
         ThemeMode.LIGHT -> false
         ThemeMode.DARK -> true
         ThemeMode.SYSTEM -> isSystemInDarkTheme
     }
 
+    Timber.v("Resolving color scheme. DarkMode: $isDarkMode, Theme: ${themeConfiguration.colorTheme}")
+
     return when {
+        // Use Android 12+ Dynamic Colors (Material You) if enabled and supported
         themeConfiguration.colorTheme == ColorTheme.DYNAMIC &&
                 themeConfiguration.useDynamicColors && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
             val context = LocalContext.current
@@ -34,6 +39,7 @@ fun getColorScheme(
             }
         }
 
+        // Fallback to internal static color schemes
         else -> {
             when (themeConfiguration.colorTheme) {
                 ColorTheme.DYNAMIC -> {
