@@ -1,14 +1,15 @@
 package com.yugentech.sessions.ui.auth.utils
 
 import android.util.Patterns
+import com.yugentech.sessions.theme.tokens.dimensions.AppConstants
 
 object FormValidator {
 
     fun validateName(name: String): String {
         return when {
             name.isBlank() -> "Name cannot be empty"
-            name.length < 2 -> "Name must be at least 2 characters"
-            else -> ""
+            name.length < AppConstants.TWO -> "Name must be at least 2 characters"
+            else -> AppConstants.EMPTY_STRING
         }
     }
 
@@ -17,18 +18,18 @@ object FormValidator {
             email.isBlank() -> "Email cannot be empty"
             !Patterns.EMAIL_ADDRESS.matcher(email).matches() ->
                 "Please enter a valid email"
-            else -> ""
+            else -> AppConstants.EMPTY_STRING
         }
     }
 
     fun validatePassword(password: String): String {
         return when {
             password.isBlank() -> "Password cannot be empty"
-            password.length < 8 -> "Password must be at least 8 characters"
+            password.length < AppConstants.EIGHT -> "Password must be at least 8 characters"
             !password.any { it.isDigit() } -> "Password must contain at least one number"
             !password.any { it.isUpperCase() } -> "Password must contain at least one uppercase letter"
             !password.any { it.isLowerCase() } -> "Password must contain at least one lowercase letter"
-            else -> ""
+            else -> AppConstants.EMPTY_STRING
         }
     }
 
@@ -36,7 +37,7 @@ object FormValidator {
         return when {
             confirmPassword.isBlank() -> "Please confirm your password"
             password != confirmPassword -> "Passwords do not match"
-            else -> ""
+            else -> AppConstants.EMPTY_STRING
         }
     }
 
@@ -52,6 +53,7 @@ object FormValidator {
         onEmailError(emailError)
         onPasswordError(passwordError)
 
+        // Returns true if both strings are empty
         return emailError.isEmpty() && passwordError.isEmpty()
     }
 
@@ -76,6 +78,6 @@ object FormValidator {
         onConfirmPasswordError(confirmPasswordError)
 
         return nameError.isEmpty() && emailError.isEmpty() &&
-               passwordError.isEmpty() && confirmPasswordError.isEmpty()
+                passwordError.isEmpty() && confirmPasswordError.isEmpty()
     }
 }

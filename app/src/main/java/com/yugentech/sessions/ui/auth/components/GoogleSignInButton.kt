@@ -14,6 +14,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import com.yugentech.sessions.R
 import com.yugentech.sessions.theme.tokens.components
 import com.yugentech.sessions.theme.tokens.corners
@@ -42,9 +43,11 @@ fun GoogleSignInButton(
             tint = MaterialTheme.colorScheme.primary,
             modifier = Modifier.size(MaterialTheme.icons.mediumSmall)
         )
+
         Spacer(modifier = Modifier.width(MaterialTheme.spacing.s))
+
         Text(
-            text = "Continue with Google",
+            text = stringResource(R.string.continue_with_google),
             style = MaterialTheme.typography.labelLarge
         )
     }

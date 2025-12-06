@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -39,17 +38,9 @@ fun EmptySessionsCard(
             verticalArrangement = Arrangement.Center
         ) {
             Text(
-                text = "No sessions yet",
-                style = MaterialTheme.typography.titleMedium,
-                color = MaterialTheme.colorScheme.onSurface,
-                textAlign = TextAlign.Start
-            )
-
-            Spacer(modifier = Modifier.height(MaterialTheme.spacing.s))
-
-            Text(
                 text = "Start your first session to track your progress and build productive habits!",
-                style = MaterialTheme.typography.bodyMedium,
+                // Standard M3 Role for Empty State Body text
+                style = MaterialTheme.typography.bodyLarge,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 textAlign = TextAlign.Start
             )
@@ -60,7 +51,7 @@ fun EmptySessionsCard(
         Image(
             painter = painterResource(id = R.drawable.new_beginnings),
             contentDescription = "No sessions illustration",
-            modifier = Modifier.size(MaterialTheme.components.imageSizeMedium),
+            modifier = Modifier.size(MaterialTheme.components.imageSizeLarge),
             contentScale = ContentScale.Fit
         )
     }
