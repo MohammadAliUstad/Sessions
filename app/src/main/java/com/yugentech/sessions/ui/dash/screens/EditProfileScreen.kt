@@ -128,7 +128,6 @@ fun EditProfileScreen(
                         ) {
                             Text(
                                 text = stringResource(R.string.save),
-                                modifier = Modifier.padding(MaterialTheme.spacing.s),
                                 style = MaterialTheme.typography.labelLarge
                             )
                         }

@@ -81,10 +81,19 @@ gitProperties {
 
 dependencies {
 
-    // Tests
-    testImplementation(libs.mockk)
-    testImplementation(libs.kotlinx.coroutines.test)
-    testImplementation(libs.truth)
+    // --- 1. LOCAL UNIT TESTS (Logic) ---
+    // Runs fast on your computer (JVM). Used for ViewModels and Repositories.
+    testImplementation("junit:junit:4.13.2")
+    testImplementation("io.mockk:mockk:1.13.8")
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.3")
+
+    // --- 2. ANDROID UI TESTS (Visuals) ---
+    // Runs on the Emulator/Device. Used for Screens and Buttons.
+    androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.7.5") // Check your compose version
+    androidTestImplementation("androidx.test.ext:junit:1.1.5")
+
+    // REQUIRED: This allows the test to "see" the UI tree
+    debugImplementation("androidx.compose.ui:ui-test-manifest:1.7.5")
 
     // Crashlytics and Analytics
     implementation(platform(libs.firebase.bom))

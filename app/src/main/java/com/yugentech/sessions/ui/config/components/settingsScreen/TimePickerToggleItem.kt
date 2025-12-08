@@ -17,7 +17,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
+import com.yugentech.sessions.theme.tokens.spacing
 
 @Composable
 fun SettingsToggleItemWithTimePicker(
@@ -31,17 +31,21 @@ fun SettingsToggleItemWithTimePicker(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 8.dp),
+            .padding(
+                horizontal = MaterialTheme.spacing.m,
+                vertical = MaterialTheme.spacing.s
+            ),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
         Column(
             modifier = Modifier
                 .weight(1f)
-                .padding(end = 16.dp)
+                .padding(end = MaterialTheme.spacing.m)
         ) {
             Text(
                 text = title,
+                // Standard M3 Role for List Item Primary Text
                 style = MaterialTheme.typography.bodyLarge,
                 color = MaterialTheme.colorScheme.onSurface,
                 maxLines = 1,
@@ -53,9 +57,10 @@ fun SettingsToggleItemWithTimePicker(
                     onTitleClick()
                 }
             )
-            Spacer(modifier = Modifier.height(2.dp))
+            Spacer(modifier = Modifier.height(MaterialTheme.spacing.xs))
             Text(
                 text = subtitle,
+                // Standard M3 Role for List Item Supporting Text
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 maxLines = 2,

@@ -9,9 +9,11 @@ import android.os.Vibrator
 import android.os.VibratorManager
 import android.view.HapticFeedbackConstants
 import android.view.View
+import timber.log.Timber
 
 class HapticService(context: Context) {
 
+    // Lazy initialization of the appropriate Vibrator service based on API level
     private val vibrator: Vibrator by lazy {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             (context.getSystemService(Context.VIBRATOR_MANAGER_SERVICE) as VibratorManager).defaultVibrator
@@ -21,14 +23,23 @@ class HapticService(context: Context) {
     }
 
     fun performHaptic(view: View? = null) {
-        if (view != null) {
-            view.performHapticFeedback(HapticFeedbackConstants.CONFIRM)
-        } else {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                vibrator.vibrate(VibrationEffect.createPredefined(VibrationEffect.EFFECT_CLICK))
+        try {
+            Timber.v("Triggering haptic feedback")
+
+            if (view != null) {
+                // Use View-based feedback if available for better system integration
+                view.performHapticFeedback(HapticFeedbackConstants.CONFIRM)
             } else {
-                vibrator.vibrate(VibrationEffect.createOneShot(20, VibrationEffect.DEFAULT_AMPLITUDE))
+                // Fallback to manual vibration for background services or non-view contexts
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                    vibrator.vibrate(VibrationEffect.createPredefined(VibrationEffect.EFFECT_CLICK))
+                } else {
+                    vibrator.vibrate(VibrationEffect.createOneShot(20, VibrationEffect.DEFAULT_AMPLITUDE))
+                }
             }
+        } catch (e: Exception) {
+            // Log as warning since missing haptics isn't a critical crash
+            Timber.w(e, "Failed to perform haptic feedback")
         }
     }
 }
