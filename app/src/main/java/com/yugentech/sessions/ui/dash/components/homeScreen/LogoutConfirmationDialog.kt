@@ -24,8 +24,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.DialogProperties
+import com.yugentech.sessions.theme.tokens.corners
+import com.yugentech.sessions.theme.tokens.elevation
+import com.yugentech.sessions.theme.tokens.icons
+import com.yugentech.sessions.theme.tokens.spacing
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -35,59 +38,57 @@ fun LogoutConfirmationDialog(
 ) {
     BasicAlertDialog(
         onDismissRequest = onDismiss,
-        modifier = Modifier.padding(24.dp),
+        modifier = Modifier.padding(MaterialTheme.spacing.m),
         properties = DialogProperties(usePlatformDefaultWidth = false),
         content = {
             Card(
                 modifier = Modifier.fillMaxWidth(),
-                shape = RoundedCornerShape(24.dp),
+                shape = RoundedCornerShape(MaterialTheme.corners.extraLarge),
                 colors = CardDefaults.cardColors(
                     containerColor = MaterialTheme.colorScheme.surfaceContainerHigh
                 ),
-                elevation = CardDefaults.cardElevation(defaultElevation = 6.dp)
+                elevation = CardDefaults.cardElevation(
+                    defaultElevation = MaterialTheme.elevation.level3
+                )
             ) {
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(24.dp),
+                        .padding(MaterialTheme.spacing.l),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    // Icon
                     Icon(
                         imageVector = Icons.AutoMirrored.Outlined.Logout,
                         contentDescription = null,
-                        modifier = Modifier.size(48.dp),
+                        modifier = Modifier.size(MaterialTheme.icons.extraLarge),
                         tint = MaterialTheme.colorScheme.primary
                     )
 
-                    Spacer(modifier = Modifier.height(16.dp))
+                    Spacer(modifier = Modifier.height(MaterialTheme.spacing.m))
 
-                    // Title
                     Text(
                         text = "Sign Out",
+                        // Standard M3 Dialog Title
                         style = MaterialTheme.typography.headlineSmall,
-                        fontWeight = FontWeight.SemiBold,
                         color = MaterialTheme.colorScheme.onSurface,
                         textAlign = TextAlign.Center
                     )
 
-                    Spacer(modifier = Modifier.height(8.dp))
+                    Spacer(modifier = Modifier.height(MaterialTheme.spacing.s))
 
-                    // Description
                     Text(
                         text = "Are you sure you want to sign out of your account?",
+                        // Standard M3 Dialog Body
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        textAlign = TextAlign.Center,
-                        lineHeight = MaterialTheme.typography.bodyMedium.lineHeight
+                        textAlign = TextAlign.Center
                     )
 
-                    Spacer(modifier = Modifier.height(24.dp))
+                    Spacer(modifier = Modifier.height(MaterialTheme.spacing.l))
 
-                    // Buttons
                     Row(
                         modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.spacedBy(12.dp)
+                        horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.s)
                     ) {
                         TextButton(
                             onClick = onDismiss,
@@ -95,6 +96,7 @@ fun LogoutConfirmationDialog(
                         ) {
                             Text(
                                 text = "Cancel",
+                                // Standard M3 Button Text
                                 style = MaterialTheme.typography.labelLarge,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant
                             )
@@ -107,6 +109,7 @@ fun LogoutConfirmationDialog(
                             Text(
                                 text = "Sign Out",
                                 style = MaterialTheme.typography.labelLarge,
+                                // Kept explicit weight here for "Danger" emphasis
                                 fontWeight = FontWeight.Medium,
                                 color = MaterialTheme.colorScheme.error
                             )
@@ -114,5 +117,6 @@ fun LogoutConfirmationDialog(
                     }
                 }
             }
-        })
+        }
+    )
 }

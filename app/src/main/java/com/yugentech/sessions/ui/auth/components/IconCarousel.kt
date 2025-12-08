@@ -1,15 +1,8 @@
 package com.yugentech.sessions.ui.auth.components
 
-import androidx.compose.animation.core.LinearEasing
-import androidx.compose.animation.core.RepeatMode
-import androidx.compose.animation.core.animateFloat
-import androidx.compose.animation.core.infiniteRepeatable
-import androidx.compose.animation.core.rememberInfiniteTransition
-import androidx.compose.animation.core.tween
+import androidx.compose.animation.core.*
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.offset
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Assignment
@@ -24,7 +17,10 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalDensity
+import com.yugentech.sessions.theme.tokens.animations
 import com.yugentech.sessions.theme.tokens.components
+import com.yugentech.sessions.theme.tokens.dimensions.AnimationLabels
+import com.yugentech.sessions.theme.tokens.dimensions.AppConstants
 import com.yugentech.sessions.theme.tokens.icons
 import kotlin.math.cos
 import kotlin.math.sin
@@ -40,24 +36,26 @@ fun IconCarousel(
         Icons.AutoMirrored.Filled.Assignment
     )
 
-    val infiniteTransition = rememberInfiniteTransition(label = "carousel")
+    val infiniteTransition = rememberInfiniteTransition(
+        label = AnimationLabels.CAROUSEL
+    )
+
     val angle by infiniteTransition.animateFloat(
-        initialValue = 0f,
-        targetValue = 360f,
+        initialValue = AppConstants.ZEROF,
+        targetValue = AppConstants.THREESIXTYF,
         animationSpec = infiniteRepeatable(
             animation = tween(
-                durationMillis = 20000,
-                easing = LinearEasing
+                durationMillis = MaterialTheme.animations.durations.carousel,
+                easing = MaterialTheme.animations.easings.linear
             ),
             repeatMode = RepeatMode.Restart
         ),
-        label = "rotation"
+        label = AnimationLabels.ROTATION_ANIMATION
     )
 
     val circleSize = MaterialTheme.components.imageSizeLarge
     val orbitingIconSize = MaterialTheme.icons.extraLarge
     val centerIconSize = MaterialTheme.icons.large
-
     val density = LocalDensity.current
 
     Box(
@@ -70,11 +68,13 @@ fun IconCarousel(
         contentAlignment = Alignment.Center
     ) {
         icons.forEachIndexed { index, icon ->
-            val iconAngle = angle + (360f / icons.size * index)
-            val radiusPx = with(density) { circleSize.toPx() / 2f }
+            val segment = AppConstants.THREESIXTYF / icons.size
+            val animatedAngle = angle + (segment * index)
 
-            val x = (radiusPx * cos(Math.toRadians(iconAngle.toDouble()))).toFloat()
-            val y = (radiusPx * sin(Math.toRadians(iconAngle.toDouble()))).toFloat()
+            val radiusPx = with(density) { circleSize.toPx() / AppConstants.TWOF }
+
+            val x = (radiusPx * cos(Math.toRadians(animatedAngle.toDouble()))).toFloat()
+            val y = (radiusPx * sin(Math.toRadians(animatedAngle.toDouble()))).toFloat()
 
             Icon(
                 imageVector = icon,
