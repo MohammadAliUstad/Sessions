@@ -29,7 +29,9 @@
         <activity
             android:name=".MainActivity"
             android:exported="true"
-            android:theme="@style/Theme.Sessions.SplashScreen">
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.Sessions.SplashScreen"
+            tools:ignore="DiscouragedApi,LockedOrientationActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -50,9 +52,11 @@
         <receiver
             android:name=".notifications.scheduled.AlarmReceiver"
             android:enabled="true"
-            android:exported="false"> <intent-filter>
-            <action android:name="android.intent.action.BOOT_COMPLETED" />
-            <action android:name="android.intent.action.MY_PACKAGE_REPLACED" /> </intent-filter>
+            android:exported="false">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
+            </intent-filter>
         </receiver>
 
         <provider

@@ -4,9 +4,11 @@ import androidx.compose.ui.unit.dp
 
 object AppConstants {
     const val EMPTY_STRING = ""
+    const val ZERO = 0
     const val LONG = 0L
     const val THREESIXTYF = 360f
     const val ONEF = 1f
+    const val ONEPOINT_ZEROFIVEF = 1.05f
     const val ONEPOINT_TWOF = 1.2f
     const val ONEPOINT_FIVEF = 1.5f
     const val TWOF = 2f

@@ -23,11 +23,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
+import com.yugentech.sessions.theme.tokens.corners
+import com.yugentech.sessions.theme.tokens.dimensions.AppConstants
+import com.yugentech.sessions.theme.tokens.icons
+import com.yugentech.sessions.theme.tokens.spacing
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun PixelThemeModeOption(
+fun ThemeModeOption(
     icon: ImageVector,
     title: String,
     subtitle: String,
@@ -38,7 +41,7 @@ fun PixelThemeModeOption(
     Surface(
         onClick = onClick,
         modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(24.dp),
+        shape = RoundedCornerShape(MaterialTheme.corners.extraLarge),
         color = MaterialTheme.colorScheme.surface
     ) {
         Row(
@@ -51,12 +54,12 @@ fun PixelThemeModeOption(
                         MaterialTheme.colorScheme.surface
                     }
                 )
-                .padding(20.dp),
+                .padding(MaterialTheme.spacing.l),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Surface(
-                modifier = Modifier.size(48.dp),
-                shape = RoundedCornerShape(16.dp),
+                modifier = Modifier.size(MaterialTheme.icons.extraLarge),
+                shape = RoundedCornerShape(MaterialTheme.corners.medium),
                 color = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surfaceContainer
             ) {
                 Icon(
@@ -65,20 +68,20 @@ fun PixelThemeModeOption(
                     tint = if (isSelected) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurface,
                     modifier = Modifier
                         .fillMaxSize()
-                        .padding(12.dp)
+                        .padding(MaterialTheme.spacing.sm)
                 )
             }
 
-            Spacer(modifier = Modifier.width(20.dp))
+            Spacer(modifier = Modifier.width(MaterialTheme.spacing.l))
 
-            Column(modifier = Modifier.weight(1f)) {
+            Column(modifier = Modifier.weight(AppConstants.ONEF)) {
                 Text(
                     text = title,
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.Medium,
+                    style = MaterialTheme.typography.bodyLarge,
+                    fontWeight = FontWeight.Normal,
                     color = MaterialTheme.colorScheme.onSurface
                 )
-                Spacer(modifier = Modifier.height(4.dp))
+                Spacer(modifier = Modifier.height(MaterialTheme.spacing.xs))
                 Text(
                     text = subtitle,
                     style = MaterialTheme.typography.bodyMedium,
