@@ -1,4 +1,4 @@
-package com.yugentech.sessions.notifications.active
+package com.yugentech.sessions.notifications
 
 import android.Manifest
 import android.app.NotificationChannel
@@ -13,10 +13,10 @@ import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
 import com.yugentech.sessions.MainActivity
 import com.yugentech.sessions.R
-import com.yugentech.sessions.notifications.Notification
-import com.yugentech.sessions.notifications.NotificationType
+import timber.log.Timber
 import java.util.Locale
 
+// Handles low-level Android Notification Manager operations
 class NotificationService(
     private val context: Context
 ) {
@@ -30,6 +30,7 @@ class NotificationService(
     }
 
     fun createNotificationChannels() {
+        Timber.d("Creating notification channels")
         val manager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
         val activeChannel = NotificationChannel(
@@ -56,22 +57,31 @@ class NotificationService(
 
     fun showNotification(notification: Notification) {
         if (!hasNotificationPermission()) {
+            Timber.w("Cannot show notification: POST_NOTIFICATIONS permission missing")
             return
         }
 
         try {
             val androidNotification = buildNotification(notification)
+            // Use specific IDs for specific types to avoid overwriting unrelated notifications
             notificationManager.notify(notification.id, androidNotification)
-        } catch (_: SecurityException) {
+        } catch (e: SecurityException) {
+            Timber.e(e, "SecurityException while showing notification")
+        } catch (e: Exception) {
+            Timber.e(e, "Failed to show notification")
         }
     }
 
     fun hideNotification(notificationId: Int) {
-        notificationManager.cancel(notificationId)
+        try {
+            notificationManager.cancel(notificationId)
+        } catch (e: Exception) {
+            Timber.e(e, "Failed to cancel notification ID: $notificationId")
+        }
     }
 
     private fun hasNotificationPermission(): Boolean {
-        val allowed = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             ContextCompat.checkSelfPermission(
                 context,
                 Manifest.permission.POST_NOTIFICATIONS
@@ -79,11 +89,9 @@ class NotificationService(
         } else {
             notificationManager.areNotificationsEnabled()
         }
-        return allowed
     }
 
     fun buildNotification(notification: Notification): android.app.Notification {
-
         val channelId = when (notification.type) {
             NotificationType.SCHEDULED -> REMINDER_CHANNEL_ID
             NotificationType.ACTIVE -> ACTIVE_CHANNEL_ID
@@ -100,7 +108,7 @@ class NotificationService(
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
 
-        val builder = NotificationCompat.Builder(context, channelId)
+        return NotificationCompat.Builder(context, channelId)
             .setContentTitle(notification.title)
             .setContentText(notification.message)
             .setSmallIcon(R.drawable.ic_notification)
@@ -111,6 +119,11 @@ class NotificationService(
             .setAutoCancel(!notification.isOngoing)
             .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
             .apply {
+                // Ensure notification shows immediately for FGS on Android 12+
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                    setForegroundServiceBehavior(android.app.Notification.FOREGROUND_SERVICE_IMMEDIATE)
+                }
+
                 when (notification.type) {
                     NotificationType.ACTIVE -> {
                         setSilent(true)
@@ -130,8 +143,6 @@ class NotificationService(
                         setDefaults(NotificationCompat.DEFAULT_ALL)
                     }
                 }
-            }
-
-        return builder.build()
+            }.build()
     }
 }

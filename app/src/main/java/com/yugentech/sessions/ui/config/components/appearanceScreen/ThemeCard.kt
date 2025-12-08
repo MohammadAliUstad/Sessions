@@ -1,7 +1,6 @@
 package com.yugentech.sessions.ui.config.components.appearanceScreen
 
 import androidx.compose.animation.animateColorAsState
-import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -32,41 +31,46 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
+import com.yugentech.sessions.R
+import com.yugentech.sessions.theme.tokens.corners
+import com.yugentech.sessions.theme.tokens.dimensions.AnimationLabels
+import com.yugentech.sessions.theme.tokens.dimensions.AppAnimations
+import com.yugentech.sessions.theme.tokens.dimensions.AppConstants
+import com.yugentech.sessions.theme.tokens.icons
+import com.yugentech.sessions.theme.tokens.spacing
+import com.yugentech.sessions.theme.tokens.strokes
 import com.yugentech.sessions.ui.config.components.settingsScreen.ThemeOption
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun PixelThemeCard(
+fun ThemeCard(
     themeOption: ThemeOption,
     isSelected: Boolean,
     onClick: () -> Unit
 ) {
-    val scale by animateFloatAsState(
-        targetValue = if (isSelected) 1.02f else 1f,
-        animationSpec = tween(150)
-    )
     val borderColor by animateColorAsState(
         targetValue = if (isSelected) MaterialTheme.colorScheme.primary else Color.Transparent,
-        animationSpec = tween(150)
+        animationSpec = tween(AppAnimations.Durations.SHORT),
+        label = AnimationLabels.BORDER
     )
 
     Surface(
         onClick = onClick,
         modifier = Modifier
             .fillMaxWidth()
-            .scale(scale)
+            .scale(AppConstants.ONEF)
             .then(
                 if (isSelected) Modifier.border(
-                    width = 2.dp,
+                    width = MaterialTheme.strokes.medium,
                     color = borderColor,
-                    shape = RoundedCornerShape(20.dp)
+                    shape = RoundedCornerShape(MaterialTheme.corners.large)
                 )
                 else Modifier
             ),
-        shape = RoundedCornerShape(20.dp),
+        shape = RoundedCornerShape(MaterialTheme.corners.large),
         color = if (isSelected) MaterialTheme.colorScheme.primaryContainer
         else MaterialTheme.colorScheme.surfaceContainer,
         interactionSource = remember { MutableInteractionSource() }
@@ -74,43 +78,43 @@ fun PixelThemeCard(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(16.dp),
+                .padding(MaterialTheme.spacing.m),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Box(
                 modifier = Modifier
-                    .size(44.dp)
+                    .size(MaterialTheme.icons.large)
                     .clip(CircleShape)
                     .background(brush = Brush.linearGradient(themeOption.gradientColors)),
                 contentAlignment = Alignment.Center
             ) {
                 if (isSelected) {
                     Surface(
-                        modifier = Modifier.size(22.dp),
+                        modifier = Modifier.size(MaterialTheme.icons.smallMedium),
                         shape = CircleShape,
                         color = MaterialTheme.colorScheme.onPrimary
                     ) {
                         Icon(
                             imageVector = Icons.Default.Check,
-                            contentDescription = "Selected",
+                            contentDescription = stringResource(R.string.selected),
                             tint = themeOption.primaryColor,
                             modifier = Modifier
                                 .fillMaxSize()
-                                .padding(4.dp)
+                                .padding(MaterialTheme.spacing.xs)
                         )
                     }
                 }
             }
 
-            Spacer(modifier = Modifier.height(12.dp))
+            Spacer(modifier = Modifier.height(MaterialTheme.spacing.sm))
 
             Text(
                 text = themeOption.displayName,
-                style = MaterialTheme.typography.labelLarge,
+                style = MaterialTheme.typography.labelMedium,
                 fontWeight = if (isSelected) FontWeight.SemiBold else FontWeight.Medium,
                 color = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface,
                 textAlign = TextAlign.Center,
-                maxLines = 1
+                maxLines = AppConstants.ONE
             )
         }
     }

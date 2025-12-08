@@ -1,164 +1,169 @@
 package com.yugentech.sessions.viewModels
 
 import android.content.Intent
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.yugentech.sessions.authentication.authRepository.AuthRepository
 import com.yugentech.sessions.authentication.authUtils.AuthResult
 import com.yugentech.sessions.authentication.authUtils.AuthState
 import com.yugentech.sessions.models.UserData
 import com.yugentech.sessions.user.UserResult
 import com.yugentech.sessions.user.userRepository.UserRepository
+import com.yugentech.sessions.utils.ForgotPasswordState
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-
-private const val TAG = "LoginViewModel"
+import timber.log.Timber
 
 class LoginViewModel(
     private val authRepository: AuthRepository,
     private val userRepository: UserRepository
 ) : ViewModel() {
 
-    private val _authState = MutableStateFlow(
-        AuthState(
-            isLoading = true,
-            isUserLoggedIn = false,
-            userId = null,
-            userData = null,
-            error = null,
-            intent = null
-        )
-    )
-    val authState: StateFlow<AuthState> = _authState
+    private val _authState = MutableStateFlow(AuthState(isLoading = true))
+    val authState: StateFlow<AuthState> = _authState.asStateFlow()
 
-    private val _userId = MutableStateFlow<String?>(null)
-    val userId: StateFlow<String?> = _userId
+    private val _forgotPasswordState =
+        MutableStateFlow<ForgotPasswordState>(ForgotPasswordState.Idle)
+    val forgotPasswordState: StateFlow<ForgotPasswordState> = _forgotPasswordState.asStateFlow()
 
-    private val _forgotPasswordState = MutableStateFlow<ForgotPasswordState>(ForgotPasswordState.Idle)
-    val forgotPasswordState: StateFlow<ForgotPasswordState> = _forgotPasswordState
+    private var profileLoadingJob: Job? = null
 
     init {
-        checkCurrentUser()
+        observeAuthState()
     }
 
+    // Observes firebase auth state and syncs user profile
+    private fun observeAuthState() {
+        viewModelScope.launch {
+            authRepository.authState.collect { firebaseUser ->
+                if (firebaseUser != null) {
+                    Timber.d("Auth state update: User logged in ${firebaseUser.uid}")
+
+                    // Identify user in Crashlytics for easier debugging
+                    FirebaseCrashlytics.getInstance().setUserId(firebaseUser.uid)
+
+                    if (_authState.value.userId != firebaseUser.uid) {
+                        loadUserProfile(firebaseUser)
+                    }
+                } else {
+                    Timber.d("Auth state update: User logged out")
+
+                    // Clear user identity on logout
+                    FirebaseCrashlytics.getInstance().setUserId("")
+
+                    _authState.update {
+                        AuthState(
+                            isLoading = false,
+                            isUserLoggedIn = false,
+                            userId = null,
+                            userData = null,
+                            error = null
+                        )
+                    }
+                }
+            }
+        }
+    }
+
+    // Initiates email/password sign in
+    fun signIn(email: String, password: String) {
+        _authState.update { it.copy(isLoading = true, error = null) }
+
+        viewModelScope.launch {
+            val result = authRepository.signIn(email, password)
+            if (result is AuthResult.Error) {
+                Timber.w("Sign in failed: ${result.message}")
+                _authState.update { it.copy(isLoading = false, error = result.message) }
+            }
+        }
+    }
+
+    // Initiates sign up and creates default user profile
     fun signUp(name: String, email: String, password: String) {
-        _authState.value = _authState.value.copy(isLoading = true, error = null)
+        _authState.update { it.copy(isLoading = true, error = null) }
 
         viewModelScope.launch {
             when (val result = authRepository.signUp(name, email, password)) {
                 is AuthResult.Success -> {
+                    Timber.i("Sign up successful, creating local profile")
                     val firebaseUser = result.data
-                    _userId.value = firebaseUser.uid
-
-                    val userData = UserData(
+                    val newUser = UserData(
                         userId = firebaseUser.uid,
                         name = name,
                         email = email,
                         avatarId = 1
                     )
-
-                    try {
-                        // Save locally first
-                        userRepository.upsertUser(userData)
-
-                        // Then sync to Firestore
-                        when (val syncResult = userRepository.syncUser(userData)) {
-                            is UserResult.Success -> {
-                                _authState.value = AuthState(
-                                    isUserLoggedIn = true,
-                                    userId = firebaseUser.uid,
-                                    userData = userData,
-                                    isLoading = false,
-                                    error = null,
-                                    intent = null
-                                )
-                            }
-
-                            is UserResult.Error -> {
-                                _authState.value = _authState.value.copy(
-                                    isLoading = false,
-                                    isUserLoggedIn = false,
-                                    error = "Failed to sync user profile: ${syncResult.message}"
-                                )
-                            }
-
-                            is UserResult.Loading -> {
-                                _authState.value = _authState.value.copy(
-                                    isLoading = true,
-                                    error = null
-                                )
-                            }
-                        }
-                    } catch (e: Exception) {
-                        _authState.value = _authState.value.copy(
-                            isLoading = false,
-                            isUserLoggedIn = false,
-                            error = "Failed to create user profile: ${e.message}"
-                        )
-                    }
+                    syncOrCreateUser(newUser)
                 }
 
                 is AuthResult.Error -> {
-                    _authState.value = _authState.value.copy(
-                        isLoading = false,
-                        isUserLoggedIn = false,
-                        error = result.message
-                    )
+                    Timber.w("Sign up failed: ${result.message}")
+                    _authState.update { it.copy(isLoading = false, error = result.message) }
                 }
             }
         }
     }
 
-    fun signIn(email: String, password: String) {
-        _authState.value = _authState.value.copy(isLoading = true, error = null, intent = null)
+    // Retrieves intent for google one tap
+    fun getGoogleSignInIntent(webClientId: String) {
+        _authState.update { it.copy(isLoading = true, error = null) }
 
         viewModelScope.launch {
-            when (val result = authRepository.signIn(email, password)) {
+            when (val result = authRepository.getGoogleSignInIntent(webClientId)) {
                 is AuthResult.Success -> {
-                    val firebaseUser = result.data
-                    _userId.value = firebaseUser.uid
-                    loadUserProfile(firebaseUser.uid)
+                    _authState.update { it.copy(isLoading = false, intent = result.data) }
                 }
 
                 is AuthResult.Error -> {
-                    _authState.value = _authState.value.copy(
-                        isLoading = false,
-                        isUserLoggedIn = false,
-                        error = result.message
-                    )
+                    Timber.e("Failed to get Google Intent: ${result.message}")
+                    _authState.update { it.copy(isLoading = false, error = result.message) }
                 }
             }
         }
     }
 
-    fun signOut() {
+    // Handles result from google sign-in activity
+    fun handleGoogleSignInResult(data: Intent?) {
+        _authState.update { it.copy(isLoading = true, error = null, intent = null) }
+
         viewModelScope.launch {
-            _authState.value = _authState.value.copy(isLoading = true)
-            authRepository.signOut()
-            _authState.value = AuthState(
-                isUserLoggedIn = false,
-                userId = null,
-                userData = null,
-                isLoading = false,
-                error = null,
-                intent = null
-            )
-            _userId.value = null
+            val result = authRepository.handleGoogleSignInResult(data)
+            if (result is AuthResult.Error) {
+                Timber.w("Google Sign-In failed: ${result.message}")
+                _authState.update {
+                    it.copy(isLoading = false, error = result.message)
+                }
+            }
         }
     }
 
+    // Signs out user from all providers
+    fun signOut() {
+        Timber.i("User requested sign out")
+        _authState.update { it.copy(isLoading = true) }
+        viewModelScope.launch {
+            authRepository.signOut()
+        }
+    }
+
+    // Triggers password reset email flow
     fun forgotPassword(email: String) {
         _forgotPasswordState.value = ForgotPasswordState.Loading
-
         viewModelScope.launch {
             when (val result = authRepository.sendPasswordResetEmail(email)) {
                 is AuthResult.Success -> {
+                    Timber.i("Password reset email sent to $email")
                     _forgotPasswordState.value = ForgotPasswordState.Success
                 }
 
                 is AuthResult.Error -> {
+                    Timber.w("Password reset failed: ${result.message}")
                     _forgotPasswordState.value = ForgotPasswordState.Error(result.message)
                 }
             }
@@ -169,191 +174,86 @@ class LoginViewModel(
         _forgotPasswordState.value = ForgotPasswordState.Idle
     }
 
-    fun getGoogleSignInIntent(webClientId: String) {
-        _authState.value = _authState.value.copy(isLoading = true, error = null)
-
-        viewModelScope.launch {
-            when (val result = authRepository.getGoogleSignInIntent(webClientId)) {
-                is AuthResult.Success -> {
-                    _authState.value = _authState.value.copy(
-                        isLoading = false,
-                        intent = result.data
-                    )
-                }
-
-                is AuthResult.Error -> {
-                    _authState.value = _authState.value.copy(
-                        isLoading = false,
-                        error = result.message
-                    )
-                }
-            }
-        }
+    fun clearError() {
+        _authState.update { it.copy(error = null) }
     }
 
-    fun handleGoogleSignInResult(data: Intent?) {
-        _authState.value = _authState.value.copy(isLoading = true, error = null, intent = null)
-
-        viewModelScope.launch {
-            when (val result = authRepository.handleGoogleSignInResult(data)) {
-                is AuthResult.Success -> {
-                    val firebaseUser = result.data
-                    _userId.value = firebaseUser.uid
-                    loadUserProfile(firebaseUser.uid)
-                }
-
-                is AuthResult.Error -> {
-                    _authState.value = _authState.value.copy(
-                        isLoading = false,
-                        isUserLoggedIn = false,
-                        error = result.message,
-                        intent = null
-                    )
-                }
-            }
-        }
-    }
-
-    private fun checkCurrentUser() {
-        viewModelScope.launch {
-            when (val result = authRepository.getCurrentUser()) {
-                is AuthResult.Success -> {
-                    val firebaseUser = result.data
-                    _userId.value = firebaseUser.uid
-                    loadUserProfile(firebaseUser.uid)
-                }
-
-                is AuthResult.Error -> {
-                    _authState.value = AuthState(
-                        isUserLoggedIn = false,
-                        userId = null,
-                        userData = null,
-                        isLoading = false,
-                        error = null,
-                        intent = null
-                    )
-                }
-            }
-        }
-    }
-
-    private suspend fun loadUserProfile(userId: String) {
-        try {
-            // First, try to fetch from Firestore (this also saves locally)
-            Log.d(TAG, "Attempting to fetch user from Firestore: $userId")
-            when (val fetchResult = userRepository.fetchUserOnce(userId)) {
+    // Loads user profile from remote or falls back to creating new one
+    private fun loadUserProfile(firebaseUser: FirebaseUser) {
+        profileLoadingJob?.cancel()
+        profileLoadingJob = viewModelScope.launch {
+            _authState.update { it.copy(isLoading = true, error = null) }
+            when (val fetchResult = userRepository.fetchUserOnce(firebaseUser.uid)) {
                 is UserResult.Success -> {
-                    Log.d(TAG, "User fetched successfully, loading from local DB")
-                    // Now load from local database
-                    val localUser = userRepository.getUser(userId)
+                    val localUser = userRepository.getUser(firebaseUser.uid)
                     if (localUser != null) {
-                        _authState.value = AuthState(
-                            isUserLoggedIn = true,
-                            userId = userId,
-                            userData = localUser,
-                            isLoading = false,
-                            error = null,
-                            intent = null
-                        )
+                        Timber.d("Local profile loaded for ${firebaseUser.uid}")
+                        _authState.update {
+                            it.copy(
+                                isUserLoggedIn = true,
+                                userId = firebaseUser.uid,
+                                userData = localUser,
+                                isLoading = false
+                            )
+                        }
                     } else {
-                        Log.e(TAG, "User fetched but not found in local DB")
-                        _authState.value = _authState.value.copy(
-                            isLoading = false,
-                            isUserLoggedIn = false,
-                            error = "Failed to load user profile"
+                        Timber.e("Profile missing after fetch success")
+                        _authState.update {
+                            it.copy(
+                                isLoading = false,
+                                error = "Failed to load local profile"
+                            )
+                        }
+                    }
+                }
+
+                is UserResult.Error -> {
+                    Timber.w("Profile fetch failed, attempting creation")
+                    val newUser = UserData(
+                        userId = firebaseUser.uid,
+                        name = firebaseUser.displayName ?: "User",
+                        email = firebaseUser.email ?: "",
+                        avatarId = 0
+                    )
+                    syncOrCreateUser(newUser)
+                }
+
+                is UserResult.Loading -> {}
+            }
+        }
+    }
+
+    // Syncs user data to cloud or handles creation errors
+    private suspend fun syncOrCreateUser(userData: UserData) {
+        try {
+            userRepository.upsertUser(userData)
+
+            when (val syncResult = userRepository.syncUser(userData)) {
+                is UserResult.Success -> {
+                    _authState.update {
+                        it.copy(
+                            isUserLoggedIn = true,
+                            userId = userData.userId,
+                            userData = userData,
+                            isLoading = false
                         )
                     }
                 }
 
                 is UserResult.Error -> {
-                    Log.w(TAG, "User not found in Firestore, creating new profile")
-                    // User doesn't exist in Firestore, create new profile
-                    when (val authResult = authRepository.getCurrentUser()) {
-                        is AuthResult.Success -> {
-                            val firebaseUser = authResult.data
-                            val userData = UserData(
-                                userId = firebaseUser.uid,
-                                name = firebaseUser.displayName ?: "User",
-                                email = firebaseUser.email ?: "",
-                                avatarId = 0
-                            )
-
-                            try {
-                                // Save locally
-                                userRepository.upsertUser(userData)
-
-                                // Sync to Firestore
-                                when (val syncResult = userRepository.syncUser(userData)) {
-                                    is UserResult.Success -> {
-                                        _authState.value = AuthState(
-                                            isUserLoggedIn = true,
-                                            userId = userId,
-                                            userData = userData,
-                                            isLoading = false,
-                                            error = null,
-                                            intent = null
-                                        )
-                                    }
-
-                                    is UserResult.Error -> {
-                                        _authState.value = _authState.value.copy(
-                                            isLoading = false,
-                                            isUserLoggedIn = false,
-                                            error = "Failed to sync user profile: ${syncResult.message}"
-                                        )
-                                    }
-
-                                    is UserResult.Loading -> {
-                                        _authState.value = _authState.value.copy(
-                                            isLoading = true,
-                                            error = null
-                                        )
-                                    }
-                                }
-                            } catch (e: Exception) {
-                                _authState.value = _authState.value.copy(
-                                    isLoading = false,
-                                    isUserLoggedIn = false,
-                                    error = "Failed to create user profile: ${e.message}"
-                                )
-                            }
-                        }
-
-                        is AuthResult.Error -> {
-                            _authState.value = _authState.value.copy(
-                                isLoading = false,
-                                isUserLoggedIn = false,
-                                error = "User not found"
-                            )
-                        }
+                    Timber.e("User sync failed: ${syncResult.message}")
+                    _authState.update {
+                        it.copy(isLoading = false, error = "Sync failed: ${syncResult.message}")
                     }
                 }
 
-                is UserResult.Loading -> {
-                    _authState.value = _authState.value.copy(
-                        isLoading = true,
-                        error = null
-                    )
-                }
+                else -> {}
             }
         } catch (e: Exception) {
-            Log.e(TAG, "Error loading user profile", e)
-            _authState.value = _authState.value.copy(
-                isLoading = false,
-                isUserLoggedIn = false,
-                error = "Failed to load user profile: ${e.message}"
-            )
+            Timber.e(e, "Critical error creating user profile")
+            _authState.update {
+                it.copy(isLoading = false, error = "Profile creation failed: ${e.message}")
+            }
         }
     }
-
-    fun clearError() {
-        _authState.value = _authState.value.copy(error = null)
-    }
-}
-
-sealed class ForgotPasswordState {
-    object Idle : ForgotPasswordState()
-    object Loading : ForgotPasswordState()
-    object Success : ForgotPasswordState()
-    data class Error(val message: String) : ForgotPasswordState()
 }
