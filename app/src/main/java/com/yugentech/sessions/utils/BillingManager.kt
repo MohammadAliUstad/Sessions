@@ -12,16 +12,13 @@ import timber.log.Timber
 
 class BillingManager(context: Context) {
 
-    // Emits purchase success messages OR errors to be collected by the UI
     private val _purchaseEvent = MutableSharedFlow<String>()
     val purchaseEvent = _purchaseEvent.asSharedFlow()
 
     private var productDetailsCache: List<ProductDetails> = emptyList()
 
-    // List of product IDs defined in the Google Play Console
     private val productIds = listOf("donation_coffee", "donation_lunch")
 
-    // Handles updates when a purchase is completed or canceled
     private val purchasesUpdatedListener = PurchasesUpdatedListener { result, purchases ->
         if (result.responseCode == BillingClient.BillingResponseCode.OK && purchases != null) {
             for (purchase in purchases) {
@@ -30,7 +27,6 @@ class BillingManager(context: Context) {
         } else if (result.responseCode == BillingClient.BillingResponseCode.USER_CANCELED) {
             Timber.i("User canceled the purchase")
         } else {
-            // ERROR HANDLING: Emit the error to the UI so the Toast can show it
             val errorMessage = "Billing error: ${result.debugMessage.ifBlank { "Unknown Error" }}"
             Timber.e(errorMessage)
             CoroutineScope(Dispatchers.Main).launch {
@@ -39,13 +35,11 @@ class BillingManager(context: Context) {
         }
     }
 
-    // Initializes the BillingClient with the listener attached
     private val billingClient = BillingClient.newBuilder(context)
         .setListener(purchasesUpdatedListener)
         .enablePendingPurchases()
         .build()
 
-    // Connects to Google Play Billing service and queries products on success
     fun startConnection() {
         billingClient.startConnection(object : BillingClientStateListener {
             override fun onBillingSetupFinished(billingResult: BillingResult) {
@@ -64,7 +58,6 @@ class BillingManager(context: Context) {
         })
     }
 
-    // Fetches product details (price, title) asynchronously from Google Play
     private fun queryProducts() {
         val params = QueryProductDetailsParams.newBuilder()
             .setProductList(
@@ -87,7 +80,6 @@ class BillingManager(context: Context) {
         }
     }
 
-    // Initiates the Google Play purchase flow for a specific product
     fun launchPurchaseFlow(activity: Activity, productId: String) {
         val productDetails = productDetailsCache.find { it.productId == productId }
 
@@ -104,14 +96,12 @@ class BillingManager(context: Context) {
 
             billingClient.launchBillingFlow(activity, billingFlowParams)
         } else {
-            // ERROR HANDLING: Product not found (e.g. no internet when loading)
             CoroutineScope(Dispatchers.Main).launch {
                 _purchaseEvent.emit("Product details not loaded. Please check internet.")
             }
         }
     }
 
-    // Consumes the purchase to allow it to be bought again (for donations/consumables)
     private fun handlePurchase(purchase: Purchase) {
         if (purchase.purchaseState == Purchase.PurchaseState.PURCHASED) {
             val consumeParams = ConsumeParams.newBuilder()
