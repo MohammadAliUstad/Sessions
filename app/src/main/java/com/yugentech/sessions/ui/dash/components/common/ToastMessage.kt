@@ -20,10 +20,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
+import com.yugentech.sessions.theme.tokens.corners
+import com.yugentech.sessions.theme.tokens.spacing
 import kotlinx.coroutines.delay
 
 @Composable
@@ -54,21 +54,23 @@ fun ToastMessage(
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 16.dp),
+                .padding(horizontal = MaterialTheme.spacing.m),
             contentAlignment = Alignment.Center
         ) {
             Text(
                 text = message ?: "",
                 modifier = Modifier
-                    .shadow(8.dp, RoundedCornerShape(12.dp))
                     .background(
                         color = MaterialTheme.colorScheme.errorContainer,
-                        shape = RoundedCornerShape(12.dp)
+                        shape = RoundedCornerShape(MaterialTheme.corners.medium)
                     )
-                    .padding(horizontal = 16.dp, vertical = 12.dp),
+                    .padding(
+                        horizontal = MaterialTheme.spacing.l,
+                        vertical = MaterialTheme.spacing.m
+                    ),
                 color = MaterialTheme.colorScheme.onErrorContainer,
+                // Standard M3 Role for Snackbar/Toast text
                 style = MaterialTheme.typography.bodyMedium,
-                fontWeight = FontWeight.Medium,
                 textAlign = TextAlign.Center
             )
         }

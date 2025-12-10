@@ -4,6 +4,7 @@ import androidx.room.*
 import com.yugentech.sessions.room.entities.UserEntity
 import kotlinx.coroutines.flow.Flow
 
+// Data Access Object for User operations
 @Dao
 interface UserDao {
 

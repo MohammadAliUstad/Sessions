@@ -1,6 +1,5 @@
 package com.yugentech.sessions.utils
 
-// Validation functions
 private fun validateEmail(email: String): String {
     return when {
         email.isBlank() -> "Email cannot be empty"

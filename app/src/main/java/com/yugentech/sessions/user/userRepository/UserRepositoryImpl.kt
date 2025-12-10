@@ -9,6 +9,7 @@ import com.yugentech.sessions.user.UserService
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
+import timber.log.Timber
 
 class UserRepositoryImpl(
     private val userDao: UserDao,
@@ -16,19 +17,19 @@ class UserRepositoryImpl(
     private val syncPreferences: SyncPreferences
 ) : UserRepository {
 
-
     override fun getUserFlow(userId: String): Flow<UserData?> {
-        return userDao.getUserFlow(userId).map { entity ->
-            entity?.toUserData()
-        }
+        return userDao.getUserFlow(userId)
+            .map { entity -> entity?.toUserData() }
     }
 
     override suspend fun upsertUser(userData: UserData) {
         try {
+            Timber.d("Upserting user locally: ${userData.userId}")
             val entity = UserEntity.fromUserData(userData)
             userDao.upsertUser(entity)
         } catch (e: Exception) {
-            UserResult.Error("${e.message}")
+            Timber.e(e, "Failed to upsert user locally")
+            throw e
         }
     }
 
@@ -37,6 +38,7 @@ class UserRepositoryImpl(
     }
 
     override suspend fun syncUser(userData: UserData): UserResult<Unit> {
+        Timber.i("Syncing user data to cloud: ${userData.userId}")
         return userService.uploadUser(userData)
     }
 
@@ -48,27 +50,28 @@ class UserRepositoryImpl(
                 return UserResult.Success(Unit)
             }
 
-            val result = userService.fetchUser(userId)
-
-            when (result) {
+            Timber.i("Performing initial user profile fetch")
+            when (val result = userService.fetchUser(userId)) {
                 is UserResult.Success -> {
                     val userData = result.data
+                    Timber.d("Fetched user profile from cloud. Saving locally.")
 
                     val entity = UserEntity.fromUserData(userData)
                     userDao.upsertUser(entity)
+
                     syncPreferences.setUserFetchDone(true)
                     UserResult.Success(Unit)
                 }
-
                 is UserResult.Error -> {
+                    Timber.w("Failed to fetch user from cloud: ${result.message}")
                     result
                 }
-
                 is UserResult.Loading -> {
                     UserResult.Loading
                 }
             }
         } catch (e: Exception) {
+            Timber.e(e, "Exception during user fetch")
             UserResult.Error(e.message ?: "Failed to fetch user")
         }
     }

@@ -9,14 +9,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.platform.LocalContext
 import com.yugentech.sessions.theme.color.getColorScheme
+import com.yugentech.sessions.theme.models.ThemeConfiguration
 import com.yugentech.sessions.theme.tokens.LocalDesignTokens
 import com.yugentech.sessions.theme.tokens.TokensCompact
 import com.yugentech.sessions.theme.tokens.TokensExpanded
 import com.yugentech.sessions.theme.tokens.TokensMedium
-import com.yugentech.sessions.theme.tokens.TypographyCompact
-import com.yugentech.sessions.theme.tokens.TypographyExpanded
-import com.yugentech.sessions.theme.tokens.TypographyMedium
-import com.yugentech.sessions.theme.utils.ThemeConfiguration
+import com.yugentech.sessions.theme.tokens.dimensions.TypographyCompact
+import com.yugentech.sessions.theme.tokens.dimensions.TypographyExpanded
+import com.yugentech.sessions.theme.tokens.dimensions.TypographyMedium
 
 @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
 @Composable
@@ -26,9 +26,13 @@ fun SessionsTheme(
 ) {
     val context = LocalContext.current
     val activity = context as? Activity
+
+    // Resolve dynamic or static color scheme based on config
+    val colorScheme = getColorScheme(themeConfiguration = themeConfiguration)
+
+    // Calculate window size class for responsive typography/tokens
     val windowSizeClass = activity?.let { calculateWindowSizeClass(it) }
     val widthSizeClass = windowSizeClass?.widthSizeClass ?: WindowWidthSizeClass.Compact
-    val colorScheme = getColorScheme(themeConfiguration = themeConfiguration)
 
     val typography = when (widthSizeClass) {
         WindowWidthSizeClass.Compact -> TypographyCompact
@@ -44,6 +48,7 @@ fun SessionsTheme(
         else -> TokensCompact
     }
 
+    // Provide tokens and theme to composition
     CompositionLocalProvider(LocalDesignTokens provides tokens) {
         MaterialTheme(
             colorScheme = colorScheme,
