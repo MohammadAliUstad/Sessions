@@ -197,8 +197,7 @@ fun AppNavHost(
                         navController.navigate(Screens.Settings.route)
                     },
                     homeViewModel = homeViewModel,
-                    profileViewModel = profileViewModel,
-                    notificationsViewModel = notificationsViewModel
+                    profileViewModel = profileViewModel
                 )
             }
         }
