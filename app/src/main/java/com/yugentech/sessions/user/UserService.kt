@@ -4,29 +4,39 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.yugentech.sessions.authentication.authUtils.AuthErrorMapper
 import com.yugentech.sessions.models.UserData
 import kotlinx.coroutines.tasks.await
+import timber.log.Timber
 
+// Service for handling direct Cloud Firestore operations related to user profiles
 class UserService(
     private val firestore: FirebaseFirestore
 ) {
 
+    // Helper to get the reference for a specific user's document
     private fun profileDocRef(userId: String) = firestore.collection("users").document(userId)
 
+    // Uploads or updates user profile data in Firestore
     suspend fun uploadUser(userData: UserData): UserResult<Unit> {
         return try {
+            Timber.d("Uploading user profile for: ${userData.userId}")
             val uploadData = userData.toMap()
 
             profileDocRef(userData.userId).set(uploadData).await()
+            Timber.i("User profile uploaded successfully")
             UserResult.Success(Unit)
         } catch (e: Exception) {
+            Timber.e(e, "Failed to upload user profile")
             UserResult.Error(AuthErrorMapper.mapFirebaseAuthError(e))
         }
     }
 
+    // Fetches the user profile document from Firestore
     suspend fun fetchUser(userId: String): UserResult<UserData> {
         return try {
+            Timber.d("Fetching user profile for: $userId")
             val document = profileDocRef(userId).get().await()
 
             if (!document.exists()) {
+                Timber.w("User profile document not found")
                 return UserResult.Error("User not found")
             }
 
@@ -37,8 +47,10 @@ class UserService(
                 avatarId = document.getLong("avatarId")?.toInt() ?: 0
             )
 
+            Timber.i("User profile fetched successfully")
             UserResult.Success(userData)
         } catch (e: Exception) {
+            Timber.e(e, "Failed to fetch user profile")
             UserResult.Error(AuthErrorMapper.mapFirebaseAuthError(e))
         }
     }

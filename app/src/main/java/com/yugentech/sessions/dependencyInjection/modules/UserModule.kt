@@ -8,14 +8,17 @@ import org.koin.dsl.module
 
 val userModule = module {
 
+    // Singleton instance of Firestore
     single { FirebaseFirestore.getInstance() }
 
+    // Service handling direct Firestore user operations
     single {
         UserService(
             firestore = get()
         )
     }
 
+    // Repository mediating user data between remote and local sources
     single<UserRepository> {
         UserRepositoryImpl(
             userDao = get(),

@@ -10,7 +10,8 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
+import com.yugentech.sessions.theme.tokens.corners
+import com.yugentech.sessions.theme.tokens.spacing
 
 @Composable
 fun SettingsCard(
@@ -22,12 +23,12 @@ fun SettingsCard(
             containerColor = MaterialTheme.colorScheme.surfaceContainer,
             contentColor = MaterialTheme.colorScheme.onSurface
         ),
-        shape = RoundedCornerShape(16.dp)
+        shape = RoundedCornerShape(MaterialTheme.corners.medium)
     ) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(24.dp),
+                .padding(MaterialTheme.spacing.xl),
             content = content
         )
     }

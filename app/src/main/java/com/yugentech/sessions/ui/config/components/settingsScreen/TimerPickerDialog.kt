@@ -10,7 +10,6 @@ import androidx.compose.material3.TimePickerDefaults
 import androidx.compose.material3.TimePickerLayoutType
 import androidx.compose.material3.rememberTimePickerState
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.text.font.FontWeight
 import java.util.Calendar
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -21,7 +20,6 @@ fun TimePickerDialog(
     onTimeSelected: (hour: Int, minute: Int) -> Unit,
     onDismiss: () -> Unit
 ) {
-    // Create the time picker state here, with the initial values passed in
     val timePickerState = rememberTimePickerState(
         initialHour = initialHour,
         initialMinute = initialMinute,
@@ -33,9 +31,8 @@ fun TimePickerDialog(
         title = {
             Text(
                 text = "Select Reminder Time",
-                style = MaterialTheme.typography.headlineSmall.copy(
-                    fontWeight = FontWeight.SemiBold
-                ),
+                // Standard M3 Role for Dialog Titles
+                style = MaterialTheme.typography.headlineSmall,
                 color = MaterialTheme.colorScheme.onSurface
             )
         },
@@ -48,14 +45,12 @@ fun TimePickerDialog(
                     selectorColor = MaterialTheme.colorScheme.primary,
                     containerColor = MaterialTheme.colorScheme.surface,
 
-                    // Period selector (AM/PM)
                     periodSelectorBorderColor = MaterialTheme.colorScheme.outline,
                     periodSelectorSelectedContainerColor = MaterialTheme.colorScheme.primary,
                     periodSelectorUnselectedContainerColor = MaterialTheme.colorScheme.surfaceVariant,
                     periodSelectorSelectedContentColor = MaterialTheme.colorScheme.onPrimary,
                     periodSelectorUnselectedContentColor = MaterialTheme.colorScheme.onSurfaceVariant,
 
-                    // Time input fields
                     timeSelectorSelectedContainerColor = MaterialTheme.colorScheme.primaryContainer,
                     timeSelectorUnselectedContainerColor = MaterialTheme.colorScheme.surfaceVariant,
                     timeSelectorSelectedContentColor = MaterialTheme.colorScheme.onPrimaryContainer,
@@ -71,8 +66,8 @@ fun TimePickerDialog(
             ) {
                 Text(
                     text = "Set Time",
-                    style = MaterialTheme.typography.labelLarge,
-                    fontWeight = FontWeight.Medium
+                    // Standard M3 Role for Buttons
+                    style = MaterialTheme.typography.labelLarge
                 )
             }
         },
@@ -82,6 +77,7 @@ fun TimePickerDialog(
             ) {
                 Text(
                     text = "Cancel",
+                    // Standard M3 Role for Buttons
                     style = MaterialTheme.typography.labelLarge,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
