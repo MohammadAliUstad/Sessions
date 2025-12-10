@@ -7,11 +7,11 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
-import com.yugentech.sessions.utils.Constants.DEFAULT_ANIMATION_DURATION
+import com.yugentech.sessions.theme.tokens.dimensions.AppConstants
 
 fun defaultEnterTransition(
-    duration: Int = DEFAULT_ANIMATION_DURATION,
-    initialOffsetX: Int = 1000
+    duration: Int = AppConstants.DEFAULT_ANIMATION_DURATION,
+    initialOffsetX: Int = AppConstants.PTHOUSAND
 ): EnterTransition {
     return slideInHorizontally(
         animationSpec = tween(duration),
@@ -20,8 +20,8 @@ fun defaultEnterTransition(
 }
 
 fun defaultExitTransition(
-    duration: Int = DEFAULT_ANIMATION_DURATION,
-    targetOffsetX: Int = -1000
+    duration: Int = AppConstants.DEFAULT_ANIMATION_DURATION,
+    targetOffsetX: Int = AppConstants.MTHOUSAND
 ): ExitTransition {
     return slideOutHorizontally(
         animationSpec = tween(duration),
@@ -30,8 +30,8 @@ fun defaultExitTransition(
 }
 
 fun defaultPopEnterTransition(
-    duration: Int = DEFAULT_ANIMATION_DURATION,
-    initialOffsetX: Int = -1000
+    duration: Int = AppConstants.DEFAULT_ANIMATION_DURATION,
+    initialOffsetX: Int = AppConstants.MTHOUSAND
 ): EnterTransition {
     return slideInHorizontally(
         animationSpec = tween(duration),
@@ -40,8 +40,8 @@ fun defaultPopEnterTransition(
 }
 
 fun defaultPopExitTransition(
-    duration: Int = DEFAULT_ANIMATION_DURATION,
-    targetOffsetX: Int = 1000
+    duration: Int = AppConstants.DEFAULT_ANIMATION_DURATION,
+    targetOffsetX: Int = AppConstants.PTHOUSAND
 ): ExitTransition {
     return slideOutHorizontally(
         animationSpec = tween(duration),
