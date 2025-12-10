@@ -8,7 +8,7 @@ plugins {
     alias(libs.plugins.google.services)
     id("com.google.firebase.crashlytics")
     id("com.google.devtools.ksp")
-    id("com.gorylenko.gradle-git-properties") version "2.4.2"
+    id("com.gorylenko.gradle-git-properties") version "2.5.4"
 }
 
 val localProperties = Properties()
@@ -19,7 +19,7 @@ if (localPropertiesFile.exists()) {
 
 android {
     namespace = "com.yugentech.sessions"
-    compileSdk = 35
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "com.yugentech.sessions"
@@ -81,19 +81,13 @@ gitProperties {
 
 dependencies {
 
-    // --- 1. LOCAL UNIT TESTS (Logic) ---
-    // Runs fast on your computer (JVM). Used for ViewModels and Repositories.
-    testImplementation("junit:junit:4.13.2")
-    testImplementation("io.mockk:mockk:1.13.8")
-    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.3")
+    testImplementation(libs.junit)
+    testImplementation(libs.mockk)
+    testImplementation(libs.kotlinx.coroutines.test)
 
-    // --- 2. ANDROID UI TESTS (Visuals) ---
-    // Runs on the Emulator/Device. Used for Screens and Buttons.
-    androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.7.5") // Check your compose version
-    androidTestImplementation("androidx.test.ext:junit:1.1.5")
-
-    // REQUIRED: This allows the test to "see" the UI tree
-    debugImplementation("androidx.compose.ui:ui-test-manifest:1.7.5")
+    androidTestImplementation(libs.androidx.compose.ui.test.junit4)
+    androidTestImplementation(libs.androidx.junit)
+    debugImplementation(libs.androidx.compose.ui.test.manifest)
 
     // Crashlytics and Analytics
     implementation(platform(libs.firebase.bom))
