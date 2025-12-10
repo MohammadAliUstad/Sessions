@@ -7,8 +7,8 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
@@ -20,11 +20,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.sp
-import com.yugentech.sessions.theme.tokens.Tokens
-import java.util.Locale
+import androidx.compose.ui.unit.dp
+import com.yugentech.sessions.theme.tokens.animations
+import com.yugentech.sessions.theme.tokens.components
+import com.yugentech.sessions.theme.tokens.spacing
+import com.yugentech.sessions.theme.tokens.strokes
 
 @Composable
 fun TimerDisplay(
@@ -33,74 +37,75 @@ fun TimerDisplay(
     isStudying: Boolean,
     modifier: Modifier = Modifier
 ) {
-    // Assuming 'Tokens' is provided via CompositionLocal or is a static object
-    // as seen in your other files.
-    val tokens = Tokens
+    val windowInfo = LocalWindowInfo.current
+    val density = LocalDensity.current
 
-    val safeProgress = remember(displayTime, selectedDuration) {
+    val screenHeightDp = with(density) {
+        windowInfo.containerSize.height.toDp()
+    }
+
+    val timerSize = when {
+        screenHeightDp < 600.dp -> 200.dp
+        screenHeightDp < 700.dp -> 240.dp
+        else -> MaterialTheme.components.timerSize
+    }
+
+    val progress = remember(displayTime, selectedDuration) {
         if (selectedDuration > 0)
             (1f - (displayTime / selectedDuration.toFloat())).coerceIn(0f, 1f)
         else 0f
     }
 
     val animatedProgress by animateFloatAsState(
-        targetValue = safeProgress,
-        animationSpec = tween(1000, easing = FastOutSlowInEasing),
-        label = "TimerProgress"
+        targetValue = progress,
+        animationSpec = tween(
+            durationMillis = MaterialTheme.animations.durations.medium2,
+            easing = FastOutSlowInEasing
+        ),
+        label = "timer-progress"
     )
 
-    // Use token for timer size
-    val timerSize = tokens.components.timerSize
-
     Box(
-        modifier = modifier.fillMaxWidth(),
+        modifier = modifier.padding(MaterialTheme.spacing.xsSmall),
         contentAlignment = Alignment.Center
     ) {
-        // Background track
         CircularProgressIndicator(
             progress = { 1f },
             modifier = Modifier.size(timerSize),
             color = MaterialTheme.colorScheme.surfaceContainer,
-            strokeWidth = tokens.strokeWidths.extraThick, // Use token
+            strokeWidth = MaterialTheme.strokes.extraThick,
             trackColor = Color.Transparent,
-            strokeCap = StrokeCap.Round,
+            strokeCap = StrokeCap.Round
         )
 
-        // Progress indicator
         CircularProgressIndicator(
             progress = { animatedProgress },
             modifier = Modifier.size(timerSize),
             color = MaterialTheme.colorScheme.primary,
-            strokeWidth = tokens.strokeWidths.extraThick, // Use token
+            strokeWidth = MaterialTheme.strokes.thick,
             trackColor = Color.Transparent,
-            strokeCap = StrokeCap.Round,
+            strokeCap = StrokeCap.Round
         )
 
-        // Center time display
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
             Text(
-                text = String.format(
-                    Locale.US, "%02d:%02d",
-                    displayTime / 60, displayTime % 60
-                ),
+                text = "%02d:%02d".format(displayTime / 60, displayTime % 60),
                 style = MaterialTheme.typography.displayLarge.copy(
-                    fontSize = tokens.typography.display.sp, // Use token
-                    fontWeight = FontWeight.Light
+                    fontWeight = FontWeight.Normal
                 ),
-                textAlign = TextAlign.Center
+                textAlign = TextAlign.Center,
+                color = MaterialTheme.colorScheme.onSurface
             )
 
-            Spacer(modifier = Modifier.height(tokens.spacing.sm)) // Use token
+            Spacer(modifier = Modifier.height(MaterialTheme.spacing.s))
 
             Text(
                 text = if (isStudying) "time remaining" else "session duration",
-                style = MaterialTheme.typography.bodyLarge.copy(
-                    fontSize = tokens.typography.body.sp // Use token
-                ),
-                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f),
+                style = MaterialTheme.typography.bodyLarge,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
                 textAlign = TextAlign.Center
             )
         }
