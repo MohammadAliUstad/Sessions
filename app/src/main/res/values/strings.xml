@@ -1,5 +1,57 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Sessions</string>
-    <string name="web_client_id">364008177026-phtrgd61dtc6fnksancr4iq14150v63h.apps.googleusercontent.com</string>
+    <string name="app_description">Sessions helps you build focus, consistency, and discipline by tracking time and promoting mindful self-growth. Every session brings you closer to your best self.</string>
+    <string name="tagline">Master Time, Master Learning</string>
+    <string name="branding">Made by Yugen Tech</string>
+    <string name="version">Version 1.0.0</string>
+    <string name="feedback_sub">Sessions App Feedback</string>
+
+    <string name="mail">mailto:yugentech.kazuki@gmail.com</string>
+    <string name="github">https://github.com/MohammadAliUstad/Sessions</string>
+
+    <string name="about">About</string>
+    <string name="back">Back</string>
+    <string name="connect">Connect</string>
+    <string name="selected">Selected</string>
+
+    <string name="continue_with_google">Continue with Google</string>
+    <string name="welcome_back">Welcome back</string>
+    <string name="label_email">Email</string>
+    <string name="label_password">Password</string>
+    <string name="email_error">Please enter your email first</string>
+    <string name="forgot_password">Forgot Password?</string>
+    <string name="sign_in">Sign In</string>
+    <string name="create_account">Create Account</string>
+    <string name="full_name">Full Name</string>
+    <string name="password">Password</string>
+    <string name="confirm_password">Confirm Password</string>
+    <string name="sign_in_message">Ready to focus and be productive?</string>
+    <string name="don_t_have_an_account">Don\'t have an account? Sign Up</string>
+    <string name="sign_up_message">Start your productivity journey</string>
+    <string name="have_an_account">Already have an account? Sign In</string>
+    <string name="toggle_password_visibility">Toggle Password Visibility</string>
+
+    <string name="visit_github">Visit GitHub</string>
+    <string name="view_source_code_and_contribute">View source code and contribute</string>
+    <string name="contact_developer">Contact Developer</string>
+    <string name="get_in_touch_for_support_or_feedback">Get in touch for support or feedback</string>
+
+    <string name="light">Light</string>
+    <string name="always_use_light_appearance">Always use light appearance</string>
+    <string name="dark">Dark</string>
+    <string name="always_use_dark_appearance">Always use dark appearance</string>
+    <string name="system">System</string>
+    <string name="match_system_appearance">Match system appearance</string>
+    <string name="theme_mode">Theme Mode</string>
+    <string name="color_theme">Color Theme</string>
+    <string name="edit_profile">Edit Profile</string>
+    <string name="something_went_wrong">Something went wrong</string>
+    <string name="save">Save</string>
+    <string name="display_name_is_required">Display name is required</string>
+    <string name="at_least_2_characters_please">At least 2 characters please</string>
+    <string name="keep_it_under_20_characters">Keep it under 20 characters</string>
+    <string name="letters_numbers_and_basic_symbols_only">Letters, numbers, and basic symbols only</string>
+    <string name="a_za_z0_9_s">^[a-zA-Z0-9\\s._-]+$</string>
+    <string name="please_focus_for_at_least_1_minute_to_save_a_session">Please focus for at least 1 minute to save a session</string>
 </resources>
