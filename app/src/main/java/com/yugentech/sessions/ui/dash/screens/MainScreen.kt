@@ -32,7 +32,6 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.content.ContextCompat
 import com.yugentech.sessions.navigation.AppScreens
-import com.yugentech.sessions.notifications.NotificationsViewModel
 import com.yugentech.sessions.theme.tokens.dimensions.AppConstants
 import com.yugentech.sessions.theme.tokens.spacing
 import com.yugentech.sessions.ui.dash.components.common.ToastMessage
@@ -61,7 +60,6 @@ fun MainScreen(
     userId: String,
     homeViewModel: HomeViewModel,
     profileViewModel: ProfileViewModel,
-    notificationsViewModel: NotificationsViewModel,
     onSignOut: () -> Unit,
     onExit: () -> Unit,
     onEditProfile: () -> Unit,
@@ -89,7 +87,7 @@ fun MainScreen(
             ) == PackageManager.PERMISSION_GRANTED
 
             if (!hasPermission) {
-                delay(2000)
+                delay(500)
                 notificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
             }
         }
@@ -203,7 +201,7 @@ fun MainScreen(
             message = toastMessage,
             onDismiss = { toastMessage = null },
             modifier = Modifier
-                .align(Alignment.BottomCenter)
+                .align(Alignment.Center)
                 .padding(bottom = MaterialTheme.spacing.xxl)
         )
     }
