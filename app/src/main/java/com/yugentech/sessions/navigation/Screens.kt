@@ -5,6 +5,7 @@ import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.ui.graphics.vector.ImageVector
 
+// Represents the bottom navigation bar items
 sealed class AppScreens(val route: String, val title: String, val icon: ImageVector) {
     data object Home : AppScreens("main", "Home", Icons.Filled.Home)
     data object Profile : AppScreens("profile", "Profile", Icons.Filled.AccountCircle)
@@ -18,6 +19,7 @@ sealed class AppScreens(val route: String, val title: String, val icon: ImageVec
     }
 }
 
+// Represents all distinct navigation destinations in the app
 sealed class Screens(val route: String) {
     data object Appearance : Screens("appearance")
     data object SignUp : Screens("signUp")
