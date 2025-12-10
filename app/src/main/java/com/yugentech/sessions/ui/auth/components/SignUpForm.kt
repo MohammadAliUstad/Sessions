@@ -21,6 +21,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
+import com.yugentech.sessions.R
 import com.yugentech.sessions.theme.tokens.corners
 import com.yugentech.sessions.theme.tokens.spacing
 import com.yugentech.sessions.ui.auth.utils.FormValidator
@@ -59,8 +62,10 @@ fun SignUpForm(
             verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.m)
         ) {
             Text(
-                text = "Create Account",
-                style = MaterialTheme.typography.headlineMedium,
+                text = stringResource(R.string.create_account),
+                style = MaterialTheme.typography.headlineMedium.copy(
+                    fontWeight = FontWeight.SemiBold
+                ),
                 color = MaterialTheme.colorScheme.onSurface
             )
 
@@ -72,7 +77,7 @@ fun SignUpForm(
                         nameError = FormValidator.validateName(newName)
                     )
                 },
-                label = "Full Name",
+                label = stringResource(R.string.full_name),
                 leadingIcon = Icons.Default.Person,
                 error = formState.nameError
             )
@@ -85,7 +90,7 @@ fun SignUpForm(
                         emailError = FormValidator.validateEmail(newEmail)
                     )
                 },
-                label = "Email",
+                label = stringResource(R.string.label_email),
                 leadingIcon = Icons.Default.Email,
                 error = formState.emailError
             )
@@ -106,7 +111,7 @@ fun SignUpForm(
                         }
                     )
                 },
-                label = "Password",
+                label = stringResource(R.string.password),
                 leadingIcon = Icons.Default.Lock,
                 error = formState.passwordError,
                 isPassword = true
@@ -123,14 +128,14 @@ fun SignUpForm(
                         )
                     )
                 },
-                label = "Confirm Password",
+                label = stringResource(R.string.confirm_password),
                 leadingIcon = Icons.Default.Lock,
                 error = formState.confirmPasswordError,
                 isPassword = true
             )
 
             ActionButton(
-                text = "Create Account",
+                text = stringResource(R.string.create_account),
                 isLoading = isLoading,
                 onClick = {
                     val isValid = FormValidator.validateSignUpForm(
