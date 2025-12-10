@@ -18,7 +18,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.IconButtonColors
+import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -31,8 +31,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
-import androidx.compose.ui.unit.dp
 import com.yugentech.sessions.models.Session
+import com.yugentech.sessions.theme.tokens.components
+import com.yugentech.sessions.theme.tokens.corners
+import com.yugentech.sessions.theme.tokens.icons
+import com.yugentech.sessions.theme.tokens.spacing
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -46,34 +49,35 @@ fun SessionCard(
     var showDeleteDialog by remember { mutableStateOf(false) }
     var isVisible by remember { mutableStateOf(true) }
     val hapticFeedback = LocalHapticFeedback.current
+    val animationDuration = 300
 
     AnimatedVisibility(
         visible = isVisible,
         exit = shrinkVertically(
-            animationSpec = tween(300)
-        ) + fadeOut(animationSpec = tween(300))
+            animationSpec = tween(animationDuration)
+        ) + fadeOut(animationSpec = tween(animationDuration))
     ) {
         Card(
             modifier = modifier
                 .fillMaxWidth()
-                .padding(horizontal = 8.dp),
+                .padding(horizontal = MaterialTheme.spacing.xs),
             colors = CardDefaults.cardColors(
                 containerColor = MaterialTheme.colorScheme.secondaryContainer
             ),
-            shape = RoundedCornerShape(24.dp)
+            shape = RoundedCornerShape(MaterialTheme.corners.large)
         ) {
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(16.dp),
+                    .padding(MaterialTheme.spacing.m),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Column(
                     modifier = Modifier
                         .weight(1f)
-                        .padding(start = 8.dp),
-                    verticalArrangement = Arrangement.spacedBy(4.dp)
+                        .padding(start = MaterialTheme.spacing.s),
+                    verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.xs)
                 ) {
                     val dateFormat = SimpleDateFormat("MMM dd, yyyy", Locale.getDefault())
                     val timeFormat = SimpleDateFormat("hh:mm a", Locale.getDefault())
@@ -82,14 +86,12 @@ fun SessionCard(
 
                     val hours = session.duration / 3600
                     val minutes = (session.duration % 3600) / 60
-                    val durationText = when {
-                        hours > 0 -> "${hours}h ${minutes}m"
-                        else -> "${minutes}m"
-                    }
+                    val durationText = if (hours > 0) "${hours}h ${minutes}m" else "${minutes}m"
 
                     Text(
                         text = formattedDate,
-                        style = MaterialTheme.typography.titleMedium,
+                        // Standard M3 Role for List Item Titles
+                        style = MaterialTheme.typography.titleSmall,
                         color = MaterialTheme.colorScheme.onSurface
                     )
 
@@ -101,6 +103,7 @@ fun SessionCard(
 
                     Text(
                         text = durationText,
+                        // Standard M3 Role for Metadata/Badges
                         style = MaterialTheme.typography.labelLarge,
                         color = MaterialTheme.colorScheme.primary
                     )
@@ -111,10 +114,10 @@ fun SessionCard(
                         hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
                         showDeleteDialog = true
                     },
-                    modifier = Modifier.size(48.dp),
-                    colors = IconButtonColors(
-                        contentColor = MaterialTheme.colorScheme.onSecondaryContainer,
+                    modifier = Modifier.size(MaterialTheme.components.buttonMedium),
+                    colors = IconButtonDefaults.iconButtonColors(
                         containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                        contentColor = MaterialTheme.colorScheme.onSecondaryContainer,
                         disabledContainerColor = MaterialTheme.colorScheme.surfaceVariant,
                         disabledContentColor = MaterialTheme.colorScheme.onSurfaceVariant
                     )
@@ -123,14 +126,13 @@ fun SessionCard(
                         imageVector = Icons.Filled.Delete,
                         contentDescription = "Delete session",
                         tint = MaterialTheme.colorScheme.onPrimaryContainer,
-                        modifier = Modifier.size(24.dp)
+                        modifier = Modifier.size(MaterialTheme.icons.medium)
                     )
                 }
             }
         }
     }
 
-    // Delete confirmation dialog
     if (showDeleteDialog) {
         AlertDialog(
             onDismissRequest = { showDeleteDialog = false },
@@ -172,7 +174,7 @@ fun SessionCard(
                     )
                 }
             },
-            shape = RoundedCornerShape(24.dp),
+            shape = RoundedCornerShape(MaterialTheme.corners.large),
             containerColor = MaterialTheme.colorScheme.surface,
             titleContentColor = MaterialTheme.colorScheme.onSurface,
             textContentColor = MaterialTheme.colorScheme.onSurfaceVariant

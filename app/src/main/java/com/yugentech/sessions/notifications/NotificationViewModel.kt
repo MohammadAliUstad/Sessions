@@ -2,13 +2,15 @@ package com.yugentech.sessions.notifications
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.yugentech.sessions.dependencyInjection.NotificationPrefsDataStore
 import com.yugentech.sessions.notifications.notificationRepository.NotificationRepository
 import com.yugentech.sessions.notifications.scheduled.NotificationConfig
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import java.util.Calendar
 import java.util.Locale
 
@@ -17,10 +19,7 @@ class NotificationsViewModel(
     private val notificationPrefsDataStore: NotificationPrefsDataStore
 ) : ViewModel() {
 
-    companion object {
-        private const val TAG = "NotificationsViewModel"
-    }
-
+    // Exposes current notification config as a hot flow
     val notificationConfig: StateFlow<NotificationConfig> =
         notificationPrefsDataStore.notificationConfigFlow.stateIn(
             scope = viewModelScope,
@@ -33,6 +32,24 @@ class NotificationsViewModel(
                 }.getOrDefault(NotificationConfig())
             }
         )
+
+    private val _showExactAlarmDialog = MutableStateFlow(false)
+    val showExactAlarmDialog = _showExactAlarmDialog.asStateFlow()
+
+    fun dismissDialog() {
+        _showExactAlarmDialog.value = false
+    }
+
+    // Checks permission before allowing user to enable reminders
+    fun canEnableReminders(): Boolean {
+        val hasPermission = notificationRepository.hasExactAlarmPermission()
+        if (!hasPermission) {
+            Timber.w("Exact alarm permission missing, showing dialog")
+            _showExactAlarmDialog.value = true
+            return false
+        }
+        return true
+    }
 
     fun startActiveSession(notification: Notification) {
         viewModelScope.launch {
@@ -48,6 +65,7 @@ class NotificationsViewModel(
 
     fun setNotificationsEnabled(enabled: Boolean) {
         viewModelScope.launch {
+            Timber.i("User toggled notifications enabled: $enabled")
             notificationPrefsDataStore.setNotificationsEnabled(enabled)
             if (!enabled) {
                 cancelReminders()
@@ -59,8 +77,10 @@ class NotificationsViewModel(
 
     fun setFocusRemindersEnabled(enabled: Boolean) {
         viewModelScope.launch {
+            Timber.i("User toggled focus reminders enabled: $enabled")
             notificationPrefsDataStore.setFocusRemindersEnabled(enabled)
             if (enabled) {
+                // If enabling without changing time, set default or ensure valid time
                 val config = notificationConfig.value
                 if (config.reminderTimeHour == 8 && config.reminderTimeMinute == 0) {
                     notificationPrefsDataStore.setFocusReminderTime(9, 0)
@@ -76,6 +96,7 @@ class NotificationsViewModel(
 
     fun setReminderTime(hour: Int, minute: Int) {
         viewModelScope.launch {
+            Timber.d("User updated reminder time: $hour:$minute")
             notificationPrefsDataStore.setFocusReminderTime(hour, minute)
             notificationPrefsDataStore.setFocusRemindersEnabled(true)
             val config = notificationConfig.value
@@ -103,9 +124,21 @@ class NotificationsViewModel(
 
     fun scheduleReminder(message: String, hour: Int, minute: Int) {
         viewModelScope.launch {
+            // Guard against missing permission at runtime
+            if (!notificationRepository.hasExactAlarmPermission()) {
+                Timber.w("Cannot schedule: Permission revoked")
+                _showExactAlarmDialog.value = true
+                return@launch
+            }
+
             try {
+                Timber.i("Scheduling reminder: $message at $hour:$minute")
                 notificationRepository.scheduleReminder(message, hour, minute)
+            } catch (e: SecurityException) {
+                Timber.e(e, "Permission revoked during scheduling")
+                _showExactAlarmDialog.value = true
             } catch (e: Exception) {
+                Timber.e(e, "Failed to schedule reminder")
                 throw e
             }
         }
@@ -114,8 +147,10 @@ class NotificationsViewModel(
     fun cancelReminders() {
         viewModelScope.launch {
             try {
+                Timber.i("Cancelling reminders")
                 notificationRepository.cancelReminders()
             } catch (e: Exception) {
+                Timber.e(e, "Failed to cancel reminders")
                 throw e
             }
         }
@@ -123,7 +158,6 @@ class NotificationsViewModel(
 
     private fun updateReminders() {
         val config = notificationConfig.value
-
         if (config.notificationsEnabled && config.focusRemindersEnabled) {
             scheduleReminder(
                 message = "Focus Reminder",
@@ -133,23 +167,5 @@ class NotificationsViewModel(
         } else {
             cancelReminders()
         }
-    }
-
-    private fun calculateDelayMillis(hour: Int, minute: Int): Long {
-        val calendar = Calendar.getInstance()
-        val currentTime = calendar.timeInMillis
-
-        val targetCalendar = Calendar.getInstance()
-        targetCalendar.set(Calendar.HOUR_OF_DAY, hour)
-        targetCalendar.set(Calendar.MINUTE, minute)
-        targetCalendar.set(Calendar.SECOND, 0)
-        targetCalendar.set(Calendar.MILLISECOND, 0)
-
-        if (targetCalendar.timeInMillis <= currentTime) {
-            targetCalendar.add(Calendar.DAY_OF_MONTH, 1)
-        }
-
-        val delayMillis = targetCalendar.timeInMillis - currentTime
-        return delayMillis
     }
 }

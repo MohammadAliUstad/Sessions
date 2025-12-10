@@ -6,6 +6,7 @@ import androidx.room.PrimaryKey
 import com.yugentech.sessions.models.Session
 import java.util.UUID
 
+// Local database representation of a Session, indexed by userId for faster queries
 @Entity(
     tableName = "sessions",
     indices = [Index(value = ["userId"])]
@@ -18,18 +19,21 @@ data class SessionsEntity(
     val timestamp: Long,
     val pendingSync: Boolean = true
 ) {
+    // Converts local entity to domain model
     fun toSession(): Session {
         return Session(
+            sessionId = sessionId, // Pass ID to ensure consistency
             duration = duration,
             timestamp = timestamp
         )
     }
 
     companion object {
+        // Converts domain model to local entity
         fun fromSession(
             session: Session,
             userId: String,
-            sessionId: String = UUID.randomUUID().toString(),
+            sessionId: String = session.sessionId.ifEmpty { UUID.randomUUID().toString() },
             pendingSync: Boolean = true
         ): SessionsEntity {
             return SessionsEntity(

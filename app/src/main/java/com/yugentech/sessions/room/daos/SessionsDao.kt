@@ -7,6 +7,7 @@ import androidx.room.Query
 import com.yugentech.sessions.room.entities.SessionsEntity
 import kotlinx.coroutines.flow.Flow
 
+// Data Access Object for Session operations
 @Dao
 interface SessionsDao {
 
