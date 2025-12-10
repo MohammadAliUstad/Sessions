@@ -1,7 +1,6 @@
 package com.yugentech.sessions
 
 import android.app.PendingIntent
-import android.content.Intent
 import com.google.firebase.auth.FirebaseUser
 import com.yugentech.sessions.authentication.AuthService
 import com.yugentech.sessions.authentication.authRepository.AuthRepositoryImpl
@@ -31,7 +30,7 @@ class AuthRepositoryImplTest {
         val email = "test@example.com"
         val password = "password123"
         val fakeUser = mockk<FirebaseUser>() // We can mock FirebaseUser classes!
-        
+
         // When service.signIn is called, return Success
         coEvery { authService.signIn(email, password) } returns AuthResult.Success(fakeUser)
 
@@ -77,8 +76,10 @@ class AuthRepositoryImplTest {
         // ARRANGE
         val fakeIntent = mockk<PendingIntent>()
         val clientId = "web_client_id"
-        
-        coEvery { authService.getGoogleSignInIntent(clientId) } returns AuthResult.Success(fakeIntent)
+
+        coEvery { authService.getGoogleSignInIntent(clientId) } returns AuthResult.Success(
+            fakeIntent
+        )
 
         // ACT
         val result = repository.getGoogleSignInIntent(clientId)
