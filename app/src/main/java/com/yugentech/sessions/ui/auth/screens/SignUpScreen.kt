@@ -1,6 +1,7 @@
 package com.yugentech.sessions.ui.auth.screens
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -23,9 +24,12 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.zIndex
+import com.yugentech.sessions.R
 import com.yugentech.sessions.theme.tokens.components
+import com.yugentech.sessions.theme.tokens.dimensions.AppConstants
 import com.yugentech.sessions.theme.tokens.icons
 import com.yugentech.sessions.theme.tokens.spacing
 import com.yugentech.sessions.ui.auth.components.SignUpForm
@@ -42,16 +46,9 @@ fun SignUpScreen(
     val state by loginViewModel.authState.collectAsState()
     val scrollState = rememberScrollState()
 
-    Box(modifier = Modifier.fillMaxSize()) {
-        ToastMessage(
-            message = state.error,
-            onDismiss = { loginViewModel.clearError() },
-            modifier = Modifier
-                .align(Alignment.TopCenter)
-                .padding(top = MaterialTheme.spacing.xxl)
-                .zIndex(1f)
-        )
-
+    Box(
+        modifier = Modifier.fillMaxSize()
+    ) {
         Surface(
             modifier = Modifier.fillMaxSize(),
             color = MaterialTheme.colorScheme.background
@@ -60,8 +57,9 @@ fun SignUpScreen(
                 modifier = Modifier
                     .fillMaxSize()
                     .verticalScroll(scrollState)
-                    .padding(MaterialTheme.spacing.l),
-                horizontalAlignment = Alignment.CenterHorizontally
+                    .padding(MaterialTheme.spacing.m),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
             ) {
                 Spacer(modifier = Modifier.height(MaterialTheme.spacing.xl))
 
@@ -85,7 +83,7 @@ fun SignUpScreen(
                 Spacer(modifier = Modifier.height(MaterialTheme.spacing.sm))
 
                 Text(
-                    text = "Sessions",
+                    text = stringResource(R.string.app_name),
                     style = MaterialTheme.typography.headlineMedium,
                     color = MaterialTheme.colorScheme.onBackground
                 )
@@ -93,8 +91,8 @@ fun SignUpScreen(
                 Spacer(modifier = Modifier.height(MaterialTheme.spacing.xs))
 
                 Text(
-                    text = "Start your productivity journey",
-                    style = MaterialTheme.typography.titleMedium,
+                    text = stringResource(R.string.sign_up_message),
+                    style = MaterialTheme.typography.bodyLarge,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     textAlign = TextAlign.Center
                 )
@@ -113,7 +111,7 @@ fun SignUpScreen(
                     modifier = Modifier.padding(vertical = MaterialTheme.spacing.xs)
                 ) {
                     Text(
-                        text = "Already have an account? Sign In",
+                        text = stringResource(R.string.have_an_account),
                         style = MaterialTheme.typography.labelLarge,
                         color = MaterialTheme.colorScheme.primary
                     )
@@ -122,5 +120,14 @@ fun SignUpScreen(
                 Spacer(modifier = Modifier.height(MaterialTheme.spacing.l))
             }
         }
+
+        ToastMessage(
+            message = state.error,
+            onDismiss = { loginViewModel.clearError() },
+            modifier = Modifier
+                .align(Alignment.TopCenter)
+                .padding(top = MaterialTheme.spacing.xxl)
+                .zIndex(AppConstants.ONEF)
+        )
     }
 }

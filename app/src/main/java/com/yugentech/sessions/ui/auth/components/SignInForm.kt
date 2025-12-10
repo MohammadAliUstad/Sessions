@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -22,6 +23,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
+import com.yugentech.sessions.R
+import com.yugentech.sessions.theme.tokens.components
 import com.yugentech.sessions.theme.tokens.corners
 import com.yugentech.sessions.theme.tokens.spacing
 import com.yugentech.sessions.ui.auth.utils.FormValidator
@@ -39,6 +45,7 @@ fun SignInForm(
 ) {
     var formState by remember { mutableStateOf(SignInFormState()) }
     val scope = rememberCoroutineScope()
+    val context = LocalContext.current
 
     LaunchedEffect(formState.email, formState.password) {
         onClearError()
@@ -56,8 +63,10 @@ fun SignInForm(
             verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.m)
         ) {
             Text(
-                text = "Welcome back",
-                style = MaterialTheme.typography.headlineMedium,
+                text = stringResource(R.string.welcome_back),
+                style = MaterialTheme.typography.headlineMedium.copy(
+                    fontWeight = FontWeight.SemiBold
+                ),
                 color = MaterialTheme.colorScheme.onSurface
             )
 
@@ -69,50 +78,57 @@ fun SignInForm(
                         emailError = FormValidator.validateEmail(newEmail)
                     )
                 },
-                label = "Email",
+                label = stringResource(R.string.label_email),
                 leadingIcon = Icons.Default.Email,
                 error = formState.emailError
             )
 
-            AppTextField(
-                value = formState.password,
-                onValueChange = { newPassword ->
-                    formState = formState.copy(
-                        password = newPassword,
-                        passwordError = FormValidator.validatePassword(newPassword)
-                    )
-                },
-                label = "Password",
-                leadingIcon = Icons.Default.Lock,
-                error = formState.passwordError,
-                isPassword = true
-            )
-
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.End
+            Column(
+                verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.xs)
             ) {
-                TextButton(
-                    onClick = {
-                        if (formState.email.isBlank()) {
-                            formState = formState.copy(
-                                emailError = "Please enter your email first"
-                            )
-                        } else {
-                            onForgotPassword(formState.email)
-                        }
-                    }
+                AppTextField(
+                    value = formState.password,
+                    onValueChange = { newPassword ->
+                        formState = formState.copy(
+                            password = newPassword,
+                            passwordError = FormValidator.validatePassword(newPassword)
+                        )
+                    },
+                    label = stringResource(R.string.label_password),
+                    leadingIcon = Icons.Default.Lock,
+                    error = formState.passwordError,
+                    isPassword = true
+                )
+
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.End
                 ) {
-                    Text(
-                        text = "Forgot Password?",
-                        style = MaterialTheme.typography.labelLarge,
-                        color = MaterialTheme.colorScheme.primary
-                    )
+                    TextButton(
+                        onClick = {
+                            if (formState.email.isBlank()) {
+                                formState = formState.copy(
+                                    emailError = context.getString(R.string.email_error)
+                                )
+                            } else {
+                                onForgotPassword(formState.email)
+                            }
+                        },
+                        modifier = Modifier
+                            .padding(end = MaterialTheme.spacing.xs)
+                            .height(MaterialTheme.components.buttonMedium)
+                    ) {
+                        Text(
+                            text = stringResource(R.string.forgot_password),
+                            style = MaterialTheme.typography.labelLarge,
+                            color = MaterialTheme.colorScheme.primary
+                        )
+                    }
                 }
             }
 
             ActionButton(
-                text = "Sign In",
+                text = stringResource(R.string.sign_in),
                 isLoading = isLoading,
                 onClick = {
                     val isValid = FormValidator.validateSignInForm(
