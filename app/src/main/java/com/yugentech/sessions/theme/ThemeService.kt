@@ -6,13 +6,15 @@ import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.emptyPreferences
 import androidx.datastore.preferences.core.stringPreferencesKey
-import com.yugentech.sessions.theme.utils.ColorTheme
-import com.yugentech.sessions.theme.utils.ThemeConfiguration
-import com.yugentech.sessions.theme.utils.ThemeMode
+import com.yugentech.sessions.theme.models.ColorTheme
+import com.yugentech.sessions.theme.models.ThemeConfiguration
+import com.yugentech.sessions.theme.models.ThemeMode
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
+import timber.log.Timber
 
+// Service managing persistence of theme preferences via DataStore
 class ThemeService(
     private val dataStore: DataStore<Preferences>
 ) {
@@ -22,8 +24,12 @@ class ThemeService(
         private val USE_DYNAMIC_COLORS_KEY = booleanPreferencesKey("use_dynamic_colors")
     }
 
+    // Exposes current theme config as a flow, defaulting to standard values on error
     val themeConfiguration: Flow<ThemeConfiguration> = dataStore.data
-        .catch { emit(emptyPreferences()) }
+        .catch {
+            Timber.e(it, "Error reading theme preferences")
+            emit(emptyPreferences())
+        }
         .map { prefs ->
             ThemeConfiguration(
                 themeMode = ThemeMode.valueOf(prefs[THEME_MODE_KEY] ?: ThemeMode.LIGHT.name),
@@ -32,7 +38,9 @@ class ThemeService(
             )
         }
 
+    // Persists the new theme configuration
     suspend fun updateThemeConfig(config: ThemeConfiguration) {
+        Timber.d("Saving theme config: Mode=${config.themeMode}, Color=${config.colorTheme}")
         dataStore.edit { prefs ->
             prefs[THEME_MODE_KEY] = config.themeMode.name
             prefs[COLOR_THEME_KEY] = config.colorTheme.name
@@ -40,7 +48,9 @@ class ThemeService(
         }
     }
 
+    // Clears all theme settings, reverting to app defaults
     suspend fun resetToDefaults() {
+        Timber.i("Resetting theme preferences to default")
         dataStore.edit { it.clear() }
     }
 }

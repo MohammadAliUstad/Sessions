@@ -1,7 +1,7 @@
 package com.yugentech.sessions.ui.config.components.settingsScreen
 
 import androidx.compose.ui.graphics.Color
-import com.yugentech.sessions.theme.utils.ColorTheme
+import com.yugentech.sessions.theme.models.ColorTheme
 
 data class ThemeOption(
     val colorTheme: ColorTheme,
