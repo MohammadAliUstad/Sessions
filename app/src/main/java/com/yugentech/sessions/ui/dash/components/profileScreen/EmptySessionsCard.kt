@@ -39,8 +39,7 @@ fun EmptySessionsCard(
         ) {
             Text(
                 text = "Start your first session to track your progress and build productive habits!",
-                // Standard M3 Role for Empty State Body text
-                style = MaterialTheme.typography.bodyLarge,
+                style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 textAlign = TextAlign.Start
             )

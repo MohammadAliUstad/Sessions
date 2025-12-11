@@ -38,7 +38,6 @@ fun AvatarSection(
         ) {
             Text(
                 text = "Choose Your Avatar",
-                // Standard M3 Role for Card/Section Headers
                 style = MaterialTheme.typography.titleMedium,
                 color = MaterialTheme.colorScheme.onSurface
             )
