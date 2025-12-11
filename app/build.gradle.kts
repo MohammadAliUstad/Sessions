@@ -42,7 +42,7 @@ android {
 
     buildTypes {
         release {
-            isMinifyEnabled = true
+            isMinifyEnabled = false
             isShrinkResources = true
 
             configure<com.google.firebase.crashlytics.buildtools.gradle.CrashlyticsExtension> {
