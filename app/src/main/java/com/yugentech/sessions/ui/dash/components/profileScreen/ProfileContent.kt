@@ -21,7 +21,6 @@ fun ProfileContent(
 ) {
     Text(
         text = userData.name ?: "User",
-        // Standard M3 Role for Profile/Screen Titles
         style = MaterialTheme.typography.headlineMedium,
         color = MaterialTheme.colorScheme.onSurface,
         textAlign = TextAlign.Center
@@ -38,8 +37,7 @@ fun ProfileContent(
     Spacer(modifier = Modifier.height(MaterialTheme.spacing.sm))
 
     Text(
-        text = AvatarRepository.getAvatarName(userData.avatarId) ?: "Explorer",
-        // Switched to BodyLarge for descriptive labels/roles
+        text = AvatarRepository.getAvatarName(userData.avatarId) ?: "Wise Elder",
         style = MaterialTheme.typography.bodyLarge,
         color = MaterialTheme.colorScheme.onSurfaceVariant,
         textAlign = TextAlign.Center
