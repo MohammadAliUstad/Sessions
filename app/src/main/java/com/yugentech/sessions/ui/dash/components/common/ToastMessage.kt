@@ -69,7 +69,6 @@ fun ToastMessage(
                         vertical = MaterialTheme.spacing.m
                     ),
                 color = MaterialTheme.colorScheme.onErrorContainer,
-                // Standard M3 Role for Snackbar/Toast text
                 style = MaterialTheme.typography.bodyMedium,
                 textAlign = TextAlign.Center
             )
