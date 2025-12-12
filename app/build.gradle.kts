@@ -19,12 +19,11 @@ if (localPropertiesFile.exists()) {
 
 android {
     namespace = "com.yugentech.sessions"
-    compileSdk = 36
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "com.yugentech.sessions"
         minSdk = 26
-        //noinspection OldTargetApi
         targetSdk = 35
         versionCode = 1
         versionName = "1.0"
@@ -40,26 +39,10 @@ android {
         }
     }
 
-    signingConfigs {
-        // Create a temporary signing config using the default debug key
-        create("release-testing") {
-            storeFile = file(System.getProperty("user.home") + "/.android/debug.keystore")
-            storePassword = "android"
-            keyAlias = "androiddebugkey"
-            keyPassword = "android"
-        }
-    }
-
     buildTypes {
         release {
             isMinifyEnabled = true
             isShrinkResources = true
-
-            // Add this line so you can see logs in Logcat for the release build!
-            isDebuggable = true
-
-            // Add this line to sign it so it installs on your phone
-            signingConfig = signingConfigs.getByName("release-testing")
 
             configure<com.google.firebase.crashlytics.buildtools.gradle.CrashlyticsExtension> {
                 mappingFileUploadEnabled = true
@@ -78,7 +61,6 @@ android {
     }
 
     kotlinOptions {
-        @Suppress("DEPRECATION")
         jvmTarget = "11"
     }
 

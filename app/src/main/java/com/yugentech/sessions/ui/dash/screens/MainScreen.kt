@@ -69,18 +69,20 @@ fun MainScreen(
 
     var toastMessage by remember { mutableStateOf<String?>(null) }
 
+    var hasCheckedPermission by rememberSaveable { mutableStateOf(false) }
+
     val notificationPermissionLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestPermission(),
         onResult = { isGranted ->
             if (!isGranted) {
                 toastMessage =
-                    "Notification permission denied. Session alerts will not be displayed."
+                    "Notification permission denied. Please enable notifications to see Session alerts."
             }
         }
     )
 
     LaunchedEffect(Unit) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+        if (!hasCheckedPermission && Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             val hasPermission = ContextCompat.checkSelfPermission(
                 context,
                 Manifest.permission.POST_NOTIFICATIONS
@@ -90,6 +92,8 @@ fun MainScreen(
                 delay(500)
                 notificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
             }
+
+            hasCheckedPermission = true
         }
     }
 
