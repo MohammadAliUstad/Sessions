@@ -1,6 +1,9 @@
 package com.yugentech.sessions.models
 
+import androidx.annotation.Keep
+
 // Represents the core user profile information synced across devices
+@Keep
 data class UserData(
     val userId: String = "",
     val name: String? = null,
