@@ -39,9 +39,12 @@ Welcome to **Sessions**, a beautifully crafted productivity application designed
 
 <div align="center">
   
-<img src="Screenshots/screenshot (1).jpg" width="30%"/>
-<img src="Screenshots/screenshot (2).jpg" width="30%"/>
-<img src="Screenshots/screenshot (3).jpg" width="30%"/>
+<img src="Screenshots/screenshot (1).png" width="30%"/>
+<img src="Screenshots/screenshot (2).png" width="30%"/>
+<img src="Screenshots/screenshot (3).png" width="30%"/>
+<img src="Screenshots/screenshot (4).png" width="30%"/>
+<img src="Screenshots/screenshot (5).png" width="30%"/>
+<img src="Screenshots/screenshot (6).png" width="30%"/>
 
 </div>
 
