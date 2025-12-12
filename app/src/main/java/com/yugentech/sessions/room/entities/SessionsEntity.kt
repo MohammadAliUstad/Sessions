@@ -1,5 +1,6 @@
 package com.yugentech.sessions.room.entities
 
+import androidx.annotation.Keep
 import androidx.room.Entity
 import androidx.room.Index
 import androidx.room.PrimaryKey
@@ -7,6 +8,7 @@ import com.yugentech.sessions.models.Session
 import java.util.UUID
 
 // Local database representation of a Session, indexed by userId for faster queries
+@Keep
 @Entity(
     tableName = "sessions",
     indices = [Index(value = ["userId"])]

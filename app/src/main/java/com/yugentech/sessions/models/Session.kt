@@ -1,8 +1,10 @@
 package com.yugentech.sessions.models
 
+import androidx.annotation.Keep
 import java.util.UUID
 
 // Represents a completed focus session with duration and timestamp
+@Keep
 data class Session(
     val sessionId: String = UUID.randomUUID().toString(),
     val duration: Int = 0,
