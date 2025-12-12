@@ -1,10 +1,12 @@
 package com.yugentech.sessions.room.entities
 
+import androidx.annotation.Keep
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.yugentech.sessions.models.UserData
 
 // Local database representation of a User
+@Keep
 @Entity(tableName = "users")
 data class UserEntity(
     @PrimaryKey
