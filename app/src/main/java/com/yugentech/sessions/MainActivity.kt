@@ -30,7 +30,6 @@ import timber.log.Timber
 
 class MainActivity : ComponentActivity() {
 
-    // Tracks if a notification click should trigger navigation to the Home screen
     private var shouldNavigateToHome by mutableStateOf(false)
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -43,7 +42,6 @@ class MainActivity : ComponentActivity() {
 
         val loginViewModel: LoginViewModel = get()
 
-        // Keeps splash screen visible until authentication and onboarding status are loaded
         splashScreen.setKeepOnScreenCondition {
             loginViewModel.authState.value.isLoading || loginViewModel.showOnboarding.value == null
         }
@@ -56,14 +54,12 @@ class MainActivity : ComponentActivity() {
             val themeViewModel: ThemeViewModel = koinViewModel()
             val themeConfiguration by themeViewModel.themeConfiguration.collectAsStateWithLifecycle()
 
-            // Determine if dark mode should be applied based on user preference or system settings
             val darkTheme = when (themeConfiguration.themeMode) {
                 ThemeMode.LIGHT -> false
                 ThemeMode.DARK -> true
                 ThemeMode.SYSTEM -> isSystemInDarkTheme()
             }
 
-            // Configures the status and navigation bars to be transparent for edge-to-edge design
             enableEdgeToEdge(
                 statusBarStyle = if (darkTheme) {
                     SystemBarStyle.dark(scrim = Color.TRANSPARENT)
@@ -84,7 +80,6 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    // Only render content once the onboarding state is determined
                     if (showOnboarding != null) {
                         AppNavHost(
                             navController = navController,
@@ -105,14 +100,12 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-    // Handles new intents delivered to the activity while it is already running
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
         setIntent(intent)
         handleNavigationIntent(intent)
     }
 
-    // Checks intent extras to see if the app was opened via a specific notification action
     private fun handleNavigationIntent(intent: Intent?) {
         if (intent?.getBooleanExtra(
                 NotificationService.EXTRA_NAVIGATE_TO_HOME,
