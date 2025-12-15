@@ -14,7 +14,6 @@ import java.util.Calendar
 import java.util.UUID
 import kotlin.random.Random
 
-// Wraps UI loading status and error messages
 data class HomeDataState(
     val isLoading: Boolean = false,
     val errorMessage: String? = null
@@ -30,17 +29,14 @@ class HomeViewModel(
 
     private var currentUserId: String? = null
 
-    // Loads user data and syncs sessions only if the user ID has changed
     fun initUserData(userId: String) {
         if (currentUserId == userId) return
         currentUserId = userId
 
         viewModelScope.launch {
-            // Load fresh data
             fetchUserOnce(userId)
             fetchSessionsOnce(userId)
 
-            // Sync any offline data from previous sessions
             syncPendingSessions(userId)
         }
     }
@@ -66,7 +62,6 @@ class HomeViewModel(
         }
     }
 
-    // Manually triggers the synchronization of offline sessions to the cloud
     fun syncPendingSessions(userId: String? = currentUserId) {
         userId ?: return
         viewModelScope.launch {
@@ -79,7 +74,6 @@ class HomeViewModel(
         }
     }
 
-    // Generates 300 random sessions over the past year to populate the heatmap for testing
     fun injectDummyData() {
         viewModelScope.launch {
             val dummyTasks = listOf(
@@ -87,16 +81,13 @@ class HomeViewModel(
                 "Morning Focus", "Project Ryori", "Reading", "Meditation"
             )
 
-            // Generate 300 random sessions to fill up the heatmap
             repeat(300) {
-                val randomDaysAgo = Random.nextInt(0, 365) // 0 to 365 days ago
-                val randomDurationMins = Random.nextInt(15, 120) // 15 to 120 mins
+                val randomDaysAgo = Random.nextInt(0, 365)
+                val randomDurationMins = Random.nextInt(15, 120)
 
-                // Randomize the exact time of day (00:00 to 23:59)
                 val randomHour = Random.nextInt(0, 24)
                 val randomMinute = Random.nextInt(0, 60)
 
-                // Use Calendar to safely calculate the timestamp
                 val calendar = Calendar.getInstance()
                 calendar.add(Calendar.DAY_OF_YEAR, -randomDaysAgo)
                 calendar.set(Calendar.HOUR_OF_DAY, randomHour)
@@ -111,7 +102,6 @@ class HomeViewModel(
                     sessionTask = dummyTasks.random()
                 )
 
-                // Save to repository
                 sessionsRepository.saveSession(dummySession)
             }
             Timber.d("Yearly dummy data injection complete!")
