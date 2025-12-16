@@ -24,7 +24,6 @@ import java.time.ZoneId
 import java.util.Calendar
 import java.util.concurrent.TimeUnit
 
-// Holds user profile data, calculated statistics, and UI state flags
 data class ProfileUiState(
     val user: UserData? = null,
     val sessions: List<Session> = emptyList(),
@@ -72,7 +71,6 @@ class ProfileViewModel(
 
         sessionsRepository.getSessionsFlow()
             .onEach { sessions ->
-                // Aggregate total duration across all sessions
                 val totalDurationSeconds = sessions.sumOf { it.duration.toLong() }
 
                 val dailyCounts = IntArray(8)
@@ -82,11 +80,7 @@ class ProfileViewModel(
                 sessions.forEach { session ->
                     val cal = Calendar.getInstance().apply { timeInMillis = session.timestamp }
 
-                    // --- FIX START ---
-                    // OLD: dailyCounts[cal.get(Calendar.DAY_OF_WEEK)]++ (This counted sessions)
-                    // NEW: Add the session duration to the daily total
                     dailyCounts[cal.get(Calendar.DAY_OF_WEEK)] += session.duration
-                    // --- FIX END ---
 
                     hourlyCounts[cal.get(Calendar.HOUR_OF_DAY)]++
 
