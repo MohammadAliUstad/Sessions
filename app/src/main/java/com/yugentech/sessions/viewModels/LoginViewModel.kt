@@ -35,7 +35,6 @@ class LoginViewModel(
     private val _authState = MutableStateFlow(AuthState(isLoading = true))
     val authState: StateFlow<AuthState> = _authState.asStateFlow()
 
-    // Exposes the inverse of onboarding completion status to determine if screens need showing
     val showOnboarding = userPreferences.isOnboardingCompleted
         .map { !it }
         .stateIn(
@@ -54,14 +53,12 @@ class LoginViewModel(
         observeAuthState()
     }
 
-    // Monitors Firebase authentication changes and updates local state accordingly
     private fun observeAuthState() {
         viewModelScope.launch {
             authRepository.authState.collect { firebaseUser ->
                 if (firebaseUser != null) {
                     Timber.d("Auth state update: User logged in ${firebaseUser.uid}")
 
-                    // Tags crash reports with the user ID for better diagnostics
                     FirebaseCrashlytics.getInstance().setUserId(firebaseUser.uid)
 
                     if (_authState.value.userId != firebaseUser.uid) {
@@ -70,7 +67,6 @@ class LoginViewModel(
                 } else {
                     Timber.d("Auth state update: User logged out")
 
-                    // Removes user identity from crash reports on logout
                     FirebaseCrashlytics.getInstance().setUserId("")
 
                     _authState.update {
@@ -87,7 +83,6 @@ class LoginViewModel(
         }
     }
 
-    // Attempts to sign in using email and password credentials
     fun signIn(email: String, password: String) {
         _authState.update { it.copy(isLoading = true, error = null) }
 
@@ -100,7 +95,6 @@ class LoginViewModel(
         }
     }
 
-    // Registers a new user and generates a default profile upon success
     fun signUp(name: String, email: String, password: String) {
         _authState.update { it.copy(isLoading = true, error = null) }
 
@@ -126,14 +120,12 @@ class LoginViewModel(
         }
     }
 
-    // Marks the onboarding process as complete in persistent storage
     fun completeOnboarding() {
         viewModelScope.launch {
             userPreferences.saveOnboardingCompleted(true)
         }
     }
 
-    // Fetches the Google Sign-In intent configuration
     fun getGoogleSignInIntent(webClientId: String) {
         _authState.update { it.copy(isLoading = true, error = null) }
 
@@ -151,7 +143,6 @@ class LoginViewModel(
         }
     }
 
-    // Processes the result returned from the Google Sign-In activity
     fun handleGoogleSignInResult(data: Intent?) {
         _authState.update { it.copy(isLoading = true, error = null, intent = null) }
 
@@ -166,7 +157,6 @@ class LoginViewModel(
         }
     }
 
-    // Logs the user out and resets synchronization flags
     fun signOut() {
         Timber.i("User requested sign out")
         _authState.update { it.copy(isLoading = true) }
@@ -176,7 +166,6 @@ class LoginViewModel(
         }
     }
 
-    // Requests a password reset email for the provided address
     fun forgotPassword(email: String) {
         _forgotPasswordState.value = ForgotPasswordState.Loading
         viewModelScope.launch {
@@ -202,7 +191,6 @@ class LoginViewModel(
         _authState.update { it.copy(error = null) }
     }
 
-    // Loads an existing profile or creates a new one if it's missing
     private fun loadUserProfile(firebaseUser: FirebaseUser) {
         profileLoadingJob?.cancel()
         profileLoadingJob = viewModelScope.launch {
@@ -247,7 +235,6 @@ class LoginViewModel(
         }
     }
 
-    // Saves the user profile locally and uploads it to the cloud
     private suspend fun syncOrCreateUser(userData: UserData) {
         try {
             userRepository.upsertUser(userData)
