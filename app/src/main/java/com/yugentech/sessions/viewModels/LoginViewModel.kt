@@ -183,7 +183,7 @@ class LoginViewModel(
         profileLoadingJob?.cancel()
         profileLoadingJob = viewModelScope.launch {
             _authState.update { it.copy(isLoading = true, error = null) }
-            when (val fetchResult = userRepository.fetchUserOnce(firebaseUser.uid)) {
+            when (userRepository.fetchUserOnce(firebaseUser.uid)) {
                 is UserResult.Success -> {
                     val localUser = userRepository.getUser(firebaseUser.uid)
                     if (localUser != null) {
@@ -197,11 +197,19 @@ class LoginViewModel(
                             )
                         }
                     } else {
-                        Timber.e("Profile missing after fetch success")
+                        Timber.i("User found remotely but missing locally. Syncing now.")
+                        syncOrCreateUser(
+                            UserData(
+                                userId = firebaseUser.uid,
+                                name = firebaseUser.displayName,
+                                email = firebaseUser.email,
+                                avatarId = 0
+                            )
+                        )
                         _authState.update {
                             it.copy(
                                 isLoading = false,
-                                error = "Failed to load local profile"
+                                error = null
                             )
                         }
                     }
@@ -216,9 +224,12 @@ class LoginViewModel(
                         avatarId = 0
                     )
                     syncOrCreateUser(newUser)
+                    _authState.update {
+                        it.copy(
+                            isLoading = false
+                        )
+                    }
                 }
-
-                is UserResult.Loading -> {}
             }
         }
     }

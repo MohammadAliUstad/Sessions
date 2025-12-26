@@ -66,9 +66,6 @@ class UserRepositoryImpl(
                     Timber.w("Failed to fetch user from cloud: ${result.message}")
                     result
                 }
-                is UserResult.Loading -> {
-                    UserResult.Loading
-                }
             }
         } catch (e: Exception) {
             Timber.e(e, "Exception during user fetch")

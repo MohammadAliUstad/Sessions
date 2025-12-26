@@ -26,8 +26,6 @@ object FormValidator {
         return when {
             password.isBlank() -> "Password cannot be empty"
             password.length < AppConstants.EIGHT -> "Password must be at least 8 characters"
-            !password.any { it.isDigit() } -> "Password must contain at least one number"
-            !password.any { it.isUpperCase() } -> "Password must contain at least one uppercase letter"
             !password.any { it.isLowerCase() } -> "Password must contain at least one lowercase letter"
             else -> AppConstants.EMPTY_STRING
         }
@@ -36,7 +34,7 @@ object FormValidator {
     fun validateConfirmPassword(password: String, confirmPassword: String): String {
         return when {
             confirmPassword.isBlank() -> "Please confirm your password"
-            password != confirmPassword -> "Passwords do not match"
+            password.trim() != confirmPassword.trim() -> "Passwords do not match"
             else -> AppConstants.EMPTY_STRING
         }
     }
