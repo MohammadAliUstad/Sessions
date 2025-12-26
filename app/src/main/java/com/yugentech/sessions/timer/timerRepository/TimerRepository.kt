@@ -1,38 +1,26 @@
 package com.yugentech.sessions.timer.timerRepository
 
-import kotlinx.coroutines.flow.Flow
+import com.yugentech.sessions.timer.TimerConfig
+import com.yugentech.sessions.timer.TimerState
 import kotlinx.coroutines.flow.StateFlow
 
-// Defines the contract for managing focus timer state and lifecycle
 interface TimerRepository {
-    // Observable state indicating if the countdown is currently active.
-    // Changed to Flow<Boolean> to support mapping from TimerState.
-    val isRunning: Flow<Boolean>
+    // 1. The Single Source of Truth
+    // The ViewModel observes this to get Time, Mode (Focus/Break), and Status all at once.
+    val timerState: StateFlow<TimerState>
 
-    // Observable state of the remaining seconds on the timer
-    val currentTime: StateFlow<Int>
+    // 2. Configuration
+    // Instead of setDuration(int), we pass the full configuration rules.
+    fun updateConfig(config: TimerConfig)
 
-    // Updates the total duration for the countdown
-    fun setDuration(seconds: Int)
-
-    // Begins the countdown process
+    // 3. Controls
     fun startTimer()
+    fun stopTimer() // Pauses or Resets based on implementation
 
-    // Pauses or stops the current countdown
-    fun stopTimer()
+    // 4. Lifecycle & Events
+    fun setOnTimerCompleteListener(listener: (Int) -> Unit)
 
-    // Resets the timer to its initial duration
-    fun resetTimer()
-
-    // Calculates the total time elapsed since start (Duration - Current)
-    fun getElapsedTime(): Int
-
-    // Registers a callback to be invoked when the timer reaches zero
-    fun onTimerComplete(listener: (Int) -> Unit)
-
-    // Persists the User ID for the current session to survive configuration changes
+    // 5. User Context (Persisted in Repo to survive VM recreation)
     fun setSessionUserId(userId: String)
-
-    // Retrieves the stored User ID for the current session
     fun getSessionUserId(): String?
 }

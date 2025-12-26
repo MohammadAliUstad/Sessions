@@ -179,14 +179,12 @@ fun AppNavHost(
                     userId = currentUserId,
                     onSignOut = {
                         Timber.i("User requested Sign Out")
-                        homeViewModel.resetSessionState()
                         notificationsViewModel.stopActiveSession()
                         notificationsViewModel.cancelReminders()
                         loginViewModel.signOut()
                     },
                     onExit = {
                         Timber.i("User requested App Exit")
-                        homeViewModel.resetSessionState()
                         notificationsViewModel.stopActiveSession()
                         (context as? Activity)?.finish()
                     },

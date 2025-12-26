@@ -20,8 +20,10 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.style.TextOverflow
 import com.yugentech.sessions.navigation.AppScreens
 import com.yugentech.sessions.theme.tokens.icons
 import com.yugentech.sessions.theme.tokens.spacing
@@ -30,19 +32,34 @@ import com.yugentech.sessions.theme.tokens.spacing
 @Composable
 fun TopAppBar(
     currentScreen: AppScreens,
+    isRunning: Boolean = false,
     onLogout: () -> Unit,
     onSettings: () -> Unit = {},
     scrollBehavior: TopAppBarScrollBehavior? = null
 ) {
+    val idleMessage = rememberSaveable {
+        listOf(
+            "Ready when you are!",
+            "Let's get to work.",
+            "Make it count.",
+            "One step at a time.",
+            "Focus on the now."
+        ).random()
+    }
+
+    // Determine Icon and Text based on screen & state
+    val (titleText, screenIcon) = when (currentScreen) {
+        AppScreens.Home -> {
+            val text = if (isRunning) "Stay Focused" else idleMessage
+            text to Icons.Default.Timer
+        }
+        AppScreens.Profile -> "Profile" to Icons.Default.Person
+    }
+
     TopAppBar(
         title = {
             Row(verticalAlignment = Alignment.CenterVertically) {
-                // Determine Icon and Text based on screen
-                val (screenTitle, screenIcon) = when (currentScreen) {
-                    AppScreens.Home -> "Sessions" to Icons.Default.Timer
-                    AppScreens.Profile -> "Profile" to Icons.Default.Person
-                }
-
+                // RESTORED: The Icon
                 Icon(
                     imageVector = screenIcon,
                     contentDescription = null,
@@ -52,10 +69,12 @@ fun TopAppBar(
 
                 Spacer(modifier = Modifier.width(MaterialTheme.spacing.s))
 
+                // RESTORED: HeadlineMedium style
                 Text(
-                    text = screenTitle,
-                    // Increased size from HeadlineSmall to HeadlineMedium
-                    style = MaterialTheme.typography.headlineMedium
+                    text = titleText,
+                    style = MaterialTheme.typography.headlineMedium,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
                 )
             }
         },
