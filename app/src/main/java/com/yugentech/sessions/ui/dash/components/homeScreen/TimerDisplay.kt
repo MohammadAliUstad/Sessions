@@ -35,7 +35,8 @@ fun TimerDisplay(
     displayTime: Int,
     selectedDuration: Int,
     isStudying: Boolean,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    idleLabel: String = "Select focus\nand break time" // Default message
 ) {
     val windowInfo = LocalWindowInfo.current
     val density = LocalDensity.current
@@ -50,8 +51,9 @@ fun TimerDisplay(
         else -> MaterialTheme.components.timerSize
     }
 
-    val progress = remember(displayTime, selectedDuration) {
-        if (selectedDuration > 0)
+    // Calculate progress: 0f when idle, 0..1 when running
+    val progress = remember(displayTime, selectedDuration, isStudying) {
+        if (isStudying && selectedDuration > 0)
             (1f - (displayTime / selectedDuration.toFloat())).coerceIn(0f, 1f)
         else 0f
     }
@@ -69,6 +71,7 @@ fun TimerDisplay(
         modifier = modifier.padding(MaterialTheme.spacing.xsSmall),
         contentAlignment = Alignment.Center
     ) {
+        // Track
         CircularProgressIndicator(
             progress = { 1f },
             modifier = Modifier.size(timerSize),
@@ -78,6 +81,7 @@ fun TimerDisplay(
             strokeCap = StrokeCap.Round
         )
 
+        // Progress
         CircularProgressIndicator(
             progress = { animatedProgress },
             modifier = Modifier.size(timerSize),
@@ -87,27 +91,42 @@ fun TimerDisplay(
             strokeCap = StrokeCap.Round
         )
 
+        // Text Content
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
+            verticalArrangement = Arrangement.Center,
+            modifier = Modifier.padding(horizontal = MaterialTheme.spacing.m)
         ) {
-            Text(
-                text = "%02d:%02d".format(displayTime / 60, displayTime % 60),
-                style = MaterialTheme.typography.displayLarge.copy(
-                    fontWeight = FontWeight.Normal
-                ),
-                textAlign = TextAlign.Center,
-                color = MaterialTheme.colorScheme.onSurface
-            )
+            if (isStudying) {
+                // RUNNING STATE: Show Time + "Time Remaining"
+                Text(
+                    text = "%02d:%02d".format(displayTime / 60, displayTime % 60),
+                    style = MaterialTheme.typography.displayLarge.copy(
+                        fontWeight = FontWeight.Normal
+                    ),
+                    textAlign = TextAlign.Center,
+                    color = MaterialTheme.colorScheme.onSurface
+                )
 
-            Spacer(modifier = Modifier.height(MaterialTheme.spacing.s))
+                Spacer(modifier = Modifier.height(MaterialTheme.spacing.s))
 
-            Text(
-                text = if (isStudying) "time remaining" else "session duration",
-                style = MaterialTheme.typography.bodyLarge,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                textAlign = TextAlign.Center
-            )
+                Text(
+                    text = "time remaining",
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    textAlign = TextAlign.Center
+                )
+            } else {
+                // IDLE STATE: Show Message
+                Text(
+                    text = idleLabel,
+                    style = MaterialTheme.typography.headlineSmall.copy(
+                        fontWeight = FontWeight.SemiBold
+                    ),
+                    textAlign = TextAlign.Center,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
         }
     }
 }

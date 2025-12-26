@@ -16,6 +16,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Remove
 import androidx.compose.material.icons.outlined.GraphicEq
 import androidx.compose.material.icons.outlined.Tune
@@ -92,7 +93,8 @@ fun HomeScreen(
                     TimerDisplay(
                         displayTime = uiState.currentTime,
                         selectedDuration = uiState.selectedDuration,
-                        isStudying = uiState.isRunning
+                        isStudying = uiState.isRunning,
+                        idleLabel = "Press the play button\nto start."
                     )
                 }
 
@@ -124,7 +126,7 @@ fun HomeScreen(
                     onSoundClick = { activeDialog = ActiveDialog.Sound },
                     onSetsClick = { activeDialog = ActiveDialog.Sets },
                     onStopDiscard = { homeViewModel.stopAndDiscardSession(view) },
-                    onStopSave = { homeViewModel(view) }
+                    onStopSave = { homeViewModel.stopAndSaveSession(view) }
                 )
             }
 

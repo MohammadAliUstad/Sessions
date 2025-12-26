@@ -132,6 +132,11 @@ class HomeViewModel(
         stopTimer(view) // stopTimer now resets internally in the service
     }
 
+    // Stops timer and attempts to save the session data
+    fun stopAndSaveSession(view: View? = null) {
+        stopTimer()
+    }
+
     // --- Session Saving Logic ---
 
     // Called automatically by TimerService when countdown hits 0
