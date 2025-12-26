@@ -151,8 +151,7 @@ class ActiveForeground : Service() {
     override fun onTaskRemoved(rootIntent: Intent?) {
         Timber.d("Task removed, performing cleanup")
         stopSession()
-        homeViewModel.resetSessionState()
-        super.onTaskRemoved(rootIntent)
+         super.onTaskRemoved(rootIntent)
     }
 
     override fun onDestroy() {

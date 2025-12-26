@@ -31,6 +31,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.yugentech.sessions.navigation.AppScreens
 import com.yugentech.sessions.theme.tokens.dimensions.AppConstants
 import com.yugentech.sessions.theme.tokens.spacing
@@ -67,8 +68,10 @@ fun MainScreen(
 ) {
     val context = LocalContext.current
 
-    var toastMessage by remember { mutableStateOf<String?>(null) }
+    // 1. Observe the HomeViewModel state to get isRunning status
+    val homeUiState by homeViewModel.uiState.collectAsStateWithLifecycle()
 
+    var toastMessage by remember { mutableStateOf<String?>(null) }
     var hasCheckedPermission by rememberSaveable { mutableStateOf(false) }
 
     val notificationPermissionLauncher = rememberLauncherForActivityResult(
@@ -152,6 +155,8 @@ fun MainScreen(
             topBar = {
                 TopAppBar(
                     currentScreen = currentScreen,
+                    // 2. Pass the running state to the TopAppBar
+                    isRunning = homeUiState.isRunning,
                     onLogout = { showLogoutDialog = true },
                     onSettings = onSettings,
                     scrollBehavior = scrollBehavior

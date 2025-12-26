@@ -1,105 +1,153 @@
 package com.yugentech.sessions.timer
 
+import com.yugentech.sessions.timer.TimerMode.Focus
+import com.yugentech.sessions.timer.TimerMode.LongBreak
+import com.yugentech.sessions.timer.TimerMode.ShortBreak
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
 class TimerService(
     private val coroutineScope: CoroutineScope
 ) {
-    // 1. Explicit State Tracking
-    private val _timerState = MutableStateFlow(TimerState.IDLE)
+    // 1. We now hold the specific 'TimerConfig' (Rules) and 'TimerState' (Live Data)
+    // Initialize with default config
+    private val _timerState = MutableStateFlow(TimerState())
     val timerState: StateFlow<TimerState> = _timerState.asStateFlow()
 
-    private val _currentTime = MutableStateFlow(0)
-    val currentTime: StateFlow<Int> = _currentTime.asStateFlow()
-
     private var timerJob: Job? = null
-    private var duration = 0
+
+    // Callback to tell ViewModel "Hey, a session just finished!"
     private var onTimerComplete: ((Int) -> Unit)? = null
 
-    fun start() {
-        if (_timerState.value == TimerState.RUNNING) return
+    init {
+        // Initialize the timer with the default config values
+        resetToDefaults()
+    }
 
-        _timerState.value = TimerState.RUNNING
-        Timber.d("Timer service started")
+    fun startTimer() {
+        if (_timerState.value.isTimerRunning) return
+
+        _timerState.update { it.copy(isTimerRunning = true) }
+        Timber.d("Timer started in mode: ${_timerState.value.currentMode}")
 
         timerJob = coroutineScope.launch {
-            while (_currentTime.value > 0 && _timerState.value == TimerState.RUNNING) {
+            while (_timerState.value.isTimerRunning && _timerState.value.currentTime > 0) {
                 delay(1000)
-                if (_timerState.value != TimerState.RUNNING) break
 
-                _currentTime.value -= 1
+                // Tick down
+                _timerState.update {
+                    it.copy(currentTime = it.currentTime - 1000L)
+                }
             }
 
-            if (_currentTime.value <= 0) {
-                Timber.i("Timer reached zero")
-                handleCompletion()
+            // Check why loop ended: Did we hit 0?
+            if (_timerState.value.currentTime <= 0L) {
+                handleSessionComplete()
             }
         }
     }
 
-    fun stop() {
+    fun pauseTimer() {
         timerJob?.cancel()
-        timerJob = null
-
-        // If we stopped while running, we are now PAUSED
-        if (_timerState.value == TimerState.RUNNING) {
-            _timerState.value = TimerState.PAUSED
-            Timber.d("Timer paused")
-        }
+        _timerState.update { it.copy(isTimerRunning = false) }
+        Timber.d("Timer paused")
     }
 
-    fun reset() {
-        stop()
-        _timerState.value = TimerState.IDLE
-        _currentTime.value = duration
-        Timber.i("Timer reset to IDLE")
+    fun stopTimer() {
+        pauseTimer()
+        // Reset to the beginning of the CURRENT session type
+        val currentTotal = _timerState.value.totalTime
+        _timerState.update { it.copy(currentTime = currentTotal) }
     }
 
-    private fun handleCompletion() {
-        _timerState.value = TimerState.FINISHED
-        onTimerComplete?.invoke(duration)
+    // Handles the "Next Step" logic (Focus -> Break)
+    private fun handleSessionComplete() {
         timerJob?.cancel()
-        timerJob = null
-    }
+        val completedState = _timerState.value
 
-    // 2. The Logic Fix
-    fun setDuration(seconds: Int) {
-        val currentState = _timerState.value
-
-        // CASE 1: Fresh Start
-        // If we are IDLE (App start/Reset) or FINISHED (Session done),
-        // we always treat this as a NEW session -> Elapsed is 0.
-        if (currentState == TimerState.IDLE || currentState == TimerState.FINISHED) {
-            duration = seconds
-            _currentTime.value = seconds
-            _timerState.value = TimerState.IDLE // Ensure we go back to IDLE
-            return
+        // Notify ViewModel to save the session (Only save Focus sessions usually)
+        if (completedState.currentMode == Focus) {
+            onTimerComplete?.invoke((completedState.totalTime / 1000).toInt())
         }
 
-        // CASE 2: Resizing a Paused Session
-        // Only preserve elapsed time if we are explicitly PAUSED.
-        if (currentState == TimerState.PAUSED) {
-            val elapsed = duration - _currentTime.value
-            duration = seconds
-            // Recalculate remaining based on new duration - old elapsed
-            val newRemaining = (duration - elapsed).coerceAtLeast(0)
+        // CALCULATE NEXT STATE
+        val config = completedState.config
+        val nextMode: TimerMode
+        val nextTime: Long
+        val nextRounds: Int
 
-            _currentTime.value = newRemaining
-            Timber.d("Resized paused session. New Duration: $seconds, Preserved Elapsed: $elapsed")
+        if (completedState.currentMode == Focus) {
+            // We just finished work. What break do we earn?
+            nextRounds = completedState.completedRounds + 1
+            if (nextRounds >= config.roundsBeforeLongBreak) {
+                nextMode = LongBreak
+                nextTime = config.longBreakDuration
+            } else {
+                nextMode = ShortBreak
+                nextTime = config.shortBreakDuration
+            }
+        } else {
+            // We just finished a break. Back to work!
+            nextMode = Focus
+            nextTime = config.focusDuration
+            // If we just finished a long break, reset rounds? (Optional choice)
+            nextRounds =
+                if (completedState.currentMode == LongBreak) 0 else completedState.completedRounds
+        }
+
+        // Apply the new state
+        _timerState.update {
+            it.copy(
+                isTimerRunning = config.autoStartNext, // Auto-start if config says so
+                currentMode = nextMode,
+                currentTime = nextTime,
+                totalTime = nextTime,
+                completedRounds = nextRounds
+            )
+        }
+
+        Timber.i("Session Complete. Switching to $nextMode. AutoStart: ${config.autoStartNext}")
+
+        // If auto-start is on, recurse start
+        if (config.autoStartNext) {
+            startTimer()
         }
     }
 
-    fun getElapsedTime(): Int {
-        // Optional: If IDLE, elapsed is technically 0
-        if (_timerState.value == TimerState.IDLE) return 0
-        return duration - _currentTime.value
+    // Call this when user changes settings in UI
+    fun updateConfig(newConfig: TimerConfig) {
+        // If timer is running, we might not want to disturb it,
+        // OR we might want to update real-time.
+        // For safety, let's only update the "Next" settings unless we are Idle.
+
+        _timerState.update {
+            // If we are currently IDLE (full time remaining), update the current display too
+            val isIdle = it.currentTime == it.totalTime && !it.isTimerRunning
+
+            it.copy(
+                config = newConfig,
+                // If we were just sitting at 25:00 and user changed it to 50:00, update the display
+                currentTime = if (isIdle && it.currentMode == Focus) newConfig.focusDuration else it.currentTime,
+                totalTime = if (isIdle && it.currentMode == Focus) newConfig.focusDuration else it.totalTime
+            )
+        }
+    }
+
+    private fun resetToDefaults() {
+        val defaultConfig = TimerConfig()
+        _timerState.value = TimerState(
+            currentTime = defaultConfig.focusDuration,
+            totalTime = defaultConfig.focusDuration,
+            config = defaultConfig,
+            currentMode = Focus
+        )
     }
 
     fun setOnTimerCompleteListener(listener: (Int) -> Unit) {
