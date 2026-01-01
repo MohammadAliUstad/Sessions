@@ -42,10 +42,11 @@ class SessionsRepositoryImpl(
         return sessionsDao.getTotalDuration(userId)
     }
 
-    override suspend fun deleteSession(sessionId: String): SessionResult<Unit> {
+    override suspend fun deleteSession(userId: String, sessionId: String): SessionResult<Unit> {
         return try {
             Timber.i("Deleting session: $sessionId")
             sessionsDao.deleteSession(sessionId)
+            sessionService.deleteSession(userId, sessionId)
             SessionResult.Success(Unit)
         } catch (e: Exception) {
             Timber.e(e, "Failed to delete session")

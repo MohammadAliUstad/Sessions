@@ -113,10 +113,10 @@ class ProfileViewModel(
     }
 
     // Deletes a specific session entry
-    fun deleteSession(sessionId: String) {
+    fun deleteSession(userId: String, sessionId: String) {
         Timber.i("Deleting session: $sessionId")
         viewModelScope.launch {
-            if (sessionsRepository.deleteSession(sessionId) is SessionResult.Error) {
+            if (sessionsRepository.deleteSession(userId, sessionId) is SessionResult.Error) {
                 Timber.e("Failed to delete session")
                 _uiState.update { it.copy(errorMessage = "Failed to delete session") }
             }

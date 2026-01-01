@@ -9,6 +9,7 @@ import com.yugentech.sessions.authentication.authRepository.AuthRepository
 import com.yugentech.sessions.authentication.authUtils.AuthResult
 import com.yugentech.sessions.authentication.authUtils.AuthState
 import com.yugentech.sessions.models.UserData
+import com.yugentech.sessions.sessions.SyncPreferences
 import com.yugentech.sessions.user.UserResult
 import com.yugentech.sessions.user.userRepository.UserRepository
 import com.yugentech.sessions.utils.ForgotPasswordState
@@ -22,7 +23,8 @@ import timber.log.Timber
 
 class LoginViewModel(
     private val authRepository: AuthRepository,
-    private val userRepository: UserRepository
+    private val userRepository: UserRepository,
+    private val syncPreferences: SyncPreferences
 ) : ViewModel() {
 
     private val _authState = MutableStateFlow(AuthState(isLoading = true))
@@ -149,6 +151,7 @@ class LoginViewModel(
         _authState.update { it.copy(isLoading = true) }
         viewModelScope.launch {
             authRepository.signOut()
+            syncPreferences.clearSyncFlags()
         }
     }
 

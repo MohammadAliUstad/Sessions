@@ -17,6 +17,24 @@ class SessionsService(
             .document(userId)
             .collection("sessions")
 
+    // Deletes a specific session from Firestore
+    suspend fun deleteSession(userId: String, sessionId: String): SessionResult<Unit> {
+        return try {
+            Timber.d("Deleting session $sessionId from cloud for user: $userId")
+
+            userSessionsCollection(userId)
+                .document(sessionId)
+                .delete()
+                .await()
+
+            Timber.i("Successfully deleted session from cloud")
+            SessionResult.Success(Unit)
+        } catch (e: Exception) {
+            Timber.e(e, "Failed to delete session from cloud")
+            SessionResult.Error(e.message ?: "Failed to delete session")
+        }
+    }
+
     // Uploads a batch of locally completed sessions to Firestore
     suspend fun uploadPendingSessions(userId: String, sessions: List<Session>): SessionResult<Unit> {
         return try {
