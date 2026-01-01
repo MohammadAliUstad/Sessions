@@ -3,7 +3,10 @@ package com.yugentech.sessions.ui.dash.components.homeScreen// Add this to HomeS
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
@@ -17,65 +20,69 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.yugentech.sessions.timer.TimerMode
 
 @Composable
 fun SessionProgressCard(
-    modifier: Modifier = Modifier
+    timerMode: TimerMode,
+    completedRounds: Int,
+    totalRounds: Int
 ) {
+    val currentSet = (completedRounds + 1).coerceAtMost(totalRounds)
+    val setsLeft = (totalRounds - currentSet)
+
     Card(
-        modifier = modifier
+        modifier = Modifier
             .fillMaxWidth()
+            .height(140.dp)
             .padding(horizontal = 16.dp, vertical = 8.dp)
             .clip(RoundedCornerShape(24.dp)),
         colors = CardDefaults.cardColors(
-            // Using a slightly different color to distinguish "Active" state
-            containerColor = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.5f)
+            containerColor = MaterialTheme.colorScheme.secondaryContainer
         ),
         elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
     ) {
         Row(
             modifier = Modifier
-                .padding(24.dp)
-                .fillMaxWidth(),
+                .padding(20.dp)
+                .fillMaxSize(),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            // LEFT SIDE: Current Status
-            Column {
+            // Left Side: Big Stats
+            Column(verticalArrangement = Arrangement.Center) {
                 Text(
-                    text = "Current Set",
+                    text = "Goal Progress",
                     style = MaterialTheme.typography.labelMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                    color = MaterialTheme.colorScheme.onSecondaryContainer.copy(alpha = 0.7f)
                 )
+                Spacer(modifier = Modifier.height(4.dp))
                 Text(
-                    text = "2 / 4", // Hardcoded "Set 2 of 4"
+                    text = "$currentSet / $totalRounds",
                     style = MaterialTheme.typography.displaySmall,
                     fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.onSurface
+                    color = MaterialTheme.colorScheme.onSecondaryContainer
                 )
             }
 
-            // RIGHT SIDE: Insights & Badges
-            Column(horizontalAlignment = Alignment.End) {
-                // Long Break Badge
-                Surface(
-                    color = MaterialTheme.colorScheme.tertiaryContainer,
-                    shape = RoundedCornerShape(8.dp),
-                    modifier = Modifier.padding(bottom = 8.dp)
-                ) {
-                    Text(
-                        text = "15m Long Break", // Hardcoded duration
-                        style = MaterialTheme.typography.labelSmall,
-                        color = MaterialTheme.colorScheme.onTertiaryContainer,
-                        modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
-                    )
+            // Right Side: Motivational Text
+            Column(
+                horizontalAlignment = Alignment.End,
+                verticalArrangement = Arrangement.Center
+            ) {
+                val message = when {
+                    setsLeft == 0 -> "Last set! You got this."
+                    setsLeft == 1 -> "1 set left after this."
+                    else -> "$setsLeft sets remaining"
                 }
 
-                // Helper Text
+                // You can add a small "Target" icon here if you want
+
                 Text(
-                    text = "Long break after 2 sets", // Hardcoded message
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                    text = message,
+                    style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.SemiBold),
+                    color = MaterialTheme.colorScheme.onSecondaryContainer,
+                    textAlign = androidx.compose.ui.text.style.TextAlign.End
                 )
             }
         }
