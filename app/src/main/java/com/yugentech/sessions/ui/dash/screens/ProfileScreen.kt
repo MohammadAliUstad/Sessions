@@ -59,7 +59,9 @@ fun ProfileScreen(
             ) { session ->
                 SessionCard(
                     session = session,
-                    onDelete = { sessionId -> profileViewModel.deleteSession(sessionId) }
+                    onDelete = { sessionId ->
+                        profileViewModel.deleteSession(userId, sessionId)
+                    }
                 )
             }
         }

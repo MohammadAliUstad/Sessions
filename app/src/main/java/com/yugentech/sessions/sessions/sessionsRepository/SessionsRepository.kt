@@ -16,7 +16,7 @@ interface SessionsRepository {
     fun getTotalDuration(userId: String): Flow<Long>
 
     // Deletes a specific session by ID
-    suspend fun deleteSession(sessionId: String): SessionResult<Unit>
+    suspend fun deleteSession(userId: String, sessionId: String): SessionResult<Unit>
 
     // Clears all session history for a user
     suspend fun deleteAllSessions(userId: String): SessionResult<Unit>

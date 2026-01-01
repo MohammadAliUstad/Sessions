@@ -56,4 +56,12 @@ class SyncPreferences(private val context: Context) {
             prefs[SyncPrefsKeys.SESSIONS_FETCH_DONE] = done
         }
     }
+
+    suspend fun clearSyncFlags() {
+        Timber.d("Clearing all sync flags due to logout")
+        context.syncDataStore.edit { prefs ->
+            prefs[SyncPrefsKeys.USER_FETCH_DONE] = false
+            prefs[SyncPrefsKeys.SESSIONS_FETCH_DONE] = false
+        }
+    }
 }

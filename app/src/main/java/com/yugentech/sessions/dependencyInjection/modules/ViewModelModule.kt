@@ -37,7 +37,8 @@ val viewModelModule = module {
         Timber.v("Initializing LoginViewModel")
         LoginViewModel(
             authRepository = get(),
-            userRepository = get()
+            userRepository = get(),
+            syncPreferences = get()
         )
     }
 
