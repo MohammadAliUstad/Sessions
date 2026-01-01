@@ -37,6 +37,7 @@ import com.yugentech.sessions.timer.TimerMode
 import com.yugentech.sessions.ui.dash.components.common.ToastMessage
 import com.yugentech.sessions.ui.dash.components.homeScreen.ActionButton
 import com.yugentech.sessions.ui.dash.components.homeScreen.SessionHeader
+import com.yugentech.sessions.ui.dash.components.homeScreen.SessionProgressCard
 import com.yugentech.sessions.ui.dash.components.homeScreen.TimerDisplay
 import com.yugentech.sessions.viewModels.HomeViewModel
 
@@ -107,8 +108,7 @@ fun HomeScreen(
                         SessionProgressCard(
                             timerMode = uiState.timerMode,
                             completedRounds = uiState.completedRounds,
-                            totalRounds = uiState.timerConfig.roundsBeforeLongBreak,
-                            longBreakDuration = uiState.timerConfig.longBreakDuration
+                            totalRounds = uiState.timerConfig.roundsBeforeLongBreak
                         )
                     } else {
                         SessionConfigCard(
@@ -174,13 +174,11 @@ fun HomeScreen(
                     ActiveDialog.Sets -> {
                         SetsConfigDialog(
                             currentRounds = config.roundsBeforeLongBreak,
-                            currentLongBreak = (config.longBreakDuration / 60000).toInt(),
                             onDismiss = closeDialog,
-                            onConfirm = { rounds, longBreakMins ->
+                            onConfirm = { rounds ->
                                 homeViewModel.updateFullConfig(
                                     config.copy(
-                                        roundsBeforeLongBreak = rounds,
-                                        longBreakDuration = longBreakMins * 60000L
+                                        roundsBeforeLongBreak = rounds
                                     )
                                 )
                                 closeDialog()
@@ -283,89 +281,6 @@ fun ModeTag(mode: TimerMode) {
             color = color,
             modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp)
         )
-    }
-}
-
-// --- 2. Session Progress Card (Active State) ---
-// --- 2. Session ProgressCard (Active State) ---
-@Composable
-fun SessionProgressCard(
-    timerMode: TimerMode,
-    completedRounds: Int,
-    totalRounds: Int,
-    longBreakDuration: Long
-) {
-    val currentSet = completedRounds + 1
-    val setsLeft = (totalRounds - currentSet).coerceAtLeast(0)
-
-    val message = when {
-        timerMode == TimerMode.LongBreak -> "Enjoy your downtime"
-        setsLeft == 0 -> "Long break coming up!"
-        else -> "$setsLeft more set${if (setsLeft > 1) "s" else ""} until Long Break"
-    }
-
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(140.dp) // FIXED HEIGHT to match ConfigCard
-            .padding(horizontal = 16.dp, vertical = 8.dp)
-            .clip(RoundedCornerShape(24.dp)),
-        colors = CardDefaults.cardColors(
-            // distinct color for "Active" state
-            containerColor = MaterialTheme.colorScheme.secondaryContainer
-        ),
-        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
-    ) {
-        Row(
-            modifier = Modifier
-                .padding(20.dp) // Consistent padding
-                .fillMaxSize(),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            // Left Side: Big Stats
-            Column(verticalArrangement = Arrangement.Center) {
-                Text(
-                    text = if (timerMode == TimerMode.LongBreak) "Status" else "Set Progress",
-                    style = MaterialTheme.typography.labelMedium,
-                    color = MaterialTheme.colorScheme.onSecondaryContainer.copy(alpha = 0.7f)
-                )
-                Spacer(modifier = Modifier.height(4.dp))
-                Text(
-                    text = if (timerMode == TimerMode.LongBreak) "Long Break" else "$currentSet / $totalRounds",
-                    style = MaterialTheme.typography.displaySmall, // Big and bold
-                    fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.onSecondaryContainer
-                )
-            }
-
-            // Right Side: Info Badge
-            Column(
-                horizontalAlignment = Alignment.End,
-                verticalArrangement = Arrangement.Center
-            ) {
-                Surface(
-                    color = MaterialTheme.colorScheme.background.copy(alpha = 0.5f),
-                    shape = RoundedCornerShape(12.dp),
-                ) {
-                    Text(
-                        text = "${longBreakDuration / 60000}m Break",
-                        style = MaterialTheme.typography.labelSmall,
-                        fontWeight = FontWeight.SemiBold,
-                        color = MaterialTheme.colorScheme.onBackground,
-                        modifier = Modifier.padding(horizontal = 10.dp, vertical = 6.dp)
-                    )
-                }
-
-                Spacer(modifier = Modifier.height(8.dp))
-
-                Text(
-                    text = message,
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSecondaryContainer.copy(alpha = 0.8f)
-                )
-            }
-        }
     }
 }
 
@@ -631,60 +546,37 @@ fun DurationPickerDialog(
 @Composable
 fun SetsConfigDialog(
     currentRounds: Int,
-    currentLongBreak: Int,
     onDismiss: () -> Unit,
-    onConfirm: (Int, Int) -> Unit
+    onConfirm: (Int) -> Unit
 ) {
     var rounds by remember { mutableIntStateOf(currentRounds) }
-    var longBreak by remember { mutableIntStateOf(currentLongBreak) }
 
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text("Long Break Settings") },
+        title = { Text("Session Goal") }, // Renamed from "Long Break Settings"
         text = {
             Column {
                 Text(
-                    "How many sets before a long break?",
+                    "How many sets do you want to complete?",
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
-                Spacer(modifier = Modifier.height(16.dp))
-
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Text("Sets", style = MaterialTheme.typography.titleMedium)
-                    SmallStepper(value = rounds, onValueChange = { rounds = it }, range = 1..10)
-                }
-
                 Spacer(modifier = Modifier.height(24.dp))
 
-                Text(
-                    "Long Break Duration",
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-                Spacer(modifier = Modifier.height(16.dp))
-
+                // Stepper for Rounds ONLY
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.SpaceBetween,
                     modifier = Modifier.fillMaxWidth()
                 ) {
-                    Text("Duration (m)", style = MaterialTheme.typography.titleMedium)
-                    SmallStepper(
-                        value = longBreak,
-                        onValueChange = { longBreak = it },
-                        range = 5..60,
-                        step = 5
-                    )
+                    Text("Total Sets", style = MaterialTheme.typography.titleMedium)
+                    SmallStepper(value = rounds, onValueChange = { rounds = it }, range = 1..10)
                 }
+                // Removed the Long Break Stepper
             }
         },
         confirmButton = {
-            Button(onClick = { onConfirm(rounds, longBreak) }) { Text("Save") }
+            Button(onClick = { onConfirm(rounds) }) { Text("Set Goal") }
         },
         dismissButton = {
             TextButton(onClick = onDismiss) { Text("Cancel") }
