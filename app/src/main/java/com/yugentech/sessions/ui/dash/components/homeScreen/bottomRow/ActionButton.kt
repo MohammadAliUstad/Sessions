@@ -16,9 +16,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import com.yugentech.sessions.theme.tokens.components
-import com.yugentech.sessions.theme.tokens.icons
-import com.yugentech.sessions.theme.tokens.spacing
+import androidx.compose.ui.unit.dp
 
 @Composable
 fun ActionButton(
@@ -48,18 +46,17 @@ fun ActionButton(
     Surface(
         onClick = onPlayPause,
         modifier = modifier
-            .size(MaterialTheme.components.fabSize) // Ensure this token exists or use e.g. 56.dp
-            .padding(MaterialTheme.spacing.xsSmall), // Optional padding from parent
+            .size(72.dp) // Standard large FAB size
+            .padding(8.dp),
         shape = CircleShape,
         color = containerColor,
         contentColor = contentColor
     ) {
-        // Box ensures the icon is perfectly centered
         Box(contentAlignment = Alignment.Center) {
             Icon(
                 imageVector = if (isStudying) Icons.Default.Pause else Icons.Default.PlayArrow,
                 contentDescription = if (isStudying) "Pause" else "Start",
-                modifier = Modifier.size(MaterialTheme.icons.mediumLarge) // Ensure token exists or use e.g. 32.dp
+                modifier = Modifier.size(32.dp)
             )
         }
     }

@@ -35,7 +35,10 @@ fun BigTimeStepper(
             onClick = { if (value - step >= range.first) onValueChange(value - step) },
             modifier = Modifier.background(MaterialTheme.colorScheme.surfaceVariant, CircleShape)
         ) {
-            Icon(Icons.Default.Remove, contentDescription = "Decrease")
+            Icon(
+                imageVector = Icons.Default.Remove,
+                contentDescription = "Decrease"
+            )
         }
 
         Text(
@@ -49,8 +52,10 @@ fun BigTimeStepper(
             onClick = { if (value + step <= range.last) onValueChange(value + step) },
             modifier = Modifier.background(MaterialTheme.colorScheme.primaryContainer, CircleShape)
         ) {
-            Icon(Icons.Default.Add, contentDescription = "Increase")
+            Icon(
+                imageVector = Icons.Default.Add,
+                contentDescription = "Increase"
+            )
         }
     }
 }
-
