@@ -19,14 +19,16 @@ data class SessionsEntity(
     val userId: String,
     val duration: Int,
     val timestamp: Long,
-    val pendingSync: Boolean = true
+    val pendingSync: Boolean = true,
+    val sessionTask: String = "Focus Session"
 ) {
     // Converts local entity to domain model
     fun toSession(): Session {
         return Session(
-            sessionId = sessionId, // Pass ID to ensure consistency
+            sessionId = sessionId,
             duration = duration,
-            timestamp = timestamp
+            timestamp = timestamp,
+            sessionTask = sessionTask
         )
     }
 
@@ -43,7 +45,8 @@ data class SessionsEntity(
                 userId = userId,
                 duration = session.duration,
                 timestamp = session.timestamp,
-                pendingSync = pendingSync
+                pendingSync = pendingSync,
+                sessionTask = session.sessionTask
             )
         }
     }

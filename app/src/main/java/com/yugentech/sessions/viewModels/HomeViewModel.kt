@@ -70,8 +70,7 @@ class HomeViewModel(
         // Create updated config
         val newConfig = currentConfig.copy(
             focusDuration = focusMinutes * 60 * 1000L,
-            shortBreakDuration = shortBreakMinutes * 60 * 1000L,
-            longBreakDuration = longBreakMinutes * 60 * 1000L
+            shortBreakDuration = shortBreakMinutes * 60 * 1000L
         )
 
         Timber.d("Updating config: Focus=$focusMinutes, SB=$shortBreakMinutes, LB=$longBreakMinutes")
