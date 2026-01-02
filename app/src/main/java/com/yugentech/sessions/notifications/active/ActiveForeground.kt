@@ -49,7 +49,7 @@ class ActiveForeground : Service() {
                 if (newTime != remainingSeconds) {
                     remainingSeconds = newTime
                     if (isSessionActive) {
-                        updateNotification(currentSeconds = remainingSeconds)
+                        updateNotification(currentSeconds = remainingSeconds.toLong())
                     }
                 }
             }
@@ -72,7 +72,7 @@ class ActiveForeground : Service() {
             title = sessionTitle,
             message = "Starting session...",
             isOngoing = true,
-            remainingSeconds = remainingSeconds
+            remainingSeconds = remainingSeconds.toLong()
         )
 
         val androidNotification = notificationService.buildNotification(placeholderNotification)
@@ -104,7 +104,7 @@ class ActiveForeground : Service() {
         updateJob = serviceScope.launch {
             while (isSessionActive) {
                 // Fetch latest state directly from ViewModel
-                val syncedSeconds = homeViewModel.uiState.value.currentTime
+                val syncedSeconds = homeViewModel.uiState.value.status.currentTime
                 updateNotification(syncedSeconds)
                 // Delay at end of loop ensures UI updates immediately on start
                 delay(500)
@@ -112,12 +112,12 @@ class ActiveForeground : Service() {
         }
     }
 
-    private fun updateNotification(currentSeconds: Int) {
+    private fun updateNotification(currentSeconds: Long) {
         val notification = createNotification(currentSeconds)
         notificationService.showNotification(notification)
     }
 
-    private fun createNotification(seconds: Int): Notification {
+    private fun createNotification(seconds: Long): Notification {
         val formattedTime = String.format(
             Locale.US,
             "%02d:%02d",
