@@ -4,28 +4,39 @@ import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Slider
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalView
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.yugentech.sessions.theme.tokens.spacing
 import com.yugentech.sessions.ui.dash.components.common.ToastMessage
 import com.yugentech.sessions.ui.dash.components.homeScreen.bottomRow.SessionControlBar
-import com.yugentech.sessions.ui.dash.components.homeScreen.bottomRow.SetsConfigDialog
+import com.yugentech.sessions.ui.dash.components.homeScreen.bottomRow.SetsSettingsDialog
 import com.yugentech.sessions.ui.dash.components.homeScreen.bottomRow.SoundSelectionDialog
 import com.yugentech.sessions.ui.dash.components.homeScreen.durationSelection.DurationPickerDialog
 import com.yugentech.sessions.ui.dash.components.homeScreen.durationSelection.SessionConfigCard
@@ -37,7 +48,7 @@ import com.yugentech.sessions.ui.dash.components.homeScreen.topRow.TaskInputDial
 import com.yugentech.sessions.viewModels.HomeViewModel
 
 private enum class ActiveDialog {
-    None, Focus, ShortBreak, Sets, Sound, Task
+    None, Focus, ShortBreak, SetsSettings, Sound, Task
 }
 
 @Composable
@@ -46,10 +57,11 @@ fun HomeScreen(
     userId: String
 ) {
     val uiState by homeViewModel.uiState.collectAsStateWithLifecycle()
+    val status = uiState.status
+    val config = uiState.config
+
     val scrollState = rememberScrollState()
     val view = LocalView.current
-
-    // Local state to manage which dialog is visible
     var activeDialog by remember { mutableStateOf(ActiveDialog.None) }
 
     LaunchedEffect(userId) {
@@ -72,52 +84,61 @@ fun HomeScreen(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.SpaceEvenly
             ) {
-                // 1. Header (Task Selector)
+                // --- 1. HEADER ---
                 SessionHeader(
-                    isRunning = uiState.isRunning,
-                    sessionTask = uiState.sessionTask,
+                    isRunning = status.isRunning,
+                    sessionTask = config.sessionTask,
                     onTaskClick = { activeDialog = ActiveDialog.Task }
                 )
 
-                // 2. The Main Timer Area
+                // --- 2. TIMER DISPLAY ---
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    ModeTag(mode = uiState.timerMode)
-
+                    ModeTag(mode = status.currentMode)
                     Spacer(modifier = Modifier.height(MaterialTheme.spacing.s))
-
                     TimerDisplay(
-                        displayTime = uiState.currentTime,
-                        selectedDuration = uiState.selectedDuration,
-                        isStudying = uiState.isRunning,
+                        displayTime = (status.currentTime / 1000).toInt(),
+                        selectedDuration = (status.totalTime / 1000).toInt(),
+                        isStudying = status.isRunning,
                         idleLabel = "Press the play button\nto start."
                     )
                 }
 
-                // 3. The Dashboard (Config vs Progress)
+                // --- 3. DASHBOARD (Config vs Progress) ---
                 AnimatedContent(
-                    targetState = uiState.isRunning,
+                    targetState = status.isRunning,
                     label = "dashboard_swap"
                 ) { isRunning ->
                     if (isRunning) {
                         SessionProgressCard(
-                            timerMode = uiState.timerMode,
-                            completedRounds = uiState.completedRounds,
-                            totalRounds = uiState.timerConfig.roundsBeforeLongBreak
+                            timerMode = status.currentMode,
+                            completedSets = status.completedSets,
+                            targetSets = config.targetSets,
+                            longBreakDurationMillis = config.longBreakDuration
                         )
                     } else {
+                        // REVERTED: Now uses the clean 2-button version
                         SessionConfigCard(
-                            config = uiState.timerConfig,
+                            focusDurationMillis = config.focusDuration,
+                            shortBreakDurationMillis = config.shortBreakDuration,
                             onFocusClick = { activeDialog = ActiveDialog.Focus },
                             onShortBreakClick = { activeDialog = ActiveDialog.ShortBreak }
                         )
                     }
                 }
 
-                // 4. The Control Row
-                SessionControlBar()
+                // --- 4. CONTROL BAR ---
+                val isSessionActive = status.currentTime != status.totalTime
+                SessionControlBar(
+                    isStudying = status.isRunning,
+                    isSessionActive = isSessionActive,
+                    onStartStop = { homeViewModel.toggleTimer(view) },
+                    onSoundClick = { activeDialog = ActiveDialog.Sound },
+                    onSetsClick = { activeDialog = ActiveDialog.SetsSettings }, // Open new dialog
+                    onStopDiscard = { homeViewModel.stopAndDiscardSession(view) },
+                    onStopSave = { homeViewModel.stopAndSaveSession(view) }
+                )
             }
 
-            // Error Toasts
             ToastMessage(
                 message = uiState.errorMessage,
                 onDismiss = { homeViewModel.clearError() },
@@ -126,48 +147,48 @@ fun HomeScreen(
 
             // --- DIALOG LOGIC ---
             if (activeDialog != ActiveDialog.None) {
-                val config = uiState.timerConfig
                 val closeDialog = { activeDialog = ActiveDialog.None }
+                val currentFocus = (config.focusDuration / 60000).toInt()
+                val currentShort = (config.shortBreakDuration / 60000).toInt()
+                val currentLong = (config.longBreakDuration / 60000).toInt()
 
                 when (activeDialog) {
                     ActiveDialog.Focus -> {
                         DurationPickerDialog(
                             title = "Focus Duration",
-                            initialValue = (config.focusDuration / 60000).toInt(),
+                            initialValue = currentFocus,
                             range = 5..120,
                             step = 5,
                             onDismiss = closeDialog,
-                            onConfirm = { mins ->
-                                homeViewModel.updateFullConfig(config.copy(focusDuration = mins * 60000L))
+                            onConfirm = { newMins ->
+                                homeViewModel.updateDurations(newMins, currentShort, currentLong)
                                 closeDialog()
                             }
                         )
                     }
-
                     ActiveDialog.ShortBreak -> {
                         DurationPickerDialog(
                             title = "Short Break",
-                            initialValue = (config.shortBreakDuration / 60000).toInt(),
+                            initialValue = currentShort,
                             range = 1..30,
                             step = 1,
                             onDismiss = closeDialog,
-                            onConfirm = { mins ->
-                                homeViewModel.updateFullConfig(config.copy(shortBreakDuration = mins * 60000L))
+                            onConfirm = { newMins ->
+                                homeViewModel.updateDurations(currentFocus, newMins, currentLong)
                                 closeDialog()
                             }
                         )
                     }
 
-                    ActiveDialog.Sets -> {
-                        SetsConfigDialog(
-                            currentRounds = config.roundsBeforeLongBreak,
+                    // NEW: Combined Dialog for Sets & Long Break
+                    ActiveDialog.SetsSettings -> {
+                        SetsSettingsDialog(
+                            currentSets = config.targetSets,
+                            currentLongBreak = currentLong,
                             onDismiss = closeDialog,
-                            onConfirm = { rounds ->
-                                homeViewModel.updateFullConfig(
-                                    config.copy(
-                                        roundsBeforeLongBreak = rounds
-                                    )
-                                )
+                            onConfirm = { newSets, newLongBreak ->
+                                homeViewModel.updateTargetSets(newSets)
+                                homeViewModel.updateDurations(currentFocus, currentShort, newLongBreak)
                                 closeDialog()
                             }
                         )
@@ -175,18 +196,14 @@ fun HomeScreen(
 
                     ActiveDialog.Sound -> {
                         SoundSelectionDialog(
-                            currentSoundId = config.backgroundSoundId,
+                            currentSoundId = config.soundId,
                             onDismiss = closeDialog,
-                            onConfirm = { soundId ->
-                                homeViewModel.updateFullConfig(config.copy(backgroundSoundId = soundId))
-                                closeDialog()
-                            }
+                            onConfirm = { homeViewModel.updateSound(it) }
                         )
                     }
-
                     ActiveDialog.Task -> {
                         TaskInputDialog(
-                            currentTask = uiState.sessionTask,
+                            currentTask = config.sessionTask,
                             onDismiss = closeDialog,
                             onConfirm = { newTask ->
                                 homeViewModel.updateSessionTask(newTask)
@@ -194,7 +211,6 @@ fun HomeScreen(
                             }
                         )
                     }
-
                     ActiveDialog.None -> Unit
                 }
             }

@@ -109,7 +109,6 @@ fun ExitConfirmationDialog(
                             Text(
                                 text = "Exit",
                                 style = MaterialTheme.typography.labelLarge,
-                                // Kept explicit weight here for "Danger" emphasis
                                 fontWeight = FontWeight.Medium,
                                 color = MaterialTheme.colorScheme.error
                             )
