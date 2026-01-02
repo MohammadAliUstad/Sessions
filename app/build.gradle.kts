@@ -79,6 +79,8 @@ gitProperties {
 
 dependencies {
 
+    implementation(libs.wavy.slider)
+
     testImplementation(libs.junit)
     testImplementation(libs.mockk)
     testImplementation(libs.kotlinx.coroutines.test)
