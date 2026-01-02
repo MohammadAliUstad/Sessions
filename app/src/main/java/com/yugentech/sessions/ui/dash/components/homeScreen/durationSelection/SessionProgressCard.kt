@@ -1,4 +1,4 @@
-package com.yugentech.sessions.ui.dash.components.homeScreen// Add this to HomeScreen.kt (or a new file SessionProgressCard.kt)
+package com.yugentech.sessions.ui.dash.components.homeScreen.durationSelection// Add this to HomeScreen.kt (or a new file SessionProgressCard.kt)
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -12,13 +12,13 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.yugentech.sessions.timer.TimerMode
 
@@ -82,7 +82,7 @@ fun SessionProgressCard(
                     text = message,
                     style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.SemiBold),
                     color = MaterialTheme.colorScheme.onSecondaryContainer,
-                    textAlign = androidx.compose.ui.text.style.TextAlign.End
+                    textAlign = TextAlign.End
                 )
             }
         }

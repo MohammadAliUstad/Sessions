@@ -1,4 +1,4 @@
-package com.yugentech.sessions.ui.dash.components.homeScreen// Add this to HomeScreen.kt
+package com.yugentech.sessions.ui.dash.components.homeScreen.bottomRow// Add this to HomeScreen.kt
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column

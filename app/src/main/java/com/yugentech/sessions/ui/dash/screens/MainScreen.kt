@@ -36,8 +36,8 @@ import com.yugentech.sessions.navigation.AppScreens
 import com.yugentech.sessions.theme.tokens.dimensions.AppConstants
 import com.yugentech.sessions.theme.tokens.spacing
 import com.yugentech.sessions.ui.dash.components.common.ToastMessage
-import com.yugentech.sessions.ui.dash.components.homeScreen.ExitConfirmationDialog
-import com.yugentech.sessions.ui.dash.components.homeScreen.LogoutConfirmationDialog
+import com.yugentech.sessions.ui.dash.components.common.ExitConfirmationDialog
+import com.yugentech.sessions.ui.dash.components.common.LogoutConfirmationDialog
 import com.yugentech.sessions.ui.dash.components.mainScreen.BottomNavBar
 import com.yugentech.sessions.ui.dash.components.mainScreen.TopAppBar
 import com.yugentech.sessions.utils.defaultEnterTransition

@@ -1,4 +1,4 @@
-package com.yugentech.sessions.ui.dash.components.homeScreen
+package com.yugentech.sessions.ui.dash.components.homeScreen.durationSelection
 
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.animateColorAsState
@@ -36,6 +36,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import com.yugentech.sessions.theme.tokens.components
 import com.yugentech.sessions.theme.tokens.corners
@@ -199,9 +201,9 @@ private fun RowScope.DurationButton(
 @Composable
 private fun RowScope.ControlButton(
     label: String,
-    icon: androidx.compose.ui.graphics.vector.ImageVector,
-    containerColor: androidx.compose.ui.graphics.Color,
-    contentColor: androidx.compose.ui.graphics.Color,
+    icon: ImageVector,
+    containerColor: Color,
+    contentColor: Color,
     onClick: () -> Unit
 ) {
     Box(
