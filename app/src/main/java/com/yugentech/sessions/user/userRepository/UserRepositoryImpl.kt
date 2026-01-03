@@ -26,7 +26,7 @@ class UserRepositoryImpl(
         try {
             Timber.d("Upserting user locally: ${userData.userId}")
             val entity = UserEntity.fromUserData(userData)
-            userDao.upsertUser(entity)
+            userDao.saveUser(entity)
         } catch (e: Exception) {
             Timber.e(e, "Failed to upsert user locally")
             throw e
@@ -57,7 +57,7 @@ class UserRepositoryImpl(
                     Timber.d("Fetched user profile from cloud. Saving locally.")
 
                     val entity = UserEntity.fromUserData(userData)
-                    userDao.upsertUser(entity)
+                    userDao.saveUser(entity)
 
                     syncPreferences.setUserFetchDone(true)
                     UserResult.Success(Unit)

@@ -19,14 +19,25 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun SmallStepper(value: Int, onValueChange: (Int) -> Unit, range: IntRange, step: Int = 1) {
+fun SmallStepper(
+    value: Int,
+    onValueChange: (Int) -> Unit,
+    range: IntRange,
+    step: Int = 1
+) {
     Row(verticalAlignment = Alignment.CenterVertically) {
         IconButton(
             onClick = { if (value - step >= range.first) onValueChange(value - step) },
             modifier = Modifier
                 .background(MaterialTheme.colorScheme.surfaceVariant, CircleShape)
                 .size(32.dp)
-        ) { Icon(Icons.Default.Remove, "Decrease", modifier = Modifier.size(16.dp)) }
+        ) {
+            Icon(
+                imageVector = Icons.Default.Remove,
+                contentDescription = "Decrease",
+                modifier = Modifier.size(16.dp)
+            )
+        }
 
         Text(
             text = "$value",
@@ -40,6 +51,12 @@ fun SmallStepper(value: Int, onValueChange: (Int) -> Unit, range: IntRange, step
             modifier = Modifier
                 .background(MaterialTheme.colorScheme.primaryContainer, CircleShape)
                 .size(32.dp)
-        ) { Icon(Icons.Default.Add, "Increase", modifier = Modifier.size(16.dp)) }
+        ) {
+            Icon(
+                imageVector = Icons.Default.Add,
+                contentDescription = "Increase",
+                modifier = Modifier.size(16.dp)
+            )
+        }
     }
 }

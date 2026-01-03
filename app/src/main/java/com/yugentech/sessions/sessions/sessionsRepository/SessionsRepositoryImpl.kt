@@ -54,17 +54,6 @@ class SessionsRepositoryImpl(
         }
     }
 
-    override suspend fun deleteAllSessions(userId: String): SessionResult<Unit> {
-        return try {
-            Timber.w("Deleting ALL sessions for user: $userId")
-            sessionsDao.deleteAllSessions(userId)
-            SessionResult.Success(Unit)
-        } catch (e: Exception) {
-            Timber.e(e, "Failed to delete all sessions")
-            SessionResult.Error(e.message ?: "Failed to delete all sessions")
-        }
-    }
-
     override suspend fun syncSessions(userId: String): SessionResult<Unit> {
         return try {
             val pendingSessions = sessionsDao.getPendingSessions(userId)

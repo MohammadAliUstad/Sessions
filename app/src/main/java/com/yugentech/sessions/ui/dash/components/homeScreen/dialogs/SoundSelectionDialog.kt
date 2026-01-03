@@ -1,4 +1,4 @@
-package com.yugentech.sessions.ui.dash.components.homeScreen.bottomRow
+package com.yugentech.sessions.ui.dash.components.homeScreen.dialogs
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
@@ -23,8 +23,12 @@ fun SoundSelectionDialog(
     onDismiss: () -> Unit,
     onConfirm: (String?) -> Unit
 ) {
-    val options =
-        listOf("None" to null, "Rain" to "rain", "White Noise" to "white_noise", "Lofi" to "lofi")
+    val options = listOf(
+        "None" to null,
+        "Rain" to "rain",
+        "White Noise" to "white_noise",
+        "Lofi" to "lofi"
+    )
 
     AlertDialog(
         onDismissRequest = onDismiss,
@@ -35,7 +39,10 @@ fun SoundSelectionDialog(
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .clickable { onConfirm(id) }
+                            .clickable {
+                                onConfirm(id)
+                                onDismiss()
+                            }
                             .padding(vertical = 12.dp),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
@@ -43,14 +50,23 @@ fun SoundSelectionDialog(
                             selected = (currentSoundId == id),
                             onClick = null
                         )
-                        Spacer(modifier = Modifier.width(8.dp))
-                        Text(text = label, style = MaterialTheme.typography.bodyLarge)
+
+                        Spacer(modifier = Modifier.width(16.dp))
+
+                        Text(
+                            text = label,
+                            style = MaterialTheme.typography.bodyLarge
+                        )
                     }
                 }
             }
         },
         confirmButton = {
-            TextButton(onClick = onDismiss) { Text("Close") }
+            TextButton(
+                onClick = onDismiss
+            ) {
+                Text("Cancel")
+            }
         }
     )
 }

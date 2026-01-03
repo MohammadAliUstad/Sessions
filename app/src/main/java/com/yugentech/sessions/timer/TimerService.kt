@@ -16,40 +16,32 @@ import timber.log.Timber
 class TimerService(
     private val coroutineScope: CoroutineScope
 ) {
-    // 1. We now hold the specific 'TimerConfig' (Rules) and 'TimerState' (Live Data)
-    // Initialize with default config
     private val _timerState = MutableStateFlow(TimerState())
     val timerState: StateFlow<TimerState> = _timerState.asStateFlow()
 
     private var timerJob: Job? = null
-
-    // Callback to tell ViewModel "Hey, a session just finished!"
     private var onTimerComplete: ((Int) -> Unit)? = null
 
     init {
-        // Initialize the timer with the default config values
         resetToDefaults()
     }
+
+    // --- Control Methods ---
 
     fun startTimer() {
         if (_timerState.value.isTimerRunning) return
 
         _timerState.update { it.copy(isTimerRunning = true) }
-        Timber.d("Timer started in mode: ${_timerState.value.currentMode}")
+        Timber.d("Timer started: Mode ${_timerState.value.currentMode}")
 
         timerJob = coroutineScope.launch {
             while (_timerState.value.isTimerRunning && _timerState.value.currentTime > 0) {
                 delay(1000)
-
-                // Tick down
-                _timerState.update {
-                    it.copy(currentTime = it.currentTime - 1000L)
-                }
+                _timerState.update { it.copy(currentTime = it.currentTime - 1000) }
             }
 
-            // Check why loop ended: Did we hit 0?
             if (_timerState.value.currentTime <= 0L) {
-                handleSessionComplete()
+                handlePhaseComplete()
             }
         }
     }
@@ -57,85 +49,137 @@ class TimerService(
     fun pauseTimer() {
         timerJob?.cancel()
         _timerState.update { it.copy(isTimerRunning = false) }
-        Timber.d("Timer paused")
     }
 
     fun stopTimer() {
         pauseTimer()
-        // Reset to the beginning of the CURRENT session type
+        // Reset to full duration of CURRENT mode (user basically cancelled this phase)
         val currentTotal = _timerState.value.totalTime
         _timerState.update { it.copy(currentTime = currentTotal) }
     }
 
-    // Handles the "Next Step" logic (Focus -> Break)
-    private fun handleSessionComplete() {
+    // --- CORE LOGIC: The Pit Stop System ---
+
+    private fun handlePhaseComplete() {
         timerJob?.cancel()
-        val completedState = _timerState.value
 
-        // Notify ViewModel to save the session (Only save Focus sessions usually)
-        if (completedState.currentMode == Focus) {
-            onTimerComplete?.invoke((completedState.totalTime / 1000).toInt())
+        val finishedState = _timerState.value
+        val config = finishedState.config
+
+        // 1. Notify Listener (Save Session if it was Focus)
+        if (finishedState.currentMode == Focus) {
+            val seconds = (finishedState.totalTime / 1000).toInt()
+            onTimerComplete?.invoke(seconds)
         }
 
-        // CALCULATE NEXT STATE
-        val config = completedState.config
-        val nextMode: TimerMode
-        val nextTime: Long
-        val nextRounds: Int
+        // 2. Decide Next Step
+        when (finishedState.currentMode) {
+            Focus -> {
+                // Work Finished. Update Progress.
+                val newCompletedSets = finishedState.completedSets + 1
 
-        if (completedState.currentMode == Focus) {
-            // We just finished work. What break do we earn?
-            nextRounds = completedState.completedRounds + 1
-            if (nextRounds >= config.roundsBeforeLongBreak) {
-                nextMode = LongBreak
-                nextTime = config.longBreakDuration
-            } else {
-                nextMode = ShortBreak
-                nextTime = config.shortBreakDuration
+                // CHECK 1: Are we completely done?
+                val isGoalReached = newCompletedSets >= config.targetSets
+
+                if (isGoalReached) {
+                    // SESSION FINISHED. No more breaks.
+                    Timber.i("Target ($newCompletedSets) reached. Stopping session.")
+                    transitionTo(
+                        mode = Focus, // Reset to Focus for next time
+                        duration = config.focusDuration,
+                        completedSets = 0, // Reset counter
+                        autoStart = false  // STOP
+                    )
+                } else {
+                    // Goal NOT reached. We need a break.
+
+                    // CHECK 2: Is it time for a "Pit Stop" (Long Break)?
+                    // e.g., if Interval=3, trigger on set 3, 6, 9...
+                    val isPitStopTime = (newCompletedSets % config.setsInterval) == 0
+
+                    if (isPitStopTime) {
+                        Timber.i("Set $newCompletedSets done. Taking Long Break (Pit Stop).")
+                        transitionTo(
+                            mode = LongBreak,
+                            duration = config.longBreakDuration,
+                            completedSets = newCompletedSets,
+                            autoStart = true
+                        )
+                    } else {
+                        Timber.i("Set $newCompletedSets done. Taking Short Break.")
+                        transitionTo(
+                            mode = ShortBreak,
+                            duration = config.shortBreakDuration,
+                            completedSets = newCompletedSets,
+                            autoStart = true
+                        )
+                    }
+                }
             }
-        } else {
-            // We just finished a break. Back to work!
-            nextMode = Focus
-            nextTime = config.focusDuration
-            // If we just finished a long break, reset rounds? (Optional choice)
-            nextRounds =
-                if (completedState.currentMode == LongBreak) 0 else completedState.completedRounds
+            ShortBreak -> {
+                // Short Break Done -> Back to Work
+                Timber.i("Short Break Complete. Back to Focus.")
+                transitionTo(
+                    mode = Focus,
+                    duration = config.focusDuration,
+                    completedSets = finishedState.completedSets,
+                    autoStart = true
+                )
+            }
+            LongBreak -> {
+                // Long Break Done -> Back to Work (Refreshed!)
+                Timber.i("Long Break Complete. Back to Focus.")
+                transitionTo(
+                    mode = Focus,
+                    duration = config.focusDuration,
+                    completedSets = finishedState.completedSets,
+                    autoStart = true
+                )
+            }
         }
+    }
 
-        // Apply the new state
+    private fun transitionTo(mode: TimerMode, duration: Long, completedSets: Int, autoStart: Boolean) {
         _timerState.update {
             it.copy(
-                isTimerRunning = config.autoStartNext, // Auto-start if config says so
-                currentMode = nextMode,
-                currentTime = nextTime,
-                totalTime = nextTime,
-                completedRounds = nextRounds
+                isTimerRunning = autoStart,
+                currentMode = mode,
+                currentTime = duration,
+                totalTime = duration,
+                completedSets = completedSets
             )
         }
-
-        Timber.i("Session Complete. Switching to $nextMode. AutoStart: ${config.autoStartNext}")
-
-        // If auto-start is on, recurse start
-        if (config.autoStartNext) {
+        if (autoStart) {
             startTimer()
         }
     }
 
-    // Call this when user changes settings in UI
+    // --- Configuration Sync ---
+
     fun updateConfig(newConfig: TimerConfig) {
-        // If timer is running, we might not want to disturb it,
-        // OR we might want to update real-time.
-        // For safety, let's only update the "Next" settings unless we are Idle.
+        _timerState.update { currentState ->
+            val isIdleAtStart = !currentState.isTimerRunning && currentState.currentTime == currentState.totalTime
 
-        _timerState.update {
-            // If we are currently IDLE (full time remaining), update the current display too
-            val isIdle = it.currentTime == it.totalTime && !it.isTimerRunning
+            val shouldUpdateDisplay = isIdleAtStart && (
+                    (currentState.currentMode == Focus && newConfig.focusDuration != currentState.config.focusDuration) ||
+                            (currentState.currentMode == ShortBreak && newConfig.shortBreakDuration != currentState.config.shortBreakDuration) ||
+                            (currentState.currentMode == LongBreak && newConfig.longBreakDuration != currentState.config.longBreakDuration)
+                    )
 
-            it.copy(
+            val newTotalTime = if (shouldUpdateDisplay) {
+                when (currentState.currentMode) {
+                    Focus -> newConfig.focusDuration
+                    ShortBreak -> newConfig.shortBreakDuration
+                    LongBreak -> newConfig.longBreakDuration
+                }
+            } else {
+                currentState.totalTime
+            }
+
+            currentState.copy(
                 config = newConfig,
-                // If we were just sitting at 25:00 and user changed it to 50:00, update the display
-                currentTime = if (isIdle && it.currentMode == Focus) newConfig.focusDuration else it.currentTime,
-                totalTime = if (isIdle && it.currentMode == Focus) newConfig.focusDuration else it.totalTime
+                totalTime = newTotalTime,
+                currentTime = if (shouldUpdateDisplay) newTotalTime else currentState.currentTime
             )
         }
     }
@@ -146,7 +190,9 @@ class TimerService(
             currentTime = defaultConfig.focusDuration,
             totalTime = defaultConfig.focusDuration,
             config = defaultConfig,
-            currentMode = Focus
+            currentMode = Focus,
+            completedSets = 0,
+            isTimerRunning = false
         )
     }
 

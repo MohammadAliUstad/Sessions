@@ -6,7 +6,7 @@ data class Notification(
     val message: String,
     val type: NotificationType,
     val isOngoing: Boolean,
-    val remainingSeconds: Int? = null,
+    val remainingSeconds: Long? = null,
     val totalSeconds: Int? = null
 )
 

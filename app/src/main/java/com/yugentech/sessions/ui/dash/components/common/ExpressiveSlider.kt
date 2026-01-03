@@ -17,7 +17,6 @@ fun ExpressiveSlider(
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
     valueRange: ClosedFloatingPointRange<Float> = 0f..1f,
-    // Note: 'steps' removed as WavySlider doesn't support it
     onValueChangeFinished: (() -> Unit)? = null,
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() }
 ) {
@@ -29,14 +28,11 @@ fun ExpressiveSlider(
         valueRange = valueRange,
         onValueChangeFinished = onValueChangeFinished,
         interactionSource = interactionSource,
-
-        // --- DESIGN SPECS ---
         waveLength = 25.dp,
         waveHeight = 8.dp,
         waveVelocity = 10.dp to WaveDirection.HEAD,
         waveThickness = 4.dp,
         trackThickness = 4.dp,
-        // 'shouldFlatten' removed (not available in this version)
 
         colors = SliderDefaults.colors(
             thumbColor = MaterialTheme.colorScheme.primary,

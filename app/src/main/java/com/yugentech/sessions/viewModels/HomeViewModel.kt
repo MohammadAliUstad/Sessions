@@ -41,7 +41,6 @@ class HomeViewModel(
 
     init {
         // 1. Observe Timer Engine -> Update UI
-        // We map the 'TimerState' (Backend) to 'SessionStatus' & 'SessionConfig' (UI)
         viewModelScope.launch {
             timerRepository.timerState.collect { timerState ->
                 _uiState.update { ui ->
@@ -50,9 +49,9 @@ class HomeViewModel(
                         status = SessionStatus(
                             isRunning = timerState.isTimerRunning,
                             currentMode = timerState.currentMode,
-                            currentTime = timerState.currentTime, // Keep as Long (ms)
-                            totalTime = timerState.totalTime,     // Keep as Long (ms)
-                            completedSets = timerState.completedRounds
+                            currentTime = timerState.currentTime,
+                            totalTime = timerState.totalTime,
+                            completedSets = timerState.completedSets // Updated property name
                         ),
                         // Sync Config (Ensures UI always matches Engine)
                         config = SessionConfig(
@@ -60,16 +59,18 @@ class HomeViewModel(
                             focusDuration = timerState.config.focusDuration,
                             shortBreakDuration = timerState.config.shortBreakDuration,
                             longBreakDuration = timerState.config.longBreakDuration,
-                            targetSets = timerState.config.roundsBeforeLongBreak,
-                            autoStartNext = timerState.config.autoStartNextFocus,
-                            soundId = timerState.config.backgroundSoundId
+                            targetSets = timerState.config.targetSets, // Updated property name
+                            // Loop mode and Sound are removed from Logic,
+                            // but if your UI class still has them, we default them here:
+                            autoStartNext = false,
+                            soundId = null
                         )
                     )
                 }
             }
         }
 
-        // 2. Listen for Natural Completion (00:00)
+        // 2. Listen for Session Completion (Save Data)
         timerRepository.setOnTimerCompleteListener { sessionDurationSeconds ->
             handleTimerComplete(sessionDurationSeconds)
         }
@@ -78,19 +79,14 @@ class HomeViewModel(
     // --- Configuration Inputs ---
 
     fun updateSessionTask(newTask: String) {
-        // Task name is local to UI state until saved
         _uiState.update { it.copy(config = it.config.copy(sessionTask = newTask)) }
     }
 
     fun updateDurations(focusMinutes: Int, shortBreakMinutes: Int, longBreakMinutes: Int) {
-        val focusMillis = focusMinutes * 60 * 1000L
-        val shortBreakMillis = shortBreakMinutes * 60 * 1000L
-        val longBreakMillis = longBreakMinutes * 60 * 1000L
-
         pushConfigToTimer(
-            focusDuration = focusMillis,
-            shortBreakDuration = shortBreakMillis,
-            longBreakDuration = longBreakMillis
+            focusDuration = focusMinutes * 60 * 1000L,
+            shortBreakDuration = shortBreakMinutes * 60 * 1000L,
+            longBreakDuration = longBreakMinutes * 60 * 1000L
         )
     }
 
@@ -98,37 +94,27 @@ class HomeViewModel(
         pushConfigToTimer(targetSets = sets)
     }
 
-    fun toggleAutoStartMode() {
-        val currentAutoStart = _uiState.value.config.autoStartNext
-        pushConfigToTimer(autoStartNext = !currentAutoStart)
-    }
+    // Note: 'toggleAutoStartMode' and 'updateSound' removed as per your request
 
-    fun updateSound(soundId: String?) {
-        pushConfigToTimer(soundId = soundId)
-    }
-
-    // --- Config Sync Helper ---
     private fun pushConfigToTimer(
         focusDuration: Long? = null,
         shortBreakDuration: Long? = null,
         longBreakDuration: Long? = null,
-        targetSets: Int? = null,
-        autoStartNext: Boolean? = null,
-        soundId: String? = null
+        targetSets: Int? = null
     ) {
-        val current = _uiState.value.config
+        // We get the current config from the ENGINE state, not just the UI state
+        // This ensures we don't accidentally overwrite fields we aren't changing
+        val current = timerRepository.timerState.value.config
 
-        // Construct full TimerConfig from arguments OR fallback to current state
         val newTimerConfig = TimerConfig(
             focusDuration = focusDuration ?: current.focusDuration,
             shortBreakDuration = shortBreakDuration ?: current.shortBreakDuration,
             longBreakDuration = longBreakDuration ?: current.longBreakDuration,
-            roundsBeforeLongBreak = targetSets ?: current.targetSets,
-            autoStartNextFocus = autoStartNext ?: current.autoStartNext,
-            backgroundSoundId = soundId ?: current.soundId
+            targetSets = targetSets ?: current.targetSets
+            // setsInterval defaults to 4 (or whatever is in TimerConfig default)
+            // if we need to change it dynamically, we'd add a parameter here.
         )
 
-        // Send to Engine
         timerRepository.updateConfig(newTimerConfig)
     }
 
@@ -156,15 +142,8 @@ class HomeViewModel(
     private fun stopTimer(view: View? = null, isPause: Boolean = false) {
         viewModelScope.launch {
             Timber.i(if (isPause) "Pausing session" else "Stopping session")
-
             clearActiveSessionMonitoring()
-
-            if (isPause) {
-                timerRepository.stopTimer() // Fixed: Was stopTimer()
-            } else {
-                timerRepository.stopTimer()  // Resets session
-            }
-
+            timerRepository.stopTimer() // Service handles Pause vs Reset logic
             alertsRepository.playSessionStopAlert(view)
         }
     }
@@ -177,11 +156,8 @@ class HomeViewModel(
     // "Finish": Save partial progress and Reset
     fun stopAndSaveSession(view: View? = null) {
         val status = _uiState.value.status
-        val totalTime = status.totalTime
-        val currentTime = status.currentTime
-
         // Calculate elapsed time (ms -> sec)
-        val timeSpentSeconds = ((totalTime - currentTime) / 1000).toInt()
+        val timeSpentSeconds = ((status.totalTime - status.currentTime) / 1000).toInt()
 
         // Only save meaningful progress (>0s) in Focus Mode
         if (timeSpentSeconds > 0 && status.currentMode == TimerMode.Focus) {
@@ -190,14 +166,12 @@ class HomeViewModel(
                 processAndSaveSession(userId, timeSpentSeconds, view)
             }
         }
-
-        // Reset timer
         stopTimer(view, isPause = false)
     }
 
     // --- Session Saving (Backend) ---
 
-    // Triggered by TimerService when 00:00 is reached naturally
+    // Triggered by TimerService when a Focus session finishes naturally
     private fun handleTimerComplete(sessionDurationSeconds: Int) {
         val userId = currentUserId ?: timerRepository.getSessionUserId() ?: return
         processAndSaveSession(userId, sessionDurationSeconds, null)
@@ -205,9 +179,9 @@ class HomeViewModel(
 
     private fun processAndSaveSession(userId: String, durationSeconds: Int, view: View?) {
         viewModelScope.launch {
-            // Play sound if manual save (Natural completion sound is handled by Service/AlertsRepo)
             if (view != null) alertsRepository.playSessionStopAlert(view)
 
+            // Trigger a sync to ensure we are up to date before saving new data
             syncPendingSessions(userId)
 
             val session = Session(
@@ -229,10 +203,9 @@ class HomeViewModel(
         }
     }
 
-    // --- Helpers ---
+    // --- Helpers (Notifications & Data) ---
 
     private fun setupActiveSessionMonitoring() {
-        // Display seconds remaining in notifications
         val remainingSeconds = (_uiState.value.status.currentTime / 1000).toInt()
         val taskName = _uiState.value.config.sessionTask.ifBlank { "Focus" }
 
@@ -256,8 +229,6 @@ class HomeViewModel(
         viewModelScope.launch { notificationRepository.stopActiveSession() }
         FirebaseCrashlytics.getInstance().setCustomKey("is_session_active", false)
     }
-
-    // --- Data Fetching ---
 
     fun setUserId(userId: String) {
         currentUserId = userId

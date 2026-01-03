@@ -18,9 +18,6 @@ interface SessionsRepository {
     // Deletes a specific session by ID
     suspend fun deleteSession(userId: String, sessionId: String): SessionResult<Unit>
 
-    // Clears all session history for a user
-    suspend fun deleteAllSessions(userId: String): SessionResult<Unit>
-
     // Uploads pending local sessions to the cloud
     suspend fun syncSessions(userId: String): SessionResult<Unit>
 
