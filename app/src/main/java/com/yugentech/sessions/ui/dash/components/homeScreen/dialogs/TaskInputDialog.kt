@@ -34,12 +34,18 @@ fun TaskInputDialog(
             )
         },
         confirmButton = {
-            Button(onClick = { onConfirm(text) }) {
+            Button(
+                onClick = {
+                    onConfirm(text)
+                }
+            ) {
                 Text("Set")
             }
         },
         dismissButton = {
-            TextButton(onClick = onDismiss) {
+            TextButton(
+                onClick = onDismiss
+            ) {
                 Text("Cancel")
             }
         }
