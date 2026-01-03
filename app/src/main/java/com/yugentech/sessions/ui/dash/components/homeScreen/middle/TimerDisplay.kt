@@ -84,7 +84,7 @@ fun TimerDisplay(
             color = MaterialTheme.colorScheme.primary,
             trackColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.3f),
             strokeWidth = strokeWidth,
-            modifier = Modifier.size(220.dp)
+            modifier = Modifier.size(320.dp)
         )
 
         Column(

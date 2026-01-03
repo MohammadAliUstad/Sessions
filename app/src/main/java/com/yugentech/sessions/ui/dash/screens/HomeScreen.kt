@@ -134,7 +134,6 @@ fun HomeScreen(
                 modifier = Modifier.align(Alignment.TopCenter)
             )
 
-            // --- DIALOG LOGIC ---
             if (activeDialog != ActiveDialog.None) {
                 val closeDialog = { activeDialog = ActiveDialog.None }
                 val currentFocus = (config.focusDuration / 60000).toInt()
@@ -170,7 +169,6 @@ fun HomeScreen(
                         )
                     }
 
-                    // NEW: Combined Dialog for Sets & Long Break
                     ActiveDialog.SetsSettings -> {
                         SetsSettingsDialog(
                             currentSets = config.targetSets,

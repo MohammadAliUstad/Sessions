@@ -31,13 +31,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.content.ContextCompat
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.yugentech.sessions.navigation.AppScreens
 import com.yugentech.sessions.theme.tokens.dimensions.AppConstants
 import com.yugentech.sessions.theme.tokens.spacing
-import com.yugentech.sessions.ui.dash.components.common.ToastMessage
 import com.yugentech.sessions.ui.dash.components.common.ExitConfirmationDialog
 import com.yugentech.sessions.ui.dash.components.common.LogoutConfirmationDialog
+import com.yugentech.sessions.ui.dash.components.common.ToastMessage
 import com.yugentech.sessions.ui.dash.components.mainScreen.BottomNavBar
 import com.yugentech.sessions.ui.dash.components.mainScreen.TopAppBar
 import com.yugentech.sessions.utils.defaultEnterTransition
@@ -67,10 +66,6 @@ fun MainScreen(
     onSettings: () -> Unit
 ) {
     val context = LocalContext.current
-
-    // 1. Observe the HomeViewModel state to get isRunning status
-    val homeUiState by homeViewModel.uiState.collectAsStateWithLifecycle()
-
     var toastMessage by remember { mutableStateOf<String?>(null) }
     var hasCheckedPermission by rememberSaveable { mutableStateOf(false) }
 
@@ -155,8 +150,6 @@ fun MainScreen(
             topBar = {
                 TopAppBar(
                     currentScreen = currentScreen,
-                    // 2. Pass the running state to the TopAppBar
-                    isRunning = homeUiState.status.isRunning,
                     onLogout = { showLogoutDialog = true },
                     onSettings = onSettings,
                     scrollBehavior = scrollBehavior
