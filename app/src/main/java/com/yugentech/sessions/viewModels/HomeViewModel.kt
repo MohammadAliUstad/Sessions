@@ -16,6 +16,8 @@ import com.yugentech.sessions.timer.TimerMode
 import com.yugentech.sessions.timer.timerRepository.TimerRepository
 import com.yugentech.sessions.user.userRepository.UserRepository
 import com.yugentech.sessions.utils.HomeUiState
+import com.yugentech.sessions.utils.SessionConfig
+import com.yugentech.sessions.utils.SessionStatus
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -38,136 +40,187 @@ class HomeViewModel(
     private var currentUserId: String? = null
 
     init {
-        // 1. Observe the new Rich TimerState from the Repository
+        // 1. Observe Timer Engine -> Update UI
+        // We map the 'TimerState' (Backend) to 'SessionStatus' & 'SessionConfig' (UI)
         viewModelScope.launch {
             timerRepository.timerState.collect { timerState ->
                 _uiState.update { ui ->
                     ui.copy(
-                        isRunning = timerState.isTimerRunning,
-                        // Convert ms to seconds for the UI
-                        currentTime = (timerState.currentTime / 1000).toInt(),
-                        selectedDuration = (timerState.totalTime / 1000).toInt(),
-                        // Optional: map timerState.currentMode to a UI property if you added one
-                        // e.g. isBreakMode = timerState.currentMode != TimerMode.Focus
+                        // Sync Status
+                        status = SessionStatus(
+                            isRunning = timerState.isTimerRunning,
+                            currentMode = timerState.currentMode,
+                            currentTime = timerState.currentTime, // Keep as Long (ms)
+                            totalTime = timerState.totalTime,     // Keep as Long (ms)
+                            completedSets = timerState.completedRounds
+                        ),
+                        // Sync Config (Ensures UI always matches Engine)
+                        config = SessionConfig(
+                            sessionTask = ui.config.sessionTask, // Preserve local task input
+                            focusDuration = timerState.config.focusDuration,
+                            shortBreakDuration = timerState.config.shortBreakDuration,
+                            longBreakDuration = timerState.config.longBreakDuration,
+                            targetSets = timerState.config.roundsBeforeLongBreak,
+                            autoStartNext = timerState.config.autoStartNextFocus,
+                            soundId = timerState.config.backgroundSoundId
+                        )
                     )
                 }
             }
         }
 
-        // 2. Listen for natural timer completion (handled by Service)
+        // 2. Listen for Natural Completion (00:00)
         timerRepository.setOnTimerCompleteListener { sessionDurationSeconds ->
             handleTimerComplete(sessionDurationSeconds)
         }
     }
 
-    // --- Configuration ---
-
-    // Replaces updateSelectedDuration
-    // Call this from your new BottomSheet when user picks times
-    fun updateConfig(focusMinutes: Int, shortBreakMinutes: Int, longBreakMinutes: Int) {
-        val currentConfig = timerRepository.timerState.value.config
-
-        // Create updated config
-        val newConfig = currentConfig.copy(
-            focusDuration = focusMinutes * 60 * 1000L,
-            shortBreakDuration = shortBreakMinutes * 60 * 1000L
-        )
-
-        Timber.d("Updating config: Focus=$focusMinutes, SB=$shortBreakMinutes, LB=$longBreakMinutes")
-        timerRepository.updateConfig(newConfig)
-    }
+    // --- Configuration Inputs ---
 
     fun updateSessionTask(newTask: String) {
-        _uiState.update { it.copy(sessionTask = newTask) }
+        // Task name is local to UI state until saved
+        _uiState.update { it.copy(config = it.config.copy(sessionTask = newTask)) }
     }
 
-//     Add this helper to HomeViewModel.kt if you haven't yet:
- fun updateFullConfig(newConfig: TimerConfig) {
-     timerRepository.updateConfig(newConfig)
- }
+    fun updateDurations(focusMinutes: Int, shortBreakMinutes: Int, longBreakMinutes: Int) {
+        val focusMillis = focusMinutes * 60 * 1000L
+        val shortBreakMillis = shortBreakMinutes * 60 * 1000L
+        val longBreakMillis = longBreakMinutes * 60 * 1000L
+
+        pushConfigToTimer(
+            focusDuration = focusMillis,
+            shortBreakDuration = shortBreakMillis,
+            longBreakDuration = longBreakMillis
+        )
+    }
+
+    fun updateTargetSets(sets: Int) {
+        pushConfigToTimer(targetSets = sets)
+    }
+
+    fun toggleAutoStartMode() {
+        val currentAutoStart = _uiState.value.config.autoStartNext
+        pushConfigToTimer(autoStartNext = !currentAutoStart)
+    }
+
+    fun updateSound(soundId: String?) {
+        pushConfigToTimer(soundId = soundId)
+    }
+
+    // --- Config Sync Helper ---
+    private fun pushConfigToTimer(
+        focusDuration: Long? = null,
+        shortBreakDuration: Long? = null,
+        longBreakDuration: Long? = null,
+        targetSets: Int? = null,
+        autoStartNext: Boolean? = null,
+        soundId: String? = null
+    ) {
+        val current = _uiState.value.config
+
+        // Construct full TimerConfig from arguments OR fallback to current state
+        val newTimerConfig = TimerConfig(
+            focusDuration = focusDuration ?: current.focusDuration,
+            shortBreakDuration = shortBreakDuration ?: current.shortBreakDuration,
+            longBreakDuration = longBreakDuration ?: current.longBreakDuration,
+            roundsBeforeLongBreak = targetSets ?: current.targetSets,
+            autoStartNextFocus = autoStartNext ?: current.autoStartNext,
+            backgroundSoundId = soundId ?: current.soundId
+        )
+
+        // Send to Engine
+        timerRepository.updateConfig(newTimerConfig)
+    }
 
     // --- Timer Controls ---
 
     fun toggleTimer(view: View? = null) {
-        if (_uiState.value.isRunning) {
-            stopTimer(view) // Or pauseTimer(view) if you prefer pause behavior
+        if (_uiState.value.status.isRunning) {
+            stopTimer(view, isPause = true)
         } else {
             startTimer(view)
         }
     }
 
-    fun startTimer(view: View? = null) {
-        if (_uiState.value.isRunning) return
+    private fun startTimer(view: View? = null) {
+        if (_uiState.value.status.isRunning) return
 
         viewModelScope.launch {
-            Timber.i("Starting session")
-
-            // Crashlytics & Notifications
+            Timber.i("Starting timer")
             setupActiveSessionMonitoring()
-
             timerRepository.startTimer()
             alertsRepository.playSessionStartAlert(view)
         }
     }
 
-    fun stopTimer(view: View? = null) {
+    private fun stopTimer(view: View? = null, isPause: Boolean = false) {
         viewModelScope.launch {
-            Timber.i("Stopping/Pausing session")
+            Timber.i(if (isPause) "Pausing session" else "Stopping session")
 
-            // Cleanup monitoring
             clearActiveSessionMonitoring()
 
-            // Decide: Do you want 'Stop' to PAUSE or RESET?
-            // timerRepository.pauseTimer() // If you want to resume later
-            timerRepository.stopTimer()     // If you want to reset to start of session
+            if (isPause) {
+                timerRepository.stopTimer() // Fixed: Was stopTimer()
+            } else {
+                timerRepository.stopTimer()  // Resets session
+            }
 
             alertsRepository.playSessionStopAlert(view)
         }
     }
 
-    // Discard current progress and reset
+    // "Discard": Stop and Reset without saving
     fun stopAndDiscardSession(view: View? = null) {
-        Timber.i("Discarding session")
-        stopTimer(view) // stopTimer now resets internally in the service
+        stopTimer(view, isPause = false)
     }
 
-    // Stops timer and attempts to save the session data
+    // "Finish": Save partial progress and Reset
     fun stopAndSaveSession(view: View? = null) {
-        stopTimer()
+        val status = _uiState.value.status
+        val totalTime = status.totalTime
+        val currentTime = status.currentTime
+
+        // Calculate elapsed time (ms -> sec)
+        val timeSpentSeconds = ((totalTime - currentTime) / 1000).toInt()
+
+        // Only save meaningful progress (>0s) in Focus Mode
+        if (timeSpentSeconds > 0 && status.currentMode == TimerMode.Focus) {
+            val userId = currentUserId ?: timerRepository.getSessionUserId()
+            if (userId != null) {
+                processAndSaveSession(userId, timeSpentSeconds, view)
+            }
+        }
+
+        // Reset timer
+        stopTimer(view, isPause = false)
     }
 
-    // --- Session Saving Logic ---
+    // --- Session Saving (Backend) ---
 
-    // Called automatically by TimerService when countdown hits 0
-    private fun handleTimerComplete(sessionDuration: Int) {
-        Timber.i("Timer completed naturally: $sessionDuration seconds")
+    // Triggered by TimerService when 00:00 is reached naturally
+    private fun handleTimerComplete(sessionDurationSeconds: Int) {
         val userId = currentUserId ?: timerRepository.getSessionUserId() ?: return
-
-        // Only save if it was a FOCUS session (Service filters this, but safety check doesn't hurt)
-        // You can check _uiState or timerState here if needed.
-
-        processAndSaveSession(userId, sessionDuration, null)
+        processAndSaveSession(userId, sessionDurationSeconds, null)
     }
 
-    private fun processAndSaveSession(userId: String, duration: Int, view: View?) {
+    private fun processAndSaveSession(userId: String, durationSeconds: Int, view: View?) {
         viewModelScope.launch {
-            clearActiveSessionMonitoring()
-            alertsRepository.playSessionStopAlert(view)
+            // Play sound if manual save (Natural completion sound is handled by Service/AlertsRepo)
+            if (view != null) alertsRepository.playSessionStopAlert(view)
+
             syncPendingSessions(userId)
 
             val session = Session(
                 sessionId = UUID.randomUUID().toString(),
-                duration = duration,
-                timestamp = System.currentTimeMillis()
+                duration = durationSeconds,
+                timestamp = System.currentTimeMillis(),
+                sessionTask = _uiState.value.config.sessionTask.ifBlank { "Focus Session" }
             )
 
-            Timber.d("Saving session: ${session.sessionId}, duration: $duration")
+            Timber.d("Saving session: ${session.sessionId}, Duration: ${durationSeconds}s")
 
             when (sessionsRepository.saveSession(userId, session)) {
-                is SessionResult.Success -> {
-                    Timber.i("Session saved successfully")
-                    // No need to call resetSessionState(); TimerService handles the transition to Break automatically!
-                }
+                is SessionResult.Success -> Timber.i("Session saved successfully")
                 is SessionResult.Error -> {
                     Timber.e("Failed to save session")
                     _uiState.update { it.copy(errorMessage = "Failed to save session") }
@@ -179,30 +232,32 @@ class HomeViewModel(
     // --- Helpers ---
 
     private fun setupActiveSessionMonitoring() {
-        val durationSeconds = _uiState.value.selectedDuration
+        // Display seconds remaining in notifications
+        val remainingSeconds = (_uiState.value.status.currentTime / 1000).toInt()
+        val taskName = _uiState.value.config.sessionTask.ifBlank { "Focus" }
+
         FirebaseCrashlytics.getInstance().setCustomKey("is_session_active", true)
-        FirebaseCrashlytics.getInstance().setCustomKey("session_duration", durationSeconds)
 
         viewModelScope.launch {
             notificationRepository.startActiveSession(
                 Notification(
                     id = 1001,
                     title = "Sessions",
-                    message = "Focus is active", // You can customize this based on Focus/Break mode later
+                    message = "$taskName in progress",
                     type = NotificationType.ACTIVE,
                     isOngoing = true,
-                    remainingSeconds = durationSeconds
+                    remainingSeconds = remainingSeconds.toLong()
                 )
             )
         }
     }
 
     private fun clearActiveSessionMonitoring() {
-        viewModelScope.launch {
-            notificationRepository.stopActiveSession()
-        }
+        viewModelScope.launch { notificationRepository.stopActiveSession() }
         FirebaseCrashlytics.getInstance().setCustomKey("is_session_active", false)
     }
+
+    // --- Data Fetching ---
 
     fun setUserId(userId: String) {
         currentUserId = userId
