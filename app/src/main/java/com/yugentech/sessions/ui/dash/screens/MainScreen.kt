@@ -156,7 +156,7 @@ fun MainScreen(
                 TopAppBar(
                     currentScreen = currentScreen,
                     // 2. Pass the running state to the TopAppBar
-                    isRunning = homeUiState.isRunning,
+                    isRunning = homeUiState.status.isRunning,
                     onLogout = { showLogoutDialog = true },
                     onSettings = onSettings,
                     scrollBehavior = scrollBehavior

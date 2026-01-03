@@ -1,28 +1,41 @@
 package com.yugentech.sessions.utils
 
-import com.yugentech.sessions.theme.tokens.dimensions.AppConstants
 import com.yugentech.sessions.timer.TimerMode
 
 data class HomeUiState(
+    // 1. SETTINGS: The rules user selected
     val config: SessionConfig = SessionConfig(),
+
+    // 2. RUNTIME: The live status of the timer
     val status: SessionStatus = SessionStatus(),
+
+    // 3. ALERTS: Any temporary messages
     val errorMessage: String? = null
 )
 
-// The Setup: Settings the user configures before starting
 data class SessionConfig(
-    val sessionTask: String = AppConstants.EMPTY_STRING,           // The task name (e.g. "Math")
-    val focusDuration: Int = 25 * 60,       // In seconds
-    val shortBreakDuration: Int = 5 * 60,   // In seconds
-    val targetSets: Int = 4,                // Goal number of sets
-    val soundId: Int = AppConstants.ZERO                    // Background sound selection
+    val sessionTask: String = "",
+
+    // Durations (Changed Int -> Long)
+    val focusDuration: Long = 25 * 60 * 1000L,      // 25 mins
+    val shortBreakDuration: Long = 5 * 60 * 1000L,  // 5 mins
+    val longBreakDuration: Long = 15 * 60 * 1000L,  // 15 mins
+
+    // Goals
+    val targetSets: Int = 4,
+
+    // Behavior
+    val autoStartNext: Boolean = false,
+    val soundId: String? = null
 )
 
-// The Runtime: Live data tracking the active timer
 data class SessionStatus(
     val isRunning: Boolean = false,
     val currentMode: TimerMode = TimerMode.Focus,
-    val currentTime: Int = AppConstants.ZERO,   // Current countdown
-    val totalTime: Int = AppConstants.ZERO,     // Total time (for progress calculation)
-    val completedSets: Int = AppConstants.ZERO                  // Current progress towards goal
+
+    // Runtime values (Changed Int -> Long)
+    val currentTime: Long = 0L,     // Time remaining (ms)
+    val totalTime: Long = 0L,       // Total duration (ms)
+
+    val completedSets: Int = 0
 )

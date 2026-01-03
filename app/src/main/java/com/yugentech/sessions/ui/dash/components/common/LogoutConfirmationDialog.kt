@@ -68,7 +68,6 @@ fun LogoutConfirmationDialog(
 
                     Text(
                         text = "Sign Out",
-                        // Standard M3 Dialog Title
                         style = MaterialTheme.typography.headlineSmall,
                         color = MaterialTheme.colorScheme.onSurface,
                         textAlign = TextAlign.Center
@@ -78,7 +77,6 @@ fun LogoutConfirmationDialog(
 
                     Text(
                         text = "Are you sure you want to sign out of your account?",
-                        // Standard M3 Dialog Body
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                         textAlign = TextAlign.Center
@@ -96,7 +94,6 @@ fun LogoutConfirmationDialog(
                         ) {
                             Text(
                                 text = "Cancel",
-                                // Standard M3 Button Text
                                 style = MaterialTheme.typography.labelLarge,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant
                             )
@@ -109,7 +106,6 @@ fun LogoutConfirmationDialog(
                             Text(
                                 text = "Sign Out",
                                 style = MaterialTheme.typography.labelLarge,
-                                // Kept explicit weight here for "Danger" emphasis
                                 fontWeight = FontWeight.Medium,
                                 color = MaterialTheme.colorScheme.error
                             )
