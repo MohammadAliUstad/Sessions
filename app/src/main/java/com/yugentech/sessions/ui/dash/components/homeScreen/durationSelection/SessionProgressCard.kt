@@ -45,21 +45,19 @@ fun SessionProgressCard(
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .height(160.dp) // FIXED: Matches SessionConfigCard exactly
+            .height(160.dp)
             .padding(horizontal = 16.dp, vertical = 8.dp),
         shape = RoundedCornerShape(24.dp),
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.secondaryContainer
-        ),
-        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
+        )
     ) {
         Column(
             modifier = Modifier
                 .fillMaxHeight()
-                .padding(16.dp), // Consistent padding
-            verticalArrangement = Arrangement.SpaceBetween // Distributes content evenly
+                .padding(16.dp),
+            verticalArrangement = Arrangement.SpaceBetween
         ) {
-            // --- ROW 1: Header ---
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
@@ -72,7 +70,9 @@ fun SessionProgressCard(
                         modifier = Modifier.size(16.dp),
                         tint = MaterialTheme.colorScheme.onSecondaryContainer.copy(alpha = 0.6f)
                     )
+
                     Spacer(modifier = Modifier.width(6.dp))
+
                     Text(
                         text = if (isLongBreak) "Goal Reached" else "Session Goal",
                         style = MaterialTheme.typography.labelSmall,
@@ -95,7 +95,9 @@ fun SessionProgressCard(
                             modifier = Modifier.size(12.dp),
                             tint = MaterialTheme.colorScheme.onSurface
                         )
+
                         Spacer(modifier = Modifier.width(4.dp))
+
                         Text(
                             text = "${longBreakDurationMillis / 60000}m Long Break",
                             style = MaterialTheme.typography.labelSmall,
@@ -106,7 +108,6 @@ fun SessionProgressCard(
                 }
             }
 
-            // --- ROW 2: Stats (Centered by SpaceBetween) ---
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.Bottom,
@@ -158,7 +159,6 @@ fun SessionProgressCard(
                 }
             }
 
-            // --- ROW 3: Bar (Pushed to bottom) ---
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(4.dp)
@@ -175,7 +175,7 @@ fun SessionProgressCard(
                     Box(
                         modifier = Modifier
                             .weight(1f)
-                            .height(6.dp) // Slightly thicker bar for better visibility
+                            .height(6.dp)
                             .clip(RoundedCornerShape(3.dp))
                             .background(barColor)
                     )

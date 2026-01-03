@@ -41,7 +41,7 @@ fun SessionConfigCard(
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .height(160.dp) // FIXED: Matches SessionProgressCard exactly
+            .height(160.dp)
             .padding(horizontal = 16.dp, vertical = 8.dp)
             .clip(RoundedCornerShape(24.dp)),
         colors = CardDefaults.cardColors(
