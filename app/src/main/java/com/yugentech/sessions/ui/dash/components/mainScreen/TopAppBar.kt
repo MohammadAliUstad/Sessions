@@ -32,7 +32,6 @@ import com.yugentech.sessions.theme.tokens.spacing
 @Composable
 fun TopAppBar(
     currentScreen: AppScreens,
-    isRunning: Boolean = false,
     onLogout: () -> Unit,
     onSettings: () -> Unit = {},
     scrollBehavior: TopAppBarScrollBehavior? = null
@@ -47,19 +46,16 @@ fun TopAppBar(
         ).random()
     }
 
-    // Determine Icon and Text based on screen & state
     val (titleText, screenIcon) = when (currentScreen) {
-        AppScreens.Home -> {
-            val text = if (isRunning) "Stay Focused" else idleMessage
-            text to Icons.Default.Timer
-        }
+        AppScreens.Home -> idleMessage to Icons.Default.Timer
         AppScreens.Profile -> "Profile" to Icons.Default.Person
     }
 
     TopAppBar(
         title = {
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                // RESTORED: The Icon
+            Row(
+                verticalAlignment = Alignment.CenterVertically
+            ) {
                 Icon(
                     imageVector = screenIcon,
                     contentDescription = null,
@@ -69,7 +65,6 @@ fun TopAppBar(
 
                 Spacer(modifier = Modifier.width(MaterialTheme.spacing.s))
 
-                // RESTORED: HeadlineMedium style
                 Text(
                     text = titleText,
                     style = MaterialTheme.typography.headlineMedium,
