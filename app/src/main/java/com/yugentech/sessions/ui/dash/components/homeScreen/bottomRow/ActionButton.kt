@@ -42,11 +42,10 @@ fun ActionButton(
         label = "button-content-color"
     )
 
-    // Using Surface instead of FloatingActionButton to remove elevation/shadow
     Surface(
         onClick = onPlayPause,
         modifier = modifier
-            .size(72.dp) // Standard large FAB size
+            .size(72.dp)
             .padding(8.dp),
         shape = CircleShape,
         color = containerColor,

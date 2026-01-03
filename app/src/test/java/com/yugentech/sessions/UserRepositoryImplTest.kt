@@ -59,7 +59,7 @@ class UserRepositoryImplTest {
         assertTrue(result is UserResult.Success)
 
         // Verify we saved to DB
-        coVerify { userDao.upsertUser(any<UserEntity>()) }
+        coVerify { userDao.saveUser(any<UserEntity>()) }
         
         // Verify we updated preferences
         coVerify { syncPreferences.setUserFetchDone(true) }
@@ -83,7 +83,7 @@ class UserRepositoryImplTest {
         assertEquals("Server 500 Error", (result as UserResult.Error).message)
 
         // CRITICAL: Ensure we did NOT save bad data to the local DB
-        coVerify(exactly = 0) { userDao.upsertUser(any()) }
+        coVerify(exactly = 0) { userDao.saveUser(any()) }
 
         // CRITICAL: Ensure we did NOT mark the fetch as "Done" (so we try again next time)
         coVerify(exactly = 0) { syncPreferences.setUserFetchDone(true) }

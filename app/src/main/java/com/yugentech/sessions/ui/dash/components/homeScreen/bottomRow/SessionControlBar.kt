@@ -1,5 +1,10 @@
-package com.yugentech.sessions.ui.dash.components.homeScreen.bottomRow// Add this to HomeScreen.kt
+package com.yugentech.sessions.ui.dash.components.homeScreen.bottomRow
 
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -9,8 +14,10 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Check
+import androidx.compose.material.icons.outlined.Close
 import androidx.compose.material.icons.outlined.GraphicEq
-import androidx.compose.material.icons.outlined.Tune
+import androidx.compose.material.icons.outlined.Layers
 import androidx.compose.material3.FilledTonalIconButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButtonDefaults
@@ -19,12 +26,18 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 
 @Composable
 fun SessionControlBar(
+    isStudying: Boolean,
+    isSessionActive: Boolean,
+    onStartStop: () -> Unit,
+    onSoundClick: () -> Unit,
+    onSetsClick: () -> Unit,
+    onStopDiscard: () -> Unit,
+    onStopSave: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Row(
@@ -32,57 +45,102 @@ fun SessionControlBar(
             .fillMaxWidth()
             .padding(horizontal = 24.dp),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween
+        horizontalArrangement = Arrangement.SpaceEvenly
     ) {
-        // LEFT: Sound Button
-        SecondaryActionButton(
-            icon = Icons.Outlined.GraphicEq,
-            label = "Sound",
-            onClick = { /* TODO: Open Sound Dialog */ },
-            enabled = true
-        )
+        AnimatedContent(
+            targetState = isSessionActive,
+            transitionSpec = { fadeIn(tween(200)) togetherWith fadeOut(tween(200)) },
+            label = "LeftButton"
+        ) { active ->
+            if (active) {
+                SecondaryActionButton(
+                    icon = Icons.Outlined.Close,
+                    label = "Discard",
+                    onClick = onStopDiscard
+                )
+            } else {
+                SecondaryActionButton(
+                    icon = Icons.Outlined.GraphicEq,
+                    label = "Sound",
+                    onClick = onSoundClick
+                )
+            }
+        }
 
-        // CENTER: Play/Pause (Visual Only)
         ActionButton(
-            isStudying = false, // Toggle this manually to see animation
-            onPlayPause = { /* TODO: Toggle Timer */ }
+            isStudying = isStudying,
+            onPlayPause = onStartStop
         )
 
-        // RIGHT: Sets Button
-        SecondaryActionButton(
-            icon = Icons.Outlined.Tune,
-            label = "Sets",
-            onClick = { /* TODO: Open Sets Dialog */ },
-            enabled = true
-        )
+        AnimatedContent(
+            targetState = isSessionActive,
+            transitionSpec = { fadeIn(tween(200)) togetherWith fadeOut(tween(200)) },
+            label = "RightButton"
+        ) { active ->
+            if (active) {
+                SecondaryActionButton(
+                    icon = Icons.Outlined.Check,
+                    label = "Finish",
+                    onClick = onStopSave,
+                    isActive = true
+                )
+            } else {
+                SecondaryActionButton(
+                    icon = Icons.Outlined.Layers,
+                    label = "Sets",
+                    onClick = onSetsClick
+                )
+            }
+        }
     }
 }
 
-// Helper Component for the small side buttons
 @Composable
 fun SecondaryActionButton(
     icon: ImageVector,
     label: String,
     onClick: () -> Unit,
-    enabled: Boolean
+    isActive: Boolean = false
 ) {
-    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+
+    val containerColor =
+        if (isActive)
+            MaterialTheme.colorScheme.primaryContainer
+        else
+            MaterialTheme.colorScheme.surfaceVariant
+
+    val contentColor =
+        if (isActive)
+            MaterialTheme.colorScheme.onPrimaryContainer
+        else
+            MaterialTheme.colorScheme.onSurfaceVariant
+
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+
         FilledTonalIconButton(
             onClick = onClick,
-            enabled = enabled,
             modifier = Modifier.size(50.dp),
             colors = IconButtonDefaults.filledTonalIconButtonColors(
-                containerColor = MaterialTheme.colorScheme.surfaceVariant,
-                contentColor = MaterialTheme.colorScheme.onSurfaceVariant
+                containerColor = containerColor,
+                contentColor = contentColor
             )
         ) {
-            Icon(icon, contentDescription = label)
+            Icon(
+                icon,
+                contentDescription = label
+            )
         }
-        Spacer(modifier = Modifier.height(4.dp))
+
+        Spacer(
+            modifier = Modifier.height(4.dp)
+        )
+
         Text(
             text = label,
             style = MaterialTheme.typography.labelSmall,
-            color = if (enabled) MaterialTheme.colorScheme.onSurfaceVariant else Color.LightGray
+            color = MaterialTheme.colorScheme.onSurfaceVariant
         )
     }
 }

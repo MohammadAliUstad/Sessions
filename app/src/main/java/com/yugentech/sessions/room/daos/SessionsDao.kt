@@ -1,9 +1,8 @@
 package com.yugentech.sessions.room.daos
 
 import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.Upsert
 import com.yugentech.sessions.room.entities.SessionsEntity
 import kotlinx.coroutines.flow.Flow
 
@@ -11,10 +10,10 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface SessionsDao {
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Upsert
     suspend fun saveSession(session: SessionsEntity)
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Upsert
     suspend fun saveSessions(sessions: List<SessionsEntity>)
 
     @Query("SELECT * FROM sessions WHERE userId = :userId ORDER BY timestamp DESC")
@@ -22,9 +21,6 @@ interface SessionsDao {
 
     @Query("DELETE FROM sessions WHERE sessionId = :sessionId")
     suspend fun deleteSession(sessionId: String)
-
-    @Query("DELETE FROM sessions WHERE userId = :userId")
-    suspend fun deleteAllSessions(userId: String)
 
     @Query("SELECT IFNULL(SUM(duration), 0) FROM sessions WHERE userId = :userId")
     fun getTotalDuration(userId: String): Flow<Long>

@@ -20,9 +20,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import com.yugentech.sessions.theme.tokens.corners
+import com.yugentech.sessions.theme.tokens.dimensions.AppConstants
 import com.yugentech.sessions.theme.tokens.spacing
 import kotlinx.coroutines.delay
 
@@ -58,7 +58,7 @@ fun ToastMessage(
             contentAlignment = Alignment.Center
         ) {
             Text(
-                text = message ?: "",
+                text = message ?: AppConstants.EMPTY_STRING,
                 modifier = Modifier
                     .background(
                         color = MaterialTheme.colorScheme.errorContainer,

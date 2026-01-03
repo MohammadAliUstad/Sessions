@@ -12,10 +12,13 @@ import androidx.compose.ui.unit.dp
 import com.yugentech.sessions.timer.TimerMode
 
 @Composable
-fun ModeTag(mode: TimerMode) {
+fun ModeTag(
+    mode: TimerMode
+) {
     val (text, color) = when (mode) {
         TimerMode.Focus -> "Focus Time" to MaterialTheme.colorScheme.primary
         TimerMode.ShortBreak -> "Short Break" to MaterialTheme.colorScheme.tertiary
+        TimerMode.LongBreak -> "Long Break" to MaterialTheme.colorScheme.secondary
     }
 
     Surface(
