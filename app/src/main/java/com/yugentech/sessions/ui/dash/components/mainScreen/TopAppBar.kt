@@ -38,8 +38,8 @@ fun TopAppBar(
 ) {
     val idleMessage = rememberSaveable {
         listOf(
-            "Ready when you are!",
-            "Let's get to work.",
+            "Locked in!",
+            "It's all you.",
             "Make it count.",
             "One step at a time.",
             "Focus on the now."
