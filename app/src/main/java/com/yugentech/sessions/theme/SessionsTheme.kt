@@ -1,7 +1,9 @@
 package com.yugentech.sessions.theme
 
 import android.app.Activity
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.MotionScheme
 import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
@@ -18,7 +20,7 @@ import com.yugentech.sessions.theme.tokens.dimensions.TypographyCompact
 import com.yugentech.sessions.theme.tokens.dimensions.TypographyExpanded
 import com.yugentech.sessions.theme.tokens.dimensions.TypographyMedium
 
-@OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
+@OptIn(ExperimentalMaterial3WindowSizeClassApi::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun SessionsTheme(
     themeConfiguration: ThemeConfiguration,
@@ -53,7 +55,8 @@ fun SessionsTheme(
         MaterialTheme(
             colorScheme = colorScheme,
             typography = typography,
-            content = content
+            content = content,
+            motionScheme = MotionScheme.expressive()
         )
     }
 }

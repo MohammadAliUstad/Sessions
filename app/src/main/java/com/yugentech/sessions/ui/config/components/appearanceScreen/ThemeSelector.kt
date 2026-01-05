@@ -23,7 +23,6 @@ import com.yugentech.sessions.theme.ThemeViewModel
 import com.yugentech.sessions.theme.tokens.corners
 import com.yugentech.sessions.theme.tokens.dimensions.AppConstants
 import com.yugentech.sessions.theme.tokens.spacing
-import com.yugentech.sessions.ui.config.components.settingsScreen.themeOptions
 import org.koin.androidx.compose.koinViewModel
 
 @Composable

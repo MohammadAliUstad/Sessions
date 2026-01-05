@@ -1,12 +1,9 @@
 package com.yugentech.sessions.ui.dash.components.profileScreen
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -27,49 +24,23 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.unit.dp
 import com.yugentech.sessions.models.Session
 import com.yugentech.sessions.models.UserData
 import com.yugentech.sessions.theme.tokens.components
 import com.yugentech.sessions.theme.tokens.icons
 import com.yugentech.sessions.theme.tokens.spacing
+import com.yugentech.sessions.ui.dash.components.common.itemShape
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
-// --- Helper: Dynamic Corner Shapes ---
-@Composable
-fun profileItemShape(index: Int, count: Int): Shape {
-    val largeCorner = 24.dp
-    val smallCorner = 4.dp
-
-    return when {
-        count == 1 -> RoundedCornerShape(largeCorner)
-        index == 0 -> RoundedCornerShape(
-            topStart = largeCorner,
-            topEnd = largeCorner,
-            bottomStart = smallCorner,
-            bottomEnd = smallCorner
-        )
-        index == count - 1 -> RoundedCornerShape(
-            topStart = smallCorner,
-            topEnd = smallCorner,
-            bottomStart = largeCorner,
-            bottomEnd = largeCorner
-        )
-        else -> RoundedCornerShape(smallCorner)
-    }
-}
-
-// --- Component 1: The Main Profile Info Block ---
 @Composable
 fun ProfileInfoItem(
     userData: UserData,
     totalTime: Long,
     onEditProfile: () -> Unit
 ) {
-    // This is always a "Single" item group, so fully rounded
     Surface(
         color = MaterialTheme.colorScheme.surfaceContainer,
         shape = RoundedCornerShape(24.dp),
@@ -109,7 +80,6 @@ fun ProfileInfoItem(
     }
 }
 
-// --- Component 2: Session History List Item ---
 @Composable
 fun SessionHistoryItem(
     session: Session,
@@ -117,8 +87,8 @@ fun SessionHistoryItem(
     totalCount: Int,
     onDelete: () -> Unit
 ) {
-    val shape = profileItemShape(index, totalCount)
-    
+    val shape = itemShape(index, totalCount)
+
     val dateFormat = SimpleDateFormat("MMM dd, yyyy", Locale.getDefault())
     val timeFormat = SimpleDateFormat("hh:mm a", Locale.getDefault())
     val formattedDate = dateFormat.format(Date(session.timestamp))
@@ -129,18 +99,18 @@ fun SessionHistoryItem(
     val durationText = if (hours > 0) "${hours}h ${minutes}m" else "${minutes}m"
 
     ListItem(
-        headlineContent = { 
+        headlineContent = {
             Text(
                 text = formattedDate,
                 style = MaterialTheme.typography.titleSmall
-            ) 
+            )
         },
-        supportingContent = { 
+        supportingContent = {
             Text(
                 text = formattedTime,
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
-            ) 
+            )
         },
         trailingContent = {
             Row(verticalAlignment = Alignment.CenterVertically) {
@@ -157,7 +127,7 @@ fun SessionHistoryItem(
                         modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
                     )
                 }
-                
+
                 // Delete Button
                 IconButton(
                     onClick = onDelete,
@@ -181,7 +151,6 @@ fun SessionHistoryItem(
     )
 }
 
-// --- Component 3: Section Header ---
 @Composable
 fun ProfileSectionHeader(
     title: String,
@@ -204,7 +173,7 @@ fun ProfileSectionHeader(
             style = MaterialTheme.typography.titleMedium,
             color = MaterialTheme.colorScheme.onSurface
         )
-        
+
         if (countLabel != null) {
             Text(
                 text = countLabel,

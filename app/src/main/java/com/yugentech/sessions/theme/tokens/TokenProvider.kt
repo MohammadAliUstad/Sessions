@@ -13,7 +13,6 @@ import com.yugentech.sessions.theme.tokens.dimensions.StrokeTokens
 import com.yugentech.sessions.theme.tokens.dimensions.animations.AnimationTokens
 
 val LocalDesignTokens = staticCompositionLocalOf { TokensCompact }
-val Tokens @Composable get() = LocalDesignTokens.current
 
 val MaterialTheme.spacing: SpacingTokens
     @Composable

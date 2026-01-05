@@ -15,10 +15,7 @@ val viewModelModule = module {
         Timber.v("Initializing HomeViewModel")
         HomeViewModel(
             sessionsRepository = get(),
-            alertsRepository = get(),
-            timerRepository = get(),
-            userRepository = get(),
-            notificationRepository = get()
+            userRepository = get()
         )
     }
 
