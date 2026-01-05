@@ -10,7 +10,7 @@ import com.yugentech.sessions.notifications.Notification
 import com.yugentech.sessions.notifications.NotificationService
 import com.yugentech.sessions.notifications.NotificationType
 import com.yugentech.sessions.theme.tokens.dimensions.AppConstants
-import com.yugentech.sessions.viewModels.HomeViewModel
+import com.yugentech.sessions.timer.TimerViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -24,7 +24,7 @@ import java.util.Locale
 class ActiveForeground : Service() {
 
     private val notificationService: NotificationService by inject()
-    private val homeViewModel: HomeViewModel by inject()
+    private val timerViewModel: TimerViewModel by inject()
     private var isSessionActive = false
     private var updateJob: Job? = null
     private var remainingSeconds = 0
@@ -104,7 +104,7 @@ class ActiveForeground : Service() {
         updateJob = serviceScope.launch {
             while (isSessionActive) {
                 // Fetch latest state directly from ViewModel
-                val syncedSeconds = homeViewModel.uiState.value.status.currentTime
+                val syncedSeconds = timerViewModel.uiState.value.status.currentTime
                 updateNotification(syncedSeconds)
                 // Delay at end of loop ensures UI updates immediately on start
                 delay(500)
@@ -151,7 +151,7 @@ class ActiveForeground : Service() {
     override fun onTaskRemoved(rootIntent: Intent?) {
         Timber.d("Task removed, performing cleanup")
         stopSession()
-         super.onTaskRemoved(rootIntent)
+        super.onTaskRemoved(rootIntent)
     }
 
     override fun onDestroy() {

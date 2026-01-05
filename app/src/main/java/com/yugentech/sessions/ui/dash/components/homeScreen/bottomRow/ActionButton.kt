@@ -1,62 +1,51 @@
 package com.yugentech.sessions.ui.dash.components.homeScreen.bottomRow
 
-import androidx.compose.animation.animateColorAsState
-import androidx.compose.animation.core.tween
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Pause
 import androidx.compose.material.icons.filled.PlayArrow
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
+import androidx.compose.material3.FilledIconToggleButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButtonDefaults
+import androidx.compose.material3.IconToggleButtonShapes
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun ActionButton(
     isStudying: Boolean,
     onPlayPause: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val containerColor by animateColorAsState(
-        targetValue = if (isStudying)
-            MaterialTheme.colorScheme.tertiaryContainer
-        else
-            MaterialTheme.colorScheme.primary,
-        animationSpec = tween(durationMillis = 400),
-        label = "button-container-color"
-    )
+    FilledIconToggleButton(
+        checked = isStudying,
+        onCheckedChange = { onPlayPause() },
+        modifier = modifier.size(80.dp),
+        shapes = IconToggleButtonShapes(
+            // Idle (Play) -> Circle
+            shape = CircleShape,
+            pressedShape = CircleShape,
 
-    val contentColor by animateColorAsState(
-        targetValue = if (isStudying)
-            MaterialTheme.colorScheme.onTertiaryContainer
-        else
-            MaterialTheme.colorScheme.onPrimary,
-        animationSpec = tween(durationMillis = 400),
-        label = "button-content-color"
-    )
-
-    Surface(
-        onClick = onPlayPause,
-        modifier = modifier
-            .size(72.dp)
-            .padding(8.dp),
-        shape = CircleShape,
-        color = containerColor,
-        contentColor = contentColor
+            // Running (Pause) -> Squircle (Opposite of Side Buttons in this state)
+            checkedShape = RoundedCornerShape(30)
+        ),
+        colors = IconButtonDefaults.filledIconToggleButtonColors(
+            containerColor = MaterialTheme.colorScheme.primary,
+            contentColor = MaterialTheme.colorScheme.onPrimary,
+            checkedContainerColor = MaterialTheme.colorScheme.tertiaryContainer,
+            checkedContentColor = MaterialTheme.colorScheme.onTertiaryContainer
+        )
     ) {
-        Box(contentAlignment = Alignment.Center) {
-            Icon(
-                imageVector = if (isStudying) Icons.Default.Pause else Icons.Default.PlayArrow,
-                contentDescription = if (isStudying) "Pause" else "Start",
-                modifier = Modifier.size(32.dp)
-            )
-        }
+        Icon(
+            imageVector = if (isStudying) Icons.Default.Pause else Icons.Default.PlayArrow,
+            contentDescription = if (isStudying) "Pause" else "Start",
+            modifier = Modifier.size(32.dp)
+        )
     }
 }
