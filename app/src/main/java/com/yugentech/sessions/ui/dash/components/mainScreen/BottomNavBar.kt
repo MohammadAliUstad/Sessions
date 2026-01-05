@@ -35,7 +35,7 @@ fun BottomNavBar(
                 onClick = { onSelected(screen) },
                 icon = {
                     Icon(
-                        imageVector = screen.icon,
+                        imageVector = screen.selectedIcon,
                         contentDescription = screen.title
                     )
                 },

@@ -22,13 +22,12 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import com.google.accompanist.navigation.animation.AnimatedNavHost
 import com.yugentech.sessions.notifications.NotificationsViewModel
-import com.yugentech.sessions.sessions.SyncPreferences
 import com.yugentech.sessions.theme.tokens.dimensions.AppConstants
+import com.yugentech.sessions.timer.TimerViewModel
 import com.yugentech.sessions.ui.auth.screens.SignInScreen
 import com.yugentech.sessions.ui.auth.screens.SignUpScreen
 import com.yugentech.sessions.ui.config.screens.AboutScreen
 import com.yugentech.sessions.ui.config.screens.AppearanceScreen
-import com.yugentech.sessions.ui.config.screens.SettingsScreen
 import com.yugentech.sessions.ui.dash.screens.EditProfileScreen
 import com.yugentech.sessions.ui.dash.screens.MainScreen
 import com.yugentech.sessions.utils.defaultEnterTransition
@@ -174,6 +173,8 @@ fun AppNavHost(
             val homeViewModel: HomeViewModel = koinViewModel()
             val notificationsViewModel: NotificationsViewModel = koinViewModel()
             val profileViewModel: ProfileViewModel = koinViewModel()
+            val timerViewModel: TimerViewModel = koinViewModel()
+            val settingsViewModel: SettingsViewModel = koinViewModel()
 
             if (currentUserId != null) {
                 MainScreen(
@@ -192,33 +193,19 @@ fun AppNavHost(
                     onEditProfile = {
                         navController.navigate(Screens.EditProfile.route)
                     },
-                    onSettings = {
-                        navController.navigate(Screens.Settings.route)
-                    },
                     homeViewModel = homeViewModel,
-                    profileViewModel = profileViewModel
+                    profileViewModel = profileViewModel,
+                    timerViewModel = timerViewModel,
+                    settingsViewModel = settingsViewModel,
+                    notificationsViewModel = notificationsViewModel,
+                    onAbout = {
+                        navController.navigate(Screens.About.route)
+                    },
+                    onAppearance = {
+                        navController.navigate(Screens.Appearance.route)
+                    }
                 )
             }
-        }
-
-        composable(Screens.Settings.route) {
-            Timber.v("Composing Settings Screen")
-            val settingsViewModel: SettingsViewModel = koinViewModel()
-            val notificationsViewModel: NotificationsViewModel = koinViewModel()
-
-            SettingsScreen(
-                settingsViewModel = settingsViewModel,
-                onAbout = {
-                    navController.navigate(Screens.About.route)
-                },
-                onNavigateBack = {
-                    navController.popBackStack()
-                },
-                onAppearance = {
-                    navController.navigate(Screens.Appearance.route)
-                },
-                notificationsViewModel = notificationsViewModel
-            )
         }
 
         composable(Screens.Appearance.route) {
