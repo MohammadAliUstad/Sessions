@@ -10,13 +10,29 @@ import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.animation.togetherWith
+import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.material3.ButtonGroupDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.ToggleButton
+import androidx.compose.material3.ToggleButtonDefaults
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -30,24 +46,29 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.role
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.zIndex
 import androidx.core.content.ContextCompat
 import com.yugentech.sessions.navigation.AppScreens
+import com.yugentech.sessions.notifications.NotificationsViewModel
 import com.yugentech.sessions.theme.tokens.dimensions.AppConstants
 import com.yugentech.sessions.theme.tokens.spacing
+import com.yugentech.sessions.timer.TimerViewModel
+import com.yugentech.sessions.ui.config.screens.SettingsScreen
 import com.yugentech.sessions.ui.dash.components.common.ExitConfirmationDialog
-import com.yugentech.sessions.ui.dash.components.common.LogoutConfirmationDialog
 import com.yugentech.sessions.ui.dash.components.common.ToastMessage
-import com.yugentech.sessions.ui.dash.components.mainScreen.BottomNavBar
 import com.yugentech.sessions.ui.dash.components.mainScreen.TopAppBar
-import com.yugentech.sessions.utils.defaultEnterTransition
-import com.yugentech.sessions.utils.defaultExitTransition
-import com.yugentech.sessions.utils.defaultPopEnterTransition
-import com.yugentech.sessions.utils.defaultPopExitTransition
 import com.yugentech.sessions.viewModels.HomeViewModel
 import com.yugentech.sessions.viewModels.ProfileViewModel
+import com.yugentech.sessions.viewModels.SettingsViewModel
 import kotlinx.coroutines.delay
+import org.koin.androidx.compose.koinViewModel
 
-private val bottomNavItems = listOf(AppScreens.Home, AppScreens.Profile)
+// Items ordered: Profile - Home (Timer) - Settings
+private val bottomNavItems = listOf(AppScreens.Profile, AppScreens.Home, AppScreens.Settings)
 
 private val screenSaver = Saver<AppScreens, String>(
     save = { it.route },
@@ -59,11 +80,15 @@ private val screenSaver = Saver<AppScreens, String>(
 fun MainScreen(
     userId: String,
     homeViewModel: HomeViewModel,
+    timerViewModel: TimerViewModel,
     profileViewModel: ProfileViewModel,
+    settingsViewModel: SettingsViewModel = koinViewModel(),
+    notificationsViewModel: NotificationsViewModel = koinViewModel(),
     onSignOut: () -> Unit,
     onExit: () -> Unit,
     onEditProfile: () -> Unit,
-    onSettings: () -> Unit
+    onAbout: () -> Unit,
+    onAppearance: () -> Unit,
 ) {
     val context = LocalContext.current
     var toastMessage by remember { mutableStateOf<String?>(null) }
@@ -99,34 +124,17 @@ fun MainScreen(
         mutableStateOf(AppScreens.Home)
     }
 
-    var showLogoutDialog by remember { mutableStateOf(false) }
     var showExitDialog by remember { mutableStateOf(false) }
 
     BackHandler {
-        when (currentScreen) {
-            AppScreens.Profile -> {
-                currentScreen = AppScreens.Home
-            }
-
-            AppScreens.Home -> {
-                showExitDialog = true
-            }
+        if (currentScreen != AppScreens.Home) {
+            currentScreen = AppScreens.Home
+        } else {
+            showExitDialog = true
         }
     }
 
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
-
-    if (showLogoutDialog) {
-        LogoutConfirmationDialog(
-            onConfirm = {
-                showLogoutDialog = false
-                onSignOut()
-            },
-            onDismiss = {
-                showLogoutDialog = false
-            }
-        )
-    }
 
     if (showExitDialog) {
         ExitConfirmationDialog(
@@ -140,6 +148,7 @@ fun MainScreen(
         )
     }
 
+    // Root Container
     Box(
         modifier = Modifier.fillMaxSize()
     ) {
@@ -150,22 +159,13 @@ fun MainScreen(
             topBar = {
                 TopAppBar(
                     currentScreen = currentScreen,
-                    onLogout = { showLogoutDialog = true },
-                    onSettings = onSettings,
+                    onLogout = { },
+                    onSettings = { currentScreen = AppScreens.Settings },
                     scrollBehavior = scrollBehavior
                 )
-            },
-            bottomBar = {
-                BottomNavBar(
-                    items = bottomNavItems,
-                    currentScreen = currentScreen,
-                    onSelected = { screen ->
-                        if (screen != currentScreen) {
-                            currentScreen = screen
-                        }
-                    }
-                )
-            },
+            }
+            // REMOVED: bottomBar = { ... }
+            // We removed it from Scaffold so the content goes all the way to the bottom
         ) { innerPadding ->
 
             AnimatedContent(
@@ -174,19 +174,43 @@ fun MainScreen(
                     .fillMaxSize(),
                 targetState = currentScreen,
                 transitionSpec = {
-                    if (initialState == AppScreens.Home && targetState == AppScreens.Profile) {
-                        defaultEnterTransition() togetherWith defaultExitTransition()
-                    } else if (initialState == AppScreens.Profile && targetState == AppScreens.Home) {
-                        defaultPopEnterTransition() togetherWith defaultPopExitTransition()
+                    // Define the spatial order of screens
+                    val screenOrder =
+                        listOf(AppScreens.Profile, AppScreens.Home, AppScreens.Settings)
+                    val initialIndex = screenOrder.indexOf(initialState)
+                    val targetIndex = screenOrder.indexOf(targetState)
+
+                    val animationDuration = AppConstants.DEFAULT_ANIMATION_DURATION
+
+                    if (targetIndex > initialIndex) {
+                        // Moving FORWARD (e.g. Profile -> Home)
+                        // Slide in from Right, Slide out to Left
+                        (slideInHorizontally(
+                            initialOffsetX = { fullWidth -> fullWidth },
+                            animationSpec = tween(animationDuration)
+                        ) + fadeIn(animationSpec = tween(animationDuration))) togetherWith
+                                (slideOutHorizontally(
+                                    targetOffsetX = { fullWidth -> -fullWidth },
+                                    animationSpec = tween(animationDuration)
+                                ) + fadeOut(animationSpec = tween(animationDuration)))
                     } else {
-                        fadeIn(animationSpec = tween(AppConstants.DEFAULT_ANIMATION_DURATION)) togetherWith
-                                fadeOut(animationSpec = tween(AppConstants.DEFAULT_ANIMATION_DURATION))
+                        // Moving BACKWARD (e.g. Home -> Profile)
+                        // Slide in from Left, Slide out to Right
+                        (slideInHorizontally(
+                            initialOffsetX = { fullWidth -> -fullWidth },
+                            animationSpec = tween(animationDuration)
+                        ) + fadeIn(animationSpec = tween(animationDuration))) togetherWith
+                                (slideOutHorizontally(
+                                    targetOffsetX = { fullWidth -> fullWidth },
+                                    animationSpec = tween(animationDuration)
+                                ) + fadeOut(animationSpec = tween(animationDuration)))
                     }
                 }
             ) { screen ->
                 when (screen) {
                     AppScreens.Home -> HomeScreen(
                         userId = userId,
+                        timerViewModel = timerViewModel,
                         homeViewModel = homeViewModel
                     )
 
@@ -195,9 +219,31 @@ fun MainScreen(
                         onEditProfile = onEditProfile,
                         profileViewModel = profileViewModel
                     )
+
+                    AppScreens.Settings -> SettingsScreen(
+                        settingsViewModel = settingsViewModel,
+                        notificationsViewModel = notificationsViewModel,
+                        onSignOut = onSignOut,
+                        onAbout = onAbout,
+                        onAppearance = onAppearance
+                    )
                 }
             }
         }
+
+        // FLOATING LAYER: Positioned explicitly at the bottom with high Z-Index
+        ExpressiveNavigationBar(
+            items = bottomNavItems,
+            currentScreen = currentScreen,
+            onSelected = { screen ->
+                if (screen != currentScreen) {
+                    currentScreen = screen
+                }
+            },
+            modifier = Modifier
+                .align(Alignment.BottomCenter) // Anchor to bottom
+                .zIndex(2f) // "z alpha" -> This guarantees it floats on top of everything
+        )
 
         ToastMessage(
             message = toastMessage,
@@ -205,6 +251,64 @@ fun MainScreen(
             modifier = Modifier
                 .align(Alignment.Center)
                 .padding(bottom = MaterialTheme.spacing.xxl)
+                .zIndex(3f) // Ensure toasts are even higher
         )
+    }
+}
+
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
+@Composable
+fun ExpressiveNavigationBar(
+    items: List<AppScreens>,
+    currentScreen: AppScreens,
+    onSelected: (AppScreens) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Row(
+        modifier = modifier
+            .fillMaxWidth()
+            .navigationBarsPadding()
+            .padding(12.dp),
+        horizontalArrangement = Arrangement.spacedBy(ButtonGroupDefaults.ConnectedSpaceBetween),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        items.forEachIndexed { index, screen ->
+            val isSelected = currentScreen == screen
+
+            val shape = when (index) {
+                0 -> ButtonGroupDefaults.connectedLeadingButtonShapes()
+                items.lastIndex -> ButtonGroupDefaults.connectedTrailingButtonShapes()
+                else -> ButtonGroupDefaults.connectedMiddleButtonShapes()
+            }
+
+            ToggleButton(
+                checked = isSelected,
+                onCheckedChange = { onSelected(screen) },
+                modifier = Modifier
+                    .weight(1f)
+                    .height(56.dp)
+                    .semantics { role = Role.RadioButton },
+                shapes = shape,
+                colors = ToggleButtonDefaults.toggleButtonColors(
+                    // Unselected: surfaceContainerHighest for elevated, refined look
+                    containerColor = MaterialTheme.colorScheme.surfaceContainerHighest,
+                    contentColor = MaterialTheme.colorScheme.onSurface,
+                    // Selected: primary colors for main navigation actions
+                    checkedContainerColor = MaterialTheme.colorScheme.primaryContainer,
+                    checkedContentColor = MaterialTheme.colorScheme.onPrimaryContainer
+                )
+            ) {
+                Icon(
+                    imageVector = screen.selectedIcon,
+                    contentDescription = null,
+                    modifier = Modifier.size(22.dp)
+                )
+                Spacer(Modifier.size(ToggleButtonDefaults.IconSpacing))
+                Text(
+                    text = screen.title,
+                    style = MaterialTheme.typography.labelLarge
+                )
+            }
+        }
     }
 }
