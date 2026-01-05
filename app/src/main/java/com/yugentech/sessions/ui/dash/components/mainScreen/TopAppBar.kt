@@ -7,13 +7,11 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.Logout
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Timer
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -49,6 +47,7 @@ fun TopAppBar(
     val (titleText, screenIcon) = when (currentScreen) {
         AppScreens.Home -> idleMessage to Icons.Default.Timer
         AppScreens.Profile -> "Profile" to Icons.Default.Person
+        AppScreens.Settings -> "Settings" to Icons.Default.Settings
     }
 
     TopAppBar(
@@ -71,29 +70,6 @@ fun TopAppBar(
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
                 )
-            }
-        },
-        actions = {
-            when (currentScreen) {
-                AppScreens.Home -> {
-                    IconButton(onClick = onLogout) {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Filled.Logout,
-                            contentDescription = "Logout",
-                            modifier = Modifier.size(MaterialTheme.icons.large)
-                        )
-                    }
-                }
-
-                AppScreens.Profile -> {
-                    IconButton(onClick = onSettings) {
-                        Icon(
-                            imageVector = Icons.Filled.Settings,
-                            contentDescription = "Settings",
-                            modifier = Modifier.size(MaterialTheme.icons.large)
-                        )
-                    }
-                }
             }
         },
         windowInsets = WindowInsets.statusBars,

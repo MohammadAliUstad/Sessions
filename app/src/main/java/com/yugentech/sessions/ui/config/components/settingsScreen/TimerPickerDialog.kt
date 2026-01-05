@@ -31,7 +31,6 @@ fun TimePickerDialog(
         title = {
             Text(
                 text = "Select Reminder Time",
-                // Standard M3 Role for Dialog Titles
                 style = MaterialTheme.typography.headlineSmall,
                 color = MaterialTheme.colorScheme.onSurface
             )
@@ -44,13 +43,11 @@ fun TimePickerDialog(
                     clockDialColor = MaterialTheme.colorScheme.surfaceContainer,
                     selectorColor = MaterialTheme.colorScheme.primary,
                     containerColor = MaterialTheme.colorScheme.surface,
-
                     periodSelectorBorderColor = MaterialTheme.colorScheme.outline,
                     periodSelectorSelectedContainerColor = MaterialTheme.colorScheme.primary,
                     periodSelectorUnselectedContainerColor = MaterialTheme.colorScheme.surfaceVariant,
                     periodSelectorSelectedContentColor = MaterialTheme.colorScheme.onPrimary,
                     periodSelectorUnselectedContentColor = MaterialTheme.colorScheme.onSurfaceVariant,
-
                     timeSelectorSelectedContainerColor = MaterialTheme.colorScheme.primaryContainer,
                     timeSelectorUnselectedContainerColor = MaterialTheme.colorScheme.surfaceVariant,
                     timeSelectorSelectedContentColor = MaterialTheme.colorScheme.onPrimaryContainer,
@@ -66,7 +63,6 @@ fun TimePickerDialog(
             ) {
                 Text(
                     text = "Set Time",
-                    // Standard M3 Role for Buttons
                     style = MaterialTheme.typography.labelLarge
                 )
             }
@@ -77,7 +73,6 @@ fun TimePickerDialog(
             ) {
                 Text(
                     text = "Cancel",
-                    // Standard M3 Role for Buttons
                     style = MaterialTheme.typography.labelLarge,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )

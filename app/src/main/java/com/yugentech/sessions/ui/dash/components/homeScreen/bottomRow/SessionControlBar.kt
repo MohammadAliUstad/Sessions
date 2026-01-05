@@ -1,6 +1,9 @@
 package com.yugentech.sessions.ui.dash.components.homeScreen.bottomRow
 
 import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.animateIntAsState
+import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -10,9 +13,9 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Check
 import androidx.compose.material.icons.outlined.Close
@@ -24,10 +27,13 @@ import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 
 @Composable
 fun SessionControlBar(
@@ -40,41 +46,60 @@ fun SessionControlBar(
     onStopSave: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    // OPPOSITE SHAPE LOGIC:
+    // When Studying (Running): Main Button is Squircle -> Side Buttons become CIRCLES (50)
+    // When Idle: Main Button is Circle -> Side Buttons become SQUIRCLES (30)
+    val cornerPercent by animateIntAsState(
+        targetValue = if (isStudying) 50 else 30,
+        animationSpec = spring(stiffness = Spring.StiffnessMediumLow),
+        label = "shapeMorph"
+    )
+    val currentSideShape = RoundedCornerShape(cornerPercent)
+
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .padding(horizontal = 24.dp),
+            .padding(horizontal = 24.dp, vertical = 16.dp),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceEvenly
+        horizontalArrangement = Arrangement.Center
     ) {
+        // Left Action (Sound / Discard)
         AnimatedContent(
             targetState = isSessionActive,
-            transitionSpec = { fadeIn(tween(200)) togetherWith fadeOut(tween(200)) },
+            transitionSpec = { fadeIn(tween(100)) togetherWith fadeOut(tween(100)) },
             label = "LeftButton"
         ) { active ->
             if (active) {
                 SecondaryActionButton(
                     icon = Icons.Outlined.Close,
                     label = "Discard",
-                    onClick = onStopDiscard
+                    onClick = onStopDiscard,
+                    shape = currentSideShape
                 )
             } else {
                 SecondaryActionButton(
                     icon = Icons.Outlined.GraphicEq,
                     label = "Sound",
-                    onClick = onSoundClick
+                    onClick = onSoundClick,
+                    shape = currentSideShape
                 )
             }
         }
 
+        Spacer(modifier = Modifier.size(24.dp))
+
+        // Main Action (Play/Pause)
         ActionButton(
             isStudying = isStudying,
             onPlayPause = onStartStop
         )
 
+        Spacer(modifier = Modifier.size(24.dp))
+
+        // Right Action (Sets / Finish)
         AnimatedContent(
             targetState = isSessionActive,
-            transitionSpec = { fadeIn(tween(200)) togetherWith fadeOut(tween(200)) },
+            transitionSpec = { fadeIn(tween(100)) togetherWith fadeOut(tween(100)) },
             label = "RightButton"
         ) { active ->
             if (active) {
@@ -82,13 +107,15 @@ fun SessionControlBar(
                     icon = Icons.Outlined.Check,
                     label = "Finish",
                     onClick = onStopSave,
-                    isActive = true
+                    isActive = true,
+                    shape = currentSideShape
                 )
             } else {
                 SecondaryActionButton(
                     icon = Icons.Outlined.Layers,
                     label = "Sets",
-                    onClick = onSetsClick
+                    onClick = onSetsClick,
+                    shape = currentSideShape
                 )
             }
         }
@@ -100,47 +127,42 @@ fun SecondaryActionButton(
     icon: ImageVector,
     label: String,
     onClick: () -> Unit,
-    isActive: Boolean = false
+    isActive: Boolean = false,
+    shape: Shape
 ) {
+    val colors = if (isActive) {
+        IconButtonDefaults.filledTonalIconButtonColors(
+            containerColor = MaterialTheme.colorScheme.primaryContainer,
+            contentColor = MaterialTheme.colorScheme.onPrimaryContainer
+        )
+    } else {
+        IconButtonDefaults.filledTonalIconButtonColors(
+            containerColor = MaterialTheme.colorScheme.surfaceContainerHighest,
+            contentColor = MaterialTheme.colorScheme.onSurfaceVariant
+        )
+    }
 
-    val containerColor =
-        if (isActive)
-            MaterialTheme.colorScheme.primaryContainer
-        else
-            MaterialTheme.colorScheme.surfaceVariant
-
-    val contentColor =
-        if (isActive)
-            MaterialTheme.colorScheme.onPrimaryContainer
-        else
-            MaterialTheme.colorScheme.onSurfaceVariant
-
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally
+    FilledTonalIconButton(
+        onClick = onClick,
+        modifier = Modifier.size(64.dp),
+        shape = shape,
+        colors = colors
     ) {
-
-        FilledTonalIconButton(
-            onClick = onClick,
-            modifier = Modifier.size(50.dp),
-            colors = IconButtonDefaults.filledTonalIconButtonColors(
-                containerColor = containerColor,
-                contentColor = contentColor
-            )
+        // Vertical stack for Icon + Label
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
         ) {
             Icon(
-                icon,
-                contentDescription = label
+                imageVector = icon,
+                contentDescription = null, // Description is handled by the visual label now
+                modifier = Modifier.size(24.dp) // Slightly adjusted to fit text nicely
+            )
+            Text(
+                text = label,
+                style = MaterialTheme.typography.labelSmall.copy(fontSize = 10.sp),
+                modifier = Modifier.padding(top = 2.dp)
             )
         }
-
-        Spacer(
-            modifier = Modifier.height(4.dp)
-        )
-
-        Text(
-            text = label,
-            style = MaterialTheme.typography.labelSmall,
-            color = MaterialTheme.colorScheme.onSurfaceVariant
-        )
     }
 }

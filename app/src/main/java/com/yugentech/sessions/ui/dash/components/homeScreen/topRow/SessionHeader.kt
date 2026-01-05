@@ -1,5 +1,11 @@
 package com.yugentech.sessions.ui.dash.components.homeScreen.topRow
 
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -13,22 +19,19 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Edit
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
+import androidx.compose.material.icons.rounded.Edit
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import com.yugentech.sessions.theme.tokens.corners
-import com.yugentech.sessions.theme.tokens.icons
 import com.yugentech.sessions.theme.tokens.spacing
 
 @Composable
@@ -40,51 +43,58 @@ fun SessionHeader(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = MaterialTheme.spacing.m),
+            .padding(horizontal = MaterialTheme.spacing.m, vertical = 8.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Row(
+        // 1. Task Section
+        Surface(
             modifier = Modifier
                 .weight(1f)
-                .clip(RoundedCornerShape(MaterialTheme.corners.small))
-                .clickable(enabled = !isRunning) { onTaskClick() }
-                .padding(vertical = 8.dp, horizontal = 4.dp),
-            verticalAlignment = Alignment.CenterVertically
+                .clip(RoundedCornerShape(16.dp))
+                .clickable(enabled = !isRunning) { onTaskClick() },
+            color = MaterialTheme.colorScheme.surfaceContainer,
+            shape = RoundedCornerShape(16.dp)
         ) {
-            if (sessionTask.isBlank()) {
-                Text(
-                    text = "What are you working on?",
-                    style = MaterialTheme.typography.headlineSmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f),
-                    fontStyle = FontStyle.Italic,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
-                )
-            } else {
-                Text(
-                    text = sessionTask,
-                    style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.SemiBold),
-                    color = MaterialTheme.colorScheme.onSurface,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
-                )
-            }
+            Row(
+                modifier = Modifier.padding(horizontal = 16.dp, vertical = 16.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                if (sessionTask.isBlank()) {
+                    Text(
+                        text = "Enter a task...",
+                        style = MaterialTheme.typography.titleMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                        modifier = Modifier.weight(1f)
+                    )
+                } else {
+                    Text(
+                        text = sessionTask,
+                        style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.SemiBold),
+                        color = MaterialTheme.colorScheme.onSurface,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                        modifier = Modifier.weight(1f)
+                    )
+                }
 
-            Spacer(modifier = Modifier.width(MaterialTheme.spacing.s))
-
-            if (!isRunning) {
-                Icon(
-                    imageVector = Icons.Default.Edit,
-                    contentDescription = "Edit Task",
-                    modifier = Modifier.size(MaterialTheme.icons.small),
-                    tint = MaterialTheme.colorScheme.primary
-                )
+                if (!isRunning) {
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Icon(
+                        imageVector = Icons.Rounded.Edit,
+                        contentDescription = "Edit",
+                        modifier = Modifier.size(18.dp),
+                        tint = MaterialTheme.colorScheme.primary
+                    )
+                }
             }
         }
 
-        Spacer(modifier = Modifier.width(MaterialTheme.spacing.m))
+        Spacer(modifier = Modifier.width(12.dp))
 
+        // 2. Status Badge
         StatusBadge(isRunning = isRunning)
     }
 }
@@ -93,43 +103,50 @@ fun SessionHeader(
 fun StatusBadge(
     isRunning: Boolean
 ) {
-    Card(
-        colors = CardDefaults.cardColors(
-            containerColor = if (isRunning)
-                MaterialTheme.colorScheme.primaryContainer
-            else
-                MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
-        ),
-        shape = RoundedCornerShape(MaterialTheme.corners.smallMedium)
+    // Smooth transitions for colors
+    val containerColor by animateColorAsState(
+        targetValue = if (isRunning) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surfaceContainerHigh,
+        label = "badgeContainer"
+    )
+    val contentColor by animateColorAsState(
+        targetValue = if (isRunning) MaterialTheme.colorScheme.onPrimaryContainer else MaterialTheme.colorScheme.onSurfaceVariant,
+        label = "badgeContent"
+    )
+    val dotColor by animateColorAsState(
+        targetValue = if (isRunning) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f),
+        label = "dotColor"
+    )
+
+    Surface(
+        color = containerColor,
+        shape = RoundedCornerShape(50),
+        modifier = Modifier.padding(start = 4.dp)
     ) {
         Row(
-            modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp),
+            modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
+            // Simple Dot (Removed PulsatingDot)
             Box(
                 modifier = Modifier
                     .size(8.dp)
-                    .background(
-                        color =
-                            if (isRunning)
-                                MaterialTheme.colorScheme.primary
-                            else
-                                MaterialTheme.colorScheme.onSurfaceVariant,
-                        shape = CircleShape
-                    )
+                    .background(dotColor, CircleShape)
             )
 
             Spacer(modifier = Modifier.width(8.dp))
 
-            Text(
-                text = if (isRunning) "Active" else "Idle",
-                style = MaterialTheme.typography.labelSmall,
-                color =
-                    if (isRunning)
-                        MaterialTheme.colorScheme.onPrimaryContainer
-                    else
-                        MaterialTheme.colorScheme.onSurfaceVariant
-            )
+            // Text Transition (Kept the smooth fade/slide effect)
+            AnimatedContent(
+                targetState = isRunning,
+                transitionSpec = { fadeIn(tween(300)) togetherWith fadeOut(tween(300)) },
+                label = "statusText"
+            ) { running ->
+                Text(
+                    text = if (running) "Active" else "Idle",
+                    style = MaterialTheme.typography.labelMedium.copy(fontWeight = FontWeight.Medium),
+                    color = contentColor
+                )
+            }
         }
     }
 }

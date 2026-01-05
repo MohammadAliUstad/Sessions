@@ -42,7 +42,6 @@ import com.yugentech.sessions.theme.tokens.dimensions.AppConstants
 import com.yugentech.sessions.theme.tokens.icons
 import com.yugentech.sessions.theme.tokens.spacing
 import com.yugentech.sessions.theme.tokens.strokes
-import com.yugentech.sessions.ui.config.components.settingsScreen.ThemeOption
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
