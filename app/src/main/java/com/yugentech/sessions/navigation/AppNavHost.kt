@@ -22,6 +22,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import com.google.accompanist.navigation.animation.AnimatedNavHost
 import com.yugentech.sessions.notifications.NotificationsViewModel
+import com.yugentech.sessions.theme.ThemeViewModel
 import com.yugentech.sessions.theme.tokens.dimensions.AppConstants
 import com.yugentech.sessions.timer.TimerViewModel
 import com.yugentech.sessions.ui.auth.screens.SignInScreen
@@ -209,10 +210,12 @@ fun AppNavHost(
         }
 
         composable(Screens.Appearance.route) {
+            val themeViewModel: ThemeViewModel = koinViewModel()
             AppearanceScreen(
                 onNavigateBack = {
                     navController.popBackStack()
-                }
+                },
+                themeViewModel = themeViewModel
             )
         }
 

@@ -17,8 +17,6 @@ import androidx.compose.ui.res.stringResource
 import com.yugentech.sessions.R
 import com.yugentech.sessions.theme.tokens.corners
 import com.yugentech.sessions.theme.tokens.spacing
-import com.yugentech.sessions.ui.config.components.appearanceScreen.SectionHeader
-import com.yugentech.sessions.ui.config.components.appearanceScreen.ThemeModeOption
 
 @Composable
 fun AboutContactCard(
@@ -38,15 +36,10 @@ fun AboutContactCard(
                 .fillMaxWidth()
                 .padding(MaterialTheme.spacing.l)
         ) {
-            SectionHeader(
-                icon = Icons.Default.Info,
-                title = stringResource(R.string.connect)
-            )
-
             Column(
                 verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.s)
             ) {
-                ThemeModeOption(
+                ContactButton(
                     icon = Icons.Default.Email,
                     title = stringResource(R.string.contact_developer),
                     subtitle = stringResource(R.string.get_in_touch_for_support_or_feedback),
@@ -55,7 +48,7 @@ fun AboutContactCard(
                     onClick = onEmailClick
                 )
 
-                ThemeModeOption(
+                ContactButton(
                     icon = Icons.Default.Info,
                     title = stringResource(R.string.visit_github),
                     subtitle = stringResource(R.string.view_source_code_and_contribute),
