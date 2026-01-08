@@ -1,41 +1,43 @@
 package com.yugentech.sessions.utils
 
 import com.yugentech.sessions.timer.TimerMode
+import kotlin.math.ceil
 
 data class HomeUiState(
-    // 1. SETTINGS: The rules user selected
     val config: SessionConfig = SessionConfig(),
-
-    // 2. RUNTIME: The live status of the timer
     val status: SessionStatus = SessionStatus(),
-
-    // 3. ALERTS: Any temporary messages
     val errorMessage: String? = null
 )
 
 data class SessionConfig(
     val sessionTask: String = "",
 
-    // Durations (Changed Int -> Long)
-    val focusDuration: Long = 25 * 60 * 1000L,      // 25 mins
-    val shortBreakDuration: Long = 5 * 60 * 1000L,  // 5 mins
-    val longBreakDuration: Long = 15 * 60 * 1000L,  // 15 mins
+    // Durations stored simply as MINUTES (Int)
+    val focusDurationMinutes: Int = 25,
+    val shortBreakDurationMinutes: Int = 5,
+    val longBreakDurationMinutes: Int = 15,
 
-    // Goals
     val targetSets: Int = 4,
-
-    // Behavior
     val autoStartNext: Boolean = false,
     val soundId: String? = null
-)
+) {
+    // Logic: Calculates how many sets to finish before a long break.
+    // Target is roughly 100 minutes of focus time.
+    val setsPerLongBreak: Int
+        get() {
+            if (focusDurationMinutes <= 0) return 1
+            return ceil(100f / focusDurationMinutes).toInt()
+        }
+}
 
 data class SessionStatus(
     val isRunning: Boolean = false,
     val currentMode: TimerMode = TimerMode.Focus,
 
-    // Runtime values (Changed Int -> Long)
-    val currentTime: Long = 0L,     // Time remaining (ms)
-    val totalTime: Long = 0L,       // Total duration (ms)
+    // Runtime values stored as SECONDS (Long)
+    // We convert Config Minutes -> Seconds here when timer starts
+    val currentTime: Long = 0L,
+    val totalTime: Long = 0L,
 
     val completedSets: Int = 0
 )
