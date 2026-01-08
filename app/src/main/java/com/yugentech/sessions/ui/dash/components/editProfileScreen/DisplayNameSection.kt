@@ -1,4 +1,4 @@
-package com.yugentech.sessions.ui.dash.components.avatar
+package com.yugentech.sessions.ui.dash.components.editProfileScreen
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -46,22 +46,13 @@ fun DisplayNameSection(
                 .padding(MaterialTheme.spacing.l),
             verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.m)
         ) {
-            Column(
-                verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.xs)
-            ) {
-                Text(
-                    text = "Display Name",
-                    // Standard M3 Role for Card/Section Headers
-                    style = MaterialTheme.typography.titleMedium,
-                    color = MaterialTheme.colorScheme.onSurface
-                )
+            // Internal title "Display Name" removed here (handled by parent header)
 
-                Text(
-                    text = "Pick a name that motivates your sessions",
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-            }
+            Text(
+                text = "Pick a name that motivates your sessions",
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
 
             val focusManager = LocalFocusManager.current
 
@@ -70,10 +61,7 @@ fun DisplayNameSection(
                 onValueChange = onDisplayNameChange,
                 modifier = Modifier.fillMaxWidth(),
                 label = {
-                    Text(
-                        text = "Enter your display name"
-                        // Removed hardcoded style to allow standard animation
-                    )
+                    Text(text = "Enter your display name")
                 },
                 leadingIcon = {
                     Icon(
@@ -84,7 +72,7 @@ fun DisplayNameSection(
                 },
                 singleLine = true,
                 enabled = !isSaving,
-                textStyle = MaterialTheme.typography.bodyLarge, // Standard input text role
+                textStyle = MaterialTheme.typography.bodyLarge,
                 keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
                 keyboardActions = KeyboardActions(
                     onDone = { focusManager.clearFocus() }

@@ -47,10 +47,9 @@ fun AppInfoCard() {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                // 2. Increase Height: Increased vertical padding significantly (spacing.xl -> 56.dp)
-                .padding(vertical = 56.dp, horizontal = MaterialTheme.spacing.l),
+                .padding(vertical = 28.dp, horizontal = MaterialTheme.spacing.l),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.SpaceBetween
+            verticalArrangement = Arrangement.SpaceEvenly
         ) {
             Card(
                 modifier = Modifier

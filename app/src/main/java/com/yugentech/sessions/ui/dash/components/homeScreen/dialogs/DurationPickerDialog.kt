@@ -4,52 +4,63 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Slider
 import androidx.compose.material3.SliderDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import ir.mahozad.multiplatform.wavyslider.material3.WavySlider
-import ir.mahozad.multiplatform.wavyslider.WaveDirection
 import kotlin.math.roundToInt
 
 @Composable
 fun DurationPickerDialog(
     title: String,
+    description: String,
     initialValue: Int,
     range: IntRange,
     step: Int,
     onDismiss: () -> Unit,
     onConfirm: (Int) -> Unit
 ) {
-    var sliderValue by remember { mutableIntStateOf(initialValue) }
+    var sliderValue by remember { mutableFloatStateOf(initialValue.toFloat()) }
+    val stepsCount = ((range.last - range.first) / step) - 1
 
     AlertDialog(
         onDismissRequest = onDismiss,
         title = {
-            Text(
-                text = title,
-                style = MaterialTheme.typography.headlineSmall,
-                fontWeight = FontWeight.Bold
-            )
+            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                Text(
+                    text = title,
+                    style = MaterialTheme.typography.headlineSmall,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.onSurface
+                )
+                // Added explanation
+                Text(
+                    text = description,
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
         },
         text = {
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(24.dp)
+                verticalArrangement = Arrangement.spacedBy(24.dp),
+                modifier = Modifier.fillMaxWidth()
             ) {
-                // 1. Large Value Display
                 Text(
-                    text = "$sliderValue min",
+                    text = "${sliderValue.roundToInt()} min",
                     style = MaterialTheme.typography.displayMedium.copy(
                         fontFeatureSettings = "tnum"
                     ),
@@ -57,33 +68,28 @@ fun DurationPickerDialog(
                     fontWeight = FontWeight.Bold
                 )
 
-                // 2. The Wavy Slider (Input)
-                Column {
-                    WavySlider(
-                        value = sliderValue.toFloat(),
+                Column(modifier = Modifier.fillMaxWidth()) {
+                    Slider(
+                        value = sliderValue,
                         onValueChange = { newValue ->
-                            // Snap logic: Round to nearest 'step'
                             val snapped = (newValue / step).roundToInt() * step
-                            sliderValue = snapped
+                            sliderValue = snapped.toFloat()
                         },
                         valueRange = range.first.toFloat()..range.last.toFloat(),
-                        modifier = Modifier.fillMaxWidth(),
-                        // EXPRESSIVE STYLING:
-                        waveHeight = 10.dp,
-                        waveLength = 30.dp,
-                        waveVelocity = 10.dp to WaveDirection.TAIL,
-
-                        // FIX IS HERE: Use SliderDefaults.colors() instead of direct params
+                        steps = if (stepsCount > 0) stepsCount else 0,
                         colors = SliderDefaults.colors(
+                            thumbColor = MaterialTheme.colorScheme.primary,
                             activeTrackColor = MaterialTheme.colorScheme.primary,
                             inactiveTrackColor = MaterialTheme.colorScheme.surfaceVariant,
-                            thumbColor = MaterialTheme.colorScheme.primary
+                            activeTickColor = MaterialTheme.colorScheme.surface,
+                            inactiveTickColor = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                     )
 
-                    // Range Labels
                     Row(
-                        modifier = Modifier.fillMaxWidth(),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 8.dp),
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
                         Text(
@@ -91,7 +97,6 @@ fun DurationPickerDialog(
                             style = MaterialTheme.typography.labelMedium,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
-
                         Text(
                             text = "${range.last}m",
                             style = MaterialTheme.typography.labelMedium,
@@ -102,7 +107,7 @@ fun DurationPickerDialog(
             }
         },
         confirmButton = {
-            TextButton(onClick = { onConfirm(sliderValue) }) {
+            TextButton(onClick = { onConfirm(sliderValue.roundToInt()) }) {
                 Text("Set Time")
             }
         },
@@ -112,6 +117,7 @@ fun DurationPickerDialog(
             }
         },
         containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
-        textContentColor = MaterialTheme.colorScheme.onSurfaceVariant
+        textContentColor = MaterialTheme.colorScheme.onSurfaceVariant,
+        titleContentColor = MaterialTheme.colorScheme.onSurface
     )
 }
