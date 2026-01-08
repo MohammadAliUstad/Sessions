@@ -1,6 +1,7 @@
 package com.yugentech.sessions.ui.config.components.aboutScreen
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -24,16 +25,19 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
 import com.yugentech.sessions.R
 import com.yugentech.sessions.theme.tokens.corners
-import com.yugentech.sessions.theme.tokens.dimensions.AppConstants
 import com.yugentech.sessions.theme.tokens.spacing
 
 @Composable
 fun AppInfoCard() {
     Card(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(),
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surfaceContainer,
             contentColor = MaterialTheme.colorScheme.onSurface
@@ -43,12 +47,14 @@ fun AppInfoCard() {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(MaterialTheme.spacing.l),
-            horizontalAlignment = Alignment.CenterHorizontally
+                // 2. Increase Height: Increased vertical padding significantly (spacing.xl -> 56.dp)
+                .padding(vertical = 56.dp, horizontal = MaterialTheme.spacing.l),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.SpaceBetween
         ) {
             Card(
                 modifier = Modifier
-                    .size(AppConstants.IMAGE_SIZE)
+                    .size(100.dp)
                     .clip(CircleShape),
                 colors = CardDefaults.cardColors(
                     containerColor = MaterialTheme.colorScheme.primaryContainer
@@ -63,54 +69,41 @@ fun AppInfoCard() {
                         contentDescription = null,
                         modifier = Modifier
                             .fillMaxSize()
-                            .scale(AppConstants.ONEPOINT_FIVEF),
+                            .scale(1.3f),
                         contentScale = ContentScale.Fit,
                         colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.primary)
                     )
                 }
             }
 
-            Spacer(modifier = Modifier.height(MaterialTheme.spacing.xl))
-
-            Text(
-                text = stringResource(R.string.app_name),
-                style = MaterialTheme.typography.headlineMedium,
-                color = MaterialTheme.colorScheme.primary
-            )
-
-            Spacer(modifier = Modifier.height(MaterialTheme.spacing.s))
-
-            Text(
-                text = stringResource(R.string.tagline),
-                style = MaterialTheme.typography.bodyLarge,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                textAlign = TextAlign.Center
-            )
-
-            Spacer(modifier = Modifier.height(MaterialTheme.spacing.m))
-
-            Text(
-                text = stringResource(R.string.app_description),
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                textAlign = TextAlign.Center,
-                lineHeight = MaterialTheme.typography.bodyMedium.lineHeight
-            )
-
             Spacer(modifier = Modifier.height(MaterialTheme.spacing.l))
 
+            // App Name
             Text(
-                text = stringResource(R.string.branding),
-                style = MaterialTheme.typography.labelLarge,
+                text = stringResource(R.string.app_name),
+                style = MaterialTheme.typography.headlineSmall,
+                fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.onSurface
             )
 
             Spacer(modifier = Modifier.height(MaterialTheme.spacing.xs))
 
+            // Version
             Text(
                 text = stringResource(R.string.version),
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
+                style = MaterialTheme.typography.labelLarge,
+                color = MaterialTheme.colorScheme.primary
+            )
+
+            Spacer(modifier = Modifier.height(MaterialTheme.spacing.m))
+
+            // Description
+            Text(
+                text = stringResource(R.string.app_description),
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.padding(horizontal = MaterialTheme.spacing.s)
             )
         }
     }
