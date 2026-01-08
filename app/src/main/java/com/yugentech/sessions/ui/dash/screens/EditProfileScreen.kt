@@ -12,17 +12,17 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Error
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material.icons.filled.Face
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.LargeTopAppBar
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -33,6 +33,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.stringResource
@@ -40,8 +41,9 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.yugentech.sessions.R
 import com.yugentech.sessions.theme.tokens.dimensions.AppConstants
 import com.yugentech.sessions.theme.tokens.spacing
-import com.yugentech.sessions.ui.dash.components.avatar.AvatarSection
-import com.yugentech.sessions.ui.dash.components.avatar.DisplayNameSection
+import com.yugentech.sessions.ui.config.components.settingsScreen.SettingsSectionHeader
+import com.yugentech.sessions.ui.dash.components.editProfileScreen.AvatarSection
+import com.yugentech.sessions.ui.dash.components.editProfileScreen.DisplayNameSection
 import com.yugentech.sessions.viewModels.ProfileViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -55,8 +57,10 @@ fun EditProfileScreen(
     val uiState by profileViewModel.uiState.collectAsStateWithLifecycle()
     val context = LocalContext.current
     val view = LocalView.current
-    val scrollState = rememberScrollState()
     val user = uiState.user
+
+    val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
+    val scrollState = rememberScrollState()
 
     LaunchedEffect(userId) {
         profileViewModel.loadUser(userId)
@@ -100,13 +104,13 @@ fun EditProfileScreen(
         }
 
         Scaffold(
+            modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
             topBar = {
-                TopAppBar(
+                LargeTopAppBar(
                     title = {
                         Text(
                             text = stringResource(R.string.edit_profile),
-                            style = MaterialTheme.typography.headlineSmall
-                        )
+                            style = MaterialTheme.typography.headlineMedium)
                     },
                     navigationIcon = {
                         IconButton(onClick = onNavigateBack) {
@@ -116,28 +120,12 @@ fun EditProfileScreen(
                             )
                         }
                     },
-                    actions = {
-                        Button(
-                            modifier = Modifier.padding(end = MaterialTheme.spacing.s),
-                            onClick = { saveProfile() },
-                            enabled = canSave,
-                            colors = ButtonDefaults.buttonColors(
-                                containerColor = MaterialTheme.colorScheme.primary,
-                                contentColor = MaterialTheme.colorScheme.onPrimary
-                            )
-                        ) {
-                            Text(
-                                text = stringResource(R.string.save),
-                                style = MaterialTheme.typography.labelLarge
-                            )
-                        }
-                    },
+                    scrollBehavior = scrollBehavior,
                     colors = TopAppBarDefaults.topAppBarColors(
                         containerColor = MaterialTheme.colorScheme.surface,
-                        scrolledContainerColor = MaterialTheme.colorScheme.surfaceVariant,
+                        scrolledContainerColor = MaterialTheme.colorScheme.surface,
                         navigationIconContentColor = MaterialTheme.colorScheme.onSurface,
-                        titleContentColor = MaterialTheme.colorScheme.onSurface,
-                        actionIconContentColor = MaterialTheme.colorScheme.primary
+                        titleContentColor = MaterialTheme.colorScheme.onSurface
                     )
                 )
             },
@@ -151,7 +139,7 @@ fun EditProfileScreen(
                     .padding(horizontal = MaterialTheme.spacing.m)
                     .verticalScroll(scrollState),
                 horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.l)
+                verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.xs)
             ) {
                 AnimatedVisibility(visible = uiState.errorMessage != null) {
                     Card(
@@ -179,21 +167,37 @@ fun EditProfileScreen(
                     }
                 }
 
-                AvatarSection(
-                    selectedAvatarId = selectedAvatarId,
-                    onAvatarSelected = { selectedAvatarId = it }
-                )
+                // --- Avatar Section Group ---
+                Column(verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.xs)) {
+                    SettingsSectionHeader(
+                        icon = Icons.Default.Face,
+                        title = "Choose Your Avatar"
+                    )
+                    AvatarSection(
+                        selectedAvatarId = selectedAvatarId,
+                        onAvatarSelected = { selectedAvatarId = it },
+                        onSaveClick = { saveProfile() },
+                        isSaveEnabled = canSave
+                    )
+                }
 
-                DisplayNameSection(
-                    displayName = displayName,
-                    onDisplayNameChange = {
-                        if (it.length <= AppConstants.TWENTY) {
-                            displayName = it
-                        }
-                    },
-                    validationError = validationError,
-                    isSaving = uiState.isSaving
-                )
+                // --- Display Name Section Group ---
+                Column(verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.xs)) {
+                    SettingsSectionHeader(
+                        icon = Icons.Default.Person,
+                        title = "Display Name"
+                    )
+                    DisplayNameSection(
+                        displayName = displayName,
+                        onDisplayNameChange = {
+                            if (it.length <= AppConstants.TWENTY) {
+                                displayName = it
+                            }
+                        },
+                        validationError = validationError,
+                        isSaving = uiState.isSaving
+                    )
+                }
             }
         }
     }
