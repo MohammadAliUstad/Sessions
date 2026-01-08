@@ -6,11 +6,11 @@ import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import com.yugentech.sessions.theme.models.ColorTheme
 import com.yugentech.sessions.theme.models.ThemeConfiguration
 import com.yugentech.sessions.theme.models.ThemeMode
-import timber.log.Timber
 
 @Composable
 fun getColorScheme(
@@ -18,46 +18,57 @@ fun getColorScheme(
     isSystemInDarkTheme: Boolean = isSystemInDarkTheme()
 ): ColorScheme {
 
-    // Determine effective dark mode based on user override or system default
     val isDarkMode = when (themeConfiguration.themeMode) {
         ThemeMode.LIGHT -> false
         ThemeMode.DARK -> true
         ThemeMode.SYSTEM -> isSystemInDarkTheme
     }
 
-    Timber.v("Resolving color scheme. DarkMode: $isDarkMode, Theme: ${themeConfiguration.colorTheme}")
-
-    return when {
-        // Use Android 12+ Dynamic Colors (Material You) if enabled and supported
+    val baseScheme = when {
         themeConfiguration.colorTheme == ColorTheme.DYNAMIC &&
                 themeConfiguration.useDynamicColors && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
             val context = LocalContext.current
-            if (isDarkMode) {
-                dynamicDarkColorScheme(context)
-            } else {
-                dynamicLightColorScheme(context)
-            }
+            if (isDarkMode) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
         }
-
-        // Fallback to internal static color schemes
         else -> {
             when (themeConfiguration.colorTheme) {
-                ColorTheme.DYNAMIC -> {
-                    if (isDarkMode) AppColorSchemes.GrayDarkColorScheme else AppColorSchemes.GrayLightColorScheme
-                }
+                ColorTheme.DYNAMIC, ColorTheme.MONOCHROME ->
+                    if (isDarkMode) AppColorSchemes.EclipseDarkColorScheme else AppColorSchemes.EclipseLightColorScheme
 
-                ColorTheme.MONOCHROME -> {
-                    if (isDarkMode) AppColorSchemes.GrayDarkColorScheme else AppColorSchemes.GrayLightColorScheme
-                }
+                ColorTheme.BLUE ->
+                    if (isDarkMode) AppColorSchemes.TwilightDarkColorScheme else AppColorSchemes.TwilightLightColorScheme
 
-                ColorTheme.BLUE -> {
-                    if (isDarkMode) AppColorSchemes.DarkBlueScheme else AppColorSchemes.LightBlueScheme
-                }
+                ColorTheme.GREEN ->
+                    if (isDarkMode) AppColorSchemes.GroveDarkColorScheme else AppColorSchemes.GroveLightColorScheme
 
-                ColorTheme.GREEN -> {
-                    if (isDarkMode) AppColorSchemes.YellowDarkColorScheme else AppColorSchemes.YellowLightColorScheme
-                }
+                ColorTheme.YELLOW ->
+                    if (isDarkMode) AppColorSchemes.CanyonDarkColorScheme else AppColorSchemes.CanyonLightColorScheme
+
+                ColorTheme.PINK ->
+                    if (isDarkMode) AppColorSchemes.SakuraDarkColorScheme else AppColorSchemes.SakuraLightColorScheme
+
+                ColorTheme.RED ->
+                    if (isDarkMode) AppColorSchemes.GarnetDarkColorScheme else AppColorSchemes.GarnetLightColorScheme
+
+                ColorTheme.CYAN ->
+                    if (isDarkMode) AppColorSchemes.LagoonDarkColorScheme else AppColorSchemes.LagoonLightColorScheme
             }
         }
     }
+
+    return if (isDarkMode && themeConfiguration.isAmoledMode) {
+        baseScheme.toAmoled()
+    } else {
+        baseScheme
+    }
+}
+
+fun ColorScheme.toAmoled(): ColorScheme {
+    return this.copy(
+        background = Color.Black,
+        surface = Color.Black,
+        surfaceContainerLowest = Color.Black,
+        surfaceContainerLow = Color(0xFF101010),
+        scrim = Color.Black
+    )
 }
