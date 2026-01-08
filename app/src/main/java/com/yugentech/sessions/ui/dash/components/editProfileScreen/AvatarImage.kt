@@ -1,4 +1,4 @@
-package com.yugentech.sessions.ui.dash.components.avatar
+package com.yugentech.sessions.ui.dash.components.editProfileScreen
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
@@ -9,6 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.Dp
 import com.yugentech.sessions.theme.tokens.components
@@ -22,7 +23,6 @@ fun AvatarImage(
 ) {
     val avatar = AvatarRepository.getAvatarById(avatarId) ?: AvatarRepository.getDefaultAvatar()
 
-    // Replaced Surface with Box to remove the background color
     Box(
         modifier = modifier
             .size(size)
@@ -32,7 +32,7 @@ fun AvatarImage(
         Image(
             painter = painterResource(id = avatar.drawableRes),
             contentDescription = contentDescription ?: avatar.name,
-            modifier = Modifier.size(size * 0.7f)
+            modifier = Modifier.size(size)
         )
     }
 }

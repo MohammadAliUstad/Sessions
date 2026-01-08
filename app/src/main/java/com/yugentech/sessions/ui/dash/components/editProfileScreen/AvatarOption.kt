@@ -1,4 +1,4 @@
-package com.yugentech.sessions.ui.dash.components.avatar
+package com.yugentech.sessions.ui.dash.components.editProfileScreen
 
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
@@ -74,14 +74,12 @@ fun AvatarOption(
 
         Text(
             text = avatar.name,
-            // Standard M3 Role for captions/labels under images
             style = MaterialTheme.typography.labelMedium,
             color = if (isSelected) {
                 MaterialTheme.colorScheme.primary
             } else {
                 MaterialTheme.colorScheme.onSurfaceVariant
             },
-            // Keep the weight toggle for selection emphasis
             fontWeight = if (isSelected) FontWeight.SemiBold else FontWeight.Normal,
             textAlign = TextAlign.Center,
             maxLines = 2,
