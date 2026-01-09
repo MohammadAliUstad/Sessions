@@ -45,15 +45,17 @@ fun HomeScreen(
     userId: String
 ) {
     val uiState by timerViewModel.uiState.collectAsStateWithLifecycle()
+    val dashboardState by timerViewModel.dashboardState.collectAsStateWithLifecycle()
     val sessionStatus = uiState.status
     val sessionConfig = uiState.config
-
-    // Logic check: active if timer has moved from the total duration
-    val isSessionActive = sessionStatus.currentTime != sessionStatus.totalTime
 
     val view = LocalView.current
     val scrollState = rememberScrollState()
     var activeDialog by remember { mutableStateOf(ActiveDialog.None) }
+
+    // UPDATED: Use the clean state property we created.
+    // The session is "Active" if it's NOT Idle (i.e., it is Running or Paused).
+    val isSessionActive = !sessionStatus.isIdle
 
     LaunchedEffect(userId) {
         timerViewModel.setUserId(userId)
@@ -96,16 +98,16 @@ fun HomeScreen(
                 )
 
                 // Item 3: Progress/Config Card
+                // UPDATED: Swap based on Active state (Not Idle) instead of just IsRunning.
+                // This keeps the Progress Card visible when Paused.
                 AnimatedContent(
-                    targetState = sessionStatus.isRunning,
+                    targetState = isSessionActive,
                     label = "dashboard_swap"
-                ) { isRunning ->
-                    if (isRunning) {
+                ) { showProgress ->
+                    if (showProgress) {
                         SessionProgressCard(
-                            timerMode = sessionStatus.currentMode,
-                            completedSets = sessionStatus.completedSets,
-                            targetSets = sessionConfig.targetSets,
-                            longBreakDurationMinutes = sessionConfig.longBreakDurationMinutes
+                            state = dashboardState,
+                            targetSets = uiState.config.targetSets
                         )
                     } else {
                         SessionConfigCard(
@@ -119,8 +121,8 @@ fun HomeScreen(
 
                 // Item 4: Navbar
                 SessionControlBar(
-                    isStudying = sessionStatus.isRunning,
-                    isSessionActive = isSessionActive,
+                    isStudying = sessionStatus.isRunning, // Controls Play/Pause Icon
+                    isSessionActive = isSessionActive,    // Controls Stop/Save/Discard visibility
                     onStartStop = { timerViewModel.toggleTimer(view) },
                     onSoundClick = { activeDialog = ActiveDialog.Sound },
                     onSetsClick = { activeDialog = ActiveDialog.SetsSettings },
@@ -133,7 +135,6 @@ fun HomeScreen(
             if (activeDialog != ActiveDialog.None) {
                 val closeDialog = { activeDialog = ActiveDialog.None }
 
-                // Retrieve current values for "Initial Value" in dialogs
                 val currentFocus = sessionConfig.focusDurationMinutes
                 val currentShort = sessionConfig.shortBreakDurationMinutes
                 val currentLong = sessionConfig.longBreakDurationMinutes
@@ -144,31 +145,31 @@ fun HomeScreen(
                             title = "Focus Duration",
                             description = "Choose how long you want to focus before taking a break.",
                             initialValue = currentFocus,
-                            range = 1..60,
-                            step = 1,
+                            range = 10..60,
+                            step = 5,
                             onDismiss = closeDialog,
                             onConfirm = { newMins ->
-                                // UPDATED: Call specific function
                                 timerViewModel.updateFocusDuration(newMins)
                                 closeDialog()
                             }
                         )
                     }
+
                     ActiveDialog.ShortBreak -> {
                         DurationPickerDialog(
                             title = "Short Break",
                             description = "Choose the duration of your break between sessions.",
                             initialValue = currentShort,
-                            range = 1..15,
+                            range = 5..15,
                             step = 1,
                             onDismiss = closeDialog,
                             onConfirm = { newMins ->
-                                // UPDATED: Call specific function
                                 timerViewModel.updateShortBreakDuration(newMins)
                                 closeDialog()
                             }
                         )
                     }
+
                     ActiveDialog.SetsSettings -> {
                         SetsSettingsDialog(
                             currentSets = sessionConfig.targetSets,
@@ -183,6 +184,7 @@ fun HomeScreen(
                             }
                         )
                     }
+
                     ActiveDialog.Sound -> {
                         SoundSelectionDialog(
                             currentSoundId = sessionConfig.soundId,
@@ -190,6 +192,7 @@ fun HomeScreen(
                             onConfirm = { homeViewModel.clearError() }
                         )
                     }
+
                     ActiveDialog.Task -> {
                         TaskInputDialog(
                             currentTask = sessionConfig.sessionTask,
@@ -200,6 +203,7 @@ fun HomeScreen(
                             }
                         )
                     }
+
                     ActiveDialog.None -> Unit
                 }
             }

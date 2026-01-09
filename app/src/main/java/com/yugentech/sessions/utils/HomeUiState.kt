@@ -35,9 +35,17 @@ data class SessionStatus(
     val currentMode: TimerMode = TimerMode.Focus,
 
     // Runtime values stored as SECONDS (Long)
-    // We convert Config Minutes -> Seconds here when timer starts
     val currentTime: Long = 0L,
     val totalTime: Long = 0L,
 
     val completedSets: Int = 0
-)
+) {
+    // Logic: Checks if the session is strictly "Paused"
+    // (Started, not currently running, and not yet finished)
+    val isPaused: Boolean
+        get() = !isRunning && totalTime > 0 && currentTime > 0 && currentTime < totalTime
+
+    // Optional: Useful helper to check if the timer is completely stopped/fresh
+    val isIdle: Boolean
+        get() = !isRunning && (totalTime == 0L || currentTime == totalTime)
+}
