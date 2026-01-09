@@ -26,6 +26,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
 import com.yugentech.sessions.R
 import com.yugentech.sessions.theme.tokens.components
 import com.yugentech.sessions.theme.tokens.corners
@@ -54,9 +55,11 @@ fun SignInForm(
     Card(
         modifier = modifier.fillMaxWidth(),
         colors = CardDefaults.cardColors(
+            // Expressive: Use surfaceContainer for a distinct "island"
             containerColor = MaterialTheme.colorScheme.surfaceContainer
         ),
-        shape = RoundedCornerShape(MaterialTheme.corners.large)
+        // Expressive: Extra Large corners (28.dp) make it feel friendlier
+        shape = RoundedCornerShape(28.dp)
     ) {
         Column(
             modifier = Modifier.padding(MaterialTheme.spacing.l),
@@ -64,96 +67,102 @@ fun SignInForm(
         ) {
             Text(
                 text = stringResource(R.string.welcome_back),
-                style = MaterialTheme.typography.headlineMedium.copy(
-                    fontWeight = FontWeight.SemiBold
+                style = MaterialTheme.typography.headlineSmall.copy( // Bumped up slightly
+                    fontWeight = FontWeight.Bold // Bolder header
                 ),
                 color = MaterialTheme.colorScheme.onSurface
             )
 
-            AppTextField(
-                value = formState.email,
-                onValueChange = { newEmail ->
-                    formState = formState.copy(
-                        email = newEmail,
-                        emailError = FormValidator.validateEmail(newEmail)
-                    )
-                },
-                label = stringResource(R.string.label_email),
-                leadingIcon = Icons.Default.Email,
-                error = formState.emailError
-            )
-
+            // Grouping Inputs together
             Column(
-                verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.xs)
+                verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.m)
             ) {
                 AppTextField(
-                    value = formState.password,
-                    onValueChange = { newPassword ->
+                    value = formState.email,
+                    onValueChange = { newEmail ->
                         formState = formState.copy(
-                            password = newPassword,
-                            passwordError = FormValidator.validatePassword(newPassword)
+                            email = newEmail,
+                            emailError = FormValidator.validateEmail(newEmail)
                         )
                     },
-                    label = stringResource(R.string.label_password),
-                    leadingIcon = Icons.Default.Lock,
-                    error = formState.passwordError,
-                    isPassword = true
+                    label = stringResource(R.string.label_email),
+                    leadingIcon = Icons.Default.Email,
+                    error = formState.emailError
                 )
 
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.End
-                ) {
-                    TextButton(
-                        onClick = {
-                            if (formState.email.isBlank()) {
-                                formState = formState.copy(
-                                    emailError = context.getString(R.string.email_error)
-                                )
-                            } else {
-                                onForgotPassword(formState.email)
-                            }
+                Column(verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.xs)) {
+                    AppTextField(
+                        value = formState.password,
+                        onValueChange = { newPassword ->
+                            formState = formState.copy(
+                                password = newPassword,
+                                passwordError = FormValidator.validatePassword(newPassword)
+                            )
                         },
-                        modifier = Modifier
-                            .padding(end = MaterialTheme.spacing.xs)
-                            .height(MaterialTheme.components.buttonMedium)
+                        label = stringResource(R.string.label_password),
+                        leadingIcon = Icons.Default.Lock,
+                        error = formState.passwordError,
+                        isPassword = true
+                    )
+
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.End
                     ) {
-                        Text(
-                            text = stringResource(R.string.forgot_password),
-                            style = MaterialTheme.typography.labelLarge,
-                            color = MaterialTheme.colorScheme.primary
-                        )
+                        TextButton(
+                            onClick = {
+                                if (formState.email.isBlank()) {
+                                    formState = formState.copy(
+                                        emailError = context.getString(R.string.email_error)
+                                    )
+                                } else {
+                                    onForgotPassword(formState.email)
+                                }
+                            },
+                            modifier = Modifier
+                                .padding(end = MaterialTheme.spacing.xs)
+                                .height(MaterialTheme.components.buttonMedium)
+                        ) {
+                            Text(
+                                text = stringResource(R.string.forgot_password),
+                                style = MaterialTheme.typography.labelLarge,
+                                color = MaterialTheme.colorScheme.primary
+                            )
+                        }
                     }
                 }
             }
 
-            ActionButton(
-                text = stringResource(R.string.sign_in),
-                isLoading = isLoading,
-                onClick = {
-                    val isValid = FormValidator.validateSignInForm(
-                        email = formState.email,
-                        password = formState.password,
-                        onEmailError = { error ->
-                            formState = formState.copy(emailError = error)
-                        },
-                        onPasswordError = { error ->
-                            formState = formState.copy(passwordError = error)
-                        }
-                    )
+            // Actions
+            Column(verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.s)) {
+                ActionButton(
+                    text = stringResource(R.string.sign_in),
+                    isLoading = isLoading,
+                    onClick = {
+                        val isValid = FormValidator.validateSignInForm(
+                            email = formState.email,
+                            password = formState.password,
+                            onEmailError = { error ->
+                                formState = formState.copy(emailError = error)
+                            },
+                            onPasswordError = { error ->
+                                formState = formState.copy(passwordError = error)
+                            }
+                        )
 
-                    if (isValid) {
-                        scope.launch {
-                            onSignIn(formState.email, formState.password)
+                        if (isValid) {
+                            scope.launch {
+                                onSignIn(formState.email, formState.password)
+                            }
                         }
                     }
-                }
-            )
+                )
 
-            GoogleSignInButton(
-                isLoading = isLoading,
-                onClick = { scope.launch { onGoogleSignIn() } }
-            )
+                GoogleSignInButton(
+                    isLoading = isLoading,
+                    onClick = { scope.launch { onGoogleSignIn() } }
+                )
+            }
         }
     }
 }

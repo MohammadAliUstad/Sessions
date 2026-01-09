@@ -116,7 +116,7 @@ fun DurationPickerDialog(
                 Text("Cancel")
             }
         },
-        containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
+        containerColor = MaterialTheme.colorScheme.surfaceContainer,
         textContentColor = MaterialTheme.colorScheme.onSurfaceVariant,
         titleContentColor = MaterialTheme.colorScheme.onSurface
     )

@@ -21,6 +21,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.zIndex
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -45,9 +46,10 @@ fun SignInScreen(
     val forgotPasswordState by loginViewModel.forgotPasswordState.collectAsStateWithLifecycle()
     val scrollState = rememberScrollState()
 
+    // Expressive: Use SurfaceContainerLow for depth
     Surface(
         modifier = Modifier.fillMaxSize(),
-        color = MaterialTheme.colorScheme.background
+        color = MaterialTheme.colorScheme.surfaceContainerLow
     ) {
         Box(
             modifier = Modifier
@@ -73,7 +75,9 @@ fun SignInScreen(
 
                 Text(
                     text = stringResource(R.string.app_name),
-                    style = MaterialTheme.typography.headlineMedium,
+                    // Expressive: Bolder, Larger Header
+                    style = MaterialTheme.typography.headlineLarge,
+                    fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.onBackground
                 )
 
@@ -148,7 +152,7 @@ fun SignInScreen(
                         Text("OK")
                     }
                 },
-                containerColor = MaterialTheme.colorScheme.surface,
+                containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
                 titleContentColor = MaterialTheme.colorScheme.onSurface,
                 textContentColor = MaterialTheme.colorScheme.onSurfaceVariant
             )

@@ -2,6 +2,7 @@ package com.yugentech.sessions.ui.config.components.appearanceScreen
 
 import androidx.compose.ui.graphics.Color
 import com.yugentech.sessions.theme.models.ColorTheme
+import com.yugentech.sessions.theme.color.AppColorSchemes
 
 data class ThemeOption(
     val colorTheme: ColorTheme,
@@ -14,6 +15,7 @@ fun themeOptions(
     currentPrimary: Color,
     currentTertiary: Color
 ): List<ThemeOption> = listOf(
+    // Dynamic (Material You)
     ThemeOption(
         colorTheme = ColorTheme.DYNAMIC,
         displayName = "Dynamic",
@@ -24,34 +26,88 @@ fun themeOptions(
             currentPrimary.copy(alpha = 0.7f)
         )
     ),
+
+    // Eclipse (Monochrome)
     ThemeOption(
         colorTheme = ColorTheme.MONOCHROME,
-        displayName = "Monochrome",
-        primaryColor = Color(0xFF1C1B1F),
+        displayName = "Eclipse",
+        primaryColor = AppColorSchemes.EclipseLightColorScheme.primary,
         gradientColors = listOf(
-            Color(0xFF1C1B1F),
-            Color(0xFF49454F),
-            Color(0xFF79747E)
+            AppColorSchemes.EclipseLightColorScheme.primary,
+            AppColorSchemes.EclipseLightColorScheme.tertiary,
+            AppColorSchemes.EclipseLightColorScheme.primaryContainer
         )
     ),
+
+    // Twilight (Blue/Indigo)
     ThemeOption(
         colorTheme = ColorTheme.BLUE,
-        displayName = "Ocean",
-        primaryColor = Color(0xFF0061A4),
+        displayName = "Twilight",
+        primaryColor = AppColorSchemes.TwilightLightColorScheme.primary,
         gradientColors = listOf(
-            Color(0xFF0061A4),
-            Color(0xFF6B5778),
-            Color(0xFF9ECAFF)
+            AppColorSchemes.TwilightLightColorScheme.primary,
+            AppColorSchemes.TwilightLightColorScheme.tertiary,
+            AppColorSchemes.TwilightLightColorScheme.primaryContainer
         )
     ),
+
+    // Grove (Green)
     ThemeOption(
         colorTheme = ColorTheme.GREEN,
-        displayName = "Sunset",
-        primaryColor = Color(0xFF8C4A00),
+        displayName = "Grove",
+        primaryColor = AppColorSchemes.GroveLightColorScheme.primary,
         gradientColors = listOf(
-            Color(0xFF8C4A00),
-            Color(0xFF5D5E2F),
-            Color(0xFFFFB86E)
+            AppColorSchemes.GroveLightColorScheme.primary,
+            AppColorSchemes.GroveLightColorScheme.tertiary,
+            AppColorSchemes.GroveLightColorScheme.primaryContainer
+        )
+    ),
+
+    // Canyon (Yellow/Brown)
+    ThemeOption(
+        colorTheme = ColorTheme.YELLOW,
+        displayName = "Canyon",
+        primaryColor = AppColorSchemes.CanyonLightColorScheme.primary,
+        gradientColors = listOf(
+            AppColorSchemes.CanyonLightColorScheme.primary,
+            AppColorSchemes.CanyonLightColorScheme.tertiary,
+            AppColorSchemes.CanyonLightColorScheme.primaryContainer
+        )
+    ),
+
+    // Sakura (Pink)
+    ThemeOption(
+        colorTheme = ColorTheme.PINK,
+        displayName = "Sakura",
+        primaryColor = AppColorSchemes.SakuraLightColorScheme.primary,
+        gradientColors = listOf(
+            AppColorSchemes.SakuraLightColorScheme.primary,
+            AppColorSchemes.SakuraLightColorScheme.tertiary,
+            AppColorSchemes.SakuraLightColorScheme.primaryContainer
+        )
+    ),
+
+    // Garnet (Red)
+    ThemeOption(
+        colorTheme = ColorTheme.RED,
+        displayName = "Garnet",
+        primaryColor = AppColorSchemes.GarnetLightColorScheme.primary,
+        gradientColors = listOf(
+            AppColorSchemes.GarnetLightColorScheme.primary,
+            AppColorSchemes.GarnetLightColorScheme.tertiary,
+            AppColorSchemes.GarnetLightColorScheme.primaryContainer
+        )
+    ),
+
+    // Lagoon (Cyan/Teal)
+    ThemeOption(
+        colorTheme = ColorTheme.CYAN,
+        displayName = "Lagoon",
+        primaryColor = AppColorSchemes.LagoonLightColorScheme.primary,
+        gradientColors = listOf(
+            AppColorSchemes.LagoonLightColorScheme.primary,
+            AppColorSchemes.LagoonLightColorScheme.tertiary,
+            AppColorSchemes.LagoonLightColorScheme.primaryContainer
         )
     )
 )

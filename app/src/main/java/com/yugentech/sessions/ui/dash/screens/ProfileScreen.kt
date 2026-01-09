@@ -2,11 +2,16 @@ package com.yugentech.sessions.ui.dash.screens
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.History
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.CircularWavyProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
@@ -26,6 +31,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.yugentech.sessions.models.UserData
 import com.yugentech.sessions.theme.tokens.dimensions.AppConstants
 import com.yugentech.sessions.theme.tokens.spacing
+import com.yugentech.sessions.ui.dash.components.profileScreen.EmptySessionsCard
 import com.yugentech.sessions.ui.dash.components.profileScreen.ProfileInfoItem
 import com.yugentech.sessions.ui.dash.components.profileScreen.ProfileSectionHeader
 import com.yugentech.sessions.ui.dash.components.profileScreen.SessionHistoryItem
@@ -45,6 +51,14 @@ fun ProfileScreen(
     var showDeleteDialog by remember { mutableStateOf(false) }
     var sessionToDeleteId by remember { mutableStateOf<String?>(null) }
 
+    // Reusing the padding values to ensure consistency between layouts
+    val screenContentPadding = PaddingValues(
+        top = MaterialTheme.spacing.s,
+        start = MaterialTheme.spacing.m,
+        end = MaterialTheme.spacing.m,
+        bottom = 80.dp
+    )
+
     LaunchedEffect(userId) {
         profileViewModel.loadProfile(userId)
     }
@@ -61,50 +75,75 @@ fun ProfileScreen(
             )
         }
     } else {
-        LazyColumn(
-            modifier = modifier.fillMaxSize(),
-            // 1. Content Padding for floating nav bar
-            contentPadding = PaddingValues(
-                top = MaterialTheme.spacing.s,
-                start = MaterialTheme.spacing.m,
-                end = MaterialTheme.spacing.m,
-                bottom = 80.dp
-            ),
-            // 2. The "Grouped List" spacing
-            verticalArrangement = Arrangement.spacedBy(2.dp)
-        ) {
-            // --- GROUP 1: User Profile ---
-            item {
-                ProfileSectionHeader(title = "Profile")
-            }
-            item {
+        // LOGIC BRANCH: Choose Layout based on content
+        if (profileUiState.sessions.isEmpty()) {
+            // Case 1: Empty State (Use Column to center content)
+            Column(
+                modifier = modifier
+                    .fillMaxSize()
+                    .padding(screenContentPadding),
+                verticalArrangement = Arrangement.spacedBy(2.dp)
+            ) {
+                // UPDATED: Header for Account Section
+                ProfileSectionHeader(
+                    title = "My Account",
+                    icon = Icons.Filled.Person
+                )
+
                 ProfileInfoItem(
                     userData = profileUiState.user ?: UserData(name = AppConstants.EMPTY_STRING),
                     totalTime = profileUiState.totalTime,
                     onEditProfile = onEditProfile
                 )
+
+                // This Box takes up all remaining space (weight 1f) and centers the EmptyCard
+                Box(
+                    modifier = Modifier
+                        .weight(1f)
+                        .fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    EmptySessionsCard()
+                }
             }
-
-            // --- GROUP 2: Session History ---
-            // If there are sessions, show the header and list
-            if (profileUiState.sessions.isNotEmpty()) {
+        } else {
+            // Case 2: List State (Use LazyColumn for scrolling performance)
+            LazyColumn(
+                modifier = modifier.fillMaxSize(),
+                contentPadding = screenContentPadding,
+                verticalArrangement = Arrangement.spacedBy(2.dp)
+            ) {
+                // UPDATED: Header for Account Section
                 item {
-                    // Spacer for separation between groups
-                    androidx.compose.foundation.layout.Spacer(modifier = Modifier.size(16.dp))
+                    ProfileSectionHeader(
+                        title = "My Account",
+                        icon = Icons.Filled.Person
+                    )
+                }
 
+                item {
+                    ProfileInfoItem(
+                        userData = profileUiState.user ?: UserData(name = AppConstants.EMPTY_STRING),
+                        totalTime = profileUiState.totalTime,
+                        onEditProfile = onEditProfile
+                    )
+                }
+
+                item {
                     ProfileSectionHeader(
                         title = "Session History",
+                        icon = Icons.Filled.History,
                         countLabel = "${profileUiState.sessions.size} sessions"
                     )
                 }
 
-                // The Session Items
                 itemsIndexed(
                     items = profileUiState.sessions,
                     key = { _, session -> session.sessionId }
                 ) { index, session ->
-                    // Using animateItem for smooth reordering/deletion (M3 feature)
-                    Box(modifier = Modifier.animateItem()) {
+                    Box(
+                        modifier = Modifier.animateItem()
+                    ) {
                         SessionHistoryItem(
                             session = session,
                             index = index,
@@ -120,7 +159,7 @@ fun ProfileScreen(
         }
     }
 
-    // --- Delete Confirmation Dialog ---
+    // Delete Confirmation Dialog
     if (showDeleteDialog && sessionToDeleteId != null) {
         AlertDialog(
             onDismissRequest = {
@@ -162,7 +201,7 @@ fun ProfileScreen(
                     Text("Cancel")
                 }
             },
-            containerColor = MaterialTheme.colorScheme.surface,
+            containerColor = MaterialTheme.colorScheme.surfaceContainer,
             titleContentColor = MaterialTheme.colorScheme.onSurface,
             textContentColor = MaterialTheme.colorScheme.onSurfaceVariant
         )
