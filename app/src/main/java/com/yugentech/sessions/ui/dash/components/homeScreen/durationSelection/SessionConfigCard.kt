@@ -43,15 +43,15 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun SessionConfigCard(
-    focusDurationMillis: Long,
-    shortBreakDurationMillis: Long,
+    focusDurationMinutes: Int, // CHANGED: Long -> Int
+    shortBreakDurationMinutes: Int, // CHANGED: Long -> Int
     onFocusClick: () -> Unit,
     onShortBreakClick: () -> Unit
 ) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .height(160.dp) // MATCHED: Now 160.dp to align with ProgressCard
+            .height(160.dp)
             .padding(horizontal = 16.dp, vertical = 8.dp),
         colors = CardDefaults.cardColors(
             containerColor = Color.Transparent
@@ -65,7 +65,7 @@ fun SessionConfigCard(
         ) {
             ConfigItem(
                 label = "Focus Duration",
-                value = "${focusDurationMillis / 60000}",
+                value = "$focusDurationMinutes", // Direct usage
                 icon = Icons.Outlined.Timer,
                 onClick = onFocusClick,
                 containerColor = MaterialTheme.colorScheme.primaryContainer,
@@ -75,7 +75,7 @@ fun SessionConfigCard(
 
             ConfigItem(
                 label = "Short Break",
-                value = "${shortBreakDurationMillis / 60000}",
+                value = "$shortBreakDurationMinutes", // Direct usage
                 icon = Icons.Outlined.Coffee,
                 onClick = onShortBreakClick,
                 containerColor = MaterialTheme.colorScheme.tertiaryContainer,
@@ -112,7 +112,7 @@ fun ConfigItem(
         modifier = modifier
             .fillMaxHeight()
             .scale(scale)
-            .clip(RoundedCornerShape(24.dp)) // Matched corner radius to ProgressCard
+            .clip(RoundedCornerShape(24.dp))
             .clickable(
                 interactionSource = interactionSource,
                 indication = null,
@@ -122,19 +122,17 @@ fun ConfigItem(
         contentColor = contentColor
     ) {
         Box(modifier = Modifier.fillMaxSize()) {
-            // Watermark Icon
             Icon(
                 imageVector = icon,
                 contentDescription = null,
                 modifier = Modifier
                     .align(Alignment.TopEnd)
-                    .offset(x = 20.dp, y = (-5).dp) // Slight adjustment for the shorter card
+                    .offset(x = 20.dp, y = (-5).dp)
                     .size(100.dp)
                     .rotate(-15f),
                 tint = contentColor.copy(alpha = 0.15f)
             )
 
-            // Content
             Column(
                 modifier = Modifier
                     .align(Alignment.Center)

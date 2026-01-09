@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -46,9 +47,6 @@ fun SessionControlBar(
     onStopSave: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    // OPPOSITE SHAPE LOGIC:
-    // When Studying (Running): Main Button is Squircle -> Side Buttons become CIRCLES (50)
-    // When Idle: Main Button is Circle -> Side Buttons become SQUIRCLES (30)
     val cornerPercent by animateIntAsState(
         targetValue = if (isStudying) 50 else 30,
         animationSpec = spring(stiffness = Spring.StiffnessMediumLow),
@@ -61,7 +59,7 @@ fun SessionControlBar(
             .fillMaxWidth()
             .padding(horizontal = 24.dp, vertical = 16.dp),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.Center
+        horizontalArrangement = Arrangement.SpaceEvenly
     ) {
         // Left Action (Sound / Discard)
         AnimatedContent(
@@ -86,15 +84,11 @@ fun SessionControlBar(
             }
         }
 
-        Spacer(modifier = Modifier.size(24.dp))
-
         // Main Action (Play/Pause)
         ActionButton(
             isStudying = isStudying,
             onPlayPause = onStartStop
         )
-
-        Spacer(modifier = Modifier.size(24.dp))
 
         // Right Action (Sets / Finish)
         AnimatedContent(
@@ -144,7 +138,7 @@ fun SecondaryActionButton(
 
     FilledTonalIconButton(
         onClick = onClick,
-        modifier = Modifier.size(64.dp),
+        modifier = Modifier.size(72.dp), // Increased from 64.dp
         shape = shape,
         colors = colors
     ) {
@@ -155,12 +149,13 @@ fun SecondaryActionButton(
         ) {
             Icon(
                 imageVector = icon,
-                contentDescription = null, // Description is handled by the visual label now
-                modifier = Modifier.size(24.dp) // Slightly adjusted to fit text nicely
+                contentDescription = null,
+                modifier = Modifier.size(24.dp)
             )
+            Spacer(modifier = Modifier.height(4.dp))
             Text(
                 text = label,
-                style = MaterialTheme.typography.labelSmall.copy(fontSize = 10.sp),
+                style = MaterialTheme.typography.labelSmall.copy(fontSize = 11.sp), // Slightly increased font size
                 modifier = Modifier.padding(top = 2.dp)
             )
         }

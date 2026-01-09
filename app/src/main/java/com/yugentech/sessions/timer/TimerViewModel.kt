@@ -12,12 +12,17 @@ import com.yugentech.sessions.notifications.notificationRepository.NotificationR
 import com.yugentech.sessions.sessions.sessionsRepository.SessionsRepository
 import com.yugentech.sessions.sessions.sessionsUtils.SessionResult
 import com.yugentech.sessions.timer.timerRepository.TimerRepository
+import com.yugentech.sessions.ui.dash.components.homeScreen.durationSelection.SessionDashboardCalculator
+import com.yugentech.sessions.ui.dash.components.homeScreen.durationSelection.SessionDashboardState
 import com.yugentech.sessions.utils.HomeUiState
-import com.yugentech.sessions.utils.SessionConfig
 import com.yugentech.sessions.utils.SessionStatus
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -32,6 +37,13 @@ class TimerViewModel(
 
     private val _uiState = MutableStateFlow(HomeUiState())
     val uiState: StateFlow<HomeUiState> = _uiState.asStateFlow()
+
+    val dashboardState: StateFlow<SessionDashboardState> = combine(
+        uiState.map { it.config },
+        uiState.map { it.status }
+    ) { config, status ->
+        SessionDashboardCalculator.calculate(config, status)
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), SessionDashboardState())
 
     private var currentUserId: String? = null
 
@@ -48,14 +60,10 @@ class TimerViewModel(
                             totalTime = timerState.totalTime,
                             completedSets = timerState.completedSets
                         ),
-                        config = SessionConfig(
-                            sessionTask = ui.config.sessionTask, // Preserve local task input
-                            focusDuration = timerState.config.focusDuration,
-                            shortBreakDuration = timerState.config.shortBreakDuration,
-                            longBreakDuration = timerState.config.longBreakDuration,
-                            targetSets = timerState.config.targetSets,
-                            autoStartNext = false, // Removed from logic
-                            soundId = null         // Removed from logic
+                        // IMPORTANT: Use copy() to preserve user's manual settings (minutes)
+                        // while syncing the targetSets from the engine.
+                        config = ui.config.copy(
+                            targetSets = timerState.config.targetSets
                         )
                     )
                 }
@@ -73,38 +81,62 @@ class TimerViewModel(
         timerRepository.setSessionUserId(userId)
     }
 
-    // --- Configuration Inputs ---
+    // --- Separated Configuration Inputs ---
 
     fun updateSessionTask(newTask: String) {
         _uiState.update { it.copy(config = it.config.copy(sessionTask = newTask)) }
     }
 
-    fun updateDurations(focusMinutes: Int, shortBreakMinutes: Int, longBreakMinutes: Int) {
-        pushConfigToTimer(
-            focusDuration = focusMinutes * 60 * 1000L,
-            shortBreakDuration = shortBreakMinutes * 60 * 1000L,
-            longBreakDuration = longBreakMinutes * 60 * 1000L
-        )
+    fun updateFocusDuration(minutes: Int) {
+        // 1. Update UI instantly
+        _uiState.update {
+            it.copy(config = it.config.copy(focusDurationMinutes = minutes))
+        }
+        // 2. Update Engine
+        updateTimerConfig(focusMinutes = minutes)
+    }
+
+    fun updateShortBreakDuration(minutes: Int) {
+        _uiState.update {
+            it.copy(config = it.config.copy(shortBreakDurationMinutes = minutes))
+        }
+        updateTimerConfig(shortBreakMinutes = minutes)
+    }
+
+    fun updateLongBreakDuration(minutes: Int) {
+        _uiState.update {
+            it.copy(config = it.config.copy(longBreakDurationMinutes = minutes))
+        }
+        updateTimerConfig(longBreakMinutes = minutes)
     }
 
     fun updateTargetSets(sets: Int) {
-        pushConfigToTimer(targetSets = sets)
+        _uiState.update {
+            it.copy(config = it.config.copy(targetSets = sets))
+        }
+        updateTimerConfig(targetSets = sets)
     }
 
-    private fun pushConfigToTimer(
-        focusDuration: Long? = null,
-        shortBreakDuration: Long? = null,
-        longBreakDuration: Long? = null,
+    /**
+     * Helper to push changes to the Repository.
+     * Only parameters passed as non-null will be updated.
+     */
+    private fun updateTimerConfig(
+        focusMinutes: Int? = null,
+        shortBreakMinutes: Int? = null,
+        longBreakMinutes: Int? = null,
         targetSets: Int? = null
     ) {
         val current = timerRepository.timerState.value.config
-        val newTimerConfig = TimerConfig(
-            focusDuration = focusDuration ?: current.focusDuration,
-            shortBreakDuration = shortBreakDuration ?: current.shortBreakDuration,
-            longBreakDuration = longBreakDuration ?: current.longBreakDuration,
+
+        val newConfig = TimerConfig(
+            focusDurationMinutes = focusMinutes ?: current.focusDurationMinutes,
+            shortBreakDurationMinutes = shortBreakMinutes ?: current.shortBreakDurationMinutes,
+            longBreakDurationMinutes = longBreakMinutes ?: current.longBreakDurationMinutes,
             targetSets = targetSets ?: current.targetSets
         )
-        timerRepository.updateConfig(newTimerConfig)
+
+        timerRepository.updateConfig(newConfig)
     }
 
     // --- Timer Controls ---
@@ -133,7 +165,9 @@ class TimerViewModel(
     }
 
     fun stopAndDiscardSession(view: View? = null) {
-        stopTimer(view, isPause = false)
+        viewModelScope.launch {
+            timerRepository.stopAndResetTimer()
+        }
     }
 
     fun stopAndSaveSession(view: View? = null) {
@@ -167,8 +201,6 @@ class TimerViewModel(
                 sessionTask = _uiState.value.config.sessionTask.ifBlank { "Focus Session" }
             )
 
-            // Note: We don't need to sync first here. That's HomeViewModel's job.
-            // We just fire the save event.
             when (sessionsRepository.saveSession(userId, session)) {
                 is SessionResult.Success -> Timber.i("Session saved")
                 is SessionResult.Error -> _uiState.update { it.copy(errorMessage = "Failed to save") }

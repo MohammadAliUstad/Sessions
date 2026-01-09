@@ -1,15 +1,18 @@
 package com.yugentech.sessions.ui.dash.components.profileScreen
 
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import com.yugentech.sessions.theme.tokens.corners
 import com.yugentech.sessions.theme.tokens.elevation
@@ -19,40 +22,63 @@ import com.yugentech.sessions.theme.tokens.spacing
 fun StudyTimeSection(
     formattedTime: String
 ) {
-    val label = if (formattedTime != "0") "LIFETIME FOCUS" else "NO SESSIONS YET"
+    val hasTime = formattedTime != "0"
+
+    // List of quirky but progress-focused labels
+    val timeLabels = remember {
+        listOf(
+            "IN THE ZONE FOR",
+            "LOCKED IN FOR",
+            "DEEP WORK",
+            "TIME INVESTED",
+            "TIME GRINDED",
+            "TIME WELL SPENT",
+            "COMMITTED",
+            "TIME LOGGED"
+        )
+    }
+
+    // Pick a random label for the session; fallback to static text if empty
+    val label = if (hasTime) {
+        remember { timeLabels.random() }
+    } else {
+        "NO SESSIONS YET"
+    }
 
     Surface(
+        modifier = Modifier.fillMaxWidth(),
         color = MaterialTheme.colorScheme.secondaryContainer,
         contentColor = MaterialTheme.colorScheme.onSecondaryContainer,
         shape = RoundedCornerShape(MaterialTheme.corners.medium),
         tonalElevation = MaterialTheme.elevation.level2
     ) {
-        Box(
+        // UPDATED: Changed Column to Row for horizontal layout
+        Row(
             modifier = Modifier
+                .fillMaxWidth()
                 .padding(
-                    horizontal = MaterialTheme.spacing.xl,
-                    vertical = MaterialTheme.spacing.l
+                    vertical = MaterialTheme.spacing.m,
+                    horizontal = MaterialTheme.spacing.m
                 ),
-            contentAlignment = Alignment.Center
+            // Pushes Label to start and Time to end
+            horizontalArrangement = if (hasTime) Arrangement.SpaceBetween else Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Text(
-                    text = label,
-                    // Standard M3 Role for Eyebrows/Labels
-                    style = MaterialTheme.typography.labelLarge,
-                    textAlign = TextAlign.Center
-                )
+            Text(
+                text = label,
+                style = MaterialTheme.typography.labelMedium.copy(
+                    fontWeight = FontWeight.Bold
+                ),
+                color = MaterialTheme.colorScheme.onSecondaryContainer.copy(alpha = 0.6f),
+                textAlign = TextAlign.Start
+            )
 
-                if (formattedTime != "0") {
-                    Text(
-                        text = formattedTime,
-                        // Standard M3 Role for Hero Stats
-                        style = MaterialTheme.typography.headlineMedium,
-                        textAlign = TextAlign.Center
-                    )
-                }
+            if (hasTime) {
+                Text(
+                    text = formattedTime,
+                    style = MaterialTheme.typography.titleLarge,
+                    textAlign = TextAlign.End
+                )
             }
         }
     }

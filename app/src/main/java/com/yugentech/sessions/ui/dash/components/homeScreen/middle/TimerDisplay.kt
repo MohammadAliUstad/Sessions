@@ -23,6 +23,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.yugentech.sessions.timer.TimerMode
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
@@ -30,8 +31,9 @@ fun TimerDisplay(
     displayTime: Int,
     selectedDuration: Int,
     isStudying: Boolean,
+    currentMode: TimerMode, // Added Parameter
     modifier: Modifier = Modifier,
-    idleLabel: String = "Press play\nto start"
+    idleLabel: String = "Press the play button\nto start."
 ) {
     // 1. Calculate Progress
     val targetProgress = if (selectedDuration > 0) {
@@ -51,21 +53,19 @@ fun TimerDisplay(
     Box(
         modifier = modifier
             .padding(16.dp)
-            .size(260.dp) // Size to fit text comfortably
+            .size(300.dp)
             .aspectRatio(1f),
         contentAlignment = Alignment.Center
     ) {
-        // 3. The Standard Indicator (Like the first example)
-        // No custom stroke, no custom wavelength. Just the default component.
+        // 3. The Wavy Indicator
         CircularWavyProgressIndicator(
             progress = { animatedProgress },
             modifier = Modifier.fillMaxSize(),
-            // We only set colors to match your theme
             color = MaterialTheme.colorScheme.primary,
             trackColor = MaterialTheme.colorScheme.surfaceVariant,
         )
 
-        // 4. Timer Text Overlay
+        // 4. Timer Text & Mode Tag Overlay
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center,
@@ -84,14 +84,9 @@ fun TimerDisplay(
                     color = MaterialTheme.colorScheme.onSurface
                 )
 
-                Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(12.dp))
 
-                Text(
-                    text = if (isStudying) "focusing..." else "paused",
-                    style = MaterialTheme.typography.bodyLarge,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    textAlign = TextAlign.Center
-                )
+                ModeTag(mode = currentMode)
             } else {
                 Text(
                     text = idleLabel,

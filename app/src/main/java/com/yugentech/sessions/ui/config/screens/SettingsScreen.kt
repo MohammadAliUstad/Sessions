@@ -26,16 +26,19 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.yugentech.sessions.R
 import com.yugentech.sessions.notifications.NotificationsViewModel
 import com.yugentech.sessions.theme.tokens.spacing
 import com.yugentech.sessions.ui.config.components.settingsScreen.SettingsListItem
 import com.yugentech.sessions.ui.config.components.settingsScreen.SettingsSectionHeader
 import com.yugentech.sessions.ui.config.components.settingsScreen.SettingsSwitchItem
 import com.yugentech.sessions.ui.config.components.settingsScreen.TimePickerDialog
+import com.yugentech.sessions.ui.dash.components.common.LogoutConfirmationDialog
 import com.yugentech.sessions.viewModels.SettingsViewModel
 
 @Composable
@@ -62,9 +65,8 @@ fun SettingsScreen(
             top = MaterialTheme.spacing.s,
             start = MaterialTheme.spacing.m,
             end = MaterialTheme.spacing.m,
-            bottom = 112.dp
+            bottom = 80.dp
         ),
-        // This 2.dp spacing combined with the custom shapes creates the "Grouped" look
         verticalArrangement = Arrangement.spacedBy(2.dp)
     ) {
         // --- Notifications Group (2 Items) ---
@@ -113,10 +115,8 @@ fun SettingsScreen(
             )
         }
 
-        // Space between groups
-        item { Spacer(Modifier.height(16.dp)) }
+        item { Spacer(Modifier.height(12.dp)) }
 
-        // --- Audio Group (2 Items) ---
         item {
             SettingsSectionHeader(
                 icon = Icons.AutoMirrored.Filled.VolumeUp,
@@ -150,10 +150,8 @@ fun SettingsScreen(
             )
         }
 
-        // Space between groups
-        item { Spacer(Modifier.height(16.dp)) }
+        item { Spacer(Modifier.height(12.dp)) }
 
-        // --- Appearance Group (1 Item) ---
         item {
             SettingsSectionHeader(
                 icon = Icons.Default.Palette,
@@ -170,10 +168,8 @@ fun SettingsScreen(
             )
         }
 
-        // Space between groups
-        item { Spacer(Modifier.height(16.dp)) }
+        item { Spacer(Modifier.height(12.dp)) }
 
-        // --- About Group (2 Items) ---
         item {
             SettingsSectionHeader(
                 icon = Icons.Default.Info,
@@ -183,7 +179,7 @@ fun SettingsScreen(
         item {
             SettingsListItem(
                 title = "About Sessions",
-                subtitle = "App version 1.0.0",
+                subtitle = stringResource(R.string.version),
                 index = 0,
                 totalCount = 2,
                 onClick = onAbout
@@ -200,7 +196,6 @@ fun SettingsScreen(
         }
     }
 
-    // --- Dialogs (Unchanged) ---
     if (showTimePickerDialog) {
         TimePickerDialog(
             initialHour = notificationConfig.reminderTimeHour,
@@ -215,23 +210,9 @@ fun SettingsScreen(
     }
 
     if (showLogoutDialog) {
-        AlertDialog(
-            onDismissRequest = { showLogoutDialog = false },
-            title = { Text("Sign Out") },
-            text = { Text("Are you sure you want to sign out?") },
-            confirmButton = {
-                TextButton(
-                    onClick = {
-                        showLogoutDialog = false
-                        onSignOut()
-                    }
-                ) { Text("Sign Out") }
-            },
-            dismissButton = {
-                TextButton(onClick = { showLogoutDialog = false }) {
-                    Text("Cancel")
-                }
-            }
+        LogoutConfirmationDialog(
+            onConfirm = onSignOut,
+            onDismiss = { showLogoutDialog = false }
         )
     }
 
@@ -249,11 +230,20 @@ fun SettingsScreen(
                 TextButton(
                     onClick = {
                         notificationsViewModel.dismissDialog()
-                        val intent = Intent(
-                            Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM,
-                            "package:${context.packageName}".toUri()
-                        )
-                        context.startActivity(intent)
+
+                        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
+                            val intent = Intent(
+                                Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM,
+                                "package:${context.packageName}".toUri()
+                            )
+                            context.startActivity(intent)
+                        } else {
+                            val intent = Intent(
+                                Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
+                                "package:${context.packageName}".toUri()
+                            )
+                            context.startActivity(intent)
+                        }
                     }
                 ) { Text(text = "Go to Settings") }
             },
@@ -262,7 +252,7 @@ fun SettingsScreen(
                     Text(text = "Cancel")
                 }
             },
-            containerColor = MaterialTheme.colorScheme.surface,
+            containerColor = MaterialTheme.colorScheme.surfaceContainer,
             titleContentColor = MaterialTheme.colorScheme.onSurface,
             textContentColor = MaterialTheme.colorScheme.onSurfaceVariant
         )

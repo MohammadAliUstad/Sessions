@@ -16,8 +16,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import com.yugentech.sessions.theme.tokens.components
-import com.yugentech.sessions.theme.tokens.corners
 import com.yugentech.sessions.theme.tokens.dimensions.AnimationLabels
 import com.yugentech.sessions.theme.tokens.dimensions.AppAnimations
 import com.yugentech.sessions.theme.tokens.icons
@@ -34,7 +34,8 @@ fun ActionButton(
         modifier = Modifier
             .fillMaxWidth()
             .height(MaterialTheme.components.buttonMedium),
-        shape = RoundedCornerShape(MaterialTheme.corners.medium),
+        // Expressive: "Stadium" shape (approx 28.dp)
+        shape = RoundedCornerShape(28.dp),
         enabled = !isLoading,
         colors = ButtonDefaults.buttonColors(
             containerColor = MaterialTheme.colorScheme.primary,

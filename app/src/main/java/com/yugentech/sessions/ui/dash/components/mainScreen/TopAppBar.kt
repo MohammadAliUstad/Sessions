@@ -7,7 +7,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Timer
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -46,7 +46,7 @@ fun TopAppBar(
 
     val (titleText, screenIcon) = when (currentScreen) {
         AppScreens.Home -> idleMessage to Icons.Default.Timer
-        AppScreens.Profile -> "Profile" to Icons.Default.Person
+        AppScreens.Profile -> "Profile" to Icons.Default.AccountCircle
         AppScreens.Settings -> "Settings" to Icons.Default.Settings
     }
 

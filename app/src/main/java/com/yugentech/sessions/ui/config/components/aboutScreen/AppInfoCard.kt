@@ -53,7 +53,8 @@ fun AppInfoCard() {
         ) {
             Card(
                 modifier = Modifier
-                    .size(100.dp)
+                    // UPDATED: Increased size from 100.dp to 140.dp
+                    .size(140.dp)
                     .clip(CircleShape),
                 colors = CardDefaults.cardColors(
                     containerColor = MaterialTheme.colorScheme.primaryContainer
@@ -68,7 +69,7 @@ fun AppInfoCard() {
                         contentDescription = null,
                         modifier = Modifier
                             .fillMaxSize()
-                            .scale(1.3f),
+                            .scale(1.6f),
                         contentScale = ContentScale.Fit,
                         colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.primary)
                     )
