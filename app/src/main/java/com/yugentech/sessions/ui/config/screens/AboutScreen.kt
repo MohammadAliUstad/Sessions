@@ -166,7 +166,7 @@ fun AboutScreen(
             icon = Icons.Default.Policy,
             onClick = {
                 val urlIntent =
-                    Intent(Intent.ACTION_VIEW, "https://your-privacy-policy-url.com".toUri())
+                    Intent(Intent.ACTION_VIEW, "https://sites.google.com/view/sessionsprivacypolicy/home".toUri())
                 try {
                     context.startActivity(urlIntent)
                 } catch (e: Exception) {
@@ -189,11 +189,11 @@ fun AboutScreen(
         ),
         AboutOption(
             title = "Open Source Licenses",
-            subtitle = "Software used in this app",
+            subtitle = "Licensed under Apache 2.0",
             icon = Icons.Default.Description,
             onClick = {
-                // Typically connects to OssLicensesMenuActivity if using the GMS plugin
-                // For now, we can leave it as a placeholder or link to a file
+                // This opens your GitHub License file in the user's browser
+//                uriHandler.openUri("https://github.com/YOUR_USERNAME/YOUR_REPO_NAME/blob/main/LICENSE")
             }
         )
     )

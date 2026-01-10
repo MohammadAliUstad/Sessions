@@ -104,7 +104,7 @@ class ActiveForeground : Service() {
         updateJob = serviceScope.launch {
             while (isSessionActive) {
                 // Fetch latest state directly from ViewModel
-                val syncedSeconds = timerViewModel.uiState.value.status.currentTime
+                val syncedSeconds = timerViewModel.sessionStatus.value.currentTime
                 updateNotification(syncedSeconds)
                 // Delay at end of loop ensures UI updates immediately on start
                 delay(500)
