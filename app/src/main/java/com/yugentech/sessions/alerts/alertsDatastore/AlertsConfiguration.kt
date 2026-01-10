@@ -1,7 +1,9 @@
 package com.yugentech.sessions.alerts.alertsDatastore
 
-// Data model representing the user's audio and haptic preferences
+import com.yugentech.sessions.alerts.alertsDatastore.backgroundSounds.BackgroundSound
+
 data class AlertsConfiguration(
     val soundEnabled: Boolean = true,
-    val hapticsEnabled: Boolean = true
+    val hapticsEnabled: Boolean = true,
+    val backgroundSound: BackgroundSound = BackgroundSound.NONE
 )

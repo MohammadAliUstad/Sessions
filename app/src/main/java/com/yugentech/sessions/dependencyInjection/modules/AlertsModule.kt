@@ -4,6 +4,7 @@ import com.yugentech.sessions.alerts.HapticService
 import com.yugentech.sessions.alerts.SoundService
 import com.yugentech.sessions.alerts.alertsDatastore.AlertsManager
 import com.yugentech.sessions.alerts.alertsDatastore.AlertsRepository
+import com.yugentech.sessions.alerts.alertsDatastore.backgroundSounds.BackgroundSoundService
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
@@ -20,6 +21,10 @@ val alertsModule = module {
         HapticService(androidContext())
     }
 
+    single {
+        BackgroundSoundService(androidContext())
+    }
+
     // Manages persistence of alert preferences
     single {
         AlertsManager(
@@ -32,7 +37,8 @@ val alertsModule = module {
         AlertsRepository(
             alertsManager = get(),
             hapticService = get(),
-            soundService = get()
+            soundService = get(),
+            backgroundSoundService = get()
         )
     }
 }
