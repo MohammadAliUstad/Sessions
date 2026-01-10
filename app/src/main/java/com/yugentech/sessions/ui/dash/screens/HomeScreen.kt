@@ -44,18 +44,20 @@ fun HomeScreen(
     timerViewModel: TimerViewModel,
     userId: String
 ) {
-    val uiState by timerViewModel.uiState.collectAsStateWithLifecycle()
+    // --- 1. Collect Separate Flows ---
+    val sessionConfig by timerViewModel.sessionConfig.collectAsStateWithLifecycle()
+    val sessionStatus by timerViewModel.sessionStatus.collectAsStateWithLifecycle()
+    val errorMessage by timerViewModel.errorMessage.collectAsStateWithLifecycle()
+
+    // Derived State
     val dashboardState by timerViewModel.dashboardState.collectAsStateWithLifecycle()
-    val sessionStatus = uiState.status
-    val sessionConfig = uiState.config
+
+    // The session is "Active" if it's NOT Idle (i.e., it is Running or Paused)
+    val isSessionActive = !sessionStatus.isIdle
 
     val view = LocalView.current
     val scrollState = rememberScrollState()
     var activeDialog by remember { mutableStateOf(ActiveDialog.None) }
-
-    // UPDATED: Use the clean state property we created.
-    // The session is "Active" if it's NOT Idle (i.e., it is Running or Paused).
-    val isSessionActive = !sessionStatus.isIdle
 
     LaunchedEffect(userId) {
         timerViewModel.setUserId(userId)
@@ -97,9 +99,7 @@ fun HomeScreen(
                     currentMode = sessionStatus.currentMode,
                 )
 
-                // Item 3: Progress/Config Card
-                // UPDATED: Swap based on Active state (Not Idle) instead of just IsRunning.
-                // This keeps the Progress Card visible when Paused.
+                // Item 3: Progress/Config Card (Swaps based on activity)
                 AnimatedContent(
                     targetState = isSessionActive,
                     label = "dashboard_swap"
@@ -107,7 +107,7 @@ fun HomeScreen(
                     if (showProgress) {
                         SessionProgressCard(
                             state = dashboardState,
-                            targetSets = uiState.config.targetSets
+                            targetSets = sessionConfig.targetSets
                         )
                     } else {
                         SessionConfigCard(
@@ -121,8 +121,8 @@ fun HomeScreen(
 
                 // Item 4: Navbar
                 SessionControlBar(
-                    isStudying = sessionStatus.isRunning, // Controls Play/Pause Icon
-                    isSessionActive = isSessionActive,    // Controls Stop/Save/Discard visibility
+                    isStudying = sessionStatus.isRunning,
+                    isSessionActive = isSessionActive,
                     onStartStop = { timerViewModel.toggleTimer(view) },
                     onSoundClick = { activeDialog = ActiveDialog.Sound },
                     onSetsClick = { activeDialog = ActiveDialog.SetsSettings },
@@ -135,6 +135,7 @@ fun HomeScreen(
             if (activeDialog != ActiveDialog.None) {
                 val closeDialog = { activeDialog = ActiveDialog.None }
 
+                // Retrieve current values directly from the independent 'sessionConfig'
                 val currentFocus = sessionConfig.focusDurationMinutes
                 val currentShort = sessionConfig.shortBreakDurationMinutes
                 val currentLong = sessionConfig.longBreakDurationMinutes
@@ -145,8 +146,8 @@ fun HomeScreen(
                             title = "Focus Duration",
                             description = "Choose how long you want to focus before taking a break.",
                             initialValue = currentFocus,
-                            range = 10..60,
-                            step = 5,
+                            range = 1..10,
+                            step = 1,
                             onDismiss = closeDialog,
                             onConfirm = { newMins ->
                                 timerViewModel.updateFocusDuration(newMins)
@@ -160,7 +161,7 @@ fun HomeScreen(
                             title = "Short Break",
                             description = "Choose the duration of your break between sessions.",
                             initialValue = currentShort,
-                            range = 5..15,
+                            range = 1..15,
                             step = 1,
                             onDismiss = closeDialog,
                             onConfirm = { newMins ->
@@ -187,9 +188,12 @@ fun HomeScreen(
 
                     ActiveDialog.Sound -> {
                         SoundSelectionDialog(
-                            currentSoundId = sessionConfig.soundId,
+                            currentSoundId = sessionConfig.activeBackgroundSoundId,
                             onDismiss = closeDialog,
-                            onConfirm = { homeViewModel.clearError() }
+                            onConfirm = { newSoundId ->
+                                timerViewModel.updateBackgroundSound(newSoundId)
+                                closeDialog()
+                            }
                         )
                     }
 
@@ -208,9 +212,10 @@ fun HomeScreen(
                 }
             }
 
+            // Error Toast
             ToastMessage(
-                message = uiState.errorMessage,
-                onDismiss = { homeViewModel.clearError() },
+                message = errorMessage,
+                onDismiss = { timerViewModel.clearError() },
                 modifier = Modifier.align(Alignment.TopCenter)
             )
         }
