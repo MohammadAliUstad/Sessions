@@ -4,7 +4,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import com.yugentech.sessions.notifications.Notification
-import com.yugentech.sessions.notifications.NotificationPrefsDataStore
+import com.yugentech.sessions.notifications.NotificationDataStore
 import com.yugentech.sessions.notifications.NotificationService
 import com.yugentech.sessions.notifications.NotificationType
 import kotlinx.coroutines.CoroutineScope
@@ -18,8 +18,8 @@ import timber.log.Timber
 class AlarmReceiver : BroadcastReceiver(), KoinComponent {
 
     private val notificationService: NotificationService by inject()
-    private val reminderManager: ReminderManager by inject()
-    private val notificationPrefsDataStore: NotificationPrefsDataStore by inject()
+    private val reminderNotificationManager: ReminderNotificationManager by inject()
+    private val notificationDataStore: NotificationDataStore by inject()
 
     override fun onReceive(context: Context, intent: Intent) {
         // Handle device reboot: Reschedule alarms based on persisted preferences
@@ -53,9 +53,9 @@ class AlarmReceiver : BroadcastReceiver(), KoinComponent {
         notificationService.showNotification(notification)
 
         // Reschedule the alarm for the next day
-        if (reminderManager.canScheduleExactAlarms()) {
+        if (reminderNotificationManager.canScheduleExactAlarms()) {
             try {
-                reminderManager.scheduleReminder(message, hour, minute)
+                reminderNotificationManager.scheduleReminder(message, hour, minute)
             } catch (e: SecurityException) {
                 Timber.e(e, "Permission revoked, cannot reschedule next day alarm")
             }
@@ -63,14 +63,14 @@ class AlarmReceiver : BroadcastReceiver(), KoinComponent {
     }
 
     private suspend fun rescheduleAfterBoot() {
-        if (reminderManager.canScheduleExactAlarms()) {
+        if (reminderNotificationManager.canScheduleExactAlarms()) {
             try {
-                val config = notificationPrefsDataStore.getInitialConfig()
+                val config = notificationDataStore.getInitialConfig()
 
                 if (config.focusRemindersEnabled) {
                     Timber.d("Boot completed. Rescheduling for ${config.reminderTimeHour}:${config.reminderTimeMinute}")
 
-                    reminderManager.scheduleReminder(
+                    reminderNotificationManager.scheduleReminder(
                         message = "Time to study!",
                         hour = config.reminderTimeHour,
                         minute = config.reminderTimeMinute
