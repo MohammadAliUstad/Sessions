@@ -9,6 +9,7 @@ interface TimerRepository {
     fun updateConfig(config: TimerConfig)
     fun startTimer()
     fun stopTimer()
+    fun stopAndResetTimer()
     fun setOnTimerCompleteListener(listener: (Int) -> Unit)
     fun setSessionUserId(userId: String)
     fun getSessionUserId(): String?

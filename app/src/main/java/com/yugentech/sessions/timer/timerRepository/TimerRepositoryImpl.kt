@@ -17,7 +17,7 @@ class TimerRepositoryImpl(
     override val timerState: StateFlow<TimerState> = timerService.timerState
 
     override fun updateConfig(config: TimerConfig) {
-        Timber.d("Updating timer config: Focus=${config.focusDuration / 60000}m")
+        Timber.d("Updating timer config: Focus=${config.focusDurationMinutes}m")
         timerService.updateConfig(config)
     }
 
@@ -27,6 +27,10 @@ class TimerRepositoryImpl(
 
     override fun stopTimer() {
         timerService.stopTimer()
+    }
+
+    override fun stopAndResetTimer() {
+        timerService.stopAndReset()
     }
 
     override fun setOnTimerCompleteListener(listener: (Int) -> Unit) {

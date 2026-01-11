@@ -43,7 +43,6 @@ val viewModelModule = module {
     viewModel {
         Timber.v("Initializing SettingsViewModel")
         SettingsViewModel(
-            alertsManager = get(),
             alertsRepository = get()
         )
     }

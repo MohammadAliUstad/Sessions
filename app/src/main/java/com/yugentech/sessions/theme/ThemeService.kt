@@ -22,6 +22,9 @@ class ThemeService(
         private val THEME_MODE_KEY = stringPreferencesKey("theme_mode")
         private val COLOR_THEME_KEY = stringPreferencesKey("color_theme")
         private val USE_DYNAMIC_COLORS_KEY = booleanPreferencesKey("use_dynamic_colors")
+
+        // New key for persisting the AMOLED mode toggle
+        private val IS_AMOLED_MODE_KEY = booleanPreferencesKey("is_amoled_mode")
     }
 
     // Exposes current theme config as a flow, defaulting to standard values on error
@@ -34,17 +37,21 @@ class ThemeService(
             ThemeConfiguration(
                 themeMode = ThemeMode.valueOf(prefs[THEME_MODE_KEY] ?: ThemeMode.LIGHT.name),
                 colorTheme = ColorTheme.valueOf(prefs[COLOR_THEME_KEY] ?: ColorTheme.DYNAMIC.name),
-                useDynamicColors = prefs[USE_DYNAMIC_COLORS_KEY] ?: true
+                useDynamicColors = prefs[USE_DYNAMIC_COLORS_KEY] ?: true,
+                isAmoledMode = prefs[IS_AMOLED_MODE_KEY] ?: false
             )
         }
 
     // Persists the new theme configuration
     suspend fun updateThemeConfig(config: ThemeConfiguration) {
-        Timber.d("Saving theme config: Mode=${config.themeMode}, Color=${config.colorTheme}")
+        Timber.d("Saving theme config: Mode=${config.themeMode}, Color=${config.colorTheme}, Amoled=${config.isAmoledMode}")
         dataStore.edit { prefs ->
             prefs[THEME_MODE_KEY] = config.themeMode.name
             prefs[COLOR_THEME_KEY] = config.colorTheme.name
             prefs[USE_DYNAMIC_COLORS_KEY] = config.useDynamicColors
+
+            // Save AMOLED preference
+            prefs[IS_AMOLED_MODE_KEY] = config.isAmoledMode
         }
     }
 

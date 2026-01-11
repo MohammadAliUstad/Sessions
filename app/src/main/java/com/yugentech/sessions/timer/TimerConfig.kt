@@ -1,9 +1,9 @@
 package com.yugentech.sessions.timer
 
 data class TimerConfig(
-    val focusDuration: Long = 25 * 60 * 1000L,
-    val shortBreakDuration: Long = 5 * 60 * 1000L,
-    val longBreakDuration: Long = 15 * 60 * 1000L,
+    val focusDurationMinutes: Int = 25,
+    val shortBreakDurationMinutes: Int = 5,
+    val longBreakDurationMinutes: Int = 15,
     val targetSets: Int = 4,
     val setsInterval: Int = 4
 )
