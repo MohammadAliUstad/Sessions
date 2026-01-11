@@ -3,8 +3,12 @@ package com.yugentech.sessions.dependencyInjection.modules
 import com.yugentech.sessions.alerts.HapticService
 import com.yugentech.sessions.alerts.SoundService
 import com.yugentech.sessions.alerts.alertsDatastore.AlertsManager
-import com.yugentech.sessions.alerts.alertsDatastore.AlertsRepository
-import com.yugentech.sessions.alerts.alertsDatastore.backgroundSounds.BackgroundSoundService
+import com.yugentech.sessions.alerts.alertsRepository.AlertsRepository
+import com.yugentech.sessions.alerts.BackgroundSoundService
+import com.yugentech.sessions.alerts.alertsRepository.AlertsRepositoryImpl
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
@@ -33,12 +37,13 @@ val alertsModule = module {
     }
 
     // Repository coordinating hardware feedback based on user settings
-    single {
-        AlertsRepository(
+    single<AlertsRepository> {
+        AlertsRepositoryImpl(
             alertsManager = get(),
             hapticService = get(),
             soundService = get(),
-            backgroundSoundService = get()
+            backgroundSoundService = get(),
+            externalScope = CoroutineScope(Dispatchers.IO + SupervisorJob())
         )
     }
 }
