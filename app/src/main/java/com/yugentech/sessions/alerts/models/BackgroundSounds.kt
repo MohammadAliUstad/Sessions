@@ -1,9 +1,12 @@
-package com.yugentech.sessions.alerts.alertsDatastore.backgroundSounds
+package com.yugentech.sessions.alerts.models
 
 import androidx.annotation.RawRes
 import com.yugentech.sessions.R
 
-enum class BackgroundSound(val id: String, @RawRes val resId: Int?) {
+enum class BackgroundSound(
+    val id: String,
+    @RawRes val resId: Int?
+) {
     NONE("none", null),
     RAIN("rain", R.raw.rain),
     LIBRARY("library", R.raw.library),
