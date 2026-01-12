@@ -24,8 +24,8 @@ android {
         applicationId = "com.yugentech.sessions"
         minSdk = 26
         targetSdk = 36
-        versionCode = 6
-        versionName = "2.0.2"
+        versionCode = 7
+        versionName = "2.0.3"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
         val webClientId = localProperties.getProperty("WEB_CLIENT_ID") ?: ""
@@ -64,6 +64,9 @@ android {
 }
 
 dependencies {
+
+    // Exoplayer
+    implementation(libs.androidx.media3.exoplayer)
 
     // Core Android
     implementation(libs.androidx.core.ktx)
