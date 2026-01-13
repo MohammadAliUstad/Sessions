@@ -9,7 +9,7 @@ enum class BackgroundSound(
 ) {
     NONE("none", null),
     RAIN("rain", R.raw.rain),
-    LIBRARY("library", R.raw.library),
+    BROWN_NOISE("brown_noise", R.raw.brown_noise),
     FIREPLACE("fireplace", R.raw.fireplace);
 
     companion object {
