@@ -1,12 +1,12 @@
 package com.yugentech.sessions.dependencyInjection.modules
 
-import com.yugentech.sessions.notifications.NotificationPrefsDataStore
+import com.yugentech.sessions.notifications.NotificationDataStore
 import com.yugentech.sessions.notifications.NotificationsViewModel
-import com.yugentech.sessions.notifications.active.ActiveManager
+import com.yugentech.sessions.notifications.active.ActiveNotificationManager
 import com.yugentech.sessions.notifications.NotificationService
 import com.yugentech.sessions.notifications.notificationRepository.NotificationRepository
 import com.yugentech.sessions.notifications.notificationRepository.NotificationRepositoryImpl
-import com.yugentech.sessions.notifications.scheduled.ReminderManager
+import com.yugentech.sessions.notifications.scheduled.ReminderNotificationManager
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.module.dsl.viewModel
 import org.koin.core.qualifier.named
@@ -25,21 +25,21 @@ val notificationModule = module {
 
     // Provides access to notification preferences
     single {
-        NotificationPrefsDataStore(
+        NotificationDataStore(
             dataStore = get(named("notification"))
         )
     }
 
     // Manages the Active Session foreground service
     single {
-        ActiveManager(
+        ActiveNotificationManager(
             context = androidContext()
         )
     }
 
     // Manages Scheduled Alarm logic
     single {
-        ReminderManager(
+        ReminderNotificationManager(
             context = androidContext()
         )
     }
@@ -47,8 +47,8 @@ val notificationModule = module {
     // Repository coordinating active and scheduled notifications
     single<NotificationRepository> {
         NotificationRepositoryImpl(
-            activeManager = get(),
-            reminderManager = get()
+            activeNotificationManager = get(),
+            reminderNotificationManager = get()
         )
     }
 
@@ -56,7 +56,7 @@ val notificationModule = module {
     viewModel {
         NotificationsViewModel(
             notificationRepository = get(),
-            notificationPrefsDataStore = get()
+            notificationDataStore = get()
         )
     }
 }

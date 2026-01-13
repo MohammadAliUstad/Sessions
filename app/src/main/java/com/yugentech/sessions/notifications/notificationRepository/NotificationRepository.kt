@@ -5,13 +5,13 @@ import com.yugentech.sessions.notifications.Notification
 // Defines the contract for managing active sessions and scheduled reminders
 interface NotificationRepository {
     // Starts the foreground service for an active focus session
-    suspend fun startActiveSession(notification: Notification)
+    suspend fun startActiveNotification(notification: Notification)
 
     // Updates the notification content (e.g., remaining time) for the active session
-    suspend fun updateActiveSession(notification: Notification)
+    suspend fun updateActiveNotification(notification: Notification)
 
     // Stops the active session foreground service
-    suspend fun stopActiveSession()
+    suspend fun stopActiveNotification()
 
     // Schedules a precise alarm for daily study reminders
     suspend fun scheduleReminder(message: String, hour: Int, minute: Int)

@@ -14,7 +14,7 @@ import timber.log.Timber
 import java.util.Locale
 
 // Manages persistence for notification settings and reminder times
-class NotificationPrefsDataStore(
+class NotificationDataStore(
     private val dataStore: DataStore<Preferences>
 ) {
 

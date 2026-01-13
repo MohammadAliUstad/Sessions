@@ -44,15 +44,12 @@ fun HomeScreen(
     timerViewModel: TimerViewModel,
     userId: String
 ) {
-    // --- 1. Collect Separate Flows ---
     val sessionConfig by timerViewModel.sessionConfig.collectAsStateWithLifecycle()
     val sessionStatus by timerViewModel.sessionStatus.collectAsStateWithLifecycle()
     val errorMessage by timerViewModel.errorMessage.collectAsStateWithLifecycle()
 
-    // Derived State
     val dashboardState by timerViewModel.dashboardState.collectAsStateWithLifecycle()
 
-    // The session is "Active" if it's NOT Idle (i.e., it is Running or Paused)
     val isSessionActive = !sessionStatus.isIdle
 
     val view = LocalView.current
@@ -84,14 +81,12 @@ fun HomeScreen(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.SpaceBetween
             ) {
-                // Item 1: Header
                 SessionHeader(
                     isRunning = sessionStatus.isRunning,
                     sessionTask = sessionConfig.sessionTask,
                     onTaskClick = { activeDialog = ActiveDialog.Task }
                 )
 
-                // Item 2: Timer
                 TimerDisplay(
                     displayTime = sessionStatus.currentTime.toInt(),
                     selectedDuration = sessionStatus.totalTime.toInt(),
@@ -99,7 +94,6 @@ fun HomeScreen(
                     currentMode = sessionStatus.currentMode,
                 )
 
-                // Item 3: Progress/Config Card (Swaps based on activity)
                 AnimatedContent(
                     targetState = isSessionActive,
                     label = "dashboard_swap"
@@ -119,7 +113,6 @@ fun HomeScreen(
                     }
                 }
 
-                // Item 4: Navbar
                 SessionControlBar(
                     isStudying = sessionStatus.isRunning,
                     isSessionActive = isSessionActive,
@@ -131,11 +124,9 @@ fun HomeScreen(
                 )
             }
 
-            // --- DIALOGS ---
             if (activeDialog != ActiveDialog.None) {
                 val closeDialog = { activeDialog = ActiveDialog.None }
 
-                // Retrieve current values directly from the independent 'sessionConfig'
                 val currentFocus = sessionConfig.focusDurationMinutes
                 val currentShort = sessionConfig.shortBreakDurationMinutes
                 val currentLong = sessionConfig.longBreakDurationMinutes
@@ -146,8 +137,8 @@ fun HomeScreen(
                             title = "Focus Duration",
                             description = "Choose how long you want to focus before taking a break.",
                             initialValue = currentFocus,
-                            range = 1..10,
-                            step = 1,
+                            range = 25..60,
+                            step = 5,
                             onDismiss = closeDialog,
                             onConfirm = { newMins ->
                                 timerViewModel.updateFocusDuration(newMins)
@@ -161,7 +152,7 @@ fun HomeScreen(
                             title = "Short Break",
                             description = "Choose the duration of your break between sessions.",
                             initialValue = currentShort,
-                            range = 1..15,
+                            range = 5..15,
                             step = 1,
                             onDismiss = closeDialog,
                             onConfirm = { newMins ->
@@ -189,9 +180,15 @@ fun HomeScreen(
                     ActiveDialog.Sound -> {
                         SoundSelectionDialog(
                             currentSoundId = sessionConfig.activeBackgroundSoundId,
-                            onDismiss = closeDialog,
+                            onPreview = { previewId ->
+                                timerViewModel.playPreview(previewId)
+                            },
                             onConfirm = { newSoundId ->
+                                timerViewModel.stopPreview()
                                 timerViewModel.updateBackgroundSound(newSoundId)
+                            },
+                            onDismiss = {
+                                timerViewModel.stopPreview()
                                 closeDialog()
                             }
                         )
@@ -212,10 +209,9 @@ fun HomeScreen(
                 }
             }
 
-            // Error Toast
             ToastMessage(
                 message = errorMessage,
-                onDismiss = { timerViewModel.clearError() },
+                onDismiss = { TODO() },
                 modifier = Modifier.align(Alignment.TopCenter)
             )
         }
