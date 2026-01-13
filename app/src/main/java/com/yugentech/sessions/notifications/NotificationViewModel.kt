@@ -16,18 +16,18 @@ import java.util.Locale
 
 class NotificationsViewModel(
     private val notificationRepository: NotificationRepository,
-    private val notificationPrefsDataStore: NotificationPrefsDataStore
+    private val notificationDataStore: NotificationDataStore
 ) : ViewModel() {
 
     // Exposes current notification config as a hot flow
-    val notificationConfig: StateFlow<NotificationConfig> =
-        notificationPrefsDataStore.notificationConfigFlow.stateIn(
+    val notificationConfiguration: StateFlow<NotificationConfig> =
+        notificationDataStore.notificationConfigFlow.stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5000),
             initialValue = run {
                 runCatching {
                     kotlinx.coroutines.runBlocking {
-                        notificationPrefsDataStore.getInitialConfig()
+                        notificationDataStore.getInitialConfig()
                     }
                 }.getOrDefault(NotificationConfig())
             }
@@ -53,23 +53,23 @@ class NotificationsViewModel(
 
     fun startActiveSession(notification: Notification) {
         viewModelScope.launch {
-            notificationRepository.startActiveSession(notification)
+            notificationRepository.startActiveNotification(notification)
         }
     }
 
     fun stopActiveSession() {
         viewModelScope.launch {
-            notificationRepository.stopActiveSession()
+            notificationRepository.stopActiveNotification()
         }
     }
 
     fun setNotificationsEnabled(enabled: Boolean) {
         viewModelScope.launch {
             Timber.i("User toggled notifications enabled: $enabled")
-            notificationPrefsDataStore.setNotificationsEnabled(enabled)
+            notificationDataStore.setNotificationsEnabled(enabled)
             if (!enabled) {
                 cancelReminders()
-            } else if (notificationConfig.value.focusRemindersEnabled) {
+            } else if (notificationConfiguration.value.focusRemindersEnabled) {
                 updateReminders()
             }
         }
@@ -78,12 +78,12 @@ class NotificationsViewModel(
     fun setFocusRemindersEnabled(enabled: Boolean) {
         viewModelScope.launch {
             Timber.i("User toggled focus reminders enabled: $enabled")
-            notificationPrefsDataStore.setFocusRemindersEnabled(enabled)
+            notificationDataStore.setFocusRemindersEnabled(enabled)
             if (enabled) {
                 // If enabling without changing time, set default or ensure valid time
-                val config = notificationConfig.value
+                val config = notificationConfiguration.value
                 if (config.reminderTimeHour == 8 && config.reminderTimeMinute == 0) {
-                    notificationPrefsDataStore.setFocusReminderTime(9, 0)
+                    notificationDataStore.setFocusReminderTime(9, 0)
                 }
                 if (config.notificationsEnabled) {
                     updateReminders()
@@ -97,9 +97,9 @@ class NotificationsViewModel(
     fun setReminderTime(hour: Int, minute: Int) {
         viewModelScope.launch {
             Timber.d("User updated reminder time: $hour:$minute")
-            notificationPrefsDataStore.setFocusReminderTime(hour, minute)
-            notificationPrefsDataStore.setFocusRemindersEnabled(true)
-            val config = notificationConfig.value
+            notificationDataStore.setFocusReminderTime(hour, minute)
+            notificationDataStore.setFocusRemindersEnabled(true)
+            val config = notificationConfiguration.value
             if (config.notificationsEnabled) {
                 updateReminders()
             }
@@ -107,7 +107,7 @@ class NotificationsViewModel(
     }
 
     fun formatReminderTime(): String {
-        val config = notificationConfig.value
+        val config = notificationConfiguration.value
         if (!config.focusRemindersEnabled) {
             return "Get notified to start your focus sessions"
         }
@@ -157,7 +157,7 @@ class NotificationsViewModel(
     }
 
     private fun updateReminders() {
-        val config = notificationConfig.value
+        val config = notificationConfiguration.value
         if (config.notificationsEnabled && config.focusRemindersEnabled) {
             scheduleReminder(
                 message = "Focus Reminder",

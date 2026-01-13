@@ -1,34 +1,34 @@
 package com.yugentech.sessions.notifications.notificationRepository
 
 import com.yugentech.sessions.notifications.Notification
-import com.yugentech.sessions.notifications.active.ActiveManager
-import com.yugentech.sessions.notifications.scheduled.ReminderManager
+import com.yugentech.sessions.notifications.active.ActiveNotificationManager
+import com.yugentech.sessions.notifications.scheduled.ReminderNotificationManager
 import timber.log.Timber
 
 class NotificationRepositoryImpl(
-    private val activeManager: ActiveManager,
-    private val reminderManager: ReminderManager
+    private val activeNotificationManager: ActiveNotificationManager,
+    private val reminderNotificationManager: ReminderNotificationManager
 ) : NotificationRepository {
 
-    override suspend fun startActiveSession(notification: Notification) {
+    override suspend fun startActiveNotification(notification: Notification) {
         Timber.d("Requesting start of active session: ${notification.title}")
-        activeManager.startActiveSession(notification)
+        activeNotificationManager.startActiveNotification(notification)
     }
 
-    override suspend fun updateActiveSession(notification: Notification) {
+    override suspend fun updateActiveNotification(notification: Notification) {
         Timber.v("Requesting session update: ${notification.remainingSeconds}s remaining")
-        activeManager.updateActiveSession(notification)
+        activeNotificationManager.updateActiveNotification(notification)
     }
 
-    override suspend fun stopActiveSession() {
+    override suspend fun stopActiveNotification() {
         Timber.d("Requesting stop of active session")
-        activeManager.stopActiveSession()
+        activeNotificationManager.stopActiveNotification()
     }
 
     override suspend fun scheduleReminder(message: String, hour: Int, minute: Int) {
         try {
             Timber.i("Scheduling reminder '$message' for $hour:$minute")
-            reminderManager.scheduleReminder(
+            reminderNotificationManager.scheduleReminder(
                 message = message,
                 hour = hour,
                 minute = minute
@@ -42,7 +42,7 @@ class NotificationRepositoryImpl(
     override suspend fun cancelReminders() {
         try {
             Timber.i("Cancelling all scheduled reminders")
-            reminderManager.cancelReminders()
+            reminderNotificationManager.cancelReminders()
         } catch (e: Exception) {
             Timber.e(e, "Failed to cancel reminders")
             throw e
@@ -50,6 +50,6 @@ class NotificationRepositoryImpl(
     }
 
     override fun hasExactAlarmPermission(): Boolean {
-        return reminderManager.canScheduleExactAlarms()
+        return reminderNotificationManager.canScheduleExactAlarms()
     }
 }

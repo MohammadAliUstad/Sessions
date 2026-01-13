@@ -12,7 +12,7 @@ import com.yugentech.sessions.models.UserData
 import com.yugentech.sessions.sessions.SyncPreferences
 import com.yugentech.sessions.user.UserResult
 import com.yugentech.sessions.user.userRepository.UserRepository
-import com.yugentech.sessions.utils.ForgotPasswordState
+import com.yugentech.sessions.ui.auth.states.ForgotPasswordState
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -99,7 +99,7 @@ class LoginViewModel(
                         userId = firebaseUser.uid,
                         name = name,
                         email = email,
-                        avatarId = 1
+                        avatarId = (1..27).random()
                     )
                     syncOrCreateUser(newUser)
                 }
@@ -186,7 +186,7 @@ class LoginViewModel(
         profileLoadingJob?.cancel()
         profileLoadingJob = viewModelScope.launch {
             _authState.update { it.copy(isLoading = true, error = null) }
-            when (val fetchResult = userRepository.fetchUserOnce(firebaseUser.uid)) {
+            when (userRepository.fetchUserOnce(firebaseUser.uid)) {
                 is UserResult.Success -> {
                     val localUser = userRepository.getUser(firebaseUser.uid)
                     if (localUser != null) {
@@ -216,7 +216,7 @@ class LoginViewModel(
                         userId = firebaseUser.uid,
                         name = firebaseUser.displayName ?: "User",
                         email = firebaseUser.email ?: "",
-                        avatarId = 0
+                        avatarId = (1..27).random()
                     )
                     syncOrCreateUser(newUser)
                 }
