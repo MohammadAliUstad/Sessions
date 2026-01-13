@@ -32,26 +32,34 @@ fun getColorScheme(
         }
         else -> {
             when (themeConfiguration.colorTheme) {
-                ColorTheme.DYNAMIC, ColorTheme.MONOCHROME ->
-                    if (isDarkMode) AppColorSchemes.EclipseDarkColorScheme else AppColorSchemes.EclipseLightColorScheme
-
-                ColorTheme.BLUE ->
-                    if (isDarkMode) AppColorSchemes.TwilightDarkColorScheme else AppColorSchemes.TwilightLightColorScheme
-
-                ColorTheme.GREEN ->
-                    if (isDarkMode) AppColorSchemes.GroveDarkColorScheme else AppColorSchemes.GroveLightColorScheme
-
-                ColorTheme.YELLOW ->
-                    if (isDarkMode) AppColorSchemes.CanyonDarkColorScheme else AppColorSchemes.CanyonLightColorScheme
-
-                ColorTheme.PINK ->
+                // 1. Sakura (Pink)
+                ColorTheme.SAKURA ->
                     if (isDarkMode) AppColorSchemes.SakuraDarkColorScheme else AppColorSchemes.SakuraLightColorScheme
 
-                ColorTheme.RED ->
-                    if (isDarkMode) AppColorSchemes.GarnetDarkColorScheme else AppColorSchemes.GarnetLightColorScheme
+                // 2. Canyon (Brown)
+                ColorTheme.CANYON ->
+                    if (isDarkMode) AppColorSchemes.CanyonDarkColorScheme else AppColorSchemes.CanyonLightColorScheme
 
-                ColorTheme.CYAN ->
+                // 3. Harvest (Gold)
+                ColorTheme.HARVEST ->
+                    if (isDarkMode) AppColorSchemes.HarvestDarkColorScheme else AppColorSchemes.HarvestLightColorScheme
+
+                // 4. Grove (Olive)
+                ColorTheme.GROVE ->
+                    if (isDarkMode) AppColorSchemes.GroveDarkColorScheme else AppColorSchemes.GroveLightColorScheme
+
+                // 5. Alpine (Green)
+                ColorTheme.ALPINE ->
+                    if (isDarkMode) AppColorSchemes.AlpineDarkColorScheme else AppColorSchemes.AlpineLightColorScheme
+
+                // 6. Lagoon (Teal)
+                ColorTheme.LAGOON ->
                     if (isDarkMode) AppColorSchemes.LagoonDarkColorScheme else AppColorSchemes.LagoonLightColorScheme
+
+                // 7. Twilight (Indigo)
+                ColorTheme.DYNAMIC,
+                ColorTheme.TWILIGHT ->
+                    if (isDarkMode) AppColorSchemes.TwilightDarkColorScheme else AppColorSchemes.TwilightLightColorScheme
             }
         }
     }

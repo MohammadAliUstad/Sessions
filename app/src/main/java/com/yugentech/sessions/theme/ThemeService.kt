@@ -22,8 +22,6 @@ class ThemeService(
         private val THEME_MODE_KEY = stringPreferencesKey("theme_mode")
         private val COLOR_THEME_KEY = stringPreferencesKey("color_theme")
         private val USE_DYNAMIC_COLORS_KEY = booleanPreferencesKey("use_dynamic_colors")
-
-        // New key for persisting the AMOLED mode toggle
         private val IS_AMOLED_MODE_KEY = booleanPreferencesKey("is_amoled_mode")
     }
 
@@ -49,8 +47,6 @@ class ThemeService(
             prefs[THEME_MODE_KEY] = config.themeMode.name
             prefs[COLOR_THEME_KEY] = config.colorTheme.name
             prefs[USE_DYNAMIC_COLORS_KEY] = config.useDynamicColors
-
-            // Save AMOLED preference
             prefs[IS_AMOLED_MODE_KEY] = config.isAmoledMode
         }
     }

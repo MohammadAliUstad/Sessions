@@ -41,16 +41,13 @@ fun ThemeModeSelector(
     val themeConfig by themeViewModel.themeConfiguration.collectAsStateWithLifecycle()
 
     Column(modifier = modifier.fillMaxWidth()) {
-        // Use the official Header component
         SettingsSectionHeader(
             icon = Icons.Default.Brightness6,
             title = stringResource(R.string.theme_mode)
         )
 
         Column(
-            modifier = Modifier.selectableGroup(),
-            // No vertical spacing here because the items are physically connected
-            // The `itemShape` handles the separation logic
+            modifier = Modifier.selectableGroup()
         ) {
             val modes = ThemeMode.entries
             modes.forEachIndexed { index, themeMode ->
@@ -91,7 +88,6 @@ fun ThemeModeSelector(
     }
 }
 
-// A dedicated Radio Item that matches the styling of SettingsSwitchItem
 @Composable
 private fun ThemeRadioItem(
     title: String,
@@ -129,7 +125,7 @@ private fun ThemeRadioItem(
         trailingContent = {
             RadioButton(
                 selected = selected,
-                onClick = null // Handled by ListItem click
+                onClick = null
             )
         },
         modifier = Modifier
