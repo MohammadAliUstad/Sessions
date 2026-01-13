@@ -1,8 +1,8 @@
 package com.yugentech.sessions.theme.models
 
-// Defines the available dark/light mode strategies
+// Defines the available dark/light modes
 enum class ThemeMode {
     LIGHT,
     DARK,
-    SYSTEM // Follows the Android system setting
+    SYSTEM
 }
