@@ -10,7 +10,9 @@ enum class BackgroundSound(
     NONE("none", null),
     RAIN("rain", R.raw.rain),
     BROWN_NOISE("brown_noise", R.raw.brown_noise),
-    FIREPLACE("fireplace", R.raw.fireplace);
+    FIREPLACE("fireplace", R.raw.fireplace),
+    LIBRARY("library", R.raw.library),
+    RIVERSIDE("riverside", R.raw.riverside);
 
     companion object {
         fun fromId(id: String?): BackgroundSound {

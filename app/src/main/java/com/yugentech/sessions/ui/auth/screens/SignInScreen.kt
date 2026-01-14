@@ -31,7 +31,7 @@ import com.yugentech.sessions.theme.tokens.spacing
 import com.yugentech.sessions.ui.auth.components.IconCarousel
 import com.yugentech.sessions.ui.auth.components.SignInForm
 import com.yugentech.sessions.ui.dash.components.common.ToastMessage
-import com.yugentech.sessions.utils.ForgotPasswordState
+import com.yugentech.sessions.ui.auth.states.ForgotPasswordState
 import com.yugentech.sessions.viewModels.LoginViewModel
 
 @Composable

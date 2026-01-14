@@ -29,10 +29,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.yugentech.sessions.R
 import com.yugentech.sessions.theme.tokens.components
-import com.yugentech.sessions.theme.tokens.corners
 import com.yugentech.sessions.theme.tokens.spacing
 import com.yugentech.sessions.ui.auth.utils.FormValidator
-import com.yugentech.sessions.ui.auth.utils.SignInFormState
+import com.yugentech.sessions.ui.auth.states.SignInFormState
 import kotlinx.coroutines.launch
 
 @Composable

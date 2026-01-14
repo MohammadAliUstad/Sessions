@@ -49,8 +49,8 @@ fun SettingsScreen(
     onAbout: () -> Unit,
     onAppearance: () -> Unit,
 ) {
-    val alertConfig by settingsViewModel.alertConfig.collectAsState()
-    val notificationConfig by notificationsViewModel.notificationConfig.collectAsState()
+    val alertsConfiguration by settingsViewModel.alertConfigurations.collectAsState()
+    val notificationConfiguration by notificationsViewModel.notificationConfiguration.collectAsState()
     val showPermissionDialog by notificationsViewModel.showExactAlarmDialog.collectAsStateWithLifecycle()
 
     var showTimePickerDialog by remember { mutableStateOf(false) }
@@ -80,7 +80,7 @@ fun SettingsScreen(
             SettingsSwitchItem(
                 title = "Enable Notifications",
                 subtitle = "Allow Sessions to send you notifications",
-                checked = notificationConfig.notificationsEnabled,
+                checked = notificationConfiguration.notificationsEnabled,
                 index = 0,
                 totalCount = 2,
                 onCheckedChange = { enabled ->
@@ -93,8 +93,8 @@ fun SettingsScreen(
             SettingsSwitchItem(
                 title = "Focus Reminders",
                 subtitle = notificationsViewModel.formatReminderTime(),
-                checked = notificationConfig.focusRemindersEnabled,
-                enabled = notificationConfig.notificationsEnabled,
+                checked = notificationConfiguration.focusRemindersEnabled,
+                enabled = notificationConfiguration.notificationsEnabled,
                 index = 1,
                 totalCount = 2,
                 onCheckedChange = { isChecked ->
@@ -108,14 +108,14 @@ fun SettingsScreen(
                     }
                 },
                 onClick = {
-                    if (notificationConfig.notificationsEnabled && notificationsViewModel.canEnableReminders()) {
+                    if (notificationConfiguration.notificationsEnabled && notificationsViewModel.canEnableReminders()) {
                         showTimePickerDialog = true
                     }
                 }
             )
         }
 
-        item { Spacer(Modifier.height(12.dp)) }
+        item { Spacer(Modifier.height(4.dp)) }
 
         item {
             SettingsSectionHeader(
@@ -127,11 +127,11 @@ fun SettingsScreen(
             SettingsSwitchItem(
                 title = "Sound Effects",
                 subtitle = "Play sounds for timer events",
-                checked = alertConfig.soundEnabled,
+                checked = alertsConfiguration.soundEnabled,
                 index = 0,
                 totalCount = 2,
                 onCheckedChange = {
-                    settingsViewModel.setSoundEnabled(!alertConfig.soundEnabled)
+                    settingsViewModel.setSoundEnabled(!alertsConfiguration.soundEnabled)
                     settingsViewModel.performHaptic(view)
                 }
             )
@@ -140,17 +140,17 @@ fun SettingsScreen(
             SettingsSwitchItem(
                 title = "Haptic Feedback",
                 subtitle = "Feel vibrations for timer events",
-                checked = alertConfig.hapticsEnabled,
+                checked = alertsConfiguration.hapticsEnabled,
                 index = 1,
                 totalCount = 2,
                 onCheckedChange = {
-                    settingsViewModel.setHapticsEnabled(!alertConfig.hapticsEnabled)
+                    settingsViewModel.setHapticsEnabled(!alertsConfiguration.hapticsEnabled)
                     settingsViewModel.performHaptic(view)
                 }
             )
         }
 
-        item { Spacer(Modifier.height(12.dp)) }
+        item { Spacer(Modifier.height(4.dp)) }
 
         item {
             SettingsSectionHeader(
@@ -168,7 +168,7 @@ fun SettingsScreen(
             )
         }
 
-        item { Spacer(Modifier.height(12.dp)) }
+        item { Spacer(Modifier.height(4.dp)) }
 
         item {
             SettingsSectionHeader(
@@ -198,8 +198,8 @@ fun SettingsScreen(
 
     if (showTimePickerDialog) {
         TimePickerDialog(
-            initialHour = notificationConfig.reminderTimeHour,
-            initialMinute = notificationConfig.reminderTimeMinute,
+            initialHour = notificationConfiguration.reminderTimeHour,
+            initialMinute = notificationConfiguration.reminderTimeMinute,
             onTimeSelected = { hour, minute ->
                 notificationsViewModel.setReminderTime(hour, minute)
                 settingsViewModel.performHaptic(view)
