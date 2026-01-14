@@ -1,4 +1,4 @@
-package com.yugentech.sessions.ui.auth.utils
+package com.yugentech.sessions.ui.auth.states
 
 import com.yugentech.sessions.theme.tokens.dimensions.AppConstants
 

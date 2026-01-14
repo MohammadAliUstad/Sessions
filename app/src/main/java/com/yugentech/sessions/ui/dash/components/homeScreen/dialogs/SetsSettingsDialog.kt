@@ -34,6 +34,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.DialogProperties
 import kotlin.math.roundToInt
 
 @Composable
@@ -47,12 +48,15 @@ fun SetsSettingsDialog(
 ) {
     var sets by remember { mutableIntStateOf(currentSets) }
     var longBreak by remember { mutableFloatStateOf(currentLongBreak.toFloat()) }
-
-    // Allow scrolling if screen is very short (landscape/small phones)
     val scrollState = rememberScrollState()
 
     AlertDialog(
         onDismissRequest = onDismiss,
+        // Custom width configuration to occupy 92% of screen
+        properties = DialogProperties(usePlatformDefaultWidth = false),
+        modifier = Modifier
+            .fillMaxWidth(0.92f)
+            .padding(16.dp),
         title = {
             Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
                 Text(
@@ -75,7 +79,7 @@ fun SetsSettingsDialog(
             ) {
                 Spacer(modifier = Modifier.height(8.dp))
 
-                // --- 1. Target Sets Section ---
+                // Target Sets Slider
                 SettingSliderRow(
                     label = "Target Sets",
                     valueDisplay = "$sets",
@@ -83,28 +87,29 @@ fun SetsSettingsDialog(
                     value = sets.toFloat(),
                     valueRange = 1f..12f,
                     steps = 10,
-                    onValueChange = { sets = it.toInt() }
+                    // roundToInt() prevents erratic snapping behavior
+                    onValueChange = { sets = it.roundToInt() }
                 )
 
                 Spacer(modifier = Modifier.height(24.dp))
 
-                // --- 2. Long Break Section ---
+                // Long Break Duration Slider
                 SettingSliderRow(
                     label = "Long Break Duration",
                     valueDisplay = "${longBreak.roundToInt()}m",
                     icon = Icons.Outlined.Timer,
                     value = longBreak,
                     valueRange = 10f..45f,
-                    steps = 5,
+                    // 6 steps ensures clean 5-minute intervals (10, 15... 45)
+                    steps = 6,
                     onValueChange = {
-                        // Snap to nearest 5
                         longBreak = (it / 5).roundToInt() * 5f
                     }
                 )
 
                 Spacer(modifier = Modifier.height(32.dp))
 
-                // --- 3. Dynamic Info Card ---
+                // Info Card
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -113,7 +118,7 @@ fun SetsSettingsDialog(
                             RoundedCornerShape(16.dp)
                         )
                         .padding(16.dp),
-                    verticalAlignment = Alignment.Top, // Align top in case text wraps
+                    verticalAlignment = Alignment.Top,
                     horizontalArrangement = Arrangement.Start
                 ) {
                     Icon(
@@ -156,7 +161,6 @@ fun SetsSettingsDialog(
     )
 }
 
-// --- Helper Component for Cleaner Code ---
 @Composable
 private fun SettingSliderRow(
     label: String,
@@ -168,7 +172,6 @@ private fun SettingSliderRow(
     onValueChange: (Float) -> Unit
 ) {
     Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
-        // Header Row
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween,
@@ -190,16 +193,14 @@ private fun SettingSliderRow(
                 )
             }
 
-            // Big, Bold Value Display
             Text(
                 text = valueDisplay,
-                style = MaterialTheme.typography.headlineSmall, // Bigger font
+                style = MaterialTheme.typography.headlineSmall,
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.primary
             )
         }
 
-        // Slider
         Slider(
             value = value,
             onValueChange = onValueChange,

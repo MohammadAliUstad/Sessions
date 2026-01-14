@@ -20,7 +20,10 @@ import com.yugentech.sessions.theme.tokens.dimensions.TypographyCompact
 import com.yugentech.sessions.theme.tokens.dimensions.TypographyExpanded
 import com.yugentech.sessions.theme.tokens.dimensions.TypographyMedium
 
-@OptIn(ExperimentalMaterial3WindowSizeClassApi::class, ExperimentalMaterial3ExpressiveApi::class)
+@OptIn(
+    ExperimentalMaterial3WindowSizeClassApi::class,
+    ExperimentalMaterial3ExpressiveApi::class
+)
 @Composable
 fun SessionsTheme(
     themeConfiguration: ThemeConfiguration,
@@ -29,10 +32,7 @@ fun SessionsTheme(
     val context = LocalContext.current
     val activity = context as? Activity
 
-    // Resolve dynamic or static color scheme based on config
     val colorScheme = getColorScheme(themeConfiguration = themeConfiguration)
-
-    // Calculate window size class for responsive typography/tokens
     val windowSizeClass = activity?.let { calculateWindowSizeClass(it) }
     val widthSizeClass = windowSizeClass?.widthSizeClass ?: WindowWidthSizeClass.Compact
 
@@ -50,7 +50,6 @@ fun SessionsTheme(
         else -> TokensCompact
     }
 
-    // Provide tokens and theme to composition
     CompositionLocalProvider(LocalDesignTokens provides tokens) {
         MaterialTheme(
             colorScheme = colorScheme,

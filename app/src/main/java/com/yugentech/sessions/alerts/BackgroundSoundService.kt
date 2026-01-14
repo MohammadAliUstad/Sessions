@@ -8,7 +8,6 @@ import android.os.Handler
 import android.os.Looper
 import android.view.animation.LinearInterpolator
 import androidx.media3.common.MediaItem
-import androidx.media3.common.Player
 import androidx.media3.exoplayer.ExoPlayer
 import com.yugentech.sessions.alerts.models.BackgroundSound
 import timber.log.Timber
@@ -108,7 +107,8 @@ class BackgroundSoundService(
 
                     // When we're CROSSFADE_START_BEFORE_END_MS before the end, start crossfade
                     if (!hasTriggeredSwitch && duration > 0 &&
-                        currentPosition >= (duration - CROSSFADE_START_BEFORE_END_MS)) {
+                        currentPosition >= (duration - CROSSFADE_START_BEFORE_END_MS)
+                    ) {
 
                         hasTriggeredSwitch = true
 
@@ -261,12 +261,61 @@ class BackgroundSoundService(
                 targetVolume = focusVolume
                 player1 = ExoPlayer.Builder(context).build().apply {
                     setMediaItem(MediaItem.fromUri(uri))
-                    volume = focusVolume
+                    volume = 0f // Start at 0 for fade in
                     prepare()
                     playWhenReady = true
                 }
                 currentSound = sound
-                handler.postDelayed(autoStopRunnable, PREVIEW_PLAY_TIME)
+
+                // Fade in (300ms)
+                val fadeInDuration = 300L
+                userVolumeAnimator?.cancel()
+                userVolumeAnimator = ValueAnimator.ofFloat(0f, focusVolume).apply {
+                    duration = fadeInDuration
+                    interpolator = LinearInterpolator()
+
+                    addUpdateListener { animation ->
+                        val newVolume = animation.animatedValue as Float
+                        try {
+                            player1?.volume = newVolume
+                        } catch (e: Exception) {
+                            Timber.e(e, "Error fading in preview")
+                        }
+                    }
+
+                    start()
+                }
+
+                // Schedule fade out before stopping (last 300ms)
+                val fadeOutDuration = 300L
+                val fadeOutStartTime = PREVIEW_PLAY_TIME - fadeOutDuration
+
+                handler.postDelayed({
+                    // Fade out
+                    userVolumeAnimator?.cancel()
+                    userVolumeAnimator = ValueAnimator.ofFloat(focusVolume, 0f).apply {
+                        duration = fadeOutDuration
+                        interpolator = LinearInterpolator()
+
+                        addUpdateListener { animation ->
+                            val newVolume = animation.animatedValue as Float
+                            try {
+                                player1?.volume = newVolume
+                            } catch (e: Exception) {
+                                Timber.e(e, "Error fading out preview")
+                            }
+                        }
+
+                        addListener(object : AnimatorListenerAdapter() {
+                            override fun onAnimationEnd(animation: Animator) {
+                                releaseResources()
+                            }
+                        })
+
+                        start()
+                    }
+                }, fadeOutStartTime)
+
             } catch (e: Exception) {
                 Timber.e(e, "Preview failed")
             }

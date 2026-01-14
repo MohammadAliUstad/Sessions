@@ -3,43 +3,33 @@ package com.yugentech.sessions.viewModels
 import android.view.View
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.yugentech.sessions.alerts.alertsDatastore.AlertsConfiguration
-import com.yugentech.sessions.alerts.alertsDatastore.AlertsManager
-import com.yugentech.sessions.alerts.alertsDatastore.AlertsRepository
-import kotlinx.coroutines.flow.SharingStarted
+import com.yugentech.sessions.alerts.models.AlertsConfiguration
+import com.yugentech.sessions.alerts.alertsRepository.AlertsRepository
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
 class SettingsViewModel(
-    private val alertsRepository: AlertsRepository,
-    private val alertsManager: AlertsManager
+    private val alertsRepository: AlertsRepository
 ) : ViewModel() {
 
-    // Hot flow of alert settings, defaulting to standard configuration
-    val alertConfig: StateFlow<AlertsConfiguration> = alertsManager.alertConfiguration
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), AlertsConfiguration())
+    val alertConfigurations: StateFlow<AlertsConfiguration> = alertsRepository.alertConfiguration
 
-    // Toggles the global sound setting
     fun setSoundEnabled(enabled: Boolean) {
         Timber.d("User toggled sound: $enabled")
         viewModelScope.launch {
-            alertsManager.setSoundEnabled(enabled)
+            alertsRepository.setSoundEnabled(enabled)
         }
     }
 
-    // Toggles the global haptics setting
     fun setHapticsEnabled(enabled: Boolean) {
         Timber.d("User toggled haptics: $enabled")
         viewModelScope.launch {
-            alertsManager.setHapticsEnabled(enabled)
+            alertsRepository.setHapticsEnabled(enabled)
         }
     }
 
     fun performHaptic(view: View? = null) {
-        viewModelScope.launch {
-            alertsRepository.performHaptic(view)
-        }
+        alertsRepository.performHaptic(view)
     }
 }

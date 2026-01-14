@@ -1,5 +1,8 @@
 package com.yugentech.sessions.ui.dash.components.homeScreen.dialogs
 
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.spring
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -7,14 +10,15 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.rounded.LibraryBooks
 import androidx.compose.material.icons.automirrored.rounded.VolumeOff
-import androidx.compose.material.icons.rounded.GraphicEq
-import androidx.compose.material.icons.rounded.Headphones
-import androidx.compose.material.icons.rounded.VolumeOff
+import androidx.compose.material.icons.rounded.BlurOn
+import androidx.compose.material.icons.rounded.LocalFireDepartment
+import androidx.compose.material.icons.rounded.Water
 import androidx.compose.material.icons.rounded.WaterDrop
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -30,23 +34,30 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.yugentech.sessions.alerts.models.BackgroundSound
+import com.yugentech.sessions.ui.dash.states.SoundOption
 
 @Composable
 fun SoundSelectionDialog(
     currentSoundId: String?,
     onDismiss: () -> Unit,
-    onConfirm: (String?) -> Unit
+    onConfirm: (String?) -> Unit,
+    onPreview: (String?) -> Unit
 ) {
-    var selectedOption by remember { mutableStateOf(currentSoundId) }
+    var selectedOption by remember {
+        mutableStateOf(currentSoundId ?: BackgroundSound.NONE.id)
+    }
 
     val options = listOf(
-        SoundOption("None", null, Icons.AutoMirrored.Rounded.VolumeOff),
-        SoundOption("Rain", "rain", Icons.Rounded.WaterDrop),
-        SoundOption("White Noise", "white_noise", Icons.Rounded.GraphicEq),
-        SoundOption("Lofi", "lofi", Icons.Rounded.Headphones)
+        SoundOption("None", BackgroundSound.NONE.id, Icons.AutoMirrored.Rounded.VolumeOff),
+        SoundOption("Rain", BackgroundSound.RAIN.id, Icons.Rounded.WaterDrop),
+        SoundOption("Brown Noise", BackgroundSound.BROWN_NOISE.id, Icons.Rounded.BlurOn),
+        SoundOption("Fireplace", BackgroundSound.FIREPLACE.id, Icons.Rounded.LocalFireDepartment),
+        SoundOption("Library", BackgroundSound.LIBRARY.id, Icons.AutoMirrored.Rounded.LibraryBooks),
+        SoundOption("Riverside", BackgroundSound.RIVERSIDE.id, Icons.Rounded.Water)
     )
 
     AlertDialog(
@@ -59,9 +70,7 @@ fun SoundSelectionDialog(
             )
         },
         text = {
-            Column(
-                verticalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
+            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 options.chunked(2).forEach { rowOptions ->
                     Row(
                         modifier = Modifier.fillMaxWidth(),
@@ -71,7 +80,12 @@ fun SoundSelectionDialog(
                             SoundToggleCard(
                                 soundOption = soundOption,
                                 isSelected = selectedOption == soundOption.id,
-                                onClick = { selectedOption = soundOption.id },
+                                onClick = {
+                                    selectedOption = soundOption.id
+                                    val finalId =
+                                        if (selectedOption == BackgroundSound.NONE.id) null else selectedOption
+                                    onPreview(finalId)
+                                },
                                 modifier = Modifier.weight(1f)
                             )
                         }
@@ -80,7 +94,7 @@ fun SoundSelectionDialog(
             }
         },
         confirmButton = {
-            TextButton(
+            Button(
                 onClick = {
                     onConfirm(selectedOption)
                     onDismiss()
@@ -106,6 +120,15 @@ private fun SoundToggleCard(
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val iconScale by animateFloatAsState(
+        targetValue = if (isSelected) 1.3f else 1.0f,
+        animationSpec = spring(
+            dampingRatio = Spring.DampingRatioMediumBouncy,
+            stiffness = Spring.StiffnessLow
+        ),
+        label = "icon_scale"
+    )
+
     ToggleButton(
         checked = isSelected,
         onCheckedChange = { onClick() },
@@ -116,10 +139,10 @@ private fun SoundToggleCard(
             checkedShape = ToggleButtonDefaults.roundShape
         ),
         colors = ToggleButtonDefaults.toggleButtonColors(
-            containerColor = MaterialTheme.colorScheme.surfaceContainer,
-            contentColor = MaterialTheme.colorScheme.onSurface,
-            checkedContainerColor = MaterialTheme.colorScheme.secondaryContainer,
-            checkedContentColor = MaterialTheme.colorScheme.onSecondaryContainer
+            containerColor = MaterialTheme.colorScheme.surfaceContainerLow,
+            contentColor = MaterialTheme.colorScheme.onSurfaceVariant,
+            checkedContainerColor = MaterialTheme.colorScheme.primaryContainer,
+            checkedContentColor = MaterialTheme.colorScheme.onPrimaryContainer
         )
     ) {
         Column(
@@ -129,10 +152,9 @@ private fun SoundToggleCard(
             Icon(
                 imageVector = soundOption.icon,
                 contentDescription = soundOption.label,
-                tint = if (isSelected) {
-                    MaterialTheme.colorScheme.onSecondaryContainer
-                } else {
-                    MaterialTheme.colorScheme.onSurface
+                modifier = Modifier.graphicsLayer {
+                    scaleX = iconScale
+                    scaleY = iconScale
                 }
             )
 
@@ -146,9 +168,3 @@ private fun SoundToggleCard(
         }
     }
 }
-
-private data class SoundOption(
-    val label: String,
-    val id: String?,
-    val icon: ImageVector
-)
