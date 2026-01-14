@@ -1,4 +1,4 @@
-package com.yugentech.sessions.utils
+package com.yugentech.sessions.ui.dash.states
 
 import com.yugentech.sessions.theme.tokens.dimensions.AppConstants
 import kotlin.math.ceil

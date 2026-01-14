@@ -1,8 +1,8 @@
 package com.yugentech.sessions.ui.dash.components.homeScreen.durationSelection
 
 import com.yugentech.sessions.timer.TimerMode
-import com.yugentech.sessions.utils.SessionConfig
-import com.yugentech.sessions.utils.SessionStatus
+import com.yugentech.sessions.ui.dash.states.SessionConfig
+import com.yugentech.sessions.ui.dash.states.SessionStatus
 
 object SessionDashboardCalculator {
 
