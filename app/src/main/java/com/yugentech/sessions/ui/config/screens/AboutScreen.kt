@@ -77,7 +77,7 @@ fun AboutScreen(
             icon = Icons.Default.Email,
             onClick = {
                 val intent = Intent(Intent.ACTION_SENDTO).apply {
-                    data = "mailto:${context.getString(R.string.mail)}".toUri()
+                    data = context.getString(R.string.mail).toUri()
                     putExtra(Intent.EXTRA_SUBJECT, context.getString(R.string.feedback_sub))
                 }
                 try {
@@ -148,7 +148,7 @@ fun AboutScreen(
                     action = Intent.ACTION_SEND
                     putExtra(
                         Intent.EXTRA_TEXT,
-                        "Check out Sessions, a minimal focus timer app: https://play.google.com/store/apps/details?id=${context.packageName}"
+                        "Check out Sessions, a minimal pomodoro focus app\nhttps://play.google.com/store/apps/details?id=${context.packageName}"
                     )
                     type = "text/plain"
                 }
