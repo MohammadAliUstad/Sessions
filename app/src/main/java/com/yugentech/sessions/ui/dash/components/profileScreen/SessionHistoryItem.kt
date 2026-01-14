@@ -37,11 +37,7 @@ fun SessionHistoryItem(
 ) {
     val shape = itemShape(index, totalCount)
 
-    // Formatters
-    val dateFormat = SimpleDateFormat("MMM dd", Locale.getDefault())
     val timeFormat = SimpleDateFormat("hh:mm a", Locale.getDefault())
-
-    val formattedDate = dateFormat.format(Date(session.timestamp))
     val formattedTime = timeFormat.format(Date(session.timestamp))
 
     val hours = session.duration / 3600
@@ -50,7 +46,6 @@ fun SessionHistoryItem(
 
     ListItem(
         headlineContent = {
-            // UPDATED: Task Name is now the main focus
             Text(
                 text = session.sessionTask.ifBlank { "Focus Session" },
                 style = MaterialTheme.typography.titleMedium.copy(
@@ -61,16 +56,14 @@ fun SessionHistoryItem(
             )
         },
         supportingContent = {
-            // UPDATED: Combined Date • Time
             Text(
-                text = "$formattedDate • $formattedTime",
+                text = formattedTime,
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
         },
         trailingContent = {
             Row(verticalAlignment = Alignment.CenterVertically) {
-                // Duration Badge
                 Surface(
                     color = MaterialTheme.colorScheme.secondaryContainer,
                     shape = RoundedCornerShape(8.dp),
@@ -86,7 +79,6 @@ fun SessionHistoryItem(
                     )
                 }
 
-                // Delete Button
                 IconButton(
                     onClick = onDelete,
                     modifier = Modifier.size(32.dp)
