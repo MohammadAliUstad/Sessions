@@ -10,7 +10,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.History
+import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.CircularWavyProgressIndicator
@@ -31,11 +31,16 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.yugentech.sessions.models.UserData
 import com.yugentech.sessions.theme.tokens.dimensions.AppConstants
 import com.yugentech.sessions.theme.tokens.spacing
+import com.yugentech.sessions.ui.config.components.settingsScreen.SettingsSectionHeader
 import com.yugentech.sessions.ui.dash.components.profileScreen.EmptySessionsCard
 import com.yugentech.sessions.ui.dash.components.profileScreen.ProfileInfoItem
 import com.yugentech.sessions.ui.dash.components.profileScreen.ProfileSectionHeader
 import com.yugentech.sessions.ui.dash.components.profileScreen.SessionHistoryItem
 import com.yugentech.sessions.viewModels.ProfileViewModel
+import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.Date
+import java.util.Locale
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
@@ -51,7 +56,6 @@ fun ProfileScreen(
     var showDeleteDialog by remember { mutableStateOf(false) }
     var sessionToDeleteId by remember { mutableStateOf<String?>(null) }
 
-    // Reusing the padding values to ensure consistency between layouts
     val screenContentPadding = PaddingValues(
         top = MaterialTheme.spacing.s,
         start = MaterialTheme.spacing.m,
@@ -61,6 +65,13 @@ fun ProfileScreen(
 
     LaunchedEffect(userId) {
         profileViewModel.loadProfile(userId)
+    }
+
+    // Group sessions by smart date string (Today, Yesterday, or formatted date)
+    val groupedSessions = remember(profileUiState.sessions) {
+        profileUiState.sessions.groupBy { session ->
+            getSmartDateHeader(session.timestamp)
+        }
     }
 
     if (profileUiState.user == null) {
@@ -75,17 +86,15 @@ fun ProfileScreen(
             )
         }
     } else {
-        // LOGIC BRANCH: Choose Layout based on content
         if (profileUiState.sessions.isEmpty()) {
-            // Case 1: Empty State (Use Column to center content)
+            // Case 1: Empty State
             Column(
                 modifier = modifier
                     .fillMaxSize()
                     .padding(screenContentPadding),
                 verticalArrangement = Arrangement.spacedBy(2.dp)
             ) {
-                // UPDATED: Header for Account Section
-                ProfileSectionHeader(
+                SettingsSectionHeader(
                     title = "My Account",
                     icon = Icons.Filled.Person
                 )
@@ -96,26 +105,22 @@ fun ProfileScreen(
                     onEditProfile = onEditProfile
                 )
 
-                // This Box takes up all remaining space (weight 1f) and centers the EmptyCard
                 Box(
-                    modifier = Modifier
-                        .weight(1f)
-                        .fillMaxSize(),
+                    modifier = Modifier.weight(1f).fillMaxSize(),
                     contentAlignment = Alignment.Center
                 ) {
                     EmptySessionsCard()
                 }
             }
         } else {
-            // Case 2: List State (Use LazyColumn for scrolling performance)
+            // Case 2: List State
             LazyColumn(
                 modifier = modifier.fillMaxSize(),
                 contentPadding = screenContentPadding,
                 verticalArrangement = Arrangement.spacedBy(2.dp)
             ) {
-                // UPDATED: Header for Account Section
                 item {
-                    ProfileSectionHeader(
+                    SettingsSectionHeader(
                         title = "My Account",
                         icon = Icons.Filled.Person
                     )
@@ -129,30 +134,31 @@ fun ProfileScreen(
                     )
                 }
 
-                item {
-                    ProfileSectionHeader(
-                        title = "Session History",
-                        icon = Icons.Filled.History,
-                        countLabel = "${profileUiState.sessions.size} sessions"
-                    )
-                }
-
-                itemsIndexed(
-                    items = profileUiState.sessions,
-                    key = { _, session -> session.sessionId }
-                ) { index, session ->
-                    Box(
-                        modifier = Modifier.animateItem()
-                    ) {
-                        SessionHistoryItem(
-                            session = session,
-                            index = index,
-                            totalCount = profileUiState.sessions.size,
-                            onDelete = {
-                                sessionToDeleteId = session.sessionId
-                                showDeleteDialog = true
-                            }
+                groupedSessions.forEach { (dateHeader, sessionsInGroup) ->
+                    // Date Header (Today, Yesterday, or formatted date)
+                    item(key = "header_$dateHeader") {
+                        SettingsSectionHeader(
+                            title = dateHeader,
+                            icon = Icons.Default.DateRange
                         )
+                    }
+
+                    // Session Items
+                    itemsIndexed(
+                        items = sessionsInGroup,
+                        key = { _, session -> session.sessionId }
+                    ) { index, session ->
+                        Box(modifier = Modifier.animateItem()) {
+                            SessionHistoryItem(
+                                session = session,
+                                index = index,
+                                totalCount = sessionsInGroup.size,
+                                onDelete = {
+                                    sessionToDeleteId = session.sessionId
+                                    showDeleteDialog = true
+                                }
+                            )
+                        }
                     }
                 }
             }
@@ -206,4 +212,39 @@ fun ProfileScreen(
             textContentColor = MaterialTheme.colorScheme.onSurfaceVariant
         )
     }
+}
+
+/**
+ * Returns a smart date header string:
+ * - "Today" if the timestamp is today
+ * - "Yesterday" if the timestamp is yesterday
+ * - "Day, Mon DD" (e.g., "Wednesday, Jan 15") for all other dates
+ */
+private fun getSmartDateHeader(timestamp: Long): String {
+    val sessionCalendar = Calendar.getInstance().apply {
+        timeInMillis = timestamp
+    }
+
+    val todayCalendar = Calendar.getInstance()
+
+    val yesterdayCalendar = Calendar.getInstance().apply {
+        add(Calendar.DAY_OF_YEAR, -1)
+    }
+
+    return when {
+        isSameDay(sessionCalendar, todayCalendar) -> "Today"
+        isSameDay(sessionCalendar, yesterdayCalendar) -> "Yesterday"
+        else -> {
+            val formatter = SimpleDateFormat("EEEE, MMM dd", Locale.getDefault())
+            formatter.format(Date(timestamp))
+        }
+    }
+}
+
+/**
+ * Checks if two Calendar instances represent the same day
+ */
+private fun isSameDay(cal1: Calendar, cal2: Calendar): Boolean {
+    return cal1.get(Calendar.YEAR) == cal2.get(Calendar.YEAR) &&
+            cal1.get(Calendar.DAY_OF_YEAR) == cal2.get(Calendar.DAY_OF_YEAR)
 }

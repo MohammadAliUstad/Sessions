@@ -137,8 +137,8 @@ fun HomeScreen(
                             title = "Focus Duration",
                             description = "Choose how long you want to focus before taking a break.",
                             initialValue = currentFocus,
-                            range = 25..60,
-                            step = 5,
+                            range = 1..10,
+                            step = 1,
                             onDismiss = closeDialog,
                             onConfirm = { newMins ->
                                 timerViewModel.updateFocusDuration(newMins)
@@ -152,7 +152,7 @@ fun HomeScreen(
                             title = "Short Break",
                             description = "Choose the duration of your break between sessions.",
                             initialValue = currentShort,
-                            range = 5..15,
+                            range = 1..10,
                             step = 1,
                             onDismiss = closeDialog,
                             onConfirm = { newMins ->
