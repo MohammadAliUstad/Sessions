@@ -267,7 +267,7 @@ fun ExpressiveNavigationBar(
         modifier = modifier
             .fillMaxWidth()
             .navigationBarsPadding()
-            .padding(12.dp),
+            .padding(start = 12.dp, end = 12.dp, top = 12.dp, bottom = 0.dp),
         horizontalArrangement = Arrangement.spacedBy(ButtonGroupDefaults.ConnectedSpaceBetween),
         verticalAlignment = Alignment.CenterVertically
     ) {

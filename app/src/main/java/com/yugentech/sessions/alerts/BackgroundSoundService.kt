@@ -206,7 +206,6 @@ class BackgroundSoundService(private val context: Context) {
                         prepare()
                     }
 
-                    // Swap players
                     val temp = activePlayer
                     activePlayer = nextPlayer
                     nextPlayer = temp
