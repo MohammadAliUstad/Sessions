@@ -4,7 +4,7 @@ import android.view.View
 import com.yugentech.sessions.alerts.HapticService
 import com.yugentech.sessions.alerts.SoundService
 import com.yugentech.sessions.alerts.models.AlertsConfiguration
-import com.yugentech.sessions.alerts.alertsDatastore.AlertsManager
+import com.yugentech.sessions.alerts.alertsDatastore.AlertsPreferences
 import com.yugentech.sessions.alerts.models.BackgroundSound
 import com.yugentech.sessions.alerts.BackgroundSoundService
 import kotlinx.coroutines.CoroutineScope
@@ -14,14 +14,14 @@ import kotlinx.coroutines.flow.stateIn
 import timber.log.Timber
 
 class AlertsRepositoryImpl(
-    private val alertsManager: AlertsManager,
+    private val alertsPreferences: AlertsPreferences,
     private val hapticService: HapticService,
     private val soundService: SoundService,
     private val backgroundSoundService: BackgroundSoundService,
     externalScope: CoroutineScope
 ) : AlertsRepository {
 
-    override val alertConfiguration: StateFlow<AlertsConfiguration> = alertsManager.alertConfiguration
+    override val alertConfiguration: StateFlow<AlertsConfiguration> = alertsPreferences.alertConfiguration
         .stateIn(
             scope = externalScope,
             started = SharingStarted.Eagerly,
@@ -67,17 +67,17 @@ class AlertsRepositoryImpl(
     override suspend fun setBackgroundSound(soundId: String?) {
         Timber.d("Setting background sound to: $soundId")
         val sound = BackgroundSound.fromId(soundId)
-        alertsManager.setBackgroundSound(sound)
+        alertsPreferences.setBackgroundSound(sound)
     }
 
     override suspend fun setSoundEnabled(enabled: Boolean) {
         Timber.d("Repository: Setting sound enabled to $enabled")
-        alertsManager.setSoundEnabled(enabled)
+        alertsPreferences.setSoundEnabled(enabled)
     }
 
     override suspend fun setHapticsEnabled(enabled: Boolean) {
         Timber.d("Repository: Setting haptics enabled to $enabled")
-        alertsManager.setHapticsEnabled(enabled)
+        alertsPreferences.setHapticsEnabled(enabled)
     }
 
     // Helper Functions

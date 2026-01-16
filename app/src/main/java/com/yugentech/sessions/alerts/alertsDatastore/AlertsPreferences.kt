@@ -13,7 +13,7 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
 import timber.log.Timber
 
-class AlertsManager(
+class AlertsPreferences(
     private val dataStore: DataStore<Preferences>
 ) {
     private val soundKey = booleanPreferencesKey("sound_enabled")

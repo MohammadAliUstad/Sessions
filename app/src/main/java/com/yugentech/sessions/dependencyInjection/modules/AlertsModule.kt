@@ -2,7 +2,7 @@ package com.yugentech.sessions.dependencyInjection.modules
 
 import com.yugentech.sessions.alerts.HapticService
 import com.yugentech.sessions.alerts.SoundService
-import com.yugentech.sessions.alerts.alertsDatastore.AlertsManager
+import com.yugentech.sessions.alerts.alertsDatastore.AlertsPreferences
 import com.yugentech.sessions.alerts.alertsRepository.AlertsRepository
 import com.yugentech.sessions.alerts.BackgroundSoundService
 import com.yugentech.sessions.alerts.alertsRepository.AlertsRepositoryImpl
@@ -31,7 +31,7 @@ val alertsModule = module {
 
     // Manages persistence of alert preferences
     single {
-        AlertsManager(
+        AlertsPreferences(
             dataStore = get(named("alerts"))
         )
     }
@@ -39,7 +39,7 @@ val alertsModule = module {
     // Repository coordinating hardware feedback based on user settings
     single<AlertsRepository> {
         AlertsRepositoryImpl(
-            alertsManager = get(),
+            alertsPreferences = get(),
             hapticService = get(),
             soundService = get(),
             backgroundSoundService = get(),
