@@ -23,7 +23,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.yugentech.sessions.timer.TimerMode
+import com.yugentech.sessions.timer.states.TimerMode
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
@@ -57,15 +57,14 @@ fun TimerDisplay(
             .aspectRatio(1f),
         contentAlignment = Alignment.Center
     ) {
-        // 3. The Wavy Indicator
+
         CircularWavyProgressIndicator(
             progress = { animatedProgress },
             modifier = Modifier.fillMaxSize(),
             color = MaterialTheme.colorScheme.primary,
-            trackColor = MaterialTheme.colorScheme.surfaceVariant,
+            trackColor = MaterialTheme.colorScheme.surfaceVariant
         )
 
-        // 4. Timer Text & Mode Tag Overlay
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center,
@@ -77,8 +76,7 @@ fun TimerDisplay(
                 Text(
                     text = "%02d:%02d".format(displayTime / 60, displayTime % 60),
                     style = MaterialTheme.typography.displayLarge.copy(
-                        fontWeight = FontWeight.Normal,
-                        fontFeatureSettings = "tnum"
+                        fontWeight = FontWeight.Normal, fontFeatureSettings = "tnum"
                     ),
                     textAlign = TextAlign.Center,
                     color = MaterialTheme.colorScheme.onSurface

@@ -8,28 +8,29 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import org.koin.core.module.dsl.viewModel
+import org.koin.core.qualifier.named
 import org.koin.dsl.module
 import timber.log.Timber
 
 val timerModule = module {
 
-    // Global scope for the timer to survive configuration changes
-    single<CoroutineScope> {
-        Timber.d("Creating Timer CoroutineScope")
+    single(named("timerScope")) {
+        Timber.d("Creating Timer external CoroutineScope")
         CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
     }
 
-    // Core service managing the countdown logic
+    // Core timer engine (inject scope)
     single {
         TimerService(
-            coroutineScope = get()
+            scope = get(named("timerScope"))
         )
     }
 
-    // Repository exposing timer state to the UI
+    // Repository with stateIn (like AlertsRepository pattern)
     single<TimerRepository> {
         TimerRepositoryImpl(
-            timerService = get()
+            timerService = get(),
+            externalScope = get(named("timerScope"))
         )
     }
 
