@@ -11,20 +11,19 @@ import com.yugentech.sessions.notifications.NotificationType
 import com.yugentech.sessions.notifications.notificationRepository.NotificationRepository
 import com.yugentech.sessions.sessions.sessionsRepository.SessionsRepository
 import com.yugentech.sessions.sessions.sessionsUtils.SessionResult
+import com.yugentech.sessions.timer.states.TimerEffect
+import com.yugentech.sessions.timer.states.TimerMode
 import com.yugentech.sessions.timer.timerRepository.TimerRepository
 import com.yugentech.sessions.ui.dash.components.homeScreen.durationSelection.SessionDashboardCalculator
 import com.yugentech.sessions.ui.dash.components.homeScreen.durationSelection.SessionDashboardState
-import com.yugentech.sessions.ui.dash.states.SessionConfig
-import com.yugentech.sessions.ui.dash.states.SessionStatus
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import timber.log.Timber
 import java.util.UUID
 
 class TimerViewModel(
@@ -35,58 +34,93 @@ class TimerViewModel(
 ) : ViewModel() {
 
     // ============================================================================================
-    // REGION: STATE MANAGEMENT
+    // STATE
     // ============================================================================================
 
-    // 1. User Settings (Updates only on user interaction)
-    private val _sessionConfig = MutableStateFlow(SessionConfig())
-    val sessionConfig: StateFlow<SessionConfig> = _sessionConfig.asStateFlow()
+    val timerState = timerRepository.timerState
 
-    // 2. Timer Status (Updates every second via engine)
-    private val _sessionStatus = MutableStateFlow(SessionStatus())
-    val sessionStatus: StateFlow<SessionStatus> = _sessionStatus.asStateFlow()
-
-    // 3. UI Events/Errors
     private val _errorMessage = MutableStateFlow<String?>(null)
     val errorMessage: StateFlow<String?> = _errorMessage.asStateFlow()
 
-    // 4. Derived Dashboard State (Combines Config + Status for UI calculations)
-    val dashboardState: StateFlow<SessionDashboardState> = combine(
-        _sessionConfig,
-        _sessionStatus
-    ) { config, status ->
-        SessionDashboardCalculator.calculate(config, status)
-    }.stateIn(
-        scope = viewModelScope,
-        started = SharingStarted.WhileSubscribed(5000),
-        initialValue = SessionDashboardState()
-    )
+    val dashboardState: StateFlow<SessionDashboardState> = timerState
+        .map { state -> SessionDashboardCalculator.calculate(state) }
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.Eagerly,
+            initialValue = SessionDashboardState()
+        )
 
     private var currentUserId: String? = null
 
     init {
-        initializeTimerObserver()
-        initializeAlertsObserver()
-        initializeSessionCompletionListener()
+        observeTimerEffects()
+        observeAlertConfiguration()
     }
 
-    private fun initializeTimerObserver() {
+    // ============================================================================================
+    // TIMER EFFECTS
+    // ============================================================================================
+
+    private fun observeTimerEffects() {
         viewModelScope.launch {
-            timerRepository.timerState.collect { timerState ->
-                _sessionStatus.update {
-                    it.copy(
-                        isRunning = timerState.isTimerRunning,
-                        currentMode = timerState.currentMode,
-                        currentTime = timerState.currentTime,
-                        totalTime = timerState.totalTime,
-                        completedSets = timerState.completedSets
-                    )
+            timerRepository.timerEffects.collect { effect ->
+                when (effect) {
+                    is TimerEffect.FocusCompleted -> handleFocusCompleted(effect.durationSeconds)
+                    is TimerEffect.BreakCompleted -> handleBreakCompleted()
+                    is TimerEffect.EndGoalReached -> handleEndGoalReached(effect.durationSeconds)
                 }
-                // Sync target sets from engine to config to keep them consistent
-                _sessionConfig.update { it.copy(targetSets = timerState.config.targetSets) }
             }
         }
     }
+
+    private fun handleFocusCompleted(durationSeconds: Int) {
+        val userId = currentUserId ?: return
+        // Play break start alert and save the session
+        alertsRepository.onBreakStart()
+        saveSessionToDb(userId, durationSeconds)
+    }
+
+    private fun handleBreakCompleted() {
+        // Play focus start alert
+        alertsRepository.onFocusStart(null)
+    }
+
+    private fun handleEndGoalReached(durationSeconds: Int) {
+        val userId = currentUserId ?: return
+
+        // Save the final focus session
+        saveSessionToDb(userId, durationSeconds)
+
+        // Play session complete alert and stop everything
+        alertsRepository.onFocusStop()
+        stopActiveNotification()
+
+        // TODO: Show celebration UI for reaching goal (totalSets completed)
+    }
+
+    // ============================================================================================
+    // ALERT CONFIGURATION
+    // ============================================================================================
+
+    private fun observeAlertConfiguration() {
+        viewModelScope.launch {
+            alertsRepository.alertConfiguration.collect { alertConfig ->
+                updateBackgroundSoundId(alertConfig.backgroundSound.id)
+            }
+        }
+    }
+
+    // ============================================================================================
+    // USER
+    // ============================================================================================
+
+    fun setUserId(userId: String) {
+        currentUserId = userId
+    }
+
+    // ============================================================================================
+    // SOUND PREVIEW
+    // ============================================================================================
 
     fun playPreview(soundId: String?) {
         alertsRepository.playPreview(soundId)
@@ -96,53 +130,33 @@ class TimerViewModel(
         alertsRepository.playPreview(null)
     }
 
-    private fun initializeAlertsObserver() {
-        viewModelScope.launch {
-            alertsRepository.alertConfiguration.collect { alertConfig ->
-                _sessionConfig.update {
-                    it.copy(activeBackgroundSoundId = alertConfig.backgroundSound.id)
-                }
-            }
-        }
-    }
-
-    private fun initializeSessionCompletionListener() {
-        timerRepository.setOnTimerCompleteListener { sessionDurationSeconds ->
-            handleTimerComplete(sessionDurationSeconds)
-        }
-    }
-
-    fun setUserId(userId: String) {
-        currentUserId = userId
-        timerRepository.setSessionUserId(userId)
-    }
-
     // ============================================================================================
-    // REGION: CONFIGURATION UPDATES
+    // CONFIGURATION
     // ============================================================================================
 
     fun updateSessionTask(newTask: String) {
-        _sessionConfig.update { it.copy(sessionTask = newTask) }
+        val current = timerState.value.timerConfig
+        timerRepository.updateConfig(current.copy(sessionTask = newTask))
     }
 
     fun updateFocusDuration(minutes: Int) {
-        _sessionConfig.update { it.copy(focusDurationMinutes = minutes) }
-        pushTimerConfigUpdate(focusMinutes = minutes)
+        val current = timerState.value.timerConfig
+        timerRepository.updateConfig(current.copy(focusDuration = minutes))
     }
 
     fun updateShortBreakDuration(minutes: Int) {
-        _sessionConfig.update { it.copy(shortBreakDurationMinutes = minutes) }
-        pushTimerConfigUpdate(shortBreakMinutes = minutes)
+        val current = timerState.value.timerConfig
+        timerRepository.updateConfig(current.copy(shortBreakDuration = minutes))
     }
 
     fun updateLongBreakDuration(minutes: Int) {
-        _sessionConfig.update { it.copy(longBreakDurationMinutes = minutes) }
-        pushTimerConfigUpdate(longBreakMinutes = minutes)
+        val current = timerState.value.timerConfig
+        timerRepository.updateConfig(current.copy(longBreakDuration = minutes))
     }
 
     fun updateTargetSets(sets: Int) {
-        _sessionConfig.update { it.copy(targetSets = sets) }
-        pushTimerConfigUpdate(targetSets = sets)
+        val current = timerState.value.timerConfig
+        timerRepository.updateConfig(current.copy(targetSets = sets))
     }
 
     fun updateBackgroundSound(soundId: String?) {
@@ -151,112 +165,88 @@ class TimerViewModel(
         }
     }
 
-    /** Helper to push changes to the Engine Repository */
-    private fun pushTimerConfigUpdate(
-        focusMinutes: Int? = null,
-        shortBreakMinutes: Int? = null,
-        longBreakMinutes: Int? = null,
-        targetSets: Int? = null
-    ) {
-        val currentEngineConfig = timerRepository.timerState.value.config
-        val newConfig = TimerConfig(
-            focusDurationMinutes = focusMinutes ?: currentEngineConfig.focusDurationMinutes,
-            shortBreakDurationMinutes = shortBreakMinutes
-                ?: currentEngineConfig.shortBreakDurationMinutes,
-            longBreakDurationMinutes = longBreakMinutes
-                ?: currentEngineConfig.longBreakDurationMinutes,
-            targetSets = targetSets ?: currentEngineConfig.targetSets
-        )
-        timerRepository.updateConfig(newConfig)
-    }
-
-    // ============================================================================================
-    // REGION: TIMER CONTROLS
-    // ============================================================================================
-
-    fun toggleTimer(view: View? = null) {
-        if (_sessionStatus.value.isRunning) {
-            stopTimer(view)
-        } else {
-            startTimer(view)
+    private fun updateBackgroundSoundId(soundId: String?) {
+        val current = timerState.value.timerConfig
+        if (current.activeBackgroundSoundId != soundId) {
+            timerRepository.updateConfig(current.copy(activeBackgroundSoundId = soundId))
         }
     }
 
-    private fun startTimer(view: View? = null) {
-        if (_sessionStatus.value.isRunning) return
+    // ============================================================================================
+    // TIMER CONTROLS
+    // ============================================================================================
+
+    fun startTimer(view: View? = null) {
+        // Guard: Don't start if already running
+        if (timerState.value.isTimerRunning) return
+
         viewModelScope.launch {
-            Timber.i("Starting timer")
+            // Start timer first, then trigger alerts
+            timerRepository.start()
             startActiveNotification()
-            timerRepository.startTimer()
             alertsRepository.onFocusStart(view)
         }
     }
 
-    private fun stopTimer(view: View? = null) {
+    fun stopTimer(view: View? = null) {
+        // Guard: Don't stop if not running
+        if (!timerState.value.isTimerRunning) return
+
         viewModelScope.launch {
+            // Stop timer first, then stop alerts
+            timerRepository.pause()
             stopActiveNotification()
-            timerRepository.stopTimer()
             alertsRepository.onFocusStop(view)
         }
     }
 
     fun stopAndDiscardSession(view: View? = null) {
         viewModelScope.launch {
-            timerRepository.stopAndResetTimer()
+            timerRepository.discardSession()
+            stopActiveNotification()
             alertsRepository.onFocusStop(view)
         }
     }
 
     fun stopAndSaveSession(view: View? = null) {
-        val status = _sessionStatus.value
-        val timeSpentSeconds = ((status.totalTime - status.currentTime) / 1000).toInt()
+        val state = timerState.value
+        val timeSpentSeconds = (state.totalTime - state.currentTime).toInt()
 
-        // Only save if we actually spent time focusing
-        if (timeSpentSeconds > 0 && status.currentMode == TimerMode.Focus) {
-            val userId = currentUserId ?: timerRepository.getSessionUserId()
-            if (userId != null) {
-                saveSessionToDb(userId, timeSpentSeconds)
-            }
+        if (timeSpentSeconds > 0 && state.currentMode == TimerMode.Focus) {
+            currentUserId?.let { saveSessionToDb(it, timeSpentSeconds) }
         }
+
         stopTimer(view)
     }
 
     // ============================================================================================
-    // REGION: DATA PERSISTENCE & SESSION LOGIC
+    // DATA PERSISTENCE
     // ============================================================================================
-
-    private fun handleTimerComplete(sessionDurationSeconds: Int) {
-        val userId = currentUserId ?: timerRepository.getSessionUserId() ?: return
-
-        // Natural completion -> Break Mode (Play "Ding" + Duck Audio)
-        alertsRepository.onBreakStart()
-
-        saveSessionToDb(userId, sessionDurationSeconds)
-    }
 
     private fun saveSessionToDb(userId: String, durationSeconds: Int) {
         viewModelScope.launch {
+            val task = timerState.value.timerConfig.sessionTask
             val session = Session(
                 sessionId = UUID.randomUUID().toString(),
                 duration = durationSeconds,
                 timestamp = System.currentTimeMillis(),
-                sessionTask = _sessionConfig.value.sessionTask.ifBlank { "Focus Session" }
+                sessionTask = task.ifBlank { "Focus Session" }
             )
 
             when (sessionsRepository.saveSession(userId, session)) {
-                is SessionResult.Success -> Timber.i("Session saved successfully")
+                is SessionResult.Success -> Unit
                 is SessionResult.Error -> _errorMessage.update { "Failed to save session" }
             }
         }
     }
 
     // ============================================================================================
-    // REGION: NOTIFICATIONS & ERROR HANDLING
+    // NOTIFICATIONS
     // ============================================================================================
 
     private fun startActiveNotification() {
-        val remaining = (_sessionStatus.value.currentTime / 1000).toInt()
-        val task = _sessionConfig.value.sessionTask.ifBlank { "Focus" }
+        val remainingSeconds = timerState.value.currentTime.toInt()
+        val task = timerState.value.timerConfig.sessionTask.ifBlank { "Focus" }
 
         FirebaseCrashlytics.getInstance().setCustomKey("is_session_active", true)
 
@@ -268,7 +258,7 @@ class TimerViewModel(
                     message = "$task in progress",
                     type = NotificationType.ACTIVE,
                     isOngoing = true,
-                    remainingSeconds = remaining.toLong()
+                    remainingSeconds = remainingSeconds.toLong()
                 )
             )
         }
