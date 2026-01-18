@@ -99,9 +99,9 @@ fun SetsSettingsDialog(
                     valueDisplay = "${longBreak.roundToInt()}m",
                     icon = Icons.Outlined.Timer,
                     value = longBreak,
-                    valueRange = 10f..45f,
+                    valueRange = 1f..10f,
                     // 6 steps ensures clean 5-minute intervals (10, 15... 45)
-                    steps = 6,
+                    steps = 1,
                     onValueChange = {
                         longBreak = (it / 5).roundToInt() * 5f
                     }
