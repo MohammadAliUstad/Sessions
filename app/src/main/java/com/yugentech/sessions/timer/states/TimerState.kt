@@ -1,7 +1,7 @@
 package com.yugentech.sessions.timer.states
 
 data class TimerState(
-    val currentTime: Long = 0L,
+    val currentTime: Long = 25 * 60,
     val totalTime: Long = 0L,
     val isTimerRunning: Boolean = false,
     val currentMode: TimerMode = TimerMode.Focus,

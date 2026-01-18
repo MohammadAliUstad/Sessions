@@ -10,7 +10,6 @@ import com.yugentech.sessions.timer.states.TimerMode.ShortBreak
 import com.yugentech.sessions.timer.states.TimerState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -27,22 +26,19 @@ class TimerService(
     private val scope: CoroutineScope
 ) {
 
-    // ------------------------------------------------------------------------
-    // State & Effects
-    // ------------------------------------------------------------------------
-
+    // State
     private var timerJob: Job? = null
 
     private val _timerState = MutableStateFlow(createState())
     val timerState: StateFlow<TimerState> = _timerState.asStateFlow()
 
-    private val _timerEffects = MutableSharedFlow<TimerEffect>(replay = 0)
+    private val _timerEffects = MutableSharedFlow<TimerEffect>(
+        replay = 1,
+        extraBufferCapacity = 5
+    )
     val timerEffects: SharedFlow<TimerEffect> = _timerEffects.asSharedFlow()
 
-    // ------------------------------------------------------------------------
-    // Public Controls (UI API)
-    // ------------------------------------------------------------------------
-
+    // Controls
     fun start() {
         if (_timerState.value.isTimerRunning) return
 
@@ -61,52 +57,14 @@ class TimerService(
         _timerState.update { it.copy(isTimerRunning = false) }
     }
 
-    fun reset() {
-        cancelTimer()
-        val current = _timerState.value
-        val fullDurationSeconds = getDurationMinutes(
-            timerMode = current.currentMode,
-            timerConfig = current.timerConfig
-        ) * 60L
-
-        _timerState.update {
-            it.copy(
-                currentTime = fullDurationSeconds,
-                totalTime = fullDurationSeconds,
-                isTimerRunning = false
-            )
-        }
-    }
-
-    fun discardSession() {
-        cancelTimer()
-
-        val config = _timerState.value.timerConfig
-        val focusSeconds = config.focusDuration * 60L
-
-        _timerState.update {
-            it.copy(
-                completedSets = 0,
-                currentMode = Focus,
-                currentTime = focusSeconds,
-                totalTime = focusSeconds,
-                isTimerRunning = false
-            )
-        }
-    }
-
-    fun updateConfig(config: TimerConfig) {
+    fun updateConfig(timerConfig: TimerConfig) {
         _timerState.update { current ->
-            val isIdle = !current.isTimerRunning && (current.currentTime == current.totalTime)
-            val newMinutes = getDurationMinutes(current.currentMode, config)
+            val newMinutes = getDurationMinutes(current.currentMode, timerConfig)
             val newSeconds = newMinutes * 60L
-            val currentMinutes = getDurationMinutes(current.currentMode, current.timerConfig)
-            val shouldUpdateDisplay = isIdle && (newMinutes != currentMinutes)
-
             current.copy(
-                timerConfig = config,
-                totalTime = if (shouldUpdateDisplay) newSeconds else current.totalTime,
-                currentTime = if (shouldUpdateDisplay) newSeconds else current.currentTime
+                timerConfig = timerConfig,
+                totalTime = newSeconds,
+                currentTime = newSeconds
             )
         }
     }
@@ -177,13 +135,17 @@ class TimerService(
     }
 
     // Pomodoro Machine
-    private suspend fun handleFocusComplete(timerConfig: TimerConfig, durationSeconds: Int, completedSets: Int) {
+    private suspend fun handleFocusComplete(
+        timerConfig: TimerConfig,
+        durationSeconds: Int,
+        completedSets: Int
+    ) {
         Timber.i("Focus session completed: ${durationSeconds}s")
         val newCompletedSets = completedSets + 1
 
         if (newCompletedSets >= timerConfig.targetSets) {
             Timber.i("Target reached ($newCompletedSets/${timerConfig.targetSets} sets). Session complete!")
-            resetState(timerConfig)
+            reset()
             emitEffect(TimerEffect.EndGoalReached(durationSeconds))
         } else {
             Timber.i("Completed set $newCompletedSets/${timerConfig.targetSets}. Moving to break.")
@@ -252,8 +214,11 @@ class TimerService(
         )
     }
 
-    private fun resetState(timerConfig: TimerConfig) {
-        val focusSeconds = timerConfig.focusDuration * 60L
+    fun reset() {
+        cancelTimer()
+        val config = _timerState.value.timerConfig
+        val focusSeconds = config.focusDuration * 60L
+
         _timerState.update {
             it.copy(
                 completedSets = 0,
@@ -271,10 +236,5 @@ class TimerService(
             ShortBreak -> timerConfig.shortBreakDuration
             LongBreak -> timerConfig.longBreakDuration
         }
-    }
-
-    fun clear() {
-        cancelTimer()
-        scope.cancel()
     }
 }
