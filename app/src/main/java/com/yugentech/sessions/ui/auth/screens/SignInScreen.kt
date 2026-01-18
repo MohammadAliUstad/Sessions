@@ -48,8 +48,7 @@ fun SignInScreen(
 
     // Expressive: Use SurfaceContainerLow for depth
     Surface(
-        modifier = Modifier.fillMaxSize(),
-        color = MaterialTheme.colorScheme.surfaceContainerLow
+        modifier = Modifier.fillMaxSize()
     ) {
         Box(
             modifier = Modifier
