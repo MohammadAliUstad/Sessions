@@ -40,13 +40,8 @@ class TimerRepositoryImpl(
         timerService.reset()
     }
 
-    override fun discardSession() {
-        Timber.d("Discarding session and clearing completed sets")
-        timerService.discardSession()
-    }
-
-    override fun updateConfig(config: TimerConfig) {
-        Timber.d("Updating config: Focus=${config.focusDuration}m, Target=${config.targetSets} sets")
-        timerService.updateConfig(config)
+    override fun updateConfig(timerConfig: TimerConfig) {
+        Timber.d("Updating config: Focus=${timerConfig.focusDuration}m, Target=${timerConfig.targetSets} sets")
+        timerService.updateConfig(timerConfig)
     }
 }

@@ -22,8 +22,8 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import java.util.UUID
 
 class TimerViewModel(
@@ -50,8 +50,6 @@ class TimerViewModel(
             initialValue = SessionDashboardState()
         )
 
-    private var currentUserId: String? = null
-
     init {
         observeTimerEffects()
         observeAlertConfiguration()
@@ -64,6 +62,7 @@ class TimerViewModel(
     private fun observeTimerEffects() {
         viewModelScope.launch {
             timerRepository.timerEffects.collect { effect ->
+                Timber.d("Received Timer Effect: $effect")
                 when (effect) {
                     is TimerEffect.FocusCompleted -> handleFocusCompleted(effect.durationSeconds)
                     is TimerEffect.BreakCompleted -> handleBreakCompleted()
@@ -74,28 +73,29 @@ class TimerViewModel(
     }
 
     private fun handleFocusCompleted(durationSeconds: Int) {
-        val userId = currentUserId ?: return
-        // Play break start alert and save the session
+        Timber.d("Handling FocusCompleted. Triggering Break Sound.")
+        // 1. SOUND LOGIC (Always runs immediately)
         alertsRepository.onBreakStart()
-        saveSessionToDb(userId, durationSeconds)
+
+        Timber.d("Saving chunk to DB ($durationSeconds s)")
+        // 2. DATA LOGIC (Runs in parallel, ID handled by Repository)
+        saveSessionToDb(durationSeconds)
     }
 
     private fun handleBreakCompleted() {
-        // Play focus start alert
+        Timber.d("Handling BreakCompleted. Triggering Focus Sound.")
         alertsRepository.onFocusStart(null)
     }
 
     private fun handleEndGoalReached(durationSeconds: Int) {
-        val userId = currentUserId ?: return
-
-        // Save the final focus session
-        saveSessionToDb(userId, durationSeconds)
-
-        // Play session complete alert and stop everything
+        Timber.d("Handling EndGoalReached. Stopping Sound & Notification.")
+        // 1. SOUND & UI LOGIC (Always runs immediately)
         alertsRepository.onFocusStop()
         stopActiveNotification()
 
-        // TODO: Show celebration UI for reaching goal (totalSets completed)
+        Timber.d("Saving final session to DB ($durationSeconds s)")
+        // 2. DATA LOGIC (Runs in parallel, ID handled by Repository)
+        saveSessionToDb(durationSeconds)
     }
 
     // ============================================================================================
@@ -108,14 +108,6 @@ class TimerViewModel(
                 updateBackgroundSoundId(alertConfig.backgroundSound.id)
             }
         }
-    }
-
-    // ============================================================================================
-    // USER
-    // ============================================================================================
-
-    fun setUserId(userId: String) {
-        currentUserId = userId
     }
 
     // ============================================================================================
@@ -177,7 +169,6 @@ class TimerViewModel(
     // ============================================================================================
 
     fun startTimer(view: View? = null) {
-        // Guard: Don't start if already running
         if (timerState.value.isTimerRunning) return
 
         viewModelScope.launch {
@@ -189,7 +180,6 @@ class TimerViewModel(
     }
 
     fun stopTimer(view: View? = null) {
-        // Guard: Don't stop if not running
         if (!timerState.value.isTimerRunning) return
 
         viewModelScope.launch {
@@ -202,7 +192,7 @@ class TimerViewModel(
 
     fun stopAndDiscardSession(view: View? = null) {
         viewModelScope.launch {
-            timerRepository.discardSession()
+            timerRepository.reset()
             stopActiveNotification()
             alertsRepository.onFocusStop(view)
         }
@@ -212,18 +202,24 @@ class TimerViewModel(
         val state = timerState.value
         val timeSpentSeconds = (state.totalTime - state.currentTime).toInt()
 
+        // 1. Trigger Save (if valid focus time)
         if (timeSpentSeconds > 0 && state.currentMode == TimerMode.Focus) {
-            currentUserId?.let { saveSessionToDb(it, timeSpentSeconds) }
+            saveSessionToDb(timeSpentSeconds)
         }
 
-        stopTimer(view)
+        // 2. Reset Timer & UI
+        viewModelScope.launch {
+            timerRepository.reset()
+            stopActiveNotification()
+            alertsRepository.onFocusStop(view)
+        }
     }
 
     // ============================================================================================
     // DATA PERSISTENCE
     // ============================================================================================
 
-    private fun saveSessionToDb(userId: String, durationSeconds: Int) {
+    private fun saveSessionToDb(durationSeconds: Int) {
         viewModelScope.launch {
             val task = timerState.value.timerConfig.sessionTask
             val session = Session(
@@ -233,9 +229,9 @@ class TimerViewModel(
                 sessionTask = task.ifBlank { "Focus Session" }
             )
 
-            when (sessionsRepository.saveSession(userId, session)) {
-                is SessionResult.Success -> Unit
-                is SessionResult.Error -> _errorMessage.update { "Failed to save session" }
+            when (sessionsRepository.saveSession(session)) {
+                is SessionResult.Success -> Timber.i("Session saved successfully")
+                is SessionResult.Error -> Timber.e("Failed to save session (User might be logged out)")
             }
         }
     }
