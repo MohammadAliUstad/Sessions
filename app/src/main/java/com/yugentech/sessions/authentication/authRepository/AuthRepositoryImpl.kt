@@ -14,8 +14,8 @@ class AuthRepositoryImpl(
 
     override val authState: Flow<FirebaseUser?> = authService.authStateFlow
 
-    override val currentUser: FirebaseUser?
-        get() = authService.currentUser
+    override val currentUser: String?
+        get() = authService.currentUser?.uid
 
     override suspend fun signUp(name: String, email: String, password: String): AuthResult<FirebaseUser> {
         Timber.i("Sign up requested")

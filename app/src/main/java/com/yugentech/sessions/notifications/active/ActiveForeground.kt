@@ -10,7 +10,7 @@ import com.yugentech.sessions.notifications.Notification
 import com.yugentech.sessions.notifications.NotificationService
 import com.yugentech.sessions.notifications.NotificationType
 import com.yugentech.sessions.theme.tokens.dimensions.AppConstants
-import com.yugentech.sessions.timer.TimerViewModel
+import com.yugentech.sessions.timer.timerRepository.TimerRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -20,11 +20,14 @@ import org.koin.android.ext.android.inject
 import timber.log.Timber
 import java.util.Locale
 
-// Foreground service to keep the session active and show a persistent notification
+// PROFESSIONAL FIX: Service depends on Repository, NOT ViewModel
+// This follows proper layered architecture and separation of concerns
 class ActiveForeground : Service() {
 
     private val notificationService: NotificationService by inject()
-    private val timerViewModel: TimerViewModel by inject()
+    // FIXED: Inject Repository instead of ViewModel
+    private val timerRepository: TimerRepository by inject()
+
     private var isSessionActive = false
     private var updateJob: Job? = null
     private var remainingSeconds = 0
@@ -103,8 +106,8 @@ class ActiveForeground : Service() {
         updateJob?.cancel()
         updateJob = serviceScope.launch {
             while (isSessionActive) {
-                // Fetch latest state directly from ViewModel
-                val syncedSeconds = timerViewModel.sessionStatus.value.currentTime
+                // FIXED: Fetch from Repository instead of ViewModel
+                val syncedSeconds = timerRepository.timerState.value.currentTime
                 updateNotification(syncedSeconds)
                 // Delay at end of loop ensures UI updates immediately on start
                 delay(500)

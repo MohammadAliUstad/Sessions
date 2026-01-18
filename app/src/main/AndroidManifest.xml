@@ -15,6 +15,16 @@
         android:name="android.permission.FOREGROUND_SERVICE"
         tools:ignore="ForegroundServicesPolicy" />
 
+    <supports-screens
+        android:smallScreens="true"
+        android:normalScreens="true"
+        android:largeScreens="false"
+        android:xlargeScreens="false"
+        android:anyDensity="true"
+        android:requiresSmallestWidthDp="0"
+        android:compatibleWidthLimitDp="320"
+        android:largestWidthLimitDp="480"/>
+
     <application
         android:name=".dependencyInjection.SessionsApp"
         android:allowBackup="false"
