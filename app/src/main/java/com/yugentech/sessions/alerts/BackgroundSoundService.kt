@@ -26,6 +26,8 @@ class BackgroundSoundService(private val context: Context) {
     private var positionMonitor: Runnable? = null
     private var crossfadeScheduled = false
     private var targetVolume = FOCUS_VOLUME
+    // FIXED: Track if we're in the middle of stopping
+    private var isStopping = false
 
     private val handler = Handler(Looper.getMainLooper())
 
@@ -41,16 +43,26 @@ class BackgroundSoundService(private val context: Context) {
     }
 
     fun play(sound: BackgroundSound) {
+        Timber.d("play() called with sound: ${sound.id}")
+
         if (sound == BackgroundSound.NONE) {
             stop()
             return
         }
 
+        // FIXED: If we're currently stopping, cancel it immediately
+        if (isStopping) {
+            Timber.d("Cancelling ongoing stop operation")
+            isStopping = false
+        }
+
         if (isLooping && currentSound == sound) {
+            Timber.d("Same sound already playing, fading to focus mode")
             fadeToFocusMode()
             return
         }
 
+        Timber.d("Starting new sound: ${sound.id}")
         release()
 
         sound.resId?.let { resId ->
@@ -60,6 +72,7 @@ class BackgroundSoundService(private val context: Context) {
                 isLooping = true
                 targetVolume = FOCUS_VOLUME
                 crossfadeScheduled = false
+                isStopping = false  // FIXED: Reset stopping flag
 
                 activePlayer = createPlayer(uri).apply {
                     volume = 0f
@@ -77,6 +90,7 @@ class BackgroundSoundService(private val context: Context) {
     }
 
     fun playPreview(sound: BackgroundSound) {
+        Timber.d("playPreview() called with sound: ${sound.id}")
         handler.removeCallbacksAndMessages(null)
         release()
 
@@ -87,6 +101,7 @@ class BackgroundSoundService(private val context: Context) {
                 val uri = "android.resource://${context.packageName}/$resId"
                 currentSound = sound
                 isLooping = false
+                isStopping = false
 
                 activePlayer = ExoPlayer.Builder(context).build().apply {
                     setMediaItem(MediaItem.fromUri(uri))
@@ -124,13 +139,30 @@ class BackgroundSoundService(private val context: Context) {
         }
     }
 
-    fun fadeToBreakMode() = fadeVolume(FOCUS_VOLUME, BREAK_VOLUME)
+    fun fadeToBreakMode() {
+        Timber.d("fadeToBreakMode() called")
+        fadeVolume(FOCUS_VOLUME, BREAK_VOLUME)
+    }
 
-    fun fadeToFocusMode() = fadeVolume(BREAK_VOLUME, FOCUS_VOLUME)
+    fun fadeToFocusMode() {
+        Timber.d("fadeToFocusMode() called")
+        fadeVolume(BREAK_VOLUME, FOCUS_VOLUME)
+    }
 
     fun stop() {
+        Timber.d("stop() called")
+
         if (activePlayer?.isPlaying == true) {
-            fadeVolume(targetVolume, 0f) { release() }
+            isStopping = true  // FIXED: Mark that we're stopping
+            fadeVolume(targetVolume, 0f) {
+                // FIXED: Only release if we're still in stopping state
+                if (isStopping) {
+                    Timber.d("Fade complete, releasing player")
+                    release()
+                } else {
+                    Timber.d("Fade complete, but stop was cancelled - keeping player")
+                }
+            }
         } else {
             release()
         }
@@ -225,7 +257,10 @@ class BackgroundSoundService(private val context: Context) {
         duration: Long = FADE_DURATION,
         onEnd: (() -> Unit)? = null
     ) {
+        // FIXED: Cancel any previous fade animation
         volumeAnimator?.cancel()
+        volumeAnimator?.removeAllListeners()
+        volumeAnimator?.removeAllUpdateListeners()
 
         volumeAnimator = ValueAnimator.ofFloat(from, to).apply {
             this.duration = duration
@@ -252,13 +287,23 @@ class BackgroundSoundService(private val context: Context) {
     }
 
     private fun release() {
+        Timber.d("release() called")
         try {
             positionMonitor?.let { handler.removeCallbacks(it) }
+
+            // FIXED: Properly clean up animators
             volumeAnimator?.cancel()
+            volumeAnimator?.removeAllListeners()
+            volumeAnimator?.removeAllUpdateListeners()
+
             crossfadeAnimator?.cancel()
+            crossfadeAnimator?.removeAllListeners()
+            crossfadeAnimator?.removeAllUpdateListeners()
+
             volumeAnimator = null
             crossfadeAnimator = null
             isLooping = false
+            isStopping = false  // FIXED: Reset stopping flag
 
             activePlayer?.stop()
             activePlayer?.release()

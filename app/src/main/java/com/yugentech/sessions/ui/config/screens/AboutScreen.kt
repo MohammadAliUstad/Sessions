@@ -1,6 +1,7 @@
 package com.yugentech.sessions.ui.config.screens
 
 import android.content.Intent
+import android.net.Uri
 import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -324,21 +325,27 @@ fun AboutScreen(
             }
         }
 
-        // --- Donation Dialog Logic ---
         if (showDonationDialog) {
             DonationDialog(
                 onDismiss = { showDonationDialog = false },
                 onUpiClick = {
-
-//                    initiateUpiPayment(
-//                        context = context,
-//                        upiId = "your.upi.id@bank", // REPLACE THIS with your real UPI ID
-//                        name = "Your Name"          // REPLACE THIS with your Name
-//                    )
+                    initiateUpiPayment(
+                        context = context,
+                        upiId = "7219411404@ybl",
+                        name = "Yugen Tech"
+                    )
                     showDonationDialog = false
                 },
                 onWebClick = {
-//                    openWebLink(context, "https://ko-fi.com/yourusername") // REPLACE THIS
+                    val kofiUrl = "https://ko-fi.com/yugentech"
+
+                    try {
+                        val intent = Intent(Intent.ACTION_VIEW, kofiUrl.toUri())
+                        context.startActivity(intent)
+                    } catch (e: Exception) {
+                        Toast.makeText(context, "Could not open link", Toast.LENGTH_SHORT).show()
+                    }
+
                     showDonationDialog = false
                 }
             )

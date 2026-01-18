@@ -12,7 +12,7 @@ interface AuthRepository {
     val authState: Flow<FirebaseUser?>
 
     // Immediate access to the current logged-in user, if any
-    val currentUser: FirebaseUser?
+    val currentUser: String?
 
     // Registers a new user with email and password
     suspend fun signUp(name: String, email: String, password: String): AuthResult<FirebaseUser>
