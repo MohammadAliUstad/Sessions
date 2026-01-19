@@ -34,6 +34,11 @@ class AlertsRepositoryImpl(
         startBackgroundSound()
     }
 
+    override fun onFocusPause(view: View?) {
+        Timber.d("onFocusPause triggered")
+        stopBackgroundSound()
+    }
+
     override fun onBreakStart(view: View?) {
         Timber.d("onBreakStart triggered")
         playStopAlert(view)

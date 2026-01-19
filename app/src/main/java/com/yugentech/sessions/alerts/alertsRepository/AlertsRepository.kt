@@ -7,6 +7,7 @@ import kotlinx.coroutines.flow.StateFlow
 interface AlertsRepository {
     val alertConfiguration: StateFlow<AlertsConfiguration>
     fun onFocusStart(view: View? = null)
+    fun onFocusPause(view: View? = null)
     fun onBreakStart(view: View? = null)
     fun onFocusStop(view: View? = null)
     fun playPreview(soundId: String?)
