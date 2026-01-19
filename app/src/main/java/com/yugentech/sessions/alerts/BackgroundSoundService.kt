@@ -26,7 +26,6 @@ class BackgroundSoundService(private val context: Context) {
     private var positionMonitor: Runnable? = null
     private var crossfadeScheduled = false
     private var targetVolume = FOCUS_VOLUME
-    // FIXED: Track if we're in the middle of stopping
     private var isStopping = false
 
     private val handler = Handler(Looper.getMainLooper())
