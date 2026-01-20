@@ -14,6 +14,7 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -29,7 +30,9 @@ import com.yugentech.sessions.ui.auth.screens.SignInScreen
 import com.yugentech.sessions.ui.auth.screens.SignUpScreen
 import com.yugentech.sessions.ui.config.screens.AboutScreen
 import com.yugentech.sessions.ui.config.screens.AppearanceScreen
+import com.yugentech.sessions.ui.config.screens.LicensesScreen
 import com.yugentech.sessions.ui.dash.screens.EditProfileScreen
+import com.yugentech.sessions.ui.dash.screens.ExpressiveOnboardingScreen
 import com.yugentech.sessions.ui.dash.screens.MainScreen
 import com.yugentech.sessions.utils.defaultEnterTransition
 import com.yugentech.sessions.utils.defaultExitTransition
@@ -42,16 +45,31 @@ import com.yugentech.sessions.viewModels.SettingsViewModel
 import org.koin.androidx.compose.koinViewModel
 import timber.log.Timber
 
+// Define a longer duration for that "Premium/Smooth" feel
+private const val SMOOTH_TRANSITION_DURATION = 400
+
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun AppNavHost(
     navController: NavHostController,
     webClientId: String,
+    showOnboarding: Boolean,
+    onOnboardingComplete: () -> Unit,
     loginViewModel: LoginViewModel
 ) {
     // Collect Auth State to drive navigation logic
     val authState by loginViewModel.authState.collectAsStateWithLifecycle()
     val context = LocalContext.current
+
+    // 1. FREEZE START DESTINATION
+    // We remember this so the graph doesn't rebuild/snap when flags change
+    val startDestination = remember {
+        when {
+            showOnboarding -> Screens.Onboarding.route
+            authState.isUserLoggedIn && authState.userId != null -> Screens.Main.route
+            else -> Screens.SignIn.route
+        }
+    }
 
     // Handle Google Sign-In Intent launching
     val launcher = rememberLauncherForActivityResult(
@@ -74,24 +92,45 @@ fun AppNavHost(
         }
     }
 
-    // Main Navigation Logic: Route to Main or SignIn based on Auth State
-    LaunchedEffect(authState.isUserLoggedIn, authState.userId) {
+    // -------------------------------------------------------------------------
+    // CENTRAL NAVIGATION LOGIC (The "Brain")
+    // -------------------------------------------------------------------------
+    LaunchedEffect(authState.isUserLoggedIn, authState.userId, showOnboarding) {
         if (!authState.isLoading) {
             val currentRoute = navController.currentDestination?.route
 
-            if (authState.isUserLoggedIn && authState.userId != null) {
+            // PRIORITY 1: ONBOARDING
+            if (showOnboarding) {
+                if (currentRoute != Screens.Onboarding.route) {
+                    navController.navigate(Screens.Onboarding.route) {
+                        popUpTo(0) { inclusive = true }
+                        launchSingleTop = true
+                    }
+                }
+            }
+            // PRIORITY 2: MAIN APP (Logged In)
+            else if (authState.isUserLoggedIn && authState.userId != null) {
                 if (currentRoute != Screens.Main.route) {
-                    Timber.i("User authenticated, navigating to Main Screen")
                     navController.navigate(Screens.Main.route) {
                         popUpTo(0) { inclusive = true }
                         launchSingleTop = true
                     }
                 }
-            } else {
+            }
+            // PRIORITY 3: SIGN IN (Not Logged In)
+            else {
                 if (currentRoute != Screens.SignIn.route && currentRoute != Screens.SignUp.route) {
-                    Timber.i("User not authenticated, navigating to Sign In Screen")
+                    // Check if we are animating FROM Onboarding
+                    val comingFromOnboarding = currentRoute == Screens.Onboarding.route
+
                     navController.navigate(Screens.SignIn.route) {
-                        popUpTo(0) { inclusive = true }
+                        // FIX: Do NOT pop the stack if coming from Onboarding.
+                        // Popping immediately kills the exit animation.
+                        // We let it slide normally, and the BackHandler in SignIn prevents going back.
+                        if (!comingFromOnboarding) {
+                            popUpTo(0) { inclusive = true }
+                        }
+
                         launchSingleTop = true
                     }
                 }
@@ -99,7 +138,7 @@ fun AppNavHost(
         }
     }
 
-    // Show loading spinner while determining auth state
+    // Show loading spinner
     if (authState.isLoading && navController.currentDestination?.route == null) {
         Box(
             modifier = Modifier.fillMaxSize(),
@@ -110,12 +149,6 @@ fun AppNavHost(
         return
     }
 
-    val startDestination = if (authState.isUserLoggedIn && authState.userId != null) {
-        Screens.Main.route
-    } else {
-        Screens.SignIn.route
-    }
-
     AnimatedNavHost(
         navController = navController,
         startDestination = startDestination,
@@ -124,11 +157,37 @@ fun AppNavHost(
         popEnterTransition = { defaultPopEnterTransition(AppConstants.DEFAULT_ANIMATION_DURATION) },
         popExitTransition = { defaultPopExitTransition(AppConstants.DEFAULT_ANIMATION_DURATION) }
     ) {
-        composable(Screens.SignIn.route) {
+
+        // --- ROUTE: ONBOARDING ---
+        // Ensure exit transition is long enough to see
+        composable(
+            route = Screens.Onboarding.route,
+            exitTransition = { defaultExitTransition(SMOOTH_TRANSITION_DURATION) },
+            popExitTransition = { defaultPopExitTransition(SMOOTH_TRANSITION_DURATION) }
+        ) {
+            ExpressiveOnboardingScreen(onFinish = onOnboardingComplete)
+            // Prevent backing out of the app from onboarding (optional)
+            BackHandler { (context as? Activity)?.finish() }
+        }
+
+        composable(Screens.Licenses.route) {
+            LicensesScreen(
+                onNavigateBack = { navController.popBackStack() }
+            )
+        }
+
+        // --- ROUTE: SIGN IN ---
+        composable(
+            route = Screens.SignIn.route,
+            enterTransition = { defaultEnterTransition(SMOOTH_TRANSITION_DURATION) },
+            exitTransition = { defaultExitTransition(SMOOTH_TRANSITION_DURATION) },
+            popEnterTransition = { defaultPopEnterTransition(SMOOTH_TRANSITION_DURATION) },
+            popExitTransition = { defaultPopExitTransition(SMOOTH_TRANSITION_DURATION) }
+        ) {
             Timber.v("Composing SignIn Screen")
-            BackHandler {
-                (context as? Activity)?.finish()
-            }
+            // This BackHandler ensures that if they came from Onboarding,
+            // pressing back here exits the app instead of returning to the finished Onboarding.
+            BackHandler { (context as? Activity)?.finish() }
 
             SignInScreen(
                 loginViewModel = loginViewModel,
@@ -147,7 +206,14 @@ fun AppNavHost(
             )
         }
 
-        composable(Screens.SignUp.route) {
+        // --- ROUTE: SIGN UP ---
+        composable(
+            route = Screens.SignUp.route,
+            enterTransition = { defaultEnterTransition(SMOOTH_TRANSITION_DURATION) },
+            exitTransition = { defaultExitTransition(SMOOTH_TRANSITION_DURATION) },
+            popEnterTransition = { defaultPopEnterTransition(SMOOTH_TRANSITION_DURATION) },
+            popExitTransition = { defaultPopExitTransition(SMOOTH_TRANSITION_DURATION) }
+        ) {
             Timber.v("Composing SignUp Screen")
             SignUpScreen(
                 loginViewModel = loginViewModel,
@@ -166,11 +232,11 @@ fun AppNavHost(
             }
         }
 
+        // --- ROUTE: MAIN (DASHBOARD) ---
         composable(Screens.Main.route) {
             Timber.v("Composing Main Screen")
             val currentUserId = authState.userId
 
-            // ViewModels scoped to Main Screen flow
             val homeViewModel: HomeViewModel = koinViewModel()
             val notificationsViewModel: NotificationsViewModel = koinViewModel()
             val profileViewModel: ProfileViewModel = koinViewModel()
@@ -182,13 +248,13 @@ fun AppNavHost(
                     userId = currentUserId,
                     onSignOut = {
                         Timber.i("User requested Sign Out")
-                        notificationsViewModel.stopActiveSession()
+                        timerViewModel.stopAndDiscardSession()
                         notificationsViewModel.cancelReminders()
                         loginViewModel.signOut()
                     },
                     onExit = {
                         Timber.i("User requested App Exit")
-                        notificationsViewModel.stopActiveSession()
+                        timerViewModel.stopAndDiscardSession()
                         (context as? Activity)?.finish()
                     },
                     onEditProfile = {
@@ -209,6 +275,7 @@ fun AppNavHost(
             }
         }
 
+        // --- ROUTE: SETTINGS & SUB-SCREENS ---
         composable(Screens.Appearance.route) {
             val themeViewModel: ThemeViewModel = koinViewModel()
             AppearanceScreen(
@@ -223,6 +290,9 @@ fun AppNavHost(
             AboutScreen(
                 onNavigateBack = {
                     navController.popBackStack()
+                },
+                onNavigateToLicenses = {
+                    navController.navigate(Screens.Licenses.route)
                 }
             )
         }

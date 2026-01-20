@@ -35,7 +35,8 @@ val viewModelModule = module {
         LoginViewModel(
             authRepository = get(),
             userRepository = get(),
-            syncPreferences = get()
+            syncPreferences = get(),
+            userPreferences = get()
         )
     }
 
