@@ -3,7 +3,7 @@ package com.yugentech.sessions.viewModels
 import android.view.View
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.yugentech.sessions.alerts.alertsDatastore.AlertsRepository
+import com.yugentech.sessions.alerts.alertsRepository.AlertsRepository
 import com.yugentech.sessions.models.Session
 import com.yugentech.sessions.models.UserData
 import com.yugentech.sessions.sessions.sessionsRepository.SessionsRepository
@@ -72,14 +72,14 @@ class ProfileViewModel(
         loadUser(userId)
 
         viewModelScope.launch {
-            sessionsRepository.getSessionsFlow(userId)
+            sessionsRepository.getSessionsFlow()
                 .onEach { sessions ->
                     _uiState.update { state -> state.copy(sessions = sessions) }
                 }
                 .catch { e -> Timber.e(e, "Error loading sessions flow") }
                 .launchIn(viewModelScope)
 
-            sessionsRepository.getTotalDuration(userId)
+            sessionsRepository.getTotalDuration()
                 .onEach { total ->
                     _uiState.update { state -> state.copy(totalTime = total) }
                 }
@@ -116,7 +116,7 @@ class ProfileViewModel(
     fun deleteSession(userId: String, sessionId: String) {
         Timber.i("Deleting session: $sessionId")
         viewModelScope.launch {
-            if (sessionsRepository.deleteSession(userId, sessionId) is SessionResult.Error) {
+            if (sessionsRepository.deleteSession(sessionId) is SessionResult.Error) {
                 Timber.e("Failed to delete session")
                 _uiState.update { it.copy(errorMessage = "Failed to delete session") }
             }

@@ -44,4 +44,8 @@ class TimerRepositoryImpl(
         Timber.d("Updating config: Focus=${timerConfig.focusDuration}m, Target=${timerConfig.targetSets} sets")
         timerService.updateConfig(timerConfig)
     }
+
+    override fun updateSessionTask(newTask: String) {
+        timerService.updateSessionTask(newTask)
+    }
 }

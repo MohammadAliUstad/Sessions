@@ -21,8 +21,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
 import com.yugentech.sessions.models.UserData
+import com.yugentech.sessions.theme.tokens.components
+import com.yugentech.sessions.theme.tokens.corners
+import com.yugentech.sessions.theme.tokens.icons
 import com.yugentech.sessions.theme.tokens.spacing
 import com.yugentech.sessions.ui.dash.components.editProfileScreen.AvatarImage
 import com.yugentech.sessions.ui.dash.components.editProfileScreen.AvatarRepository
@@ -38,17 +40,16 @@ fun ProfileCard(
     Surface(
         modifier = Modifier.fillMaxWidth(),
         color = MaterialTheme.colorScheme.surfaceContainer,
-        shape = RoundedCornerShape(24.dp)
+        shape = RoundedCornerShape(MaterialTheme.corners.medium)
     ) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(MaterialTheme.spacing.m),
             horizontalAlignment = Alignment.CenterHorizontally,
-            // UPDATED: This enforces equal constant vertical spacing between all 4 items
             verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.m)
         ) {
-            // 1. Header: Name (Centered) + Edit Button (Right)
+            // 1. Header:  Name (Centered) + Edit Button (Right)
             Box(
                 modifier = Modifier.fillMaxWidth()
             ) {
@@ -57,12 +58,17 @@ fun ProfileCard(
                     style = MaterialTheme.typography.headlineMedium,
                     color = MaterialTheme.colorScheme.onSurface,
                     textAlign = TextAlign.Center,
-                    modifier = Modifier.fillMaxWidth().align(Alignment.Center)
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .align(Alignment.Center)
+                        .padding(end = MaterialTheme.components.buttonMedium)
                 )
 
                 IconButton(
                     onClick = onEditProfile,
-                    modifier = Modifier.size(48.dp).align(Alignment.CenterEnd),
+                    modifier = Modifier
+                        .size(MaterialTheme.components.buttonMedium)
+                        .align(Alignment.CenterEnd),
                     colors = IconButtonDefaults.iconButtonColors(
                         containerColor = MaterialTheme.colorScheme.secondaryContainer,
                         contentColor = MaterialTheme.colorScheme.onSecondaryContainer
@@ -70,25 +76,25 @@ fun ProfileCard(
                 ) {
                     Icon(
                         imageVector = Icons.Default.Edit,
-                        contentDescription = "Edit Profile"
+                        contentDescription = "Edit Profile",
+                        modifier = Modifier.size(MaterialTheme.icons.mediumSmall)
                     )
                 }
             }
 
             // 2. Avatar "Hero" Section
-            // Note: The Box size defines the boundaries for spacing.
             Box(
                 contentAlignment = Alignment.Center,
-                modifier = Modifier.size(150.dp)
+                modifier = Modifier.size(MaterialTheme.components.imageSizeLarge)
             ) {
                 LoadingIndicator(
-                    modifier = Modifier.size(150.dp),
+                    modifier = Modifier.size(MaterialTheme.components.imageSizeLarge),
                     color = MaterialTheme.colorScheme.secondaryContainer
                 )
 
                 AvatarImage(
                     avatarId = userData.avatarId,
-                    size = 250.dp,
+                    size = MaterialTheme.components.imageSizeLarge,
                     contentDescription = "Profile Avatar"
                 )
             }
@@ -103,7 +109,6 @@ fun ProfileCard(
             )
 
             // 4. Lifetime Stats
-            // (No manual Spacer needed here; Arrangement.spacedBy handles it)
             StudyTimeSection(
                 formattedTime = formatTime(totalTime)
             )
