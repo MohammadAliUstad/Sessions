@@ -1,6 +1,7 @@
 package com.yugentech.sessions.timer
 
 import android.os.SystemClock
+import com.yugentech.sessions.theme.tokens.dimensions.AppConstants
 import com.yugentech.sessions.timer.states.TimerConfig
 import com.yugentech.sessions.timer.states.TimerEffect
 import com.yugentech.sessions.timer.states.TimerMode
@@ -65,6 +66,16 @@ class TimerService(
                 timerConfig = timerConfig,
                 totalTime = newSeconds,
                 currentTime = newSeconds
+            )
+        }
+    }
+
+    fun updateSessionTask(newTask: String) {
+        // This updates ONLY the task name.
+        // It touches nothing else (no reset, no time change).
+        _timerState.update { current ->
+            current.copy(
+                timerConfig = current.timerConfig.copy(sessionTask = newTask)
             )
         }
     }
@@ -218,6 +229,7 @@ class TimerService(
         cancelTimer()
         val config = _timerState.value.timerConfig
         val focusSeconds = config.focusDuration * 60L
+        val resetConfig = config.copy(sessionTask = AppConstants.EMPTY_STRING)
 
         _timerState.update {
             it.copy(
@@ -225,7 +237,8 @@ class TimerService(
                 currentMode = Focus,
                 currentTime = focusSeconds,
                 totalTime = focusSeconds,
-                isTimerRunning = false
+                isTimerRunning = false,
+                timerConfig = resetConfig
             )
         }
     }

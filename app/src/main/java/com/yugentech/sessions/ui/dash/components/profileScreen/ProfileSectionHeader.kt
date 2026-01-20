@@ -19,20 +19,19 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
+import com.yugentech.sessions.theme.tokens.corners
+import com.yugentech.sessions.theme.tokens.icons
 import com.yugentech.sessions.theme.tokens.spacing
 
 @Composable
 fun ProfileSectionHeader(
+    modifier: Modifier = Modifier,
     title: String,
     icon: ImageVector? = null,
     countLabel: String? = null,
-    // Updated: Default to a nice accent color (Tertiary Container)
     containerColor: Color = MaterialTheme.colorScheme.tertiaryContainer,
-    // Updated: Default text/icon color to match the container
     contentColor: Color = MaterialTheme.colorScheme.onTertiaryContainer,
-    shape: Shape = RoundedCornerShape(16.dp),
-    modifier: Modifier = Modifier
+    shape: Shape = RoundedCornerShape(MaterialTheme.corners.medium)
 ) {
     Surface(
         color = containerColor,
@@ -45,7 +44,7 @@ fun ProfileSectionHeader(
                 .fillMaxWidth()
                 .padding(
                     horizontal = MaterialTheme.spacing.m,
-                    vertical = 12.dp // Consistent padding for the "Card" look
+                    vertical = MaterialTheme.spacing.sm
                 ),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
@@ -56,16 +55,14 @@ fun ProfileSectionHeader(
                     Icon(
                         imageVector = icon,
                         contentDescription = null,
-                        // No hardcoded tint; uses 'contentColor' (onTertiaryContainer)
-                        modifier = Modifier.size(20.dp)
+                        modifier = Modifier.size(MaterialTheme.icons.mediumSmall)
                     )
                     Spacer(modifier = Modifier.width(MaterialTheme.spacing.sm))
                 }
 
                 Text(
                     text = title,
-                    style = MaterialTheme.typography.titleSmall.copy(fontWeight = FontWeight.Bold),
-                    // No hardcoded color; uses 'contentColor'
+                    style = MaterialTheme.typography.titleSmall.copy(fontWeight = FontWeight.Bold)
                 )
             }
 
@@ -74,7 +71,6 @@ fun ProfileSectionHeader(
                 Text(
                     text = countLabel,
                     style = MaterialTheme.typography.labelMedium,
-                    // Use a slightly transparent version of the content color for hierarchy
                     color = contentColor.copy(alpha = 0.8f)
                 )
             }

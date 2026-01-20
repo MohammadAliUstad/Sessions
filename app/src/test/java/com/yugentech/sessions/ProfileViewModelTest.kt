@@ -1,6 +1,6 @@
 package com.yugentech.sessions
 
-import com.yugentech.sessions.alerts.alertsDatastore.AlertsRepository
+import com.yugentech.sessions.alerts.alertsRepository.AlertsRepository
 import com.yugentech.sessions.models.UserData
 import com.yugentech.sessions.sessions.sessionsRepository.SessionsRepository
 import com.yugentech.sessions.user.userRepository.UserRepository
