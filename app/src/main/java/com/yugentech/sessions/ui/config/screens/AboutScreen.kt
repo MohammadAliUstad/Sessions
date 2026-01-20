@@ -1,7 +1,7 @@
 package com.yugentech.sessions.ui.config.screens
 
+import android.app.Activity
 import android.content.Intent
-import android.net.Uri
 import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -37,10 +37,9 @@ import androidx.compose.material.icons.filled.LocalCafe
 import androidx.compose.material.icons.filled.Policy
 import androidx.compose.material.icons.filled.Public
 import androidx.compose.material.icons.filled.Share
-import androidx.compose.material.icons.filled.Smartphone
+import androidx.compose.material.icons.filled.ShoppingBag
 import androidx.compose.material.icons.filled.StarRate
 import androidx.compose.material.icons.filled.ThumbUp
-import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -50,7 +49,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LargeTopAppBar
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -58,6 +56,7 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -73,11 +72,14 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.core.net.toUri
+import com.google.android.gms.oss.licenses.OssLicensesMenuActivity
 import com.yugentech.sessions.R
 import com.yugentech.sessions.theme.tokens.spacing
 import com.yugentech.sessions.ui.config.components.aboutScreen.AppInfoCard
 import com.yugentech.sessions.ui.config.components.settingsScreen.SettingsListItem
 import com.yugentech.sessions.ui.config.components.settingsScreen.SettingsSectionHeader
+import com.yugentech.sessions.utils.BillingManager
+import org.koin.compose.koinInject
 
 // Data class to hold item details
 private data class AboutOption(
@@ -90,19 +92,31 @@ private data class AboutOption(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AboutScreen(
-    onNavigateBack: () -> Unit
+    onNavigateBack: () -> Unit,
+    onNavigateToLicenses: () -> Unit,
+    billingManager: BillingManager = koinInject()
 ) {
     val context = LocalContext.current
+    val activity = context as? Activity
     val layoutDirection = LocalLayoutDirection.current
-    val scrollBehavior =
-        TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
+    val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
 
     // State for Donation Dialog
     var showDonationDialog by remember { mutableStateOf(false) }
 
-    // --- Actions ---
+    // 1. Start Connection when screen opens
+    LaunchedEffect(Unit) {
+        billingManager.startConnection()
+    }
 
-    // 1. Support & Feedback
+    // 2. Listen for Purchase Success Events
+    LaunchedEffect(Unit) {
+        billingManager.purchaseEvent.collect { message ->
+            Toast.makeText(context, message, Toast.LENGTH_LONG).show()
+        }
+    }
+
+    // --- Actions Data ---
     val supportItems = listOf(
         AboutOption(
             title = "Contact Developer",
@@ -124,9 +138,7 @@ fun AboutScreen(
             title = "Buy me a coffee",
             subtitle = "Support the development",
             icon = Icons.Default.LocalCafe,
-            onClick = {
-                showDonationDialog = true
-            }
+            onClick = { showDonationDialog = true }
         ),
         AboutOption(
             title = "Visit GitHub",
@@ -140,14 +152,12 @@ fun AboutScreen(
         )
     )
 
-    // 2. Spread the Word
     val communityItems = listOf(
         AboutOption(
             title = "Rate this App",
             subtitle = "Leave a review on the Play Store",
             icon = Icons.Default.StarRate,
             onClick = {
-                // Opens Play Store listing
                 val appPackageName = context.packageName
                 try {
                     context.startActivity(
@@ -185,15 +195,16 @@ fun AboutScreen(
         )
     )
 
-    // 3. Legal
     val legalItems = listOf(
         AboutOption(
             title = "Privacy Policy",
             subtitle = null,
             icon = Icons.Default.Policy,
             onClick = {
-                val urlIntent =
-                    Intent(Intent.ACTION_VIEW, "https://sites.google.com/view/sessionsprivacypolicy/home".toUri())
+                val urlIntent = Intent(
+                    Intent.ACTION_VIEW,
+                    "https://sites.google.com/view/sessionsprivacypolicy/home".toUri()
+                )
                 try {
                     context.startActivity(urlIntent)
                 } catch (e: Exception) {
@@ -206,7 +217,10 @@ fun AboutScreen(
             subtitle = null,
             icon = Icons.Default.Gavel,
             onClick = {
-                val urlIntent = Intent(Intent.ACTION_VIEW, "https://your-terms-url.com".toUri())
+                val urlIntent = Intent(
+                    Intent.ACTION_VIEW,
+                    "https://sites.google.com/view/sessionstermsofservice/home".toUri()
+                )
                 try {
                     context.startActivity(urlIntent)
                 } catch (e: Exception) {
@@ -215,15 +229,14 @@ fun AboutScreen(
             }
         ),
         AboutOption(
-            title = "Open Source Licenses",
-            subtitle = "Licensed under Apache 2.0",
+            title = "Licenses",
+            subtitle = "Libraries used to build Sessions",
             icon = Icons.Default.Description,
-            onClick = {
-                // Placeholder for License intent
-            }
+            onClick = onNavigateToLicenses
         )
     )
 
+    // --- UI Structure ---
     Scaffold(
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
@@ -259,18 +272,13 @@ fun AboutScreen(
             contentPadding = PaddingValues(
                 top = scaffoldPadding.calculateTopPadding(),
                 bottom = navBarPadding.calculateBottomPadding() + MaterialTheme.spacing.l,
-                start = MaterialTheme.spacing.m + scaffoldPadding.calculateStartPadding(
-                    layoutDirection
-                ),
+                start = MaterialTheme.spacing.m + scaffoldPadding.calculateStartPadding(layoutDirection),
                 end = MaterialTheme.spacing.m + scaffoldPadding.calculateEndPadding(layoutDirection)
             )
         ) {
-            // --- HEADER ---
-            item {
-                AppInfoCard()
-            }
+            item { AppInfoCard() }
 
-            // --- SECTION 1: Connect ---
+            // Section 1
             item {
                 SettingsSectionHeader(
                     icon = Icons.Filled.Favorite,
@@ -288,7 +296,7 @@ fun AboutScreen(
                 )
             }
 
-            // --- SECTION 2: Growth ---
+            // Section 2
             item {
                 SettingsSectionHeader(
                     icon = Icons.Filled.ThumbUp,
@@ -306,7 +314,7 @@ fun AboutScreen(
                 )
             }
 
-            // --- SECTION 3: Legal ---
+            // Section 3
             item {
                 SettingsSectionHeader(
                     icon = Icons.Filled.Info,
@@ -328,24 +336,22 @@ fun AboutScreen(
         if (showDonationDialog) {
             DonationDialog(
                 onDismiss = { showDonationDialog = false },
-                onUpiClick = {
-                    initiateUpiPayment(
-                        context = context,
-                        upiId = "7219411404@ybl",
-                        name = "Yugen Tech"
-                    )
+                onGooglePlayClick = {
+                    if (activity != null) {
+                        billingManager.launchPurchaseFlow(activity, "donation_coffee")
+                        showDonationDialog = false
+                    }
+
                     showDonationDialog = false
                 },
                 onWebClick = {
                     val kofiUrl = "https://ko-fi.com/yugentech"
-
                     try {
                         val intent = Intent(Intent.ACTION_VIEW, kofiUrl.toUri())
                         context.startActivity(intent)
                     } catch (e: Exception) {
                         Toast.makeText(context, "Could not open link", Toast.LENGTH_SHORT).show()
                     }
-
                     showDonationDialog = false
                 }
             )
@@ -353,20 +359,20 @@ fun AboutScreen(
     }
 }
 
+// --- Dialog Components ---
+
 @Composable
 fun DonationDialog(
     onDismiss: () -> Unit,
-    onUpiClick: () -> Unit,
+    onGooglePlayClick: () -> Unit,
     onWebClick: () -> Unit
 ) {
     Dialog(
         onDismissRequest = onDismiss,
-        properties = androidx.compose.ui.window.DialogProperties(
-            usePlatformDefaultWidth = false
-        )
+        properties = androidx.compose.ui.window.DialogProperties(usePlatformDefaultWidth = false)
     ) {
         Card(
-            shape = androidx.compose.foundation.shape.RoundedCornerShape(28.dp),
+            shape = RoundedCornerShape(28.dp),
             colors = CardDefaults.cardColors(
                 containerColor = MaterialTheme.colorScheme.surfaceContainerHigh
             ),
@@ -380,6 +386,7 @@ fun DonationDialog(
                 verticalArrangement = Arrangement.spacedBy(24.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
+                // Header
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.spacedBy(16.dp)
@@ -398,19 +405,18 @@ fun DonationDialog(
                             )
                         }
                     }
-
                     Column(
                         horizontalAlignment = Alignment.CenterHorizontally,
                         verticalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
                         Text(
-                            text = "Support Development",
+                            text = "Fuel the Development",
                             style = MaterialTheme.typography.headlineSmall,
                             color = MaterialTheme.colorScheme.onSurface,
                             textAlign = androidx.compose.ui.text.style.TextAlign.Center
                         )
                         Text(
-                            text = "If Sessions has helped you stay focused and productive, please consider buying me a coffee. Your support funds future development, bug fixes, and keeps the updates coming!",
+                            text = "Sessions is free and open source. If you enjoy the focus, consider supporting the journey!",
                             style = MaterialTheme.typography.bodyMedium,
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
                             textAlign = androidx.compose.ui.text.style.TextAlign.Center
@@ -418,27 +424,28 @@ fun DonationDialog(
                     }
                 }
 
+                // Buttons
                 Column(
                     verticalArrangement = Arrangement.spacedBy(12.dp),
                     modifier = Modifier.fillMaxWidth()
                 ) {
+                    // Option 1: Google Play (Best for India/UPI)
                     PaymentOptionButton(
-                        text = "Pay via UPI",
-                        icon = Icons.Default.Smartphone,
-                        onClick = onUpiClick
+                        text = "Google Play (UPI / Cards)",
+                        icon = Icons.Default.ShoppingBag,
+                        onClick = onGooglePlayClick
                     )
 
+                    // Option 2: Ko-fi (Best for International/PayPal)
                     PaymentOptionButton(
-                        text = "Pay via Ko-fi / Card",
+                        text = "Ko-fi (PayPal / International)",
                         icon = Icons.Default.Public,
                         onClick = onWebClick
                     )
                 }
 
-                // --- Footer ---
-                TextButton(
-                    onClick = onDismiss
-                ) {
+                // Footer
+                TextButton(onClick = onDismiss) {
                     Text(
                         text = "Maybe Later",
                         color = MaterialTheme.colorScheme.onSurfaceVariant
@@ -476,7 +483,7 @@ private fun PaymentOptionButton(
 
         Text(
             text = text,
-            style = MaterialTheme.typography.bodyLarge,
+            style = MaterialTheme.typography.labelLarge,
             modifier = Modifier.weight(1f)
         )
 
@@ -487,31 +494,5 @@ private fun PaymentOptionButton(
                 .size(16.dp)
                 .alpha(0.5f)
         )
-    }
-}
-
-private fun openWebLink(context: android.content.Context, url: String) {
-    val intent = Intent(Intent.ACTION_VIEW, url.toUri())
-    try {
-        context.startActivity(intent)
-    } catch (e: Exception) {
-        e.printStackTrace()
-    }
-}
-
-private fun initiateUpiPayment(context: android.content.Context, upiId: String, name: String) {
-    val uri = android.net.Uri.parse("upi://pay").buildUpon()
-        .appendQueryParameter("pa", upiId)
-        .appendQueryParameter("pn", name)
-        .appendQueryParameter("tn", "Coffee for Sessions App")
-        .appendQueryParameter("cu", "INR")
-        .build()
-
-    val intent = Intent(Intent.ACTION_VIEW, uri)
-    val chooser = Intent.createChooser(intent, "Pay with...")
-    try {
-        context.startActivity(chooser)
-    } catch (e: Exception) {
-        Toast.makeText(context, "No UPI app found on this device.", Toast.LENGTH_SHORT).show()
     }
 }

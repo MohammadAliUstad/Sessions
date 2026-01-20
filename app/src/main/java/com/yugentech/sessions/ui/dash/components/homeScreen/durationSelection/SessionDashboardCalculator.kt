@@ -1,28 +1,27 @@
 package com.yugentech.sessions.ui.dash.components.homeScreen.durationSelection
 
-import com.yugentech.sessions.timer.TimerMode
-import com.yugentech.sessions.ui.dash.states.SessionConfig
-import com.yugentech.sessions.ui.dash.states.SessionStatus
+import com.yugentech.sessions.timer.states.TimerMode
+import com.yugentech.sessions.timer.states.TimerState
 
 object SessionDashboardCalculator {
 
-    fun calculate(
-        config: SessionConfig,
-        status: SessionStatus
-    ): SessionDashboardState {
-        val completedSets = status.completedSets
+    fun calculate(state: TimerState): SessionDashboardState {
+        // Extract convenient references
+        val config = state.timerConfig
+
+        val completedSets = state.completedSets
         val targetSets = config.targetSets
         val currentSet = (completedSets + 1).coerceAtMost(targetSets)
         val setsLeft = (targetSets - completedSets).coerceAtLeast(0)
 
         // Timer Mode Check
-        val isLongBreakMode = status.currentMode == TimerMode.LongBreak
-        val isShortBreakMode = status.currentMode == TimerMode.ShortBreak
+        val isLongBreakMode = state.currentMode == TimerMode.LongBreak
+        val isShortBreakMode = state.currentMode == TimerMode.ShortBreak
         val isBreakMode = isLongBreakMode || isShortBreakMode
 
         // --- 1. Generate Visual Schedule ---
         val visualItems = mutableListOf<SessionVisualItem>()
-        // Determine interval: config.setsPerLongBreak calculates based on ~100 min rule
+        // Determine interval: using property from your new TimerConfig
         val setsPerLongBreak = config.setsPerLongBreak
 
         for (i in 1..targetSets) {
@@ -57,7 +56,8 @@ object SessionDashboardCalculator {
         // --- 2. Long Break Eligibility (For Badge) ---
         // Rule: Only show badge if a long break actually occurs before the last set
         val setsBeforeLast = (targetSets - 1).coerceAtLeast(0)
-        val timeBeforeLastSet = setsBeforeLast * config.focusDurationMinutes
+        // Note: Updated property name 'focusDuration' (was 'focusDurationMinutes')
+        val timeBeforeLastSet = setsBeforeLast * config.focusDuration
         val isEligibleForLongBreak = timeBeforeLastSet >= 100
 
 
@@ -66,7 +66,7 @@ object SessionDashboardCalculator {
             isLongBreakMode -> "You earned this." to "Reset & recover"
 
             targetSets == 1 -> {
-                if (config.focusDurationMinutes >= 60)
+                if (config.focusDuration >= 60)
                     "Power Hour" to "Deep Work Session"
                 else
                     "One and done" to "Make it count"
@@ -93,7 +93,7 @@ object SessionDashboardCalculator {
 
         return SessionDashboardState(
             showLongBreakBadge = isEligibleForLongBreak,
-            badgeText = "${config.longBreakDurationMinutes}m Long Break",
+            badgeText = "${config.longBreakDuration}m Long Break",
             mainMessage = mainMsg,
             subMessage = subMsg,
             progressDisplay = display,
