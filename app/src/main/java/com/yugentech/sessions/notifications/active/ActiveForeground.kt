@@ -9,7 +9,7 @@ import androidx.core.app.ServiceCompat
 import com.yugentech.sessions.notifications.Notification
 import com.yugentech.sessions.notifications.NotificationService
 import com.yugentech.sessions.notifications.NotificationType
-import com.yugentech.sessions.theme.tokens.dimensions.AppConstants
+import com.yugentech.sessions.utils.AppConstants
 import com.yugentech.sessions.timer.timerRepository.TimerRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -19,13 +19,9 @@ import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
 import timber.log.Timber
 import java.util.Locale
-
-// PROFESSIONAL FIX: Service depends on Repository, NOT ViewModel
-// This follows proper layered architecture and separation of concerns
 class ActiveForeground : Service() {
 
     private val notificationService: NotificationService by inject()
-    // FIXED: Inject Repository instead of ViewModel
     private val timerRepository: TimerRepository by inject()
 
     private var isSessionActive = false
@@ -37,7 +33,6 @@ class ActiveForeground : Service() {
     override fun onCreate() {
         super.onCreate()
         Timber.d("ActiveForeground Service Created")
-        // Initialize channels immediately to prevent invisible service crashes
         notificationService.createNotificationChannels()
     }
 
@@ -85,7 +80,6 @@ class ActiveForeground : Service() {
                 ServiceInfo.FOREGROUND_SERVICE_TYPE_SPECIAL_USE
             } else 0
 
-            // Promote service to foreground to prevent system kill
             ServiceCompat.startForeground(
                 this,
                 NotificationService.ACTIVE_NOTIFICATION_ID,
@@ -106,10 +100,8 @@ class ActiveForeground : Service() {
         updateJob?.cancel()
         updateJob = serviceScope.launch {
             while (isSessionActive) {
-                // FIXED: Fetch from Repository instead of ViewModel
                 val syncedSeconds = timerRepository.timerState.value.currentTime
                 updateNotification(syncedSeconds)
-                // Delay at end of loop ensures UI updates immediately on start
                 delay(500)
             }
         }

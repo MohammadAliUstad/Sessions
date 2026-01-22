@@ -1,4 +1,4 @@
-package com.yugentech.sessions.ui.auth.components
+package com.yugentech.sessions.ui.auth.components.buttons
 
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.core.tween
@@ -16,8 +16,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import com.yugentech.sessions.theme.tokens.components
+import com.yugentech.sessions.theme.tokens.corners
 import com.yugentech.sessions.theme.tokens.dimensions.AnimationLabels
 import com.yugentech.sessions.theme.tokens.dimensions.AppAnimations
 import com.yugentech.sessions.theme.tokens.icons
@@ -34,8 +34,7 @@ fun ActionButton(
         modifier = Modifier
             .fillMaxWidth()
             .height(MaterialTheme.components.buttonMedium),
-        // Expressive: "Stadium" shape (approx 28.dp)
-        shape = RoundedCornerShape(28.dp),
+        shape = RoundedCornerShape(MaterialTheme.corners.extraLarge),
         enabled = !isLoading,
         colors = ButtonDefaults.buttonColors(
             containerColor = MaterialTheme.colorScheme.primary,
@@ -48,9 +47,9 @@ fun ActionButton(
             targetState = isLoading,
             transitionSpec = {
                 fadeIn(
-                    tween(AppAnimations.Durations.STANDARD)
+                    tween(AppAnimations.Durations.Standard)
                 ) togetherWith fadeOut(
-                    tween(AppAnimations.Durations.STANDARD)
+                    tween(AppAnimations.Durations.Standard)
                 )
             },
             label = AnimationLabels.LOADING_ANIMATION
@@ -59,7 +58,7 @@ fun ActionButton(
                 CircularProgressIndicator(
                     modifier = Modifier.size(MaterialTheme.icons.mediumSmall),
                     color = MaterialTheme.colorScheme.onPrimary,
-                    strokeWidth = MaterialTheme.strokes.thin
+                    strokeWidth = MaterialTheme.strokes.medium
                 )
             } else {
                 Text(

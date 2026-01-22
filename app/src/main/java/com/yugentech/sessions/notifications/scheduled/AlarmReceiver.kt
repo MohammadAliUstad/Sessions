@@ -22,7 +22,6 @@ class AlarmReceiver : BroadcastReceiver(), KoinComponent {
     private val notificationDataStore: NotificationDataStore by inject()
 
     override fun onReceive(context: Context, intent: Intent) {
-        // Handle device reboot: Reschedule alarms based on persisted preferences
         if (intent.action == Intent.ACTION_BOOT_COMPLETED) {
             val pendingResult = goAsync()
 

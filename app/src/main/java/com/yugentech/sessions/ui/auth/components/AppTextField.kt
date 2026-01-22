@@ -1,6 +1,7 @@
 package com.yugentech.sessions.ui.auth.components
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.tween
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -30,13 +31,13 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
-import androidx.compose.ui.unit.dp
 import com.yugentech.sessions.R.string
 import com.yugentech.sessions.theme.tokens.components
 import com.yugentech.sessions.theme.tokens.corners
-import com.yugentech.sessions.theme.tokens.dimensions.AppConstants
+import com.yugentech.sessions.theme.tokens.dimensions.AppAnimations
 import com.yugentech.sessions.theme.tokens.icons
 import com.yugentech.sessions.theme.tokens.spacing
+import com.yugentech.sessions.utils.AppConstants
 
 @Composable
 fun AppTextField(
@@ -51,18 +52,15 @@ fun AppTextField(
     var passwordVisible by remember { mutableStateOf(false) }
 
     Column(modifier = modifier) {
-        // UPDATED: Switched to TextField (Filled style) to match DisplayNameSection
         TextField(
             value = value,
             onValueChange = onValueChange,
             label = { Text(text = label) },
             isError = error.isNotEmpty(),
-            // Using Medium corners (approx 12-16dp) to fit the Expressive theme
             shape = RoundedCornerShape(MaterialTheme.corners.medium),
             modifier = Modifier.fillMaxWidth(),
             singleLine = true,
-            textStyle = MaterialTheme.typography.bodyLarge,
-            // UPDATED: Exact colors from DisplayNameSection to remove border/underline
+            textStyle = MaterialTheme.typography.bodyMedium,
             colors = TextFieldDefaults.colors(
                 focusedContainerColor = MaterialTheme.colorScheme.secondaryContainer,
                 unfocusedContainerColor = MaterialTheme.colorScheme.secondaryContainer,
@@ -116,8 +114,10 @@ private fun ErrorText(
 ) {
     AnimatedVisibility(
         visible = error.isNotEmpty(),
-        enter = expandVertically() + fadeIn(),
-        exit = shrinkVertically() + fadeOut()
+        enter = expandVertically(tween(AppAnimations.Durations.Fast)) +
+                fadeIn(tween(AppAnimations.Durations.Fast)),
+        exit = shrinkVertically(tween(AppAnimations.Durations.Fast)) +
+                fadeOut(tween(AppAnimations.Durations.Fast))
     ) {
         Text(
             text = error,

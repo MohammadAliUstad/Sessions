@@ -2,7 +2,6 @@ package com.yugentech.sessions.ui.config.screens
 
 import android.app.Activity
 import android.content.Intent
-import android.net.Uri
 import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
@@ -39,12 +38,12 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.unit.dp
-import com.yugentech.sessions.theme.tokens.dimensions.AppConstants
+import com.yugentech.sessions.utils.AppConstants
 import com.yugentech.sessions.theme.tokens.spacing
 import com.yugentech.sessions.ui.config.components.aboutScreen.AppInfoCard
 import com.yugentech.sessions.ui.config.components.aboutScreen.DonationDialog
-import com.yugentech.sessions.ui.config.components.settingsScreen.SettingsListItem
-import com.yugentech.sessions.ui.config.components.settingsScreen.SettingsSectionHeader
+import com.yugentech.sessions.ui.dash.components.settingsScreen.SettingsListItem
+import com.yugentech.sessions.ui.dash.components.settingsScreen.SettingsSectionHeader
 import com.yugentech.sessions.ui.config.models.AboutContent
 import com.yugentech.sessions.utils.BillingManager
 import org.koin.compose.koinInject

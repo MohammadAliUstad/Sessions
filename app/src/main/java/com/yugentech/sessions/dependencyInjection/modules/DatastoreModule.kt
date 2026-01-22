@@ -12,6 +12,7 @@ import org.koin.dsl.module
 private val Context.alertsDataStore: DataStore<Preferences> by preferencesDataStore(name = "alerts")
 private val Context.themeDataStore: DataStore<Preferences> by preferencesDataStore(name = "theme")
 private val Context.notificationDataStore: DataStore<Preferences> by preferencesDataStore(name = "notification")
+private val Context.userDataStore: DataStore<Preferences> by preferencesDataStore(name = "user_prefs")
 
 val dataStoreModule = module {
 
@@ -28,5 +29,9 @@ val dataStoreModule = module {
     // Provides the DataStore instance for Notification preferences
     single<DataStore<Preferences>>(named("notification")) {
         androidContext().notificationDataStore
+    }
+
+    single<DataStore<Preferences>>(named("user")) {
+        androidContext().userDataStore
     }
 }
