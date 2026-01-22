@@ -6,24 +6,21 @@
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE" />
-
     <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
-
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
-
     <uses-permission
         android:name="android.permission.FOREGROUND_SERVICE"
         tools:ignore="ForegroundServicesPolicy" />
 
     <supports-screens
-        android:smallScreens="true"
-        android:normalScreens="true"
-        android:largeScreens="false"
-        android:xlargeScreens="false"
         android:anyDensity="true"
-        android:requiresSmallestWidthDp="0"
         android:compatibleWidthLimitDp="320"
-        android:largestWidthLimitDp="480"/>
+        android:largeScreens="false"
+        android:largestWidthLimitDp="480"
+        android:normalScreens="true"
+        android:requiresSmallestWidthDp="0"
+        android:smallScreens="true"
+        android:xlargeScreens="false" />
 
     <application
         android:name=".dependencyInjection.SessionsApp"

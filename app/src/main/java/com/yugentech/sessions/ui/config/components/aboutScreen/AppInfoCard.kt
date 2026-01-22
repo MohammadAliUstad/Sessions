@@ -53,7 +53,6 @@ fun AppInfoCard() {
         ) {
             Card(
                 modifier = Modifier
-                    // UPDATED: Increased size from 100.dp to 140.dp
                     .size(140.dp)
                     .clip(CircleShape),
                 colors = CardDefaults.cardColors(
@@ -78,7 +77,6 @@ fun AppInfoCard() {
 
             Spacer(modifier = Modifier.height(MaterialTheme.spacing.l))
 
-            // App Name
             Text(
                 text = stringResource(R.string.app_name),
                 style = MaterialTheme.typography.headlineSmall,
@@ -88,7 +86,6 @@ fun AppInfoCard() {
 
             Spacer(modifier = Modifier.height(MaterialTheme.spacing.xs))
 
-            // Version
             Text(
                 text = stringResource(R.string.version),
                 style = MaterialTheme.typography.labelLarge,
@@ -97,7 +94,6 @@ fun AppInfoCard() {
 
             Spacer(modifier = Modifier.height(MaterialTheme.spacing.m))
 
-            // Description
             Text(
                 text = stringResource(R.string.app_description),
                 style = MaterialTheme.typography.bodyMedium,
