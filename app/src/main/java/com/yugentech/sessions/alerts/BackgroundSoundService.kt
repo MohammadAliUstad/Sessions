@@ -49,7 +49,6 @@ class BackgroundSoundService(private val context: Context) {
             return
         }
 
-        // FIXED: If we're currently stopping, cancel it immediately
         if (isStopping) {
             Timber.d("Cancelling ongoing stop operation")
             isStopping = false
@@ -71,7 +70,7 @@ class BackgroundSoundService(private val context: Context) {
                 isLooping = true
                 targetVolume = FOCUS_VOLUME
                 crossfadeScheduled = false
-                isStopping = false  // FIXED: Reset stopping flag
+                isStopping = false
 
                 activePlayer = createPlayer(uri).apply {
                     volume = 0f
@@ -152,9 +151,8 @@ class BackgroundSoundService(private val context: Context) {
         Timber.d("stop() called")
 
         if (activePlayer?.isPlaying == true) {
-            isStopping = true  // FIXED: Mark that we're stopping
+            isStopping = true
             fadeVolume(targetVolume, 0f) {
-                // FIXED: Only release if we're still in stopping state
                 if (isStopping) {
                     Timber.d("Fade complete, releasing player")
                     release()
@@ -256,7 +254,6 @@ class BackgroundSoundService(private val context: Context) {
         duration: Long = FADE_DURATION,
         onEnd: (() -> Unit)? = null
     ) {
-        // FIXED: Cancel any previous fade animation
         volumeAnimator?.cancel()
         volumeAnimator?.removeAllListeners()
         volumeAnimator?.removeAllUpdateListeners()
@@ -290,7 +287,6 @@ class BackgroundSoundService(private val context: Context) {
         try {
             positionMonitor?.let { handler.removeCallbacks(it) }
 
-            // FIXED: Properly clean up animators
             volumeAnimator?.cancel()
             volumeAnimator?.removeAllListeners()
             volumeAnimator?.removeAllUpdateListeners()
@@ -302,7 +298,7 @@ class BackgroundSoundService(private val context: Context) {
             volumeAnimator = null
             crossfadeAnimator = null
             isLooping = false
-            isStopping = false  // FIXED: Reset stopping flag
+            isStopping = false
 
             activePlayer?.stop()
             activePlayer?.release()

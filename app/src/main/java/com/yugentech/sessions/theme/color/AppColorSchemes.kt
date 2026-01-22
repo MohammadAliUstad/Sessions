@@ -84,7 +84,6 @@ object AppColorSchemes {
     val HarvestLightColorScheme = lightColorScheme(
         primary = Color(0xFF6D5E0F),
         onPrimary = Color(0xFFFFFFFF),
-        // Darkened from 0xFFF8E287
         primaryContainer = Color(0xFFE5D176),
         onPrimaryContainer = Color(0xFF534600),
         secondary = Color(0xFF665E40),
@@ -160,7 +159,6 @@ object AppColorSchemes {
     val TwilightLightColorScheme = lightColorScheme(
         primary = Color(0xFF555A92),
         onPrimary = Color(0xFFFFFFFF),
-        // Darkened from 0xFFE0E0FF
         primaryContainer = Color(0xFFC8C8F7),
         onPrimaryContainer = Color(0xFF3E4278),
         secondary = Color(0xFF5C5D72),
@@ -236,7 +234,6 @@ object AppColorSchemes {
     val CanyonLightColorScheme = lightColorScheme(
         primary = Color(0xFF86521A),
         onPrimary = Color(0xFFFFFFFF),
-        // Darkened from 0xFFFFDCBF
         primaryContainer = Color(0xFFFFCCAA),
         onPrimaryContainer = Color(0xFF6A3B02),
         secondary = Color(0xFF735943),
@@ -312,7 +309,6 @@ object AppColorSchemes {
     val GroveLightColorScheme = lightColorScheme(
         primary = Color(0xFF576421),
         onPrimary = Color(0xFFFFFFFF),
-        // Darkened from 0xFFDAEA98
         primaryContainer = Color(0xFFC6D884),
         onPrimaryContainer = Color(0xFF3F4C0A),
         secondary = Color(0xFF5C6146),
@@ -388,7 +384,6 @@ object AppColorSchemes {
     val SakuraLightColorScheme = lightColorScheme(
         primary = Color(0xFF8F4A4F),
         onPrimary = Color(0xFFFFFFFF),
-        // Darkened from 0xFFFFDADA
         primaryContainer = Color(0xFFFFC0C0),
         onPrimaryContainer = Color(0xFF723338),
         secondary = Color(0xFF765657),

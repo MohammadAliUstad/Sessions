@@ -1,7 +1,8 @@
-package com.yugentech.sessions.ui.config.components.settingsScreen
+package com.yugentech.sessions.ui.dash.components.settingsScreen
 
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 import android.provider.Settings
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.MaterialTheme
@@ -31,7 +32,7 @@ fun AlarmPermissionDialog(
                 onClick = {
                     onConfirm()
                     
-                    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
                         val intent = Intent(
                             Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM,
                             "package:${context.packageName}".toUri()

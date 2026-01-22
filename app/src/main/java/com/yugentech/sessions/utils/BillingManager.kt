@@ -91,11 +91,6 @@ class BillingManager(context: Context) {
                 .build()
 
             billingClient.launchBillingFlow(activity, billingFlowParams)
-        } else {
-            Timber.e("Product Details not found for $productId")
-            CoroutineScope(Dispatchers.Main).launch {
-                _purchaseEvent.emit("Error: Could not find donation info. Please try again.")
-            }
         }
     }
 

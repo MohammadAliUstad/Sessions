@@ -85,7 +85,6 @@ class AlertsRepositoryImpl(
         alertsPreferences.setHapticsEnabled(enabled)
     }
 
-    // Helper Functions
     private fun startBackgroundSound() {
         val backgroundSound = alertConfiguration.value.backgroundSound
 

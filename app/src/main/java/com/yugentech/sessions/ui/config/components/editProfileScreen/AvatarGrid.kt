@@ -1,4 +1,4 @@
-package com.yugentech.sessions.ui.dash.components.editProfileScreen
+package com.yugentech.sessions.ui.config.components.editProfileScreen
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
