@@ -48,8 +48,7 @@ fun AmoledThemeSelector(
         shape = MaterialTheme.shapes.extraLarge,
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surfaceContainer
-        ),
-        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
+        )
     ) {
         Box(
             contentAlignment = Alignment.CenterStart
