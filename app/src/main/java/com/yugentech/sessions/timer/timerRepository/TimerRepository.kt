@@ -12,6 +12,6 @@ interface TimerRepository {
     fun start()
     fun pause()
     fun reset()
-    fun discardSession()
-    fun updateConfig(config: TimerConfig)
+    fun updateConfig(timerConfig: TimerConfig)
+    fun updateSessionTask(newTask: String)
 }

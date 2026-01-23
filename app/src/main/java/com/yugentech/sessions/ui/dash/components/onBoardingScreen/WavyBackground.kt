@@ -1,4 +1,4 @@
-package com.yugentech.sessions.ui.dash.screens
+package com.yugentech.sessions.ui.dash.components.onBoardingScreen
 
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.Canvas

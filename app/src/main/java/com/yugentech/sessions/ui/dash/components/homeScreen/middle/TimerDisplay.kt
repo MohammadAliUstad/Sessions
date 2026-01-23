@@ -22,7 +22,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
+import com.yugentech.sessions.theme.tokens.components
+import com.yugentech.sessions.theme.tokens.spacing
 import com.yugentech.sessions.timer.states.TimerMode
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
@@ -31,11 +32,10 @@ fun TimerDisplay(
     displayTime: Int,
     selectedDuration: Int,
     isStudying: Boolean,
-    currentMode: TimerMode, // Added Parameter
+    currentMode: TimerMode,
     modifier: Modifier = Modifier,
     idleLabel: String = "Press the play button\nto start."
 ) {
-    // 1. Calculate Progress
     val targetProgress = if (selectedDuration > 0) {
         val raw = 1f - (displayTime.toFloat() / selectedDuration.toFloat())
         raw.coerceIn(0f, 1f)
@@ -43,7 +43,6 @@ fun TimerDisplay(
         0f
     }
 
-    // 2. Smooth Animation
     val animatedProgress by animateFloatAsState(
         targetValue = targetProgress,
         animationSpec = tween(durationMillis = 1000, easing = FastOutSlowInEasing),
@@ -52,8 +51,8 @@ fun TimerDisplay(
 
     Box(
         modifier = modifier
-            .padding(16.dp)
-            .size(300.dp)
+            .padding(MaterialTheme.spacing.m)
+            .size(MaterialTheme.components.timerSize)
             .aspectRatio(1f),
         contentAlignment = Alignment.Center
     ) {
@@ -68,7 +67,7 @@ fun TimerDisplay(
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center,
-            modifier = Modifier.padding(horizontal = 32.dp)
+            modifier = Modifier.padding(horizontal = MaterialTheme.spacing.xl)
         ) {
             val showTimeDisplay = isStudying || (displayTime < selectedDuration)
 
@@ -76,13 +75,14 @@ fun TimerDisplay(
                 Text(
                     text = "%02d:%02d".format(displayTime / 60, displayTime % 60),
                     style = MaterialTheme.typography.displayLarge.copy(
-                        fontWeight = FontWeight.Normal, fontFeatureSettings = "tnum"
+                        fontWeight = FontWeight.Normal,
+                        fontFeatureSettings = "tnum"
                     ),
                     textAlign = TextAlign.Center,
                     color = MaterialTheme.colorScheme.onSurface
                 )
 
-                Spacer(modifier = Modifier.height(12.dp))
+                Spacer(modifier = Modifier.height(MaterialTheme.spacing.sm))
 
                 ModeTag(mode = currentMode)
             } else {

@@ -1,5 +1,6 @@
 package com.yugentech.sessions.dependencyInjection.modules
 
+import com.yugentech.sessions.timer.TimerDatastore
 import com.yugentech.sessions.timer.TimerService
 import com.yugentech.sessions.timer.TimerViewModel
 import com.yugentech.sessions.timer.timerRepository.TimerRepository
@@ -17,6 +18,10 @@ val timerModule = module {
     single(named("timerScope")) {
         Timber.d("Creating Timer external CoroutineScope")
         CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
+    }
+
+    single {
+        TimerDatastore(get(named("timer")))
     }
 
     // Core timer engine (inject scope)
