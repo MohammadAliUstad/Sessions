@@ -8,8 +8,9 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
-import com.yugentech.sessions.timer.TimerMode
+import com.yugentech.sessions.theme.tokens.spacing
+import com.yugentech.sessions.theme.tokens.strokes
+import com.yugentech.sessions.timer.states.TimerMode
 
 @Composable
 fun ModeTag(
@@ -24,13 +25,16 @@ fun ModeTag(
     Surface(
         color = color.copy(alpha = 0.1f),
         shape = CircleShape,
-        border = BorderStroke(1.dp, color.copy(alpha = 0.5f))
+        border = BorderStroke(MaterialTheme.strokes.thin, color.copy(alpha = 0.5f))
     ) {
         Text(
             text = text,
             style = MaterialTheme.typography.labelMedium,
             color = color,
-            modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp)
+            modifier = Modifier.padding(
+                horizontal = MaterialTheme.spacing.sm,
+                vertical = MaterialTheme.spacing.xsSmall
+            )
         )
     }
 }

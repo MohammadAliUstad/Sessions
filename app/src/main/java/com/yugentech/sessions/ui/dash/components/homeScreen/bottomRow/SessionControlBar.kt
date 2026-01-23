@@ -1,41 +1,43 @@
 package com.yugentech.sessions.ui.dash.components.homeScreen.bottomRow
 
-import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.core.Spring
-import androidx.compose.animation.core.animateIntAsState
-import androidx.compose.animation.core.spring
-import androidx.compose.animation.core.tween
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.togetherWith
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Check
+import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.Layers
+import androidx.compose.material.icons.filled.Pause
+import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.outlined.Close
 import androidx.compose.material.icons.outlined.GraphicEq
-import androidx.compose.material.icons.outlined.Layers
+import androidx.compose.material3.ButtonGroup
+import androidx.compose.material3.ButtonGroupDefaults
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
+import androidx.compose.material3.FilledIconToggleButton
 import androidx.compose.material3.FilledTonalIconButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButtonDefaults
+import androidx.compose.material3.IconToggleButtonShapes
+import androidx.compose.material3.LocalMinimumInteractiveComponentSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Shape
-import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
+import com.yugentech.sessions.theme.tokens.components
+import com.yugentech.sessions.theme.tokens.corners
+import com.yugentech.sessions.theme.tokens.icons
+import com.yugentech.sessions.theme.tokens.spacing
 
+@OptIn(ExperimentalMaterial3ExpressiveApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun SessionControlBar(
     isStudying: Boolean,
@@ -47,117 +49,185 @@ fun SessionControlBar(
     onStopSave: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val cornerPercent by animateIntAsState(
-        targetValue = if (isStudying) 50 else 30,
-        animationSpec = spring(stiffness = Spring.StiffnessMediumLow),
-        label = "shapeMorph"
-    )
-    val currentSideShape = RoundedCornerShape(cornerPercent)
+    val interactionSources = remember { List(3) { MutableInteractionSource() } }
 
-    Row(
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(horizontal = 24.dp, vertical = 16.dp),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceEvenly
-    ) {
-        // Left Action (Sound / Discard)
-        AnimatedContent(
-            targetState = isSessionActive,
-            transitionSpec = { fadeIn(tween(100)) togetherWith fadeOut(tween(100)) },
-            label = "LeftButton"
-        ) { active ->
-            if (active) {
-                SecondaryActionButton(
-                    icon = Icons.Outlined.Close,
-                    label = "Discard",
-                    onClick = onStopDiscard,
-                    shape = currentSideShape
+    CompositionLocalProvider(LocalMinimumInteractiveComponentSize provides MaterialTheme.spacing.z) {
+        ButtonGroup(
+            overflowIndicator = { state ->
+                ButtonGroupDefaults.OverflowIndicator(
+                    state,
+                    colors = IconButtonDefaults.filledTonalIconButtonColors(),
+                    modifier = Modifier.size(MaterialTheme.components.controlBarItemSize)
                 )
-            } else {
-                SecondaryActionButton(
-                    icon = Icons.Outlined.GraphicEq,
-                    label = "Sound",
-                    onClick = onSoundClick,
-                    shape = currentSideShape
-                )
-            }
-        }
+            },
+            modifier = modifier.padding(
+                horizontal = MaterialTheme.spacing.l,
+                vertical = MaterialTheme.spacing.s
+            )
+        ) {
+            customItem(
+                {
+                    FilledTonalIconButton(
+                        onClick = {
+                            if (isSessionActive) onStopDiscard() else onSoundClick()
+                        },
+                        colors = getLeftButtonColors(isSessionActive),
+                        shapes = IconButtonDefaults.shapes(),
+                        interactionSource = interactionSources[0],
+                        modifier = Modifier
+                            .size(MaterialTheme.components.controlBarItemSize)
+                            .animateWidth(interactionSources[0])
+                    ) {
+                        Column(
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.Center
+                        ) {
+                            Icon(
+                                if (isSessionActive) Icons.Outlined.Close else Icons.Outlined.GraphicEq,
+                                contentDescription = null,
+                                modifier = Modifier.size(MaterialTheme.icons.medium)
+                            )
+                            Text(
+                                if (isSessionActive) "Discard" else "Sound",
+                                style = MaterialTheme.typography.labelSmall,
+                                modifier = Modifier.padding(top = MaterialTheme.spacing.xxs)
+                            )
+                        }
+                    }
+                },
+                { state ->
+                    DropdownMenuItem(
+                        leadingIcon = {
+                            Icon(
+                                if (isSessionActive) Icons.Outlined.Close else Icons.Outlined.GraphicEq,
+                                contentDescription = null
+                            )
+                        },
+                        text = { Text(if (isSessionActive) "Discard" else "Sound") },
+                        onClick = {
+                            if (isSessionActive) onStopDiscard() else onSoundClick()
+                            state.dismiss()
+                        }
+                    )
+                }
+            )
 
-        // Main Action (Play/Pause)
-        ActionButton(
-            isStudying = isStudying,
-            onPlayPause = onStartStop
-        )
+            customItem(
+                {
+                    FilledIconToggleButton(
+                        onCheckedChange = { onStartStop() },
+                        checked = isStudying,
+                        colors = IconButtonDefaults.filledIconToggleButtonColors(
+                            containerColor = MaterialTheme.colorScheme.primary,
+                            contentColor = MaterialTheme.colorScheme.onPrimary,
+                            checkedContainerColor = MaterialTheme.colorScheme.tertiaryContainer,
+                            checkedContentColor = MaterialTheme.colorScheme.onTertiaryContainer
+                        ),
+                        shapes = IconToggleButtonShapes(
+                            shape = CircleShape,
+                            pressedShape = CircleShape,
+                            checkedShape = RoundedCornerShape(MaterialTheme.corners.medium)
+                        ),
+                        interactionSource = interactionSources[1],
+                        modifier = Modifier
+                            .size(
+                                width = MaterialTheme.components.controlBarItemWidthWide,
+                                height = MaterialTheme.components.controlBarItemSize
+                            )
+                            .animateWidth(interactionSources[1])
+                    ) {
+                        Icon(
+                            if (isStudying) Icons.Filled.Pause else Icons.Filled.PlayArrow,
+                            contentDescription = null,
+                            modifier = Modifier.size(MaterialTheme.icons.xxl)
+                        )
+                    }
+                },
+                { state ->
+                    DropdownMenuItem(
+                        leadingIcon = {
+                            Icon(
+                                if (isStudying) Icons.Filled.Pause else Icons.Filled.PlayArrow,
+                                contentDescription = null
+                            )
+                        },
+                        text = { Text(if (isStudying) "Pause" else "Play") },
+                        onClick = {
+                            onStartStop()
+                            state.dismiss()
+                        }
+                    )
+                }
+            )
 
-        // Right Action (Sets / Finish)
-        AnimatedContent(
-            targetState = isSessionActive,
-            transitionSpec = { fadeIn(tween(100)) togetherWith fadeOut(tween(100)) },
-            label = "RightButton"
-        ) { active ->
-            if (active) {
-                SecondaryActionButton(
-                    icon = Icons.Outlined.Check,
-                    label = "Finish",
-                    onClick = onStopSave,
-                    isActive = true,
-                    shape = currentSideShape
-                )
-            } else {
-                SecondaryActionButton(
-                    icon = Icons.Outlined.Layers,
-                    label = "Sets",
-                    onClick = onSetsClick,
-                    shape = currentSideShape
-                )
-            }
+            customItem(
+                {
+                    FilledTonalIconButton(
+                        onClick = {
+                            if (isSessionActive) onStopSave() else onSetsClick()
+                        },
+                        colors = getRightButtonColors(isSessionActive),
+                        shapes = IconButtonDefaults.shapes(),
+                        interactionSource = interactionSources[2],
+                        modifier = Modifier
+                            .size(MaterialTheme.components.controlBarItemSize)
+                            .animateWidth(interactionSources[2])
+                    ) {
+                        Column(
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.Center
+                        ) {
+                            Icon(
+                                if (isSessionActive) Icons.Filled.Check else Icons.Filled.Layers,
+                                contentDescription = null,
+                                modifier = Modifier.size(MaterialTheme.icons.medium)
+                            )
+                            Text(
+                                if (isSessionActive) "Finish" else "Sets",
+                                style = MaterialTheme.typography.labelSmall,
+                                modifier = Modifier.padding(top = MaterialTheme.spacing.xxs)
+                            )
+                        }
+                    }
+                },
+                { state ->
+                    DropdownMenuItem(
+                        leadingIcon = {
+                            Icon(
+                                if (isSessionActive) Icons.Filled.Check else Icons.Filled.Layers,
+                                contentDescription = null
+                            )
+                        },
+                        text = { Text(if (isSessionActive) "Finish" else "Sets") },
+                        onClick = {
+                            if (isSessionActive) onStopSave() else onSetsClick()
+                            state.dismiss()
+                        }
+                    )
+                }
+            )
         }
     }
 }
 
 @Composable
-fun SecondaryActionButton(
-    icon: ImageVector,
-    label: String,
-    onClick: () -> Unit,
-    isActive: Boolean = false,
-    shape: Shape
-) {
-    val colors = if (isActive) {
+private fun getLeftButtonColors(isSessionActive: Boolean) =
+    if (isSessionActive) {
+        IconButtonDefaults.filledTonalIconButtonColors(
+            containerColor = MaterialTheme.colorScheme.errorContainer,
+            contentColor = MaterialTheme.colorScheme.onErrorContainer
+        )
+    } else {
+        IconButtonDefaults.filledTonalIconButtonColors()
+    }
+
+@Composable
+private fun getRightButtonColors(isSessionActive: Boolean) =
+    if (isSessionActive) {
         IconButtonDefaults.filledTonalIconButtonColors(
             containerColor = MaterialTheme.colorScheme.primaryContainer,
             contentColor = MaterialTheme.colorScheme.onPrimaryContainer
         )
     } else {
-        IconButtonDefaults.filledTonalIconButtonColors(
-            containerColor = MaterialTheme.colorScheme.surfaceContainerHighest,
-            contentColor = MaterialTheme.colorScheme.onSurfaceVariant
-        )
+        IconButtonDefaults.filledTonalIconButtonColors()
     }
-
-    FilledTonalIconButton(
-        onClick = onClick,
-        modifier = Modifier.size(72.dp), // Increased from 64.dp
-        shape = shape,
-        colors = colors
-    ) {
-        // Vertical stack for Icon + Label
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
-        ) {
-            Icon(
-                imageVector = icon,
-                contentDescription = null,
-                modifier = Modifier.size(24.dp)
-            )
-            Spacer(modifier = Modifier.height(4.dp))
-            Text(
-                text = label,
-                style = MaterialTheme.typography.labelSmall.copy(fontSize = 11.sp), // Slightly increased font size
-                modifier = Modifier.padding(top = 2.dp)
-            )
-        }
-    }
-}

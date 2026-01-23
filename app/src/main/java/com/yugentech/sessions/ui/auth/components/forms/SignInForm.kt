@@ -1,4 +1,4 @@
-package com.yugentech.sessions.ui.auth.components
+package com.yugentech.sessions.ui.auth.components.forms
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -26,12 +26,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
 import com.yugentech.sessions.R
 import com.yugentech.sessions.theme.tokens.components
+import com.yugentech.sessions.theme.tokens.corners
 import com.yugentech.sessions.theme.tokens.spacing
-import com.yugentech.sessions.ui.auth.utils.FormValidator
+import com.yugentech.sessions.ui.auth.components.AppTextField
+import com.yugentech.sessions.ui.auth.components.buttons.ActionButton
+import com.yugentech.sessions.ui.auth.components.buttons.GoogleSignInButton
 import com.yugentech.sessions.ui.auth.states.SignInFormState
+import com.yugentech.sessions.ui.auth.utils.FormValidator
 import kotlinx.coroutines.launch
 
 @Composable
@@ -54,11 +57,9 @@ fun SignInForm(
     Card(
         modifier = modifier.fillMaxWidth(),
         colors = CardDefaults.cardColors(
-            // Expressive: Use surfaceContainer for a distinct "island"
             containerColor = MaterialTheme.colorScheme.surfaceContainer
         ),
-        // Expressive: Extra Large corners (28.dp) make it feel friendlier
-        shape = RoundedCornerShape(28.dp)
+        shape = RoundedCornerShape(MaterialTheme.corners.extraLarge)
     ) {
         Column(
             modifier = Modifier.padding(MaterialTheme.spacing.l),
@@ -66,16 +67,13 @@ fun SignInForm(
         ) {
             Text(
                 text = stringResource(R.string.welcome_back),
-                style = MaterialTheme.typography.headlineSmall.copy( // Bumped up slightly
-                    fontWeight = FontWeight.Bold // Bolder header
+                style = MaterialTheme.typography.headlineSmall.copy(
+                    fontWeight = FontWeight.Bold
                 ),
                 color = MaterialTheme.colorScheme.onSurface
             )
 
-            // Grouping Inputs together
-            Column(
-                verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.m)
-            ) {
+            Column(verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.m)) {
                 AppTextField(
                     value = formState.email,
                     onValueChange = { newEmail ->
@@ -132,7 +130,6 @@ fun SignInForm(
                 }
             }
 
-            // Actions
             Column(verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.s)) {
                 ActionButton(
                     text = stringResource(R.string.sign_in),

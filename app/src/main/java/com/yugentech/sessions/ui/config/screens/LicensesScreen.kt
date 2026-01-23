@@ -3,16 +3,43 @@ package com.yugentech.sessions.ui.config.screens
 import android.content.Intent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.OpenInNew
 import androidx.compose.material.icons.filled.Code
 import androidx.compose.material.icons.filled.IntegrationInstructions
-import androidx.compose.material3.*
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FilledTonalButton
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.LargeTopAppBar
+import androidx.compose.material3.ListItem
+import androidx.compose.material3.ListItemDefaults
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -20,17 +47,15 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
-import com.yugentech.sessions.ui.config.components.settingsScreen.SettingsSectionHeader
-import com.yugentech.sessions.ui.dash.components.common.itemShape
-
-// Simplified model (License removed from constructor since we know it's Apache 2.0)
-data class LibraryItem(
-    val name: String,
-    val author: String,
-    val url: String
-)
+import com.yugentech.sessions.theme.tokens.components
+import com.yugentech.sessions.theme.tokens.corners
+import com.yugentech.sessions.theme.tokens.icons
+import com.yugentech.sessions.theme.tokens.spacing
+import com.yugentech.sessions.ui.config.models.LicensesContent
+import com.yugentech.sessions.ui.dash.common.SectionHeader
+import com.yugentech.sessions.ui.dash.common.itemShape
+import com.yugentech.sessions.utils.AppConstants.GITHUB_URL
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -40,17 +65,7 @@ fun LicensesScreen(
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
     val context = LocalContext.current
 
-    // --- YOUR TECH STACK ---
-    val libraries = listOf(
-        LibraryItem("Jetpack Compose", "Google", "https://developer.android.com/jetpack/compose"),
-        LibraryItem("Kotlin", "JetBrains", "https://kotlinlang.org/"),
-        LibraryItem("Koin", "InsertKoinIO", "https://insert-koin.io/"),
-        LibraryItem("Timber", "Jake Wharton", "https://github.com/JakeWharton/timber"),
-        LibraryItem("Accompanist", "Google", "https://github.com/google/accompanist"),
-        LibraryItem("Retrofit", "Square", "https://square.github.io/retrofit/"),
-        LibraryItem("Coroutines", "JetBrains", "https://github.com/Kotlin/kotlinx.coroutines"),
-        LibraryItem("Material Design 3", "Google", "https://m3.material.io/")
-    )
+    val libraries = remember { LicensesContent.libraries }
 
     Scaffold(
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
@@ -64,8 +79,10 @@ fun LicensesScreen(
                 },
                 scrollBehavior = scrollBehavior,
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.background,
-                    scrolledContainerColor = MaterialTheme.colorScheme.surface
+                    containerColor = MaterialTheme.colorScheme.surface,
+                    scrolledContainerColor = MaterialTheme.colorScheme.surface,
+                    navigationIconContentColor = MaterialTheme.colorScheme.onSurface,
+                    titleContentColor = MaterialTheme.colorScheme.onSurface
                 )
             )
         },
@@ -76,44 +93,44 @@ fun LicensesScreen(
                 .fillMaxSize()
                 .padding(padding),
             contentPadding = PaddingValues(
-                top = 16.dp,
-                start = 16.dp,
-                end = 16.dp,
-                bottom = 32.dp
+                top = MaterialTheme.spacing.m,
+                start = MaterialTheme.spacing.m,
+                end = MaterialTheme.spacing.m,
+                bottom = MaterialTheme.spacing.xxl
             ),
-            verticalArrangement = Arrangement.spacedBy(2.dp) // Tight spacing for the grouped look
+            verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.xxs)
         ) {
-            // --- SECTION 1: HERO CARD ---
             item {
                 Card(
+                    shape = RoundedCornerShape(MaterialTheme.corners.extraLarge),
                     colors = CardDefaults.cardColors(
-                        containerColor = MaterialTheme.colorScheme.surfaceContainerHigh
+                        containerColor = MaterialTheme.colorScheme.surfaceContainer
                     ),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(bottom = 12.dp)
+                    modifier = Modifier.fillMaxWidth()
                 ) {
                     Column(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(20.dp),
-                        verticalArrangement = Arrangement.spacedBy(16.dp)
+                            .padding(MaterialTheme.spacing.l),
+                        verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.m)
                     ) {
                         Row(verticalAlignment = Alignment.CenterVertically) {
                             Surface(
-                                shape = androidx.compose.foundation.shape.CircleShape,
+                                shape = CircleShape,
                                 color = MaterialTheme.colorScheme.primaryContainer,
-                                modifier = Modifier.size(48.dp)
+                                modifier = Modifier.size(MaterialTheme.components.imageSizeSmall)
                             ) {
                                 Box(contentAlignment = Alignment.Center) {
                                     Icon(
-                                        Icons.Default.Code,
-                                        null,
+                                        imageVector = Icons.Default.Code,
+                                        contentDescription = null,
                                         tint = MaterialTheme.colorScheme.onPrimaryContainer
                                     )
                                 }
                             }
-                            Spacer(Modifier.width(16.dp))
+
+                            Spacer(Modifier.width(MaterialTheme.spacing.m))
+
                             Column {
                                 Text(
                                     "Sessions is Open Source",
@@ -121,6 +138,7 @@ fun LicensesScreen(
                                     fontWeight = FontWeight.Bold,
                                     color = MaterialTheme.colorScheme.onSurface
                                 )
+
                                 Text(
                                     "Licensed under Apache 2.0",
                                     style = MaterialTheme.typography.bodySmall,
@@ -137,13 +155,11 @@ fun LicensesScreen(
 
                         FilledTonalButton(
                             onClick = {
-                                val intent = Intent(
-                                    Intent.ACTION_VIEW,
-                                    "https://github.com/mohammadaliustad/Sessions".toUri()
-                                )
+                                val intent = Intent(Intent.ACTION_VIEW, GITHUB_URL.toUri())
                                 context.startActivity(intent)
                             },
                             modifier = Modifier.align(Alignment.End),
+                            shape = RoundedCornerShape(MaterialTheme.corners.medium),
                             colors = ButtonDefaults.filledTonalButtonColors(
                                 containerColor = MaterialTheme.colorScheme.tertiaryContainer,
                                 contentColor = MaterialTheme.colorScheme.onTertiaryContainer
@@ -155,37 +171,37 @@ fun LicensesScreen(
                 }
             }
 
-            // --- SECTION HEADER ---
             item {
-                SettingsSectionHeader(
+                SectionHeader(
                     title = "Libraries We Use",
                     icon = Icons.Default.IntegrationInstructions
                 )
             }
 
-            // --- SECTION 2: LIBRARIES LIST (Modern Grouped Style) ---
             itemsIndexed(libraries) { index, lib ->
                 val shape = itemShape(index, libraries.size)
 
                 ListItem(
                     headlineContent = {
                         Text(
-                            lib.name,
-                            style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.SemiBold)
+                            text = lib.name,
+                            style = MaterialTheme.typography.titleMedium.copy(
+                                fontWeight = FontWeight.SemiBold
+                            )
                         )
                     },
                     supportingContent = {
                         Text(
-                            lib.author,
+                            text = lib.author,
                             style = MaterialTheme.typography.bodyMedium,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                     },
                     trailingContent = {
                         Icon(
-                            Icons.AutoMirrored.Filled.OpenInNew,
+                            imageVector = Icons.AutoMirrored.Filled.OpenInNew,
                             contentDescription = null,
-                            modifier = Modifier.size(18.dp),
+                            modifier = Modifier.size(MaterialTheme.icons.smallMedium),
                             tint = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                     },
@@ -198,7 +214,7 @@ fun LicensesScreen(
                             context.startActivity(intent)
                         },
                     colors = ListItemDefaults.colors(
-                        containerColor = Color.Transparent // Let the Box/Background handle the color
+                        containerColor = Color.Transparent
                     )
                 )
             }

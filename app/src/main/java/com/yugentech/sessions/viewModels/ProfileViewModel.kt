@@ -8,7 +8,7 @@ import com.yugentech.sessions.models.Session
 import com.yugentech.sessions.models.UserData
 import com.yugentech.sessions.sessions.sessionsRepository.SessionsRepository
 import com.yugentech.sessions.sessions.sessionsUtils.SessionResult
-import com.yugentech.sessions.theme.tokens.dimensions.AppConstants
+import com.yugentech.sessions.utils.AppConstants
 import com.yugentech.sessions.user.userRepository.UserRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -24,7 +24,7 @@ import timber.log.Timber
 data class ProfileUiState(
     val user: UserData? = null,
     val sessions: List<Session> = emptyList(),
-    val totalTime: Long = AppConstants.LONG,
+    val totalTime: Long = 0L,
     val isLoading: Boolean = false,
     val isSaving: Boolean = false,
     val errorMessage: String? = null

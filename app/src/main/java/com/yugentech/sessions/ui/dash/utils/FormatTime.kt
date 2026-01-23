@@ -1,4 +1,4 @@
-package com.yugentech.sessions.utils
+package com.yugentech.sessions.ui.dash.utils
 
 fun formatTime(seconds: Long): String {
     val hours = seconds / 3600

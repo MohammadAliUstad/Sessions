@@ -1,4 +1,4 @@
-package com.yugentech.sessions.ui.config.components.settingsScreen
+package com.yugentech.sessions.ui.dash.components.settingsScreen
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -19,7 +19,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import com.yugentech.sessions.ui.dash.components.common.itemShape
+import com.yugentech.sessions.ui.dash.common.itemShape
 
 @Composable
 fun SettingsSwitchItem(

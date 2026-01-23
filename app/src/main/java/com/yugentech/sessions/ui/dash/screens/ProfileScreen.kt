@@ -1,14 +1,13 @@
 package com.yugentech.sessions.ui.dash.screens
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.calculateEndPadding
 import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
@@ -34,17 +33,14 @@ import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.yugentech.sessions.models.UserData
-import com.yugentech.sessions.theme.tokens.dimensions.AppConstants
 import com.yugentech.sessions.theme.tokens.spacing
-import com.yugentech.sessions.ui.config.components.settingsScreen.SettingsSectionHeader
+import com.yugentech.sessions.ui.dash.common.SectionHeader
 import com.yugentech.sessions.ui.dash.components.profileScreen.EmptySessionsCard
-import com.yugentech.sessions.ui.dash.components.profileScreen.ProfileInfoItem
+import com.yugentech.sessions.ui.dash.components.profileScreen.ProfileCard
 import com.yugentech.sessions.ui.dash.components.profileScreen.SessionHistoryItem
+import com.yugentech.sessions.ui.dash.utils.dateHeader
+import com.yugentech.sessions.utils.AppConstants
 import com.yugentech.sessions.viewModels.ProfileViewModel
-import java.text.SimpleDateFormat
-import java.util.Calendar
-import java.util.Date
-import java.util.Locale
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
@@ -56,14 +52,12 @@ fun ProfileScreen(
 ) {
     val profileUiState by profileViewModel.uiState.collectAsStateWithLifecycle()
 
-    // State for delete dialog
     var showDeleteDialog by remember { mutableStateOf(false) }
     var sessionToDeleteId by remember { mutableStateOf<String?>(null) }
 
     val layoutDirection = LocalLayoutDirection.current
     val navBarPadding = WindowInsets.navigationBars.asPaddingValues()
 
-    // Standardized padding
     val screenContentPadding = PaddingValues(
         top = MaterialTheme.spacing.m,
         start = MaterialTheme.spacing.m + navBarPadding.calculateStartPadding(layoutDirection),
@@ -77,7 +71,7 @@ fun ProfileScreen(
 
     val groupedSessions = remember(profileUiState.sessions) {
         profileUiState.sessions.groupBy { session ->
-            getSmartDateHeader(session.timestamp)
+            dateHeader(session.timestamp)
         }
     }
 
@@ -93,41 +87,29 @@ fun ProfileScreen(
             )
         }
     } else {
-        // UNIFIED LIST: Solves the "content cut off" issue by making everything scrollable
         LazyColumn(
             modifier = modifier.fillMaxSize(),
             contentPadding = screenContentPadding,
-            // Use 0.dp or small spacing here, handle specific spacing with Spacers
-            verticalArrangement = androidx.compose.foundation.layout.Arrangement.spacedBy(2.dp)
+            verticalArrangement = Arrangement.spacedBy(2.dp)
         ) {
-            // --- SECTION 1: HEADER & PROFILE ---
             item {
-                SettingsSectionHeader(
+                SectionHeader(
                     title = "My Account",
                     icon = Icons.Filled.Person
                 )
             }
 
             item {
-                ProfileInfoItem(
+                ProfileCard(
                     userData = profileUiState.user ?: UserData(name = AppConstants.EMPTY_STRING),
                     totalTime = profileUiState.totalTime,
                     onEditProfile = onEditProfile
                 )
             }
 
-            item {
-                Spacer(modifier = Modifier.height(MaterialTheme.spacing.s))
-            }
-
-            // --- SECTION 2: CONTENT (Empty OR List) ---
             if (profileUiState.sessions.isEmpty()) {
                 item {
-                    // Empty State is now a scrollable item.
-                    // fillParentMaxHeight(0.7f) makes it take up most of the screen
-                    // so it looks "centered" but can still scroll if needed.
                     Box(
-                        modifier = Modifier.fillParentMaxHeight(0.7f),
                         contentAlignment = Alignment.Center
                     ) {
                         EmptySessionsCard()
@@ -136,7 +118,7 @@ fun ProfileScreen(
             } else {
                 groupedSessions.forEach { (dateHeader, sessionsInGroup) ->
                     item(key = "header_$dateHeader") {
-                        SettingsSectionHeader(
+                        SectionHeader(
                             title = dateHeader,
                             icon = Icons.Default.DateRange
                         )
@@ -146,8 +128,9 @@ fun ProfileScreen(
                         items = sessionsInGroup,
                         key = { _, session -> session.sessionId }
                     ) { index, session ->
-                        // animateItem() is standard in M3 LazyLists now
-                        Box(modifier = Modifier.animateItem()) {
+                        Box(
+                            modifier = Modifier.animateItem()
+                        ) {
                             SessionHistoryItem(
                                 session = session,
                                 index = index,
@@ -158,10 +141,6 @@ fun ProfileScreen(
                                 }
                             )
                         }
-                    }
-
-                    item {
-                        Spacer(modifier = Modifier.height(MaterialTheme.spacing.s))
                     }
                 }
             }
@@ -208,25 +187,4 @@ fun ProfileScreen(
             containerColor = MaterialTheme.colorScheme.surfaceContainer
         )
     }
-}
-
-// ... Date helper functions remain the same ...
-private fun getSmartDateHeader(timestamp: Long): String {
-    val sessionCalendar = Calendar.getInstance().apply { timeInMillis = timestamp }
-    val todayCalendar = Calendar.getInstance()
-    val yesterdayCalendar = Calendar.getInstance().apply { add(Calendar.DAY_OF_YEAR, -1) }
-
-    return when {
-        isSameDay(sessionCalendar, todayCalendar) -> "Today"
-        isSameDay(sessionCalendar, yesterdayCalendar) -> "Yesterday"
-        else -> {
-            val formatter = SimpleDateFormat("EEEE, MMM dd", Locale.getDefault())
-            formatter.format(Date(timestamp))
-        }
-    }
-}
-
-private fun isSameDay(cal1: Calendar, cal2: Calendar): Boolean {
-    return cal1.get(Calendar.YEAR) == cal2.get(Calendar.YEAR) &&
-            cal1.get(Calendar.DAY_OF_YEAR) == cal2.get(Calendar.DAY_OF_YEAR)
 }

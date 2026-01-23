@@ -1,21 +1,21 @@
-package com.yugentech.sessions.ui.dash.screens
+package com.yugentech.sessions.ui.config.screens
 
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.Error
 import androidx.compose.material.icons.filled.Face
 import androidx.compose.material.icons.filled.Person
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -39,11 +39,12 @@ import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.yugentech.sessions.R
-import com.yugentech.sessions.theme.tokens.dimensions.AppConstants
+import com.yugentech.sessions.theme.tokens.components
+import com.yugentech.sessions.theme.tokens.corners
 import com.yugentech.sessions.theme.tokens.spacing
-import com.yugentech.sessions.ui.config.components.settingsScreen.SettingsSectionHeader
-import com.yugentech.sessions.ui.dash.components.editProfileScreen.AvatarSection
-import com.yugentech.sessions.ui.dash.components.editProfileScreen.DisplayNameSection
+import com.yugentech.sessions.ui.config.components.editProfileScreen.AvatarSection
+import com.yugentech.sessions.ui.config.components.editProfileScreen.DisplayNameSection
+import com.yugentech.sessions.ui.dash.common.SectionHeader
 import com.yugentech.sessions.viewModels.ProfileViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -78,14 +79,17 @@ fun EditProfileScreen(
 
         var validationError by remember { mutableStateOf<String?>(null) }
 
-        val canSave = validationError == null
+        val canSave = validationError == null && displayName.isNotBlank()
 
         LaunchedEffect(displayName) {
             validationError = when {
                 displayName.isBlank() -> context.getString(R.string.display_name_is_required)
-                displayName.length < AppConstants.TWO -> context.getString(R.string.at_least_2_characters_please)
-                displayName.length > AppConstants.TWENTY -> context.getString(R.string.keep_it_under_20_characters)
-                !displayName.matches(Regex(context.getString(R.string.a_za_z0_9_s))) -> context.getString(R.string.letters_numbers_and_basic_symbols_only)
+                displayName.length < 2 -> context.getString(R.string.at_least_2_characters_please)
+                displayName.length > 20 -> context.getString(R.string.keep_it_under_20_characters)
+                !displayName.matches(Regex(context.getString(R.string.a_za_z0_9_s))) -> context.getString(
+                    R.string.letters_numbers_and_basic_symbols_only
+                )
+
                 else -> null
             }
         }
@@ -110,7 +114,8 @@ fun EditProfileScreen(
                     title = {
                         Text(
                             text = stringResource(R.string.edit_profile),
-                            style = MaterialTheme.typography.headlineMedium)
+                            style = MaterialTheme.typography.headlineMedium
+                        )
                     },
                     navigationIcon = {
                         IconButton(onClick = onNavigateBack) {
@@ -138,59 +143,30 @@ fun EditProfileScreen(
                     .padding(paddingValues)
                     .padding(horizontal = MaterialTheme.spacing.m)
                     .verticalScroll(scrollState),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.xs)
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                AnimatedVisibility(visible = uiState.errorMessage != null) {
-                    Card(
-                        modifier = Modifier.fillMaxWidth(),
-                        colors = CardDefaults.cardColors(
-                            containerColor = MaterialTheme.colorScheme.errorContainer
-                        )
-                    ) {
-                        Row(
-                            modifier = Modifier.padding(MaterialTheme.spacing.xl),
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.m)
-                        ) {
-                            Icon(
-                                imageVector = Icons.Default.Error,
-                                contentDescription = null,
-                                tint = MaterialTheme.colorScheme.onErrorContainer
-                            )
-                            Text(
-                                text = uiState.errorMessage ?: stringResource(R.string.something_went_wrong),
-                                style = MaterialTheme.typography.bodyMedium,
-                                color = MaterialTheme.colorScheme.onErrorContainer
-                            )
-                        }
-                    }
-                }
-
-                // --- Avatar Section Group ---
                 Column(verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.xs)) {
-                    SettingsSectionHeader(
+                    SectionHeader(
                         icon = Icons.Default.Face,
                         title = "Choose Your Avatar"
                     )
                     AvatarSection(
                         selectedAvatarId = selectedAvatarId,
-                        onAvatarSelected = { selectedAvatarId = it },
-                        onSaveClick = { saveProfile() },
-                        isSaveEnabled = canSave
+                        onAvatarSelected = { selectedAvatarId = it }
                     )
                 }
 
-                // --- Display Name Section Group ---
-                Column(verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.xs)) {
-                    SettingsSectionHeader(
+                Column(
+                    verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.xs)
+                ) {
+                    SectionHeader(
                         icon = Icons.Default.Person,
                         title = "Display Name"
                     )
                     DisplayNameSection(
                         displayName = displayName,
                         onDisplayNameChange = {
-                            if (it.length <= AppConstants.TWENTY) {
+                            if (it.length <= 20) {
                                 displayName = it
                             }
                         },
@@ -198,6 +174,30 @@ fun EditProfileScreen(
                         isSaving = uiState.isSaving
                     )
                 }
+
+                Spacer(modifier = Modifier.height(MaterialTheme.spacing.s))
+
+                Button(
+                    onClick = { saveProfile() },
+                    enabled = canSave && !uiState.isSaving,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(MaterialTheme.components.buttonMedium),
+                    shape = RoundedCornerShape(MaterialTheme.corners.extraLarge),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = MaterialTheme.colorScheme.primaryContainer,
+                        contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                        disabledContainerColor = MaterialTheme.colorScheme.surfaceVariant,
+                        disabledContentColor = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                ) {
+                    Text(
+                        text = "Save Changes",
+                        style = MaterialTheme.typography.labelLarge
+                    )
+                }
+
+                Spacer(modifier = Modifier.height(MaterialTheme.spacing.xl))
             }
         }
     }

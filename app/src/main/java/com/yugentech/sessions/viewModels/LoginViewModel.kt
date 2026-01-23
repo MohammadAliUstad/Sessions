@@ -13,10 +13,14 @@ import com.yugentech.sessions.sessions.SyncPreferences
 import com.yugentech.sessions.user.UserResult
 import com.yugentech.sessions.user.userRepository.UserRepository
 import com.yugentech.sessions.ui.auth.states.ForgotPasswordState
+import com.yugentech.sessions.user.UserPreferences
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -24,11 +28,21 @@ import timber.log.Timber
 class LoginViewModel(
     private val authRepository: AuthRepository,
     private val userRepository: UserRepository,
-    private val syncPreferences: SyncPreferences
+    private val syncPreferences: SyncPreferences,
+    private val userPreferences: UserPreferences
 ) : ViewModel() {
 
     private val _authState = MutableStateFlow(AuthState(isLoading = true))
     val authState: StateFlow<AuthState> = _authState.asStateFlow()
+
+    // In LoginViewModel or MainViewModel
+    val showOnboarding = userPreferences.isOnboardingCompleted
+        .map { !it }
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5_000),
+            initialValue = null // <--- Starts as null (Loading)
+        )
 
     private val _forgotPasswordState =
         MutableStateFlow<ForgotPasswordState>(ForgotPasswordState.Idle)
@@ -109,6 +123,12 @@ class LoginViewModel(
                     _authState.update { it.copy(isLoading = false, error = result.message) }
                 }
             }
+        }
+    }
+
+    fun completeOnboarding() {
+        viewModelScope.launch {
+            userPreferences.saveOnboardingCompleted(true)
         }
     }
 

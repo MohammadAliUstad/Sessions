@@ -11,5 +11,6 @@ data class IconSizeTokens(
     val mediumLarge: Dp,
     val large: Dp,
     val extraLarge: Dp,
+    val xxl: Dp,
     val huge: Dp
 )

@@ -2,6 +2,7 @@ package com.yugentech.sessions.viewModels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.yugentech.sessions.models.Session
 import com.yugentech.sessions.sessions.sessionsRepository.SessionsRepository
 import com.yugentech.sessions.user.userRepository.UserRepository
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -9,6 +10,8 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import timber.log.Timber
+import java.util.UUID
+import kotlin.random.Random
 
 // Simple state for data loading status
 data class HomeDataState(
@@ -44,7 +47,7 @@ class HomeViewModel(
     suspend fun fetchSessionsOnce(userId: String) {
         _dataState.value = _dataState.value.copy(isLoading = true)
         try {
-            sessionsRepository.fetchSessionsOnce(userId)
+            sessionsRepository.fetchSessionsOnce()
             Timber.i("Sessions fetched successfully")
         } catch (e: Exception) {
             Timber.e(e, "Error fetching sessions")
@@ -67,11 +70,41 @@ class HomeViewModel(
         val uid = userId ?: return
         viewModelScope.launch {
             try {
-                sessionsRepository.syncSessions(uid)
+                sessionsRepository.syncSessions()
                 Timber.i("Offline sessions synced")
             } catch (e: Exception) {
                 Timber.e(e, "Sync failed")
             }
+        }
+    }
+
+    // Call this function ONCE from your UI (e.g., via a temporary button)
+    fun injectDummyData() {
+        viewModelScope.launch {
+            val dummyTasks = listOf(
+                "Study DSA", "Resume Polish", "System Design",
+                "Morning Focus", "Project Ryori", "Reading", "Meditation"
+            )
+
+            // Generate 50 random sessions over the last 30 days
+            repeat(50) {
+                val randomPastDays = Random.nextLong(0, 30) // 0 to 30 days ago
+                val randomDurationMins = Random.nextInt(15, 120) // 15 to 120 mins
+
+                // Calculate timestamp: Current time minus random days
+                val pastTimestamp = System.currentTimeMillis() - (randomPastDays * 24 * 60 * 60 * 1000)
+
+                val dummySession = Session(
+                    sessionId = UUID.randomUUID().toString(),
+                    duration = randomDurationMins * 60, // Convert mins to seconds if your app uses seconds
+                    timestamp = pastTimestamp,
+                    sessionTask = dummyTasks.random()
+                )
+
+                // Save to repository
+                sessionsRepository.saveSession(dummySession)
+            }
+            Timber.d("✅ Dummy data injection complete!")
         }
     }
 

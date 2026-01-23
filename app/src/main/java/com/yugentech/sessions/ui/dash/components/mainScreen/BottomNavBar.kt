@@ -23,6 +23,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.role
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.unit.dp
 import com.yugentech.sessions.navigation.AppScreens
 import com.yugentech.sessions.theme.tokens.components
 import com.yugentech.sessions.theme.tokens.dimensions.AppAnimations
@@ -45,7 +46,7 @@ fun BottomNavBar(
                 start = MaterialTheme.spacing.sm,
                 end = MaterialTheme.spacing.sm,
                 top = MaterialTheme.spacing.sm,
-                bottom = MaterialTheme.spacing.z
+                bottom = 0.dp
             ),
         horizontalArrangement = Arrangement.spacedBy(ButtonGroupDefaults.ConnectedSpaceBetween),
         verticalAlignment = Alignment.CenterVertically

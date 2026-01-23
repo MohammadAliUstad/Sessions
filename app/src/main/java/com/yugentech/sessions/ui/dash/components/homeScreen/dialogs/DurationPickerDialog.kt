@@ -19,7 +19,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
+import com.yugentech.sessions.theme.tokens.spacing
 import kotlin.math.roundToInt
 
 @Composable
@@ -38,14 +38,13 @@ fun DurationPickerDialog(
     AlertDialog(
         onDismissRequest = onDismiss,
         title = {
-            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            Column(verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.s)) {
                 Text(
                     text = title,
                     style = MaterialTheme.typography.headlineSmall,
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.onSurface
                 )
-                // Added explanation
                 Text(
                     text = description,
                     style = MaterialTheme.typography.bodyMedium,
@@ -56,7 +55,7 @@ fun DurationPickerDialog(
         text = {
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(24.dp),
+                verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.l),
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Text(
@@ -89,7 +88,7 @@ fun DurationPickerDialog(
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(horizontal = 8.dp),
+                            .padding(horizontal = MaterialTheme.spacing.s),
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
                         Text(

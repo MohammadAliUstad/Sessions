@@ -27,40 +27,42 @@ import timber.log.Timber
 class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        val splashScreen = installSplashScreen()
+
         super.onCreate(savedInstanceState)
         Timber.v("MainActivity onCreate: App launching")
 
         val loginViewModel: LoginViewModel = get()
 
-        // Handle Android 12+ Splash Screen and hold it until auth state is resolved
-        val splashScreen = installSplashScreen()
         splashScreen.setKeepOnScreenCondition {
-            loginViewModel.authState.value.isLoading
+            loginViewModel.authState.value.isLoading || loginViewModel.showOnboarding.value == null
         }
+
         setContent {
             val navController = rememberNavController()
+
+            val showOnboarding by loginViewModel.showOnboarding.collectAsStateWithLifecycle()
+            val authState by loginViewModel.authState.collectAsStateWithLifecycle()
 
             val themeViewModel: ThemeViewModel = koinViewModel()
             val themeConfiguration by themeViewModel.themeConfiguration.collectAsStateWithLifecycle()
 
-            // Resolve theme mode based on user preference or system default
             val darkTheme = when (themeConfiguration.themeMode) {
                 ThemeMode.LIGHT -> false
                 ThemeMode.DARK -> true
                 ThemeMode.SYSTEM -> isSystemInDarkTheme()
             }
 
-            // Configure transparent system bars for edge-to-edge content
             enableEdgeToEdge(
                 statusBarStyle = if (darkTheme) {
                     SystemBarStyle.dark(scrim = Color.TRANSPARENT)
                 } else {
-                    SystemBarStyle.light(scrim = Color.TRANSPARENT, darkScrim = Color.WHITE)
+                    SystemBarStyle.light(scrim = Color.TRANSPARENT, darkScrim = Color.TRANSPARENT)
                 },
                 navigationBarStyle = if (darkTheme) {
                     SystemBarStyle.dark(scrim = Color.TRANSPARENT)
                 } else {
-                    SystemBarStyle.light(scrim = Color.TRANSPARENT, darkScrim = Color.WHITE)
+                    SystemBarStyle.light(scrim = Color.TRANSPARENT, darkScrim = Color.TRANSPARENT)
                 }
             )
 
@@ -71,11 +73,17 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    AppNavHost(
-                        navController = navController,
-                        webClientId = getString(R.string.web_client_id),
-                        loginViewModel = loginViewModel
-                    )
+                    if (showOnboarding != null && !authState.isLoading) {
+                        AppNavHost(
+                            navController = navController,
+                            webClientId = getString(R.string.web_client_id),
+                            loginViewModel = loginViewModel,
+                            showOnboarding = showOnboarding!!,
+                            onOnboardingComplete = {
+                                loginViewModel.completeOnboarding()
+                            }
+                        )
+                    }
                 }
             }
         }
