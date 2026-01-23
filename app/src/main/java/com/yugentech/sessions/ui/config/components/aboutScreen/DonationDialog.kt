@@ -10,7 +10,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material.icons.filled.Coffee
@@ -30,8 +33,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.unit.dp
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
+import com.yugentech.sessions.theme.tokens.components
+import com.yugentech.sessions.theme.tokens.corners
+import com.yugentech.sessions.theme.tokens.icons
+import com.yugentech.sessions.theme.tokens.spacing
 
 @Composable
 fun DonationDialog(
@@ -40,32 +48,34 @@ fun DonationDialog(
     onWebClick: () -> Unit
 ) {
     Dialog(
-        onDismissRequest = onDismiss
+        onDismissRequest = onDismiss,
+        properties = DialogProperties(usePlatformDefaultWidth = false)
     ) {
         Card(
-            shape = RoundedCornerShape(28.dp),
+            shape = RoundedCornerShape(MaterialTheme.corners.extraLarge),
             colors = CardDefaults.cardColors(
                 containerColor = MaterialTheme.colorScheme.surfaceContainer,
                 contentColor = MaterialTheme.colorScheme.onSurfaceVariant
             ),
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp)
+                .fillMaxWidth(0.84f)
                 .wrapContentHeight()
         ) {
             Column(
-                modifier = Modifier.padding(24.dp),
-                verticalArrangement = Arrangement.spacedBy(24.dp),
+                modifier = Modifier
+                    .padding(MaterialTheme.spacing.l)
+                    .verticalScroll(rememberScrollState()),
+                verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.l),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.spacedBy(16.dp)
+                    verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.m)
                 ) {
                     Surface(
-                        shape = androidx.compose.foundation.shape.CircleShape,
+                        shape = CircleShape,
                         color = MaterialTheme.colorScheme.primary.copy(alpha = 0.1f),
-                        modifier = Modifier.size(72.dp)
+                        modifier = Modifier.size(MaterialTheme.components.imageSizeSmall)
                     ) {
                         Box(
                             contentAlignment = Alignment.Center
@@ -74,33 +84,33 @@ fun DonationDialog(
                                 imageVector = Icons.Default.Coffee,
                                 contentDescription = null,
                                 tint = MaterialTheme.colorScheme.primary,
-                                modifier = Modifier.size(48.dp)
+                                modifier = Modifier.size(MaterialTheme.components.imageSizeSmall)
                             )
                         }
                     }
 
                     Column(
                         horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.spacedBy(8.dp)
+                        verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.s)
                     ) {
                         Text(
                             text = "Fuel the Development",
                             style = MaterialTheme.typography.headlineSmall,
                             color = MaterialTheme.colorScheme.onSurface,
-                            textAlign = androidx.compose.ui.text.style.TextAlign.Center
+                            textAlign = TextAlign.Center
                         )
 
                         Text(
                             text = "Sessions is free and open source. If you enjoy the focus, consider supporting the journey!",
                             style = MaterialTheme.typography.bodyMedium,
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
-                            textAlign = androidx.compose.ui.text.style.TextAlign.Center
+                            textAlign = TextAlign.Center
                         )
                     }
                 }
 
                 Column(
-                    verticalArrangement = Arrangement.spacedBy(12.dp),
+                    verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.sm),
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     PaymentOptionButton(
@@ -137,8 +147,8 @@ private fun PaymentOptionButton(
         onClick = onClick,
         modifier = Modifier
             .fillMaxWidth()
-            .height(56.dp),
-        shape = RoundedCornerShape(16.dp),
+            .height(MaterialTheme.components.buttonLarge),
+        shape = RoundedCornerShape(MaterialTheme.corners.medium),
         colors = ButtonDefaults.filledTonalButtonColors(
             containerColor = MaterialTheme.colorScheme.primaryContainer,
             contentColor = MaterialTheme.colorScheme.onPrimaryContainer
@@ -147,10 +157,10 @@ private fun PaymentOptionButton(
         Icon(
             imageVector = icon,
             contentDescription = null,
-            modifier = Modifier.size(20.dp)
+            modifier = Modifier.size(MaterialTheme.icons.mediumSmall)
         )
 
-        Spacer(modifier = Modifier.width(12.dp))
+        Spacer(modifier = Modifier.width(MaterialTheme.spacing.sm))
 
         Text(
             text = text,
@@ -162,7 +172,7 @@ private fun PaymentOptionButton(
             imageVector = Icons.AutoMirrored.Filled.ArrowForward,
             contentDescription = null,
             modifier = Modifier
-                .size(16.dp)
+                .size(MaterialTheme.icons.small)
                 .alpha(0.5f)
         )
     }

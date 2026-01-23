@@ -26,9 +26,9 @@ import com.yugentech.sessions.theme.tokens.components
 import com.yugentech.sessions.theme.tokens.corners
 import com.yugentech.sessions.theme.tokens.icons
 import com.yugentech.sessions.theme.tokens.spacing
-import com.yugentech.sessions.ui.dash.components.editProfileScreen.AvatarImage
-import com.yugentech.sessions.ui.dash.components.editProfileScreen.AvatarRepository
-import com.yugentech.sessions.utils.formatTime
+import com.yugentech.sessions.ui.config.components.editProfileScreen.AvatarImage
+import com.yugentech.sessions.ui.config.components.editProfileScreen.AvatarRepository
+import com.yugentech.sessions.ui.dash.utils.formatTime
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
@@ -49,7 +49,6 @@ fun ProfileCard(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.m)
         ) {
-            // 1. Header:  Name (Centered) + Edit Button (Right)
             Box(
                 modifier = Modifier.fillMaxWidth()
             ) {
@@ -61,7 +60,6 @@ fun ProfileCard(
                     modifier = Modifier
                         .fillMaxWidth()
                         .align(Alignment.Center)
-                        .padding(end = MaterialTheme.components.buttonMedium)
                 )
 
                 IconButton(
@@ -82,7 +80,6 @@ fun ProfileCard(
                 }
             }
 
-            // 2. Avatar "Hero" Section
             Box(
                 contentAlignment = Alignment.Center,
                 modifier = Modifier.size(MaterialTheme.components.imageSizeLarge)
@@ -99,7 +96,6 @@ fun ProfileCard(
                 )
             }
 
-            // 3. Avatar Title / Role
             Text(
                 text = AvatarRepository.getAvatarName(userData.avatarId) ?: "Wise Elder",
                 style = MaterialTheme.typography.bodyLarge,
@@ -108,7 +104,6 @@ fun ProfileCard(
                 modifier = Modifier.fillMaxWidth()
             )
 
-            // 4. Lifetime Stats
             StudyTimeSection(
                 formattedTime = formatTime(totalTime)
             )

@@ -1,4 +1,4 @@
-package com.yugentech.sessions.ui.config.components.settingsScreen
+package com.yugentech.sessions.ui.dash.common
 
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -14,11 +14,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
+import com.yugentech.sessions.theme.tokens.icons
 import com.yugentech.sessions.theme.tokens.spacing
 
 @Composable
-fun SettingsSectionHeader(
+fun SectionHeader(
     icon: ImageVector,
     title: String
 ) {
@@ -36,14 +36,16 @@ fun SettingsSectionHeader(
             imageVector = icon,
             contentDescription = null,
             tint = MaterialTheme.colorScheme.primary,
-            modifier = Modifier.size(20.dp)
+            modifier = Modifier.size(MaterialTheme.icons.mediumSmall)
         )
 
         Spacer(modifier = Modifier.width(MaterialTheme.spacing.sm))
 
         Text(
             text = title,
-            style = MaterialTheme.typography.titleSmall.copy(fontWeight = FontWeight.Bold),
+            style = MaterialTheme.typography.titleSmall.copy(
+                fontWeight = FontWeight.Bold
+            ),
             color = MaterialTheme.colorScheme.primary
         )
     }

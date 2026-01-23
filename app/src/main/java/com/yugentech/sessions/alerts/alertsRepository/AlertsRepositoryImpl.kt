@@ -14,11 +14,11 @@ import kotlinx.coroutines.flow.stateIn
 import timber.log.Timber
 
 class AlertsRepositoryImpl(
+    externalScope: CoroutineScope,
     private val alertsPreferences: AlertsPreferences,
     private val hapticService: HapticService,
     private val soundService: SoundService,
-    private val backgroundSoundService: BackgroundSoundService,
-    externalScope: CoroutineScope
+    private val backgroundSoundService: BackgroundSoundService
 ) : AlertsRepository {
 
     override val alertConfiguration: StateFlow<AlertsConfiguration> = alertsPreferences.alertConfiguration

@@ -4,6 +4,7 @@ import com.yugentech.sessions.sessions.SyncPreferences
 import com.yugentech.sessions.sessions.SessionsService
 import com.yugentech.sessions.sessions.sessionsRepository.SessionsRepository
 import com.yugentech.sessions.sessions.sessionsRepository.SessionsRepositoryImpl
+import com.yugentech.sessions.utils.BillingManager
 import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module
 import timber.log.Timber
@@ -15,6 +16,10 @@ val sessionModule = module {
         SessionsService(
             firestore = get()
         )
+    }
+
+    single {
+        BillingManager(androidContext())
     }
 
     // Manages local timestamps to sync data between device and cloud
@@ -30,7 +35,8 @@ val sessionModule = module {
         SessionsRepositoryImpl(
             sessionsDao = get(),
             sessionService = get(),
-            syncPreferences = get()
+            syncPreferences = get(),
+            authRepository = get()
         )
     }
 }

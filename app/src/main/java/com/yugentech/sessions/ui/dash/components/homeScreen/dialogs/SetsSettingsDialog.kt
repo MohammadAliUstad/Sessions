@@ -33,8 +33,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.DialogProperties
+import com.yugentech.sessions.theme.tokens.corners
+import com.yugentech.sessions.theme.tokens.icons
+import com.yugentech.sessions.theme.tokens.spacing
 import kotlin.math.roundToInt
 
 @Composable
@@ -52,20 +54,22 @@ fun SetsSettingsDialog(
 
     AlertDialog(
         onDismissRequest = onDismiss,
-        // Custom width configuration to occupy 92% of screen
         properties = DialogProperties(usePlatformDefaultWidth = false),
         modifier = Modifier
             .fillMaxWidth(0.92f)
-            .padding(16.dp),
+            .padding(MaterialTheme.spacing.m),
         title = {
-            Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+            Column(
+                verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.xs)
+            ) {
                 Text(
                     text = "Session Goals",
                     style = MaterialTheme.typography.headlineSmall,
                     fontWeight = FontWeight.Bold
                 )
+
                 Text(
-                    text = "Choose your focus targets and break intervals.",
+                    text = "Choose number of focus sets and break intervals.",
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
@@ -77,9 +81,8 @@ fun SetsSettingsDialog(
                     .fillMaxWidth()
                     .verticalScroll(scrollState)
             ) {
-                Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(MaterialTheme.spacing.s))
 
-                // Target Sets Slider
                 SettingSliderRow(
                     label = "Target Sets",
                     valueDisplay = "$sets",
@@ -87,37 +90,33 @@ fun SetsSettingsDialog(
                     value = sets.toFloat(),
                     valueRange = 1f..12f,
                     steps = 10,
-                    // roundToInt() prevents erratic snapping behavior
                     onValueChange = { sets = it.roundToInt() }
                 )
 
-                Spacer(modifier = Modifier.height(24.dp))
+                Spacer(modifier = Modifier.height(MaterialTheme.spacing.l))
 
-                // Long Break Duration Slider
                 SettingSliderRow(
                     label = "Long Break Duration",
                     valueDisplay = "${longBreak.roundToInt()}m",
                     icon = Icons.Outlined.Timer,
                     value = longBreak,
-                    valueRange = 1f..10f,
-                    // 6 steps ensures clean 5-minute intervals (10, 15... 45)
-                    steps = 1,
+                    valueRange = 15f..45f,
+                    steps = 5,
                     onValueChange = {
                         longBreak = (it / 5).roundToInt() * 5f
                     }
                 )
 
-                Spacer(modifier = Modifier.height(32.dp))
+                Spacer(modifier = Modifier.height(MaterialTheme.spacing.xl))
 
-                // Info Card
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
                         .background(
-                            MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.4f),
-                            RoundedCornerShape(16.dp)
+                            MaterialTheme.colorScheme.secondaryContainer,
+                            RoundedCornerShape(MaterialTheme.corners.medium)
                         )
-                        .padding(16.dp),
+                        .padding(MaterialTheme.spacing.m),
                     verticalAlignment = Alignment.Top,
                     horizontalArrangement = Arrangement.Start
                 ) {
@@ -125,9 +124,13 @@ fun SetsSettingsDialog(
                         imageVector = Icons.Default.Info,
                         contentDescription = null,
                         tint = MaterialTheme.colorScheme.primary,
-                        modifier = Modifier.size(20.dp).padding(top = 2.dp)
+                        modifier = Modifier
+                            .size(MaterialTheme.icons.mediumSmall)
+                            .padding(top = MaterialTheme.spacing.xxs)
                     )
-                    Spacer(modifier = Modifier.width(12.dp))
+
+                    Spacer(modifier = Modifier.width(MaterialTheme.spacing.sm))
+
                     Column {
                         Text(
                             text = "Smart Schedule",
@@ -139,7 +142,7 @@ fun SetsSettingsDialog(
                             text = "Based on your $focusDuration min focus time, a Long Break will occur after every $setsPerLongBreak sets.",
                             style = MaterialTheme.typography.bodySmall,
                             color = MaterialTheme.colorScheme.onSecondaryContainer,
-                            modifier = Modifier.padding(top = 2.dp)
+                            modifier = Modifier.padding(top = MaterialTheme.spacing.xxs)
                         )
                     }
                 }
@@ -171,20 +174,26 @@ private fun SettingSliderRow(
     steps: Int,
     onValueChange: (Float) -> Unit
 ) {
-    Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+    Column(
+        verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.sm)
+    ) {
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Row(verticalAlignment = Alignment.CenterVertically) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically
+            ) {
                 Icon(
                     imageVector = icon,
                     contentDescription = null,
-                    modifier = Modifier.size(20.dp),
+                    modifier = Modifier.size(MaterialTheme.icons.mediumSmall),
                     tint = MaterialTheme.colorScheme.onSurfaceVariant
                 )
-                Spacer(modifier = Modifier.width(8.dp))
+
+                Spacer(modifier = Modifier.width(MaterialTheme.spacing.s))
+
                 Text(
                     text = label,
                     style = MaterialTheme.typography.titleMedium,

@@ -1,8 +1,5 @@
-package com.yugentech.sessions.ui.dash.components.homeScreen.durationSelection
+package com.yugentech.sessions.ui.dash.states
 
-// Add these to HomeUiState.kt
-
-// The container for all dashboard data
 data class SessionDashboardState(
     val showLongBreakBadge: Boolean = false,
     val badgeText: String = "",
@@ -10,12 +7,9 @@ data class SessionDashboardState(
     val subMessage: String = "",
     val progressDisplay: String = "",
     val isLongBreakActive: Boolean = false,
-
-    // NEW: The list of visual items to render in the progress bar
     val visualSchedule: List<SessionVisualItem> = emptyList()
 )
 
-// The individual items in the progress bar
 sealed interface SessionVisualItem {
     val status: ItemStatus
 

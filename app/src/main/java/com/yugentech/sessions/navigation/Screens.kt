@@ -47,6 +47,7 @@ sealed class AppScreens(
 }
 
 sealed class Screens(val route: String) {
+    data object Onboarding : Screens("onboarding")
     data object Appearance : Screens("appearance")
     data object SignUp : Screens("signUp")
     data object SignIn : Screens("signIn")
@@ -54,4 +55,5 @@ sealed class Screens(val route: String) {
     data object About : Screens("about")
     data object EditProfile : Screens("editProfile")
     data object Settings : Screens("settings")
+    data object Licenses : Screens("licenses")
 }

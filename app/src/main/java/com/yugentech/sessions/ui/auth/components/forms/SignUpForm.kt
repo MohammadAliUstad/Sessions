@@ -1,4 +1,4 @@
-package com.yugentech.sessions.ui.auth.components
+package com.yugentech.sessions.ui.auth.components.forms
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -23,11 +23,14 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
 import com.yugentech.sessions.R
+import com.yugentech.sessions.theme.tokens.corners
 import com.yugentech.sessions.theme.tokens.spacing
-import com.yugentech.sessions.ui.auth.utils.FormValidator
+import com.yugentech.sessions.ui.auth.components.AppTextField
+import com.yugentech.sessions.ui.auth.components.buttons.ActionButton
+import com.yugentech.sessions.ui.auth.components.buttons.GoogleSignInButton
 import com.yugentech.sessions.ui.auth.states.SignUpFormState
+import com.yugentech.sessions.ui.auth.utils.FormValidator
 import kotlinx.coroutines.launch
 
 @Composable
@@ -55,8 +58,7 @@ fun SignUpForm(
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surfaceContainer
         ),
-        // Expressive: Extra Large corners (28.dp)
-        shape = RoundedCornerShape(28.dp)
+        shape = RoundedCornerShape(MaterialTheme.corners.extraLarge)
     ) {
         Column(
             modifier = Modifier.padding(MaterialTheme.spacing.l),
@@ -70,7 +72,6 @@ fun SignUpForm(
                 color = MaterialTheme.colorScheme.onSurface
             )
 
-            // Input Fields Group
             Column(verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.m)) {
                 AppTextField(
                     value = formState.name,
@@ -138,7 +139,6 @@ fun SignUpForm(
                 )
             }
 
-            // Action Buttons Group
             Column(verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.s)) {
                 ActionButton(
                     text = stringResource(R.string.create_account),

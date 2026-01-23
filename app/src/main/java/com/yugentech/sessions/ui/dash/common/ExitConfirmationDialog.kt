@@ -1,4 +1,4 @@
-package com.yugentech.sessions.ui.dash.components.common
+package com.yugentech.sessions.ui.dash.common
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -10,7 +10,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.outlined.Logout
+import androidx.compose.material.icons.automirrored.outlined.ExitToApp
 import androidx.compose.material3.BasicAlertDialog
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -32,7 +32,7 @@ import com.yugentech.sessions.theme.tokens.spacing
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun LogoutConfirmationDialog(
+fun ExitConfirmationDialog(
     onConfirm: () -> Unit,
     onDismiss: () -> Unit
 ) {
@@ -45,7 +45,8 @@ fun LogoutConfirmationDialog(
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(MaterialTheme.corners.extraLarge),
                 colors = CardDefaults.cardColors(
-                    containerColor = MaterialTheme.colorScheme.surfaceContainerHigh
+                    containerColor = MaterialTheme.colorScheme.surfaceContainer,
+                    contentColor = MaterialTheme.colorScheme.onSurfaceVariant
                 ),
                 elevation = CardDefaults.cardElevation(
                     defaultElevation = MaterialTheme.elevation.level3
@@ -58,7 +59,7 @@ fun LogoutConfirmationDialog(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Icon(
-                        imageVector = Icons.AutoMirrored.Outlined.Logout,
+                        imageVector = Icons.AutoMirrored.Outlined.ExitToApp,
                         contentDescription = null,
                         modifier = Modifier.size(MaterialTheme.icons.extraLarge),
                         tint = MaterialTheme.colorScheme.primary
@@ -67,7 +68,7 @@ fun LogoutConfirmationDialog(
                     Spacer(modifier = Modifier.height(MaterialTheme.spacing.m))
 
                     Text(
-                        text = "Sign Out",
+                        text = "Exit App",
                         style = MaterialTheme.typography.headlineSmall,
                         color = MaterialTheme.colorScheme.onSurface,
                         textAlign = TextAlign.Center
@@ -76,7 +77,7 @@ fun LogoutConfirmationDialog(
                     Spacer(modifier = Modifier.height(MaterialTheme.spacing.s))
 
                     Text(
-                        text = "Are you sure you want to sign out of your account?",
+                        text = "Are you sure you want to exit the app?",
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                         textAlign = TextAlign.Center
@@ -94,6 +95,7 @@ fun LogoutConfirmationDialog(
                         ) {
                             Text(
                                 text = "Cancel",
+                                // Standard M3 Button Text
                                 style = MaterialTheme.typography.labelLarge,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant
                             )
@@ -104,7 +106,7 @@ fun LogoutConfirmationDialog(
                             modifier = Modifier.weight(1f)
                         ) {
                             Text(
-                                text = "Sign Out",
+                                text = "Exit",
                                 style = MaterialTheme.typography.labelLarge,
                                 fontWeight = FontWeight.Medium,
                                 color = MaterialTheme.colorScheme.error

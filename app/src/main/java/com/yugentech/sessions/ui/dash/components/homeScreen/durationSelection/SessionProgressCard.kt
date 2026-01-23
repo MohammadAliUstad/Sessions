@@ -1,9 +1,16 @@
 package com.yugentech.sessions.ui.dash.components.homeScreen.durationSelection
 
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -15,10 +22,14 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.SkipNext
 import androidx.compose.material.icons.outlined.Flag
 import androidx.compose.material.icons.outlined.Timer
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
+import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -29,19 +40,29 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
+import com.yugentech.sessions.theme.tokens.components
+import com.yugentech.sessions.theme.tokens.corners
+import com.yugentech.sessions.theme.tokens.dimensions.AppAnimations
+import com.yugentech.sessions.theme.tokens.icons
+import com.yugentech.sessions.theme.tokens.spacing
+import com.yugentech.sessions.ui.dash.states.ItemStatus
+import com.yugentech.sessions.ui.dash.states.SessionDashboardState
+import com.yugentech.sessions.ui.dash.states.SessionVisualItem
 
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun SessionProgressCard(
     state: SessionDashboardState,
-    targetSets: Int
+    targetSets: Int,
+    isTimerRunning: Boolean,
+    onSkipToNext: () -> Unit
 ) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .height(160.dp)
-            .padding(horizontal = 16.dp, vertical = 8.dp),
-        shape = RoundedCornerShape(24.dp),
+            .height(MaterialTheme.components.imageSizeLarge)
+            .padding(horizontal = MaterialTheme.spacing.m),
+        shape = RoundedCornerShape(MaterialTheme.corners.large),
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.secondaryContainer
         )
@@ -49,84 +70,149 @@ fun SessionProgressCard(
         Column(
             modifier = Modifier
                 .fillMaxHeight()
-                .padding(16.dp),
+                .padding(MaterialTheme.spacing.m),
             verticalArrangement = Arrangement.SpaceBetween
         ) {
-            // --- HEADER ROW ---
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Row(verticalAlignment = Alignment.CenterVertically) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.weight(1f)
+                ) {
                     Icon(
                         imageVector = Icons.Outlined.Flag,
                         contentDescription = null,
-                        modifier = Modifier.size(16.dp),
-                        tint = MaterialTheme.colorScheme.onSecondaryContainer.copy(alpha = 0.6f)
+                        modifier = Modifier.size(MaterialTheme.icons.medium),
+                        tint = MaterialTheme.colorScheme.onSecondaryContainer.copy(alpha = 0.9f)
                     )
-                    Spacer(modifier = Modifier.width(6.dp))
+
+                    Spacer(modifier = Modifier.width(MaterialTheme.spacing.xsSmall))
+
                     Text(
-                        text = if (state.isLongBreakActive) "Goal Reached" else "Session Goal",
-                        style = MaterialTheme.typography.labelSmall,
+                        text = if (state.isLongBreakActive) "Long Break Reached" else "Session Goal",
+                        style = MaterialTheme.typography.labelLarge,
                         fontWeight = FontWeight.SemiBold,
-                        color = MaterialTheme.colorScheme.onSecondaryContainer.copy(alpha = 0.7f)
+                        color = MaterialTheme.colorScheme.onSecondaryContainer.copy(alpha = 0.9f)
                     )
                 }
 
                 if (state.showLongBreakBadge) {
                     Surface(
-                        color = MaterialTheme.colorScheme.surface.copy(alpha = 0.5f),
-                        shape = RoundedCornerShape(12.dp)
+                        color = MaterialTheme.colorScheme.onSecondaryContainer.copy(alpha = 0.12f),
+                        shape = RoundedCornerShape(MaterialTheme.corners.smallMedium)
                     ) {
                         Row(
-                            modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
+                            modifier = Modifier.padding(
+                                horizontal = MaterialTheme.spacing.sm,
+                                vertical = MaterialTheme.spacing.xs
+                            ),
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             Icon(
                                 imageVector = Icons.Outlined.Timer,
                                 contentDescription = null,
-                                modifier = Modifier.size(12.dp),
-                                tint = MaterialTheme.colorScheme.onSurface
+                                modifier = Modifier.size(MaterialTheme.icons.small),
+                                tint = MaterialTheme.colorScheme.onSecondaryContainer.copy(alpha = 0.8f)
                             )
-                            Spacer(modifier = Modifier.width(4.dp))
+
+                            Spacer(modifier = Modifier.width(MaterialTheme.spacing.xxs))
+
                             Text(
                                 text = state.badgeText,
                                 style = MaterialTheme.typography.labelSmall,
                                 fontWeight = FontWeight.Bold,
-                                color = MaterialTheme.colorScheme.onSurface
+                                color = MaterialTheme.colorScheme.onSecondaryContainer.copy(alpha = 0.8f),
+                                maxLines = 1
                             )
                         }
                     }
+                } else {
+                    Spacer(modifier = Modifier.weight(1f))
                 }
             }
 
-            // --- PROGRESS TEXT & MESSAGE ---
             Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.Bottom,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .animateContentSize(),
+                verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                if (state.isLongBreakActive) {
-                    Text(
-                        text = state.progressDisplay,
-                        style = MaterialTheme.typography.displaySmall.copy(fontWeight = FontWeight.Bold),
-                        color = MaterialTheme.colorScheme.onSecondaryContainer
-                    )
-                } else {
-                    Row(verticalAlignment = Alignment.Bottom) {
-                        Text(
-                            text = state.progressDisplay,
-                            style = MaterialTheme.typography.displaySmall,
-                            fontWeight = FontWeight.Bold,
-                            color = MaterialTheme.colorScheme.onSecondaryContainer
-                        )
-                        Text(
-                            text = "/$targetSets",
-                            style = MaterialTheme.typography.headlineSmall,
-                            color = MaterialTheme.colorScheme.onSecondaryContainer.copy(alpha = 0.5f),
-                            modifier = Modifier.padding(bottom = 4.dp, start = 2.dp)
-                        )
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.s)
+                ) {
+                    AnimatedContent(
+                        targetState = state.isLongBreakActive,
+                        transitionSpec = {
+                            fadeIn(
+                                tween(AppAnimations.Durations.Standard)
+                            ) togetherWith
+                                    fadeOut(
+                                        tween(AppAnimations.Durations.Fast)
+                                    )
+                        },
+                        label = "textSwap"
+                    ) { isLongBreak ->
+                        if (isLongBreak) {
+                            Text(
+                                text = state.progressDisplay,
+                                style = MaterialTheme.typography.displaySmall.copy(fontWeight = FontWeight.Bold),
+                                color = MaterialTheme.colorScheme.onSecondaryContainer
+                            )
+                        } else {
+                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                Text(
+                                    text = state.progressDisplay,
+                                    style = MaterialTheme.typography.displaySmall,
+                                    fontWeight = FontWeight.Bold,
+                                    color = MaterialTheme.colorScheme.onSecondaryContainer
+                                )
+                                Text(
+                                    text = "/$targetSets",
+                                    style = MaterialTheme.typography.headlineSmall,
+                                    color = MaterialTheme.colorScheme.onSecondaryContainer.copy(
+                                        alpha = 0.5f
+                                    ),
+                                    modifier = Modifier.padding(start = MaterialTheme.spacing.xxs)
+                                )
+                            }
+                        }
+                    }
+
+                    if (targetSets > 1) {
+                        FilledTonalButton(
+                            onClick = onSkipToNext,
+                            enabled = isTimerRunning,
+                            colors = ButtonDefaults.filledTonalButtonColors(
+                                containerColor = MaterialTheme.colorScheme.onSecondaryContainer.copy(
+                                    alpha = 0.15f
+                                ),
+                                contentColor = MaterialTheme.colorScheme.onSecondaryContainer,
+                                disabledContainerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
+                                disabledContentColor = MaterialTheme.colorScheme.onSurfaceVariant
+                            ),
+                            contentPadding = PaddingValues(
+                                horizontal = MaterialTheme.spacing.sm,
+                                vertical = MaterialTheme.spacing.xs
+                            ),
+                            modifier = Modifier.height(MaterialTheme.components.buttonSmall)
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.SkipNext,
+                                contentDescription = null,
+                                modifier = Modifier.size(MaterialTheme.icons.smallMedium)
+                            )
+                            Spacer(modifier = Modifier.width(MaterialTheme.spacing.xxs))
+                            Text(
+                                text = "Skip",
+                                style = MaterialTheme.typography.labelMedium,
+                                fontWeight = FontWeight.SemiBold
+                            )
+                        }
                     }
                 }
 
@@ -147,32 +233,29 @@ fun SessionProgressCard(
                 }
             }
 
-            // --- VISUAL PROGRESS BAR ---
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(4.dp)
+                horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.xs)
             ) {
                 state.visualSchedule.forEach { item ->
-
-                    // UPDATED: Distinct Colors for Item Types
                     val (completedColor, activeColor, upcomingColor) = when (item) {
                         is SessionVisualItem.FocusBlock -> Triple(
-                            MaterialTheme.colorScheme.primary, // Completed
-                            MaterialTheme.colorScheme.onSecondaryContainer, // Active (Strong)
-                            MaterialTheme.colorScheme.onSecondaryContainer.copy(alpha = 0.1f) // Upcoming (Faint)
+                            MaterialTheme.colorScheme.primary,
+                            MaterialTheme.colorScheme.onSecondaryContainer,
+                            MaterialTheme.colorScheme.onSecondaryContainer.copy(alpha = 0.1f)
                         )
 
                         is SessionVisualItem.ShortBreak -> Triple(
-                            MaterialTheme.colorScheme.tertiary, // Use Tertiary for Short Breaks
+                            MaterialTheme.colorScheme.tertiary,
                             MaterialTheme.colorScheme.tertiary,
                             MaterialTheme.colorScheme.tertiary.copy(alpha = 0.3f)
                         )
 
                         is SessionVisualItem.LongBreak -> Triple(
-                            MaterialTheme.colorScheme.inverseSurface, // High contrast for Long Breaks
-                            MaterialTheme.colorScheme.inverseSurface,
-                            MaterialTheme.colorScheme.inverseSurface.copy(alpha = 0.3f)
+                            MaterialTheme.colorScheme.error,
+                            MaterialTheme.colorScheme.error,
+                            MaterialTheme.colorScheme.error.copy(alpha = 0.3f)
                         )
                     }
 
@@ -186,9 +269,9 @@ fun SessionProgressCard(
                         is SessionVisualItem.FocusBlock -> {
                             Box(
                                 modifier = Modifier
-                                    .weight(1f) // Bars take up all remaining space
-                                    .height(6.dp)
-                                    .clip(RoundedCornerShape(3.dp))
+                                    .weight(1f)
+                                    .height(MaterialTheme.spacing.xsSmall)
+                                    .clip(CircleShape)
                                     .background(color)
                             )
                         }
@@ -196,7 +279,7 @@ fun SessionProgressCard(
                         is SessionVisualItem.ShortBreak -> {
                             Box(
                                 modifier = Modifier
-                                    .size(6.dp) // Small circle
+                                    .size(MaterialTheme.spacing.xsSmall)
                                     .clip(CircleShape)
                                     .background(color)
                             )
@@ -205,9 +288,9 @@ fun SessionProgressCard(
                         is SessionVisualItem.LongBreak -> {
                             Box(
                                 modifier = Modifier
-                                    .width(12.dp) // Wider "Pill" for Long Break
-                                    .height(6.dp)
-                                    .clip(RoundedCornerShape(3.dp))
+                                    .width(MaterialTheme.spacing.sm)
+                                    .height(MaterialTheme.spacing.sm)
+                                    .clip(CircleShape)
                                     .background(color)
                             )
                         }

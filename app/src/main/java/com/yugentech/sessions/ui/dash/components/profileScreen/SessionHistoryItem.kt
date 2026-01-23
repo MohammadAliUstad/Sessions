@@ -21,9 +21,12 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.unit.dp
 import com.yugentech.sessions.models.Session
-import com.yugentech.sessions.ui.dash.components.common.itemShape
+import com.yugentech.sessions.theme.tokens.components
+import com.yugentech.sessions.theme.tokens.corners
+import com.yugentech.sessions.theme.tokens.icons
+import com.yugentech.sessions.theme.tokens.spacing
+import com.yugentech.sessions.ui.dash.common.itemShape
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -40,9 +43,15 @@ fun SessionHistoryItem(
     val timeFormat = SimpleDateFormat("hh:mm a", Locale.getDefault())
     val formattedTime = timeFormat.format(Date(session.timestamp))
 
+    // --- DURATION LOGIC ---
     val hours = session.duration / 3600
     val minutes = (session.duration % 3600) / 60
-    val durationText = if (hours > 0) "${hours}h ${minutes}m" else "${minutes}m"
+
+    val durationText = when {
+        hours > 0 && minutes == 0 -> "${hours}h"       // Exact hours (e.g.  "2h")
+        hours > 0 -> "${hours}h ${minutes}m"           // Mixed (e.g. "1h 30m")
+        else -> "${minutes}m"                          // Minutes only (e.g. "45m")
+    }
 
     ListItem(
         headlineContent = {
@@ -66,8 +75,8 @@ fun SessionHistoryItem(
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Surface(
                     color = MaterialTheme.colorScheme.secondaryContainer,
-                    shape = RoundedCornerShape(8.dp),
-                    modifier = Modifier.padding(end = 8.dp)
+                    shape = RoundedCornerShape(MaterialTheme.corners.small),
+                    modifier = Modifier.padding(end = MaterialTheme.spacing.sm)
                 ) {
                     Text(
                         text = durationText,
@@ -75,19 +84,22 @@ fun SessionHistoryItem(
                             fontWeight = FontWeight.Bold
                         ),
                         color = MaterialTheme.colorScheme.onSecondaryContainer,
-                        modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
+                        modifier = Modifier.padding(
+                            horizontal = MaterialTheme.spacing.sm,
+                            vertical = MaterialTheme.spacing.xs
+                        )
                     )
                 }
 
                 IconButton(
                     onClick = onDelete,
-                    modifier = Modifier.size(32.dp)
+                    modifier = Modifier.size(MaterialTheme.components.buttonMedium)
                 ) {
                     Icon(
                         imageVector = Icons.Default.Delete,
                         contentDescription = "Delete",
                         tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                        modifier = Modifier.size(20.dp)
+                        modifier = Modifier.size(MaterialTheme.icons.mediumSmall)
                     )
                 }
             }

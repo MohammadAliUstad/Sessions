@@ -39,33 +39,37 @@ import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
+import com.yugentech.sessions.theme.tokens.components
+import com.yugentech.sessions.theme.tokens.corners
+import com.yugentech.sessions.theme.tokens.spacing
 
 @Composable
 fun SessionConfigCard(
-    focusDurationMinutes: Int, // CHANGED: Long -> Int
-    shortBreakDurationMinutes: Int, // CHANGED: Long -> Int
+    focusDurationMinutes: Int,
+    shortBreakDurationMinutes: Int,
     onFocusClick: () -> Unit,
     onShortBreakClick: () -> Unit
 ) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .height(160.dp)
-            .padding(horizontal = 16.dp, vertical = 8.dp),
+            .height(MaterialTheme.components.imageSizeLarge)
+            .padding(
+                horizontal = MaterialTheme.spacing.m,
+                vertical = MaterialTheme.spacing.s
+            ),
         colors = CardDefaults.cardColors(
             containerColor = Color.Transparent
-        ),
-        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
+        )
     ) {
         Row(
             modifier = Modifier.fillMaxSize(),
-            horizontalArrangement = Arrangement.spacedBy(12.dp),
+            horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.sm),
             verticalAlignment = Alignment.CenterVertically
         ) {
             ConfigItem(
                 label = "Focus Duration",
-                value = "$focusDurationMinutes", // Direct usage
+                value = "$focusDurationMinutes",
                 icon = Icons.Outlined.Timer,
                 onClick = onFocusClick,
                 containerColor = MaterialTheme.colorScheme.primaryContainer,
@@ -75,7 +79,7 @@ fun SessionConfigCard(
 
             ConfigItem(
                 label = "Short Break",
-                value = "$shortBreakDurationMinutes", // Direct usage
+                value = "$shortBreakDurationMinutes",
                 icon = Icons.Outlined.Coffee,
                 onClick = onShortBreakClick,
                 containerColor = MaterialTheme.colorScheme.tertiaryContainer,
@@ -112,7 +116,7 @@ fun ConfigItem(
         modifier = modifier
             .fillMaxHeight()
             .scale(scale)
-            .clip(RoundedCornerShape(24.dp))
+            .clip(RoundedCornerShape(MaterialTheme.corners.large))
             .clickable(
                 interactionSource = interactionSource,
                 indication = null,
@@ -121,14 +125,16 @@ fun ConfigItem(
         color = containerColor,
         contentColor = contentColor
     ) {
-        Box(modifier = Modifier.fillMaxSize()) {
+        Box(
+            modifier = Modifier.fillMaxSize()
+        ) {
             Icon(
                 imageVector = icon,
                 contentDescription = null,
                 modifier = Modifier
                     .align(Alignment.TopEnd)
-                    .offset(x = 20.dp, y = (-5).dp)
-                    .size(100.dp)
+                    .offset(MaterialTheme.spacing.m)
+                    .size(MaterialTheme.components.imageSizeMedium)
                     .rotate(-15f),
                 tint = contentColor.copy(alpha = 0.15f)
             )
@@ -136,7 +142,7 @@ fun ConfigItem(
             Column(
                 modifier = Modifier
                     .align(Alignment.Center)
-                    .padding(16.dp),
+                    .padding(MaterialTheme.spacing.m),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
             ) {
@@ -147,7 +153,7 @@ fun ConfigItem(
                     color = contentColor.copy(alpha = 0.8f)
                 )
 
-                Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(MaterialTheme.spacing.s))
 
                 Row(
                     verticalAlignment = Alignment.Bottom
@@ -165,8 +171,10 @@ fun ConfigItem(
                         style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.SemiBold,
                         color = contentColor.copy(alpha = 0.6f),
-                        modifier = Modifier
-                            .padding(bottom = 6.dp, start = 4.dp)
+                        modifier = Modifier.padding(
+                            bottom = MaterialTheme.spacing.xsSmall,
+                            start = MaterialTheme.spacing.xs
+                        )
                     )
                 }
             }

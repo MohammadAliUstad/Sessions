@@ -1,5 +1,6 @@
 package com.yugentech.sessions.sessions.sessionsRepository
 
+import com.yugentech.sessions.authentication.authRepository.AuthRepository
 import com.yugentech.sessions.models.Session
 import com.yugentech.sessions.room.daos.SessionsDao
 import com.yugentech.sessions.room.entities.SessionsEntity
@@ -7,6 +8,7 @@ import com.yugentech.sessions.sessions.SessionsService
 import com.yugentech.sessions.sessions.SyncPreferences
 import com.yugentech.sessions.sessions.sessionsUtils.SessionResult
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import timber.log.Timber
@@ -14,12 +16,19 @@ import timber.log.Timber
 class SessionsRepositoryImpl(
     private val sessionsDao: SessionsDao,
     private val sessionService: SessionsService,
-    private val syncPreferences: SyncPreferences
+    private val syncPreferences: SyncPreferences,
+    private val authRepository: AuthRepository
 ) : SessionsRepository {
 
-    override suspend fun saveSession(userId: String, session: Session): SessionResult<Unit> {
+    // Helper to safely get the user ID or fail
+    private val currentUserId: String?
+        get() = authRepository.currentUser
+
+    override suspend fun saveSession(session: Session): SessionResult<Unit> {
+        val userId = currentUserId ?: return SessionResult.Error("User not logged in")
+
         return try {
-            Timber.d("Saving session locally: ${session.sessionId}")
+            Timber.d("Saving session locally for user $userId: ${session.sessionId}")
             val entity = SessionsEntity.fromSession(session, userId)
             sessionsDao.saveSession(entity)
             SessionResult.Success(Unit)
@@ -29,7 +38,9 @@ class SessionsRepositoryImpl(
         }
     }
 
-    override fun getSessionsFlow(userId: String): Flow<List<Session>> {
+    override fun getSessionsFlow(): Flow<List<Session>> {
+        val userId = currentUserId ?: return emptyFlow()
+
         return sessionsDao.getSessionsFlow(userId)
             .map { entities ->
                 entities.map { entity ->
@@ -38,11 +49,14 @@ class SessionsRepositoryImpl(
             }
     }
 
-    override fun getTotalDuration(userId: String): Flow<Long> {
+    override fun getTotalDuration(): Flow<Long> {
+        val userId = currentUserId ?: return emptyFlow()
         return sessionsDao.getTotalDuration(userId)
     }
 
-    override suspend fun deleteSession(userId: String, sessionId: String): SessionResult<Unit> {
+    override suspend fun deleteSession(sessionId: String): SessionResult<Unit> {
+        val userId = currentUserId ?: return SessionResult.Error("User not logged in")
+
         return try {
             Timber.i("Deleting session: $sessionId")
             sessionsDao.deleteSession(sessionId)
@@ -54,7 +68,9 @@ class SessionsRepositoryImpl(
         }
     }
 
-    override suspend fun syncSessions(userId: String): SessionResult<Unit> {
+    override suspend fun syncSessions(): SessionResult<Unit> {
+        val userId = currentUserId ?: return SessionResult.Error("User not logged in")
+
         return try {
             val pendingSessions = sessionsDao.getPendingSessions(userId)
 
@@ -70,6 +86,7 @@ class SessionsRepositoryImpl(
                         sessionsDao.syncSessions(userId)
                         SessionResult.Success(Unit)
                     }
+
                     is SessionResult.Error -> {
                         Timber.e("Cloud sync failed: ${result.message}")
                         result
@@ -84,7 +101,9 @@ class SessionsRepositoryImpl(
         }
     }
 
-    override suspend fun fetchSessionsOnce(userId: String): SessionResult<Unit> {
+    override suspend fun fetchSessionsOnce(): SessionResult<Unit> {
+        val userId = currentUserId ?: return SessionResult.Error("User not logged in")
+
         return try {
             val alreadyFetched = syncPreferences.isSessionsFetchDone().first()
 
@@ -113,6 +132,7 @@ class SessionsRepositoryImpl(
                     syncPreferences.setSessionsFetchDone(true)
                     SessionResult.Success(Unit)
                 }
+
                 is SessionResult.Error -> {
                     Timber.e("Failed to fetch cloud sessions: ${result.message}")
                     result
