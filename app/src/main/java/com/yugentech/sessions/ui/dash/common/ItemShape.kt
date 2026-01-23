@@ -1,14 +1,15 @@
-package com.yugentech.sessions.ui.dash.components.common
+package com.yugentech.sessions.ui.dash.common
 
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Shape
-import androidx.compose.ui.unit.dp
+import com.yugentech.sessions.theme.tokens.corners
 
 @Composable
 fun itemShape(index: Int, count: Int): Shape {
-    val largeCorner = 24.dp
-    val smallCorner = 4.dp
+    val largeCorner = MaterialTheme.corners.large
+    val smallCorner = MaterialTheme.corners.small
 
     return when {
         count == 1 -> RoundedCornerShape(largeCorner)

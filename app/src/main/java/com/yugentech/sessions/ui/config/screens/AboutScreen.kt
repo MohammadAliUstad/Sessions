@@ -37,17 +37,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLayoutDirection
-import androidx.compose.ui.unit.dp
-import com.yugentech.sessions.utils.AppConstants
+import androidx.core.net.toUri
 import com.yugentech.sessions.theme.tokens.spacing
 import com.yugentech.sessions.ui.config.components.aboutScreen.AppInfoCard
 import com.yugentech.sessions.ui.config.components.aboutScreen.DonationDialog
-import com.yugentech.sessions.ui.dash.components.settingsScreen.SettingsListItem
-import com.yugentech.sessions.ui.dash.components.settingsScreen.SettingsSectionHeader
 import com.yugentech.sessions.ui.config.models.AboutContent
+import com.yugentech.sessions.ui.dash.common.SectionHeader
+import com.yugentech.sessions.ui.dash.components.settingsScreen.SettingsListItem
+import com.yugentech.sessions.utils.AppConstants
 import com.yugentech.sessions.utils.BillingManager
 import org.koin.compose.koinInject
-import androidx.core.net.toUri
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -60,7 +59,8 @@ fun AboutScreen(
     val activity = context as? Activity
     val layoutDirection = LocalLayoutDirection.current
     var showDonationDialog by remember { mutableStateOf(false) }
-    val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
+    val scrollBehavior =
+        TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
 
     LaunchedEffect(Unit) {
         billingManager.startConnection()
@@ -94,7 +94,12 @@ fun AboutScreen(
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
             LargeTopAppBar(
-                title = { Text("About", style = MaterialTheme.typography.headlineMedium) },
+                title = {
+                    Text(
+                        text = "About",
+                        style = MaterialTheme.typography.headlineMedium
+                    )
+                },
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
@@ -102,8 +107,10 @@ fun AboutScreen(
                 },
                 scrollBehavior = scrollBehavior,
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.background,
-                    scrolledContainerColor = MaterialTheme.colorScheme.surface
+                    containerColor = MaterialTheme.colorScheme.surface,
+                    scrolledContainerColor = MaterialTheme.colorScheme.surface,
+                    navigationIconContentColor = MaterialTheme.colorScheme.onSurface,
+                    titleContentColor = MaterialTheme.colorScheme.onSurface
                 )
             )
         },
@@ -113,7 +120,8 @@ fun AboutScreen(
 
         LazyColumn(
             modifier = Modifier.fillMaxSize(),
-            verticalArrangement = Arrangement.spacedBy(2.dp),
+            verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.xxs),
+
             contentPadding = PaddingValues(
                 top = scaffoldPadding.calculateTopPadding(),
                 bottom = navBarPadding.calculateBottomPadding() + MaterialTheme.spacing.l,
@@ -125,8 +133,7 @@ fun AboutScreen(
         ) {
             item { AppInfoCard() }
 
-            // Support Section
-            item { SettingsSectionHeader(Icons.Filled.Favorite, "Connect & Support") }
+            item { SectionHeader(Icons.Filled.Favorite, "Connect & Support") }
             itemsIndexed(supportItems) { index, item ->
                 SettingsListItem(
                     title = item.title,
@@ -138,8 +145,7 @@ fun AboutScreen(
                 )
             }
 
-            // Community Section
-            item { SettingsSectionHeader(Icons.Filled.ThumbUp, "Spread the Word") }
+            item { SectionHeader(Icons.Filled.ThumbUp, "Spread the Word") }
             itemsIndexed(communityItems) { index, item ->
                 SettingsListItem(
                     title = item.title,
@@ -151,8 +157,7 @@ fun AboutScreen(
                 )
             }
 
-            // Legal Section
-            item { SettingsSectionHeader(Icons.Filled.Info, "Legal") }
+            item { SectionHeader(Icons.Filled.Info, "Legal") }
             itemsIndexed(legalItems) { index, item ->
                 SettingsListItem(
                     title = item.title,

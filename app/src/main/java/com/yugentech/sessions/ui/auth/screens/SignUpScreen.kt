@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -27,15 +28,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import com.yugentech.sessions.R
 import com.yugentech.sessions.theme.tokens.components
-import com.yugentech.sessions.theme.tokens.dimensions.AppConstants
-import com.yugentech.sessions.theme.tokens.icons
+import com.yugentech.sessions.theme.tokens.corners
 import com.yugentech.sessions.theme.tokens.spacing
-import com.yugentech.sessions.ui.auth.components.SignUpForm
-import com.yugentech.sessions.ui.dash.components.common.ToastMessage
+import com.yugentech.sessions.ui.auth.components.forms.SignUpForm
+import com.yugentech.sessions.ui.dash.common.ToastMessage
 import com.yugentech.sessions.viewModels.LoginViewModel
 
 @Composable
@@ -48,13 +47,12 @@ fun SignUpScreen(
     val state by loginViewModel.authState.collectAsState()
     val scrollState = rememberScrollState()
 
-    // Expressive: Use SurfaceContainerLow for the background to give depth
-    // when the form card (SurfaceContainer) sits on top.
     Surface(
-        modifier = Modifier.fillMaxSize(),
-        color = MaterialTheme.colorScheme.surfaceContainerLow
+        modifier = Modifier.fillMaxSize()
     ) {
-        Box(modifier = Modifier.fillMaxSize()) {
+        Box(
+            modifier = Modifier.fillMaxSize()
+        ) {
             Column(
                 modifier = Modifier
                     .fillMaxSize()
@@ -65,20 +63,19 @@ fun SignUpScreen(
             ) {
                 Spacer(modifier = Modifier.height(MaterialTheme.spacing.xl))
 
-                // Expressive Branding: Large "Squircle" container
                 Box(
                     modifier = Modifier
-                        .size(100.dp) // Slightly larger branding
+                        .size(MaterialTheme.components.imageSizeMedium)
                         .background(
                             color = MaterialTheme.colorScheme.surfaceContainerHigh,
-                            shape = RoundedCornerShape(32.dp) // The "Squarish" look
+                            shape = RoundedCornerShape(MaterialTheme.corners.extraLarge)
                         ),
                     contentAlignment = Alignment.Center
                 ) {
                     Icon(
                         imageVector = Icons.Default.Timer,
                         contentDescription = null,
-                        modifier = Modifier.size(48.dp),
+                        modifier = Modifier.size(MaterialTheme.components.imageSizeSmall),
                         tint = MaterialTheme.colorScheme.primary
                     )
                 }
@@ -87,10 +84,10 @@ fun SignUpScreen(
 
                 Text(
                     text = stringResource(R.string.app_name),
-                    // Expressive: Bolder, Larger Type
                     style = MaterialTheme.typography.headlineLarge,
                     fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.onSurface
+                    color = MaterialTheme.colorScheme.onSurface,
+                    textAlign = TextAlign.Center
                 )
 
                 Spacer(modifier = Modifier.height(MaterialTheme.spacing.xs))
@@ -130,8 +127,8 @@ fun SignUpScreen(
                 onDismiss = { loginViewModel.clearError() },
                 modifier = Modifier
                     .align(Alignment.TopCenter)
-                    .padding(top = MaterialTheme.spacing.xxl)
-                    .zIndex(AppConstants.ONEF)
+                    .statusBarsPadding()
+                    .zIndex(1f)
             )
         }
     }

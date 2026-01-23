@@ -19,6 +19,8 @@ data class DesignTokens(
 
 val TokensCompact = DesignTokens(
     spacing = SpacingTokens(
+        z = 0.dp,
+        xxs = 2.dp,
         xs = 4.dp,
         xsSmall = 6.dp,
         s = 8.dp,
@@ -44,6 +46,7 @@ val TokensCompact = DesignTokens(
         mediumLarge = 28.dp,
         large = 32.dp,
         extraLarge = 40.dp,
+        xxl = 48.dp,
         huge = 56.dp
     ),
     components = ComponentTokens(
@@ -51,14 +54,19 @@ val TokensCompact = DesignTokens(
         buttonSmall = 40.dp,
         buttonMedium = 48.dp,
         buttonLarge = 56.dp,
-        fabSize = 72.dp,
+        fabSizeStandard = 72.dp,
+        fabSizeLarge = 80.dp,
         buttonHeight = 48.dp,
         cardMinWidth = 160.dp,
         cardElevation = 2.dp,
-        imageSizeSmall = 48.dp,
-        imageSizeMedium = 96.dp,
+        imageSizeSmall = 72.dp,
+        imageSizeMedium = 88.dp,
         imageSizeLarge = 160.dp,
-        timerSize = 280.dp
+        timerSize = 280.dp,
+        bottomNavHeight = 80.dp,
+        bottomNavPadding = 80.dp,
+        controlBarItemSize = 96.dp,
+        controlBarItemWidthWide = 128.dp
     ),
     elevation = ElevationTokens(
         level0 = 0.dp,

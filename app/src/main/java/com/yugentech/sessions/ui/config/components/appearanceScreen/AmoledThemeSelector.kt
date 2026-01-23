@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Contrast
 import androidx.compose.material3.Card
@@ -23,10 +24,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.yugentech.sessions.theme.ThemeViewModel
 import com.yugentech.sessions.theme.models.ThemeMode
+import com.yugentech.sessions.theme.tokens.components
+import com.yugentech.sessions.theme.tokens.corners
 import com.yugentech.sessions.theme.tokens.spacing
 import org.koin.androidx.compose.koinViewModel
 
@@ -38,14 +40,12 @@ fun AmoledThemeSelector(
 ) {
     val themeConfig by viewModel.themeConfiguration.collectAsStateWithLifecycle()
     val isSystemDark = androidx.compose.foundation.isSystemInDarkTheme()
-    val isDarkThemeActive = themeConfig.themeMode == ThemeMode.DARK ||
-            (themeConfig.themeMode == ThemeMode.SYSTEM && isSystemDark)
+    val isDarkThemeActive =
+        themeConfig.themeMode == ThemeMode.DARK || (themeConfig.themeMode == ThemeMode.SYSTEM && isSystemDark)
 
     Card(
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(vertical = MaterialTheme.spacing.s),
-        shape = MaterialTheme.shapes.extraLarge,
+        modifier = modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(MaterialTheme.corners.extraLarge),
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surfaceContainer
         )
@@ -57,7 +57,7 @@ fun AmoledThemeSelector(
                 LinearWavyProgressIndicator(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(56.dp)
+                        .height(MaterialTheme.components.buttonLarge)
                         .alpha(0.15f)
                         .align(Alignment.Center),
                     color = MaterialTheme.colorScheme.primary,
@@ -85,9 +85,11 @@ fun AmoledThemeSelector(
                     Icon(
                         imageVector = Icons.Default.Contrast,
                         contentDescription = null,
-                        tint = if (isDarkThemeActive) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant.copy(
-                            alpha = 0.5f
-                        )
+                        tint =
+                            if (isDarkThemeActive)
+                                MaterialTheme.colorScheme.primary
+                            else
+                                MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f)
                     )
                 },
                 trailingContent = {
@@ -102,7 +104,7 @@ fun AmoledThemeSelector(
                                 Icon(
                                     imageVector = Icons.Default.Contrast,
                                     contentDescription = null,
-                                    modifier = Modifier.padding(2.dp)
+                                    modifier = Modifier.padding(MaterialTheme.spacing.xxs)
                                 )
                             }
                         } else null,
