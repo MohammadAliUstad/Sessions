@@ -2,6 +2,7 @@ package com.yugentech.sessions.ui.config.components.appearanceScreen
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -24,13 +25,13 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.yugentech.sessions.R
 import com.yugentech.sessions.theme.ThemeViewModel
 import com.yugentech.sessions.theme.models.ThemeMode
-import com.yugentech.sessions.ui.config.components.settingsScreen.SettingsSectionHeader
-import com.yugentech.sessions.ui.dash.components.common.itemShape
+import com.yugentech.sessions.theme.tokens.spacing
+import com.yugentech.sessions.ui.dash.common.itemShape
+import com.yugentech.sessions.ui.dash.common.SectionHeader
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -41,13 +42,14 @@ fun ThemeModeSelector(
     val themeConfig by themeViewModel.themeConfiguration.collectAsStateWithLifecycle()
 
     Column(modifier = modifier.fillMaxWidth()) {
-        SettingsSectionHeader(
+        SectionHeader(
             icon = Icons.Default.Brightness6,
             title = stringResource(R.string.theme_mode)
         )
 
         Column(
-            modifier = Modifier.selectableGroup()
+            modifier = Modifier.selectableGroup(),
+            verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.xxs)
         ) {
             val modes = ThemeMode.entries
             modes.forEachIndexed { index, themeMode ->
@@ -105,7 +107,7 @@ private fun ThemeRadioItem(
             Text(
                 text = title,
                 style = MaterialTheme.typography.titleMedium,
-                modifier = Modifier.padding(vertical = 4.dp)
+                modifier = Modifier.padding(vertical = MaterialTheme.spacing.xs)
             )
         },
         supportingContent = {

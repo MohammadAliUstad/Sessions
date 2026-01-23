@@ -14,8 +14,8 @@ import com.yugentech.sessions.sessions.sessionsUtils.SessionResult
 import com.yugentech.sessions.timer.states.TimerEffect
 import com.yugentech.sessions.timer.states.TimerMode
 import com.yugentech.sessions.timer.timerRepository.TimerRepository
-import com.yugentech.sessions.ui.dash.components.homeScreen.durationSelection.SessionDashboardCalculator
-import com.yugentech.sessions.ui.dash.components.homeScreen.durationSelection.SessionDashboardState
+import com.yugentech.sessions.ui.dash.utils.SessionDashboardCalculator
+import com.yugentech.sessions.ui.dash.states.SessionDashboardState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -126,9 +126,10 @@ class TimerViewModel(
     // CONFIGURATION
     // ============================================================================================
 
+    // In TimerViewModel.kt
+
     fun updateSessionTask(newTask: String) {
-        val current = timerState.value.timerConfig
-        timerRepository.updateConfig(current.copy(sessionTask = newTask))
+        timerRepository.updateSessionTask(newTask)
     }
 
     fun updateFocusDuration(minutes: Int) {
@@ -186,15 +187,18 @@ class TimerViewModel(
             // Stop timer first, then stop alerts
             timerRepository.pause()
             stopActiveNotification()
-            alertsRepository.onFocusStop(view)
+            alertsRepository.onFocusPause(view)
         }
+    }
+
+    fun onFocusStop(view: View? = null) {
+        alertsRepository.onFocusStop(view)
     }
 
     fun stopAndDiscardSession(view: View? = null) {
         viewModelScope.launch {
             timerRepository.reset()
             stopActiveNotification()
-            alertsRepository.onFocusStop(view)
         }
     }
 

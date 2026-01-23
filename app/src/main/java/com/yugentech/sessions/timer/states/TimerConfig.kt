@@ -1,6 +1,6 @@
 package com.yugentech.sessions.timer.states
 
-import com.yugentech.sessions.theme.tokens.dimensions.AppConstants
+import com.yugentech.sessions.utils.AppConstants
 import kotlin.math.ceil
 
 data class TimerConfig(

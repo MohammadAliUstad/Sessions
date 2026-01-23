@@ -26,9 +26,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
 import com.yugentech.sessions.R
-import com.yugentech.sessions.theme.tokens.dimensions.AppConstants
+import com.yugentech.sessions.theme.tokens.icons
 import com.yugentech.sessions.theme.tokens.spacing
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
@@ -60,14 +59,14 @@ fun ThemeCard(
         ) {
             Box(
                 modifier = Modifier
-                    .size(36.dp)
+                    .size(MaterialTheme.icons.large)
                     .clip(CircleShape)
                     .background(brush = Brush.linearGradient(themeOption.gradientColors)),
                 contentAlignment = Alignment.Center
             ) {
                 if (isSelected) {
                     Surface(
-                        modifier = Modifier.size(20.dp),
+                        modifier = Modifier.size(MaterialTheme.icons.mediumSmall),
                         shape = CircleShape,
                         color = MaterialTheme.colorScheme.onPrimary
                     ) {
@@ -75,19 +74,19 @@ fun ThemeCard(
                             imageVector = Icons.Default.Check,
                             contentDescription = stringResource(R.string.selected),
                             tint = themeOption.primaryColor,
-                            modifier = Modifier.padding(3.dp)
+                            modifier = Modifier.padding(MaterialTheme.spacing.xxs)
                         )
                     }
                 }
             }
 
-            Spacer(modifier = Modifier.height(4.dp))
+            Spacer(modifier = Modifier.height(MaterialTheme.spacing.xs))
 
             Text(
                 text = themeOption.displayName,
                 style = MaterialTheme.typography.labelMedium,
                 fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium,
-                maxLines = AppConstants.ONE
+                maxLines = 1
             )
         }
     }

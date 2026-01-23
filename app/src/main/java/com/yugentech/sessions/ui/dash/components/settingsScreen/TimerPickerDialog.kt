@@ -1,4 +1,4 @@
-package com.yugentech.sessions.ui.config.components.settingsScreen
+package com.yugentech.sessions.ui.dash.components.settingsScreen
 
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ExperimentalMaterial3Api

@@ -10,7 +10,6 @@ import com.yugentech.sessions.theme.tokens.dimensions.ElevationTokens
 import com.yugentech.sessions.theme.tokens.dimensions.IconSizeTokens
 import com.yugentech.sessions.theme.tokens.dimensions.SpacingTokens
 import com.yugentech.sessions.theme.tokens.dimensions.StrokeTokens
-import com.yugentech.sessions.theme.tokens.dimensions.animations.AnimationTokens
 
 val LocalDesignTokens = staticCompositionLocalOf { TokensCompact }
 
@@ -43,8 +42,3 @@ val MaterialTheme.strokes: StrokeTokens
     @Composable
     @ReadOnlyComposable
     get() = LocalDesignTokens.current.strokeWidths
-
-val MaterialTheme.animations: AnimationTokens
-    @Composable
-    @ReadOnlyComposable
-    get() = LocalDesignTokens.current.animations

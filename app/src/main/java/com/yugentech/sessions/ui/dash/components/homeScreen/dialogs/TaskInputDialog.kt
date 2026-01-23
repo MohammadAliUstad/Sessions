@@ -36,15 +36,13 @@ fun TaskInputDialog(
                 label = { Text("What are you working on?") },
                 singleLine = true,
                 modifier = Modifier.fillMaxWidth(),
+                textStyle = MaterialTheme.typography.titleMedium,
                 shape = RoundedCornerShape(MaterialTheme.corners.medium),
                 colors = TextFieldDefaults.colors(
                     focusedContainerColor = MaterialTheme.colorScheme.secondaryContainer,
                     unfocusedContainerColor = MaterialTheme.colorScheme.secondaryContainer,
                     focusedIndicatorColor = Color.Transparent,
-                    unfocusedIndicatorColor = Color.Transparent,
-                    cursorColor = MaterialTheme.colorScheme.primary,
-                    focusedLabelColor = MaterialTheme.colorScheme.primary,
-                    unfocusedLabelColor = MaterialTheme.colorScheme.onSurfaceVariant
+                    unfocusedIndicatorColor = Color.Transparent
                 )
             )
         },
@@ -64,7 +62,6 @@ fun TaskInputDialog(
                 Text("Cancel")
             }
         },
-        // Optional: Ensure dialog background matches new theme standards
         containerColor = MaterialTheme.colorScheme.surfaceContainer
     )
 }

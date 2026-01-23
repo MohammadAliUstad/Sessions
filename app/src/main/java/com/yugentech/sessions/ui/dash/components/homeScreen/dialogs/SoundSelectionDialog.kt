@@ -36,9 +36,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
 import com.yugentech.sessions.alerts.models.BackgroundSound
-import com.yugentech.sessions.ui.dash.states.SoundOption
+import com.yugentech.sessions.theme.tokens.spacing
+import com.yugentech.sessions.ui.dash.models.SoundOption
 
 @Composable
 fun SoundSelectionDialog(
@@ -70,11 +70,11 @@ fun SoundSelectionDialog(
             )
         },
         text = {
-            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            Column(verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.s)) {
                 options.chunked(2).forEach { rowOptions ->
                     Row(
                         modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                        horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.s)
                     ) {
                         rowOptions.forEach { soundOption ->
                             SoundToggleCard(
@@ -146,7 +146,7 @@ private fun SoundToggleCard(
         )
     ) {
         Column(
-            modifier = Modifier.padding(vertical = 16.dp),
+            modifier = Modifier.padding(vertical = MaterialTheme.spacing.m),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Icon(
@@ -158,7 +158,7 @@ private fun SoundToggleCard(
                 }
             )
 
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(MaterialTheme.spacing.s))
 
             Text(
                 text = soundOption.label,

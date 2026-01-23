@@ -1,7 +1,7 @@
 package com.yugentech.sessions.timer
 
 import android.os.SystemClock
-import com.yugentech.sessions.theme.tokens.dimensions.AppConstants
+import com.yugentech.sessions.utils.AppConstants
 import com.yugentech.sessions.timer.states.TimerConfig
 import com.yugentech.sessions.timer.states.TimerEffect
 import com.yugentech.sessions.timer.states.TimerMode
