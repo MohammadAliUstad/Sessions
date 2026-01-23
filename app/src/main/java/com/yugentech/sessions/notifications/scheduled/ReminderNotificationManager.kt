@@ -11,7 +11,7 @@ import timber.log.Timber
 import java.util.Calendar
 
 // Wrapper for AlarmManager to handle exact alarm scheduling and permissions
-class ReminderManager(private val context: Context) {
+class ReminderNotificationManager(private val context: Context) {
 
     private val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
 

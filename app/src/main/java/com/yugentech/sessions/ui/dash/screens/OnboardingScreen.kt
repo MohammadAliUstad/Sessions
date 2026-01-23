@@ -24,7 +24,6 @@ import androidx.compose.material.icons.filled.MusicNote
 import androidx.compose.material.icons.filled.Palette
 import androidx.compose.material.icons.filled.DarkMode
 import androidx.compose.material.icons.filled.CalendarToday
-import androidx.compose.material.icons.filled.TrendingUp
 import androidx.compose.material.icons.filled.BarChart
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -43,12 +42,13 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.yugentech.sessions.R
+import com.yugentech.sessions.ui.dash.components.onBoardingScreen.WavyBackground
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
-fun ExpressiveOnboardingScreen(
+fun OnboardingScreen(
     onFinish: () -> Unit
 ) {
     val pagerState = rememberPagerState(pageCount = { 3 })

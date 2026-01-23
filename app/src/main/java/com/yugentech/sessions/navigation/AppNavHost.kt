@@ -26,12 +26,12 @@ import com.yugentech.sessions.ui.config.screens.AboutScreen
 import com.yugentech.sessions.ui.config.screens.AppearanceScreen
 import com.yugentech.sessions.ui.config.screens.LicensesScreen
 import com.yugentech.sessions.ui.config.screens.EditProfileScreen
-import com.yugentech.sessions.ui.dash.screens.ExpressiveOnboardingScreen
+import com.yugentech.sessions.ui.dash.screens.OnboardingScreen
 import com.yugentech.sessions.ui.dash.screens.MainScreen
-import com.yugentech.sessions.utils.defaultEnterTransition
-import com.yugentech.sessions.utils.defaultExitTransition
-import com.yugentech.sessions.utils.defaultPopEnterTransition
-import com.yugentech.sessions.utils.defaultPopExitTransition
+import com.yugentech.sessions.ui.dash.utils.defaultEnterTransition
+import com.yugentech.sessions.ui.dash.utils.defaultExitTransition
+import com.yugentech.sessions.ui.dash.utils.defaultPopEnterTransition
+import com.yugentech.sessions.ui.dash.utils.defaultPopExitTransition
 import com.yugentech.sessions.viewModels.HomeViewModel
 import com.yugentech.sessions.viewModels.LoginViewModel
 import com.yugentech.sessions.viewModels.ProfileViewModel
@@ -128,7 +128,7 @@ fun AppNavHost(
             exitTransition = { defaultExitTransition() },
             popExitTransition = { defaultPopExitTransition() }
         ) {
-            ExpressiveOnboardingScreen(onFinish = onOnboardingComplete)
+            OnboardingScreen(onFinish = onOnboardingComplete)
             BackHandler { (context as? Activity)?.finish() }
         }
 

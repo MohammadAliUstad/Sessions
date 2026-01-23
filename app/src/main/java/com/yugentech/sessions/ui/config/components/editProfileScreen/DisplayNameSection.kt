@@ -38,7 +38,7 @@ fun DisplayNameSection(
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surfaceContainer
         ),
-        shape = RoundedCornerShape(MaterialTheme.corners.large)
+        shape = RoundedCornerShape(MaterialTheme.corners.extraLarge)
     ) {
         Column(
             modifier = Modifier
@@ -46,8 +46,6 @@ fun DisplayNameSection(
                 .padding(MaterialTheme.spacing.l),
             verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.m)
         ) {
-            // Internal title "Display Name" removed here (handled by parent header)
-
             Text(
                 text = "Pick a name that motivates your sessions",
                 style = MaterialTheme.typography.bodyMedium,
@@ -61,7 +59,7 @@ fun DisplayNameSection(
                 onValueChange = onDisplayNameChange,
                 modifier = Modifier.fillMaxWidth(),
                 label = {
-                    Text(text = "Enter your display name")
+                    Text("Enter your display name")
                 },
                 leadingIcon = {
                     Icon(
@@ -82,14 +80,8 @@ fun DisplayNameSection(
                     unfocusedContainerColor = MaterialTheme.colorScheme.secondaryContainer,
                     focusedIndicatorColor = Color.Transparent,
                     unfocusedIndicatorColor = Color.Transparent,
-                    cursorColor = MaterialTheme.colorScheme.primary,
-                    errorIndicatorColor = MaterialTheme.colorScheme.error,
-                    focusedLabelColor = MaterialTheme.colorScheme.primary,
-                    unfocusedLabelColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                    focusedLeadingIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                    unfocusedLeadingIconColor = MaterialTheme.colorScheme.onSurfaceVariant
                 ),
-                shape = RoundedCornerShape(MaterialTheme.corners.small),
+                shape = RoundedCornerShape(MaterialTheme.corners.medium),
                 isError = validationError != null,
                 supportingText = {
                     Text(

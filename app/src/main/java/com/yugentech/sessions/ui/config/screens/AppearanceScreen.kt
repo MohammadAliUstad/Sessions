@@ -1,5 +1,6 @@
 package com.yugentech.sessions.ui.config.screens
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.LazyColumn
@@ -18,7 +19,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
-import androidx.compose.ui.unit.dp
 import com.yugentech.sessions.theme.ThemeViewModel
 import com.yugentech.sessions.theme.tokens.spacing
 import com.yugentech.sessions.ui.config.components.appearanceScreen.AmoledThemeSelector
@@ -53,10 +53,10 @@ fun AppearanceScreen(
                 },
                 scrollBehavior = scrollBehavior,
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.background,
+                    containerColor = MaterialTheme.colorScheme.surface,
                     scrolledContainerColor = MaterialTheme.colorScheme.surface,
-                    titleContentColor = MaterialTheme.colorScheme.onSurface,
-                    navigationIconContentColor = MaterialTheme.colorScheme.onSurface
+                    navigationIconContentColor = MaterialTheme.colorScheme.onSurface,
+                    titleContentColor = MaterialTheme.colorScheme.onSurface
                 )
             )
         },
@@ -66,10 +66,11 @@ fun AppearanceScreen(
             modifier = Modifier.fillMaxSize(),
             contentPadding = PaddingValues(
                 top = paddingValues.calculateTopPadding(),
-                bottom = 48.dp,
+                bottom = MaterialTheme.spacing.xxl,
                 start = MaterialTheme.spacing.m,
                 end = MaterialTheme.spacing.m
             ),
+            verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.xs),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             item {

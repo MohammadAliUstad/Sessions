@@ -11,8 +11,6 @@ class SoundService(
 ) {
     fun playStartAlert() {
         Timber.d("Playing session start sound")
-        // You can customize volume per sound here if you want
-        // e.g., play(R.raw.session_start, 0.4f)
         play(R.raw.session_start)
     }
 
@@ -21,15 +19,10 @@ class SoundService(
         play(R.raw.session_stop, 0.5f)
     }
 
-    // Added 'volume' parameter with a default of 0.6f (60%)
     private fun play(@RawRes resId: Int, volume: Float = 0.6f) {
         try {
             MediaPlayer.create(context, resId)?.apply {
-
-                // --- NEW: Set Volume (Left Channel, Right Channel) ---
-                // Range is 0.0f (mute) to 1.0f (max)
                 setVolume(volume, volume)
-                // -----------------------------------------------------
 
                 setOnCompletionListener { mediaPlayer ->
                     try {

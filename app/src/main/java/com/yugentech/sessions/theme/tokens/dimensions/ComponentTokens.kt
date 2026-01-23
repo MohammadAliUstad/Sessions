@@ -7,12 +7,17 @@ data class ComponentTokens(
     val buttonSmall: Dp,
     val buttonMedium: Dp,
     val buttonLarge: Dp,
-    val fabSize: Dp,
+    val fabSizeStandard: Dp,
+    val fabSizeLarge: Dp,
     val buttonHeight: Dp,
     val cardMinWidth: Dp,
     val cardElevation: Dp,
     val imageSizeSmall: Dp,
     val imageSizeMedium: Dp,
     val imageSizeLarge: Dp,
-    val timerSize: Dp
+    val timerSize: Dp,
+    val bottomNavHeight: Dp,
+    val bottomNavPadding: Dp,
+    val controlBarItemSize: Dp,
+    val controlBarItemWidthWide: Dp
 )

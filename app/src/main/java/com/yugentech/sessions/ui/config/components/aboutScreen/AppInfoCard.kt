@@ -27,17 +27,15 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
 import com.yugentech.sessions.R
+import com.yugentech.sessions.theme.tokens.components
 import com.yugentech.sessions.theme.tokens.corners
 import com.yugentech.sessions.theme.tokens.spacing
 
 @Composable
 fun AppInfoCard() {
     Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(),
+        modifier = Modifier.fillMaxWidth(),
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surfaceContainer,
             contentColor = MaterialTheme.colorScheme.onSurface
@@ -47,13 +45,16 @@ fun AppInfoCard() {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(vertical = 28.dp, horizontal = MaterialTheme.spacing.l),
+                .padding(
+                    vertical = MaterialTheme.spacing.xl,
+                    horizontal = MaterialTheme.spacing.l
+                ),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.SpaceEvenly
         ) {
             Card(
                 modifier = Modifier
-                    .size(140.dp)
+                    .size(MaterialTheme.components.imageSizeLarge)
                     .clip(CircleShape),
                 colors = CardDefaults.cardColors(
                     containerColor = MaterialTheme.colorScheme.primaryContainer
