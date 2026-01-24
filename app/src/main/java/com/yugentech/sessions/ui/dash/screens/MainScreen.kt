@@ -68,8 +68,9 @@ fun MainScreen(
     onSignOut: () -> Unit,
     onExit: () -> Unit,
     onEditProfile: () -> Unit,
+    onViewInsights: () -> Unit,
     onAbout: () -> Unit,
-    onAppearance: () -> Unit,
+    onAppearance: () -> Unit
 ) {
     val context = LocalContext.current
     var toastMessage by remember { mutableStateOf<String?>(null) }
@@ -190,6 +191,7 @@ fun MainScreen(
                     AppScreens.Profile -> ProfileScreen(
                         userId = userId,
                         onEditProfile = onEditProfile,
+                        onViewInsights = onViewInsights,
                         profileViewModel = profileViewModel
                     )
 

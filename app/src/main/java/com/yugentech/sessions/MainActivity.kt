@@ -42,7 +42,6 @@ class MainActivity : ComponentActivity() {
             val navController = rememberNavController()
 
             val showOnboarding by loginViewModel.showOnboarding.collectAsStateWithLifecycle()
-            val authState by loginViewModel.authState.collectAsStateWithLifecycle()
 
             val themeViewModel: ThemeViewModel = koinViewModel()
             val themeConfiguration by themeViewModel.themeConfiguration.collectAsStateWithLifecycle()
@@ -73,7 +72,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    if (showOnboarding != null && !authState.isLoading) {
+                    if (showOnboarding != null) {
                         AppNavHost(
                             navController = navController,
                             webClientId = getString(R.string.web_client_id),
