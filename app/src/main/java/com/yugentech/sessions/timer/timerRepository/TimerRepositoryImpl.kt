@@ -35,6 +35,11 @@ class TimerRepositoryImpl(
         timerService.pause()
     }
 
+    override fun skipToNext() {
+        Timber.d("Requesting skip to next")
+        timerService.skipToNext()
+    }
+
     override fun reset() {
         Timber.d("Resetting timer")
         timerService.reset()

@@ -191,6 +191,11 @@ class TimerViewModel(
         }
     }
 
+    fun skipToNextMode(view: View? = null) {
+        Timber.d("ViewModel: Skipping to next mode")
+        timerRepository.skipToNext()
+    }
+
     fun onFocusStop(view: View? = null) {
         alertsRepository.onFocusStop(view)
     }
@@ -269,5 +274,9 @@ class TimerViewModel(
             notificationRepository.stopActiveNotification()
         }
         FirebaseCrashlytics.getInstance().setCustomKey("is_session_active", false)
+    }
+
+    fun clearErrorMessage() {
+        _errorMessage.value = null
     }
 }

@@ -58,6 +58,14 @@ class TimerService(
         _timerState.update { it.copy(isTimerRunning = false) }
     }
 
+    fun skipToNext() {
+        Timber.d("Skipping to next mode")
+        cancelTimer()
+        scope.launch {
+            onTimerComplete()
+        }
+    }
+
     fun updateConfig(timerConfig: TimerConfig) {
         _timerState.update { current ->
             val newMinutes = getDurationMinutes(current.currentMode, timerConfig)
