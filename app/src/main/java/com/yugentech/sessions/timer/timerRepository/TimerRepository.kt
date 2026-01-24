@@ -11,6 +11,7 @@ interface TimerRepository {
     val timerEffects: SharedFlow<TimerEffect>
     fun start()
     fun pause()
+    fun skipToNext()
     fun reset()
     fun updateConfig(timerConfig: TimerConfig)
     fun updateSessionTask(newTask: String)

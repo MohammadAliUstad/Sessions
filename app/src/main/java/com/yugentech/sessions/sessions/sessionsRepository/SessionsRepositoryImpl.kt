@@ -20,7 +20,6 @@ class SessionsRepositoryImpl(
     private val authRepository: AuthRepository
 ) : SessionsRepository {
 
-    // Helper to safely get the user ID or fail
     private val currentUserId: String?
         get() = authRepository.currentUser
 

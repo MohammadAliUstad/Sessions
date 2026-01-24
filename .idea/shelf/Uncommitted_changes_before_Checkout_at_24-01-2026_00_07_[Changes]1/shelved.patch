@@ -1,0 +1,320 @@
+Index: app/src/main/java/com/yugentech/sessions/timer/timerRepository/TimerRepository.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.yugentech.sessions.timer.timerRepository\r\n\r\nimport com.yugentech.sessions.timer.states.TimerConfig\r\nimport com.yugentech.sessions.timer.states.TimerEffect\r\nimport com.yugentech.sessions.timer.states.TimerState\r\nimport kotlinx.coroutines.flow.SharedFlow\r\nimport kotlinx.coroutines.flow.StateFlow\r\n\r\ninterface TimerRepository {\r\n    val timerState: StateFlow<TimerState>\r\n    val timerEffects: SharedFlow<TimerEffect>\r\n    fun start()\r\n    fun pause()\r\n    fun reset()\r\n    fun updateConfig(timerConfig: TimerConfig)\r\n    fun updateSessionTask(newTask: String)\r\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/java/com/yugentech/sessions/timer/timerRepository/TimerRepository.kt b/app/src/main/java/com/yugentech/sessions/timer/timerRepository/TimerRepository.kt
+--- a/app/src/main/java/com/yugentech/sessions/timer/timerRepository/TimerRepository.kt	(revision b5bb55643d7936ed426d4b51e037accc48b40d7b)
++++ b/app/src/main/java/com/yugentech/sessions/timer/timerRepository/TimerRepository.kt	(date 1769192833932)
+@@ -11,6 +11,7 @@
+     val timerEffects: SharedFlow<TimerEffect>
+     fun start()
+     fun pause()
++    fun skipToNext()
+     fun reset()
+     fun updateConfig(timerConfig: TimerConfig)
+     fun updateSessionTask(newTask: String)
+Index: app/src/main/java/com/yugentech/sessions/timer/TimerService.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.yugentech.sessions.timer\r\n\r\nimport android.os.SystemClock\r\nimport com.yugentech.sessions.utils.AppConstants\r\nimport com.yugentech.sessions.timer.states.TimerConfig\r\nimport com.yugentech.sessions.timer.states.TimerEffect\r\nimport com.yugentech.sessions.timer.states.TimerMode\r\nimport com.yugentech.sessions.timer.states.TimerMode.Focus\r\nimport com.yugentech.sessions.timer.states.TimerMode.LongBreak\r\nimport com.yugentech.sessions.timer.states.TimerMode.ShortBreak\r\nimport com.yugentech.sessions.timer.states.TimerState\r\nimport kotlinx.coroutines.CoroutineScope\r\nimport kotlinx.coroutines.Job\r\nimport kotlinx.coroutines.delay\r\nimport kotlinx.coroutines.flow.MutableSharedFlow\r\nimport kotlinx.coroutines.flow.MutableStateFlow\r\nimport kotlinx.coroutines.flow.SharedFlow\r\nimport kotlinx.coroutines.flow.StateFlow\r\nimport kotlinx.coroutines.flow.asSharedFlow\r\nimport kotlinx.coroutines.flow.asStateFlow\r\nimport kotlinx.coroutines.flow.update\r\nimport kotlinx.coroutines.isActive\r\nimport kotlinx.coroutines.launch\r\nimport timber.log.Timber\r\n\r\nclass TimerService(\r\n    private val scope: CoroutineScope\r\n) {\r\n\r\n    // State\r\n    private var timerJob: Job? = null\r\n\r\n    private val _timerState = MutableStateFlow(createState())\r\n    val timerState: StateFlow<TimerState> = _timerState.asStateFlow()\r\n\r\n    private val _timerEffects = MutableSharedFlow<TimerEffect>(\r\n        replay = 1,\r\n        extraBufferCapacity = 5\r\n    )\r\n    val timerEffects: SharedFlow<TimerEffect> = _timerEffects.asSharedFlow()\r\n\r\n    // Controls\r\n    fun start() {\r\n        if (_timerState.value.isTimerRunning) return\r\n\r\n        val current = _timerState.value\r\n        val durationMillis = if (current.currentTime > 0) {\r\n            current.currentTime * 1000L\r\n        } else {\r\n            getDurationMinutes(current.currentMode, current.timerConfig) * 60 * 1000L\r\n        }\r\n\r\n        startCountdown(durationMillis)\r\n    }\r\n\r\n    fun pause() {\r\n        cancelTimer()\r\n        _timerState.update { it.copy(isTimerRunning = false) }\r\n    }\r\n\r\n    fun updateConfig(timerConfig: TimerConfig) {\r\n        _timerState.update { current ->\r\n            val newMinutes = getDurationMinutes(current.currentMode, timerConfig)\r\n            val newSeconds = newMinutes * 60L\r\n            current.copy(\r\n                timerConfig = timerConfig,\r\n                totalTime = newSeconds,\r\n                currentTime = newSeconds\r\n            )\r\n        }\r\n    }\r\n\r\n    fun updateSessionTask(newTask: String) {\r\n        // This updates ONLY the task name.\r\n        // It touches nothing else (no reset, no time change).\r\n        _timerState.update { current ->\r\n            current.copy(\r\n                timerConfig = current.timerConfig.copy(sessionTask = newTask)\r\n            )\r\n        }\r\n    }\r\n\r\n    // Timer Engine\r\n    private fun startCountdown(durationMillis: Long) {\r\n        cancelTimer()\r\n\r\n        _timerState.update { it.copy(isTimerRunning = true) }\r\n\r\n        timerJob = scope.launch {\r\n            delay(1000)\r\n\r\n            val endTime = SystemClock.elapsedRealtime() + durationMillis\r\n            val tickInterval = 100L\r\n\r\n            while (isActive) {\r\n                val remaining = endTime - SystemClock.elapsedRealtime()\r\n\r\n                if (remaining <= 0) {\r\n                    break\r\n                }\r\n\r\n                _timerState.update {\r\n                    it.copy(currentTime = (remaining / 1000))\r\n                }\r\n\r\n                delay(tickInterval)\r\n            }\r\n\r\n            if (isActive) {\r\n                _timerState.update {\r\n                    it.copy(\r\n                        currentTime = 0,\r\n                        isTimerRunning = false\r\n                    )\r\n                }\r\n\r\n                onTimerComplete()\r\n            }\r\n        }\r\n    }\r\n\r\n    private fun cancelTimer() {\r\n        timerJob?.cancel()\r\n        timerJob = null\r\n    }\r\n\r\n    private suspend fun onTimerComplete() {\r\n        val timerState = _timerState.value\r\n        val timerConfig = timerState.timerConfig\r\n        val durationSeconds = timerState.totalTime.toInt()\r\n\r\n        when (timerState.currentMode) {\r\n            Focus ->\r\n                handleFocusComplete(\r\n                    timerConfig,\r\n                    durationSeconds,\r\n                    timerState.completedSets\r\n                )\r\n\r\n            ShortBreak, LongBreak ->\r\n                handleBreakComplete(\r\n                    timerConfig,\r\n                    timerState.completedSets\r\n                )\r\n        }\r\n    }\r\n\r\n    // Pomodoro Machine\r\n    private suspend fun handleFocusComplete(\r\n        timerConfig: TimerConfig,\r\n        durationSeconds: Int,\r\n        completedSets: Int\r\n    ) {\r\n        Timber.i(\"Focus session completed: ${durationSeconds}s\")\r\n        val newCompletedSets = completedSets + 1\r\n\r\n        if (newCompletedSets >= timerConfig.targetSets) {\r\n            Timber.i(\"Target reached ($newCompletedSets/${timerConfig.targetSets} sets). Session complete!\")\r\n            reset()\r\n            emitEffect(TimerEffect.EndGoalReached(durationSeconds))\r\n        } else {\r\n            Timber.i(\"Completed set $newCompletedSets/${timerConfig.targetSets}. Moving to break.\")\r\n            transitionToBreak(timerConfig, newCompletedSets)\r\n            emitEffect(TimerEffect.FocusCompleted(durationSeconds))\r\n        }\r\n    }\r\n\r\n    private suspend fun handleBreakComplete(config: TimerConfig, completedSets: Int) {\r\n        Timber.i(\"Break Complete. Returning to Focus.\")\r\n        transitionAndStart(Focus, config.focusDuration, completedSets)\r\n        emitEffect(TimerEffect.BreakCompleted)\r\n    }\r\n\r\n    private fun transitionToBreak(config: TimerConfig, newCompletedSets: Int) {\r\n        val setsBeforeLast = (config.targetSets - 1).coerceAtLeast(0)\r\n        val timeBeforeLastSet = setsBeforeLast * config.focusDuration\r\n        val isEligibleForLongBreak = timeBeforeLastSet >= 100\r\n        val isLongBreakInterval = (newCompletedSets % config.setsPerLongBreak == 0)\r\n        val shouldTriggerLongBreak = isLongBreakInterval && isEligibleForLongBreak\r\n\r\n        val (breakMode, breakMinutes) = if (shouldTriggerLongBreak) {\r\n            Timber.i(\"Long Break triggered!\")\r\n            LongBreak to config.longBreakDuration\r\n        } else {\r\n            Timber.i(\"Short Break triggered\")\r\n            ShortBreak to config.shortBreakDuration\r\n        }\r\n\r\n        transitionAndStart(breakMode, breakMinutes, newCompletedSets)\r\n    }\r\n\r\n    private fun transitionAndStart(timerMode: TimerMode, minutes: Int, completedSets: Int) {\r\n        val seconds = minutes * 60L\r\n\r\n        _timerState.update {\r\n            it.copy(\r\n                currentMode = timerMode,\r\n                currentTime = seconds,\r\n                totalTime = seconds,\r\n                completedSets = completedSets,\r\n                isTimerRunning = false\r\n            )\r\n        }\r\n\r\n        startCountdown(seconds * 1000L)\r\n    }\r\n\r\n\r\n    // Effects\r\n    private suspend fun emitEffect(timerEffect: TimerEffect) {\r\n        _timerEffects.emit(timerEffect)\r\n    }\r\n\r\n    // Helpers\r\n    private fun createState(): TimerState {\r\n        val timerConfig = TimerConfig()\r\n        val seconds = timerConfig.focusDuration * 60L\r\n        return TimerState(\r\n            currentTime = seconds,\r\n            totalTime = seconds,\r\n            timerConfig = timerConfig,\r\n            currentMode = Focus,\r\n            completedSets = 0,\r\n            isTimerRunning = false\r\n        )\r\n    }\r\n\r\n    fun reset() {\r\n        cancelTimer()\r\n        val config = _timerState.value.timerConfig\r\n        val focusSeconds = config.focusDuration * 60L\r\n        val resetConfig = config.copy(sessionTask = AppConstants.EMPTY_STRING)\r\n\r\n        _timerState.update {\r\n            it.copy(\r\n                completedSets = 0,\r\n                currentMode = Focus,\r\n                currentTime = focusSeconds,\r\n                totalTime = focusSeconds,\r\n                isTimerRunning = false,\r\n                timerConfig = resetConfig\r\n            )\r\n        }\r\n    }\r\n\r\n    private fun getDurationMinutes(timerMode: TimerMode, timerConfig: TimerConfig): Int {\r\n        return when (timerMode) {\r\n            Focus -> timerConfig.focusDuration\r\n            ShortBreak -> timerConfig.shortBreakDuration\r\n            LongBreak -> timerConfig.longBreakDuration\r\n        }\r\n    }\r\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/java/com/yugentech/sessions/timer/TimerService.kt b/app/src/main/java/com/yugentech/sessions/timer/TimerService.kt
+--- a/app/src/main/java/com/yugentech/sessions/timer/TimerService.kt	(revision b5bb55643d7936ed426d4b51e037accc48b40d7b)
++++ b/app/src/main/java/com/yugentech/sessions/timer/TimerService.kt	(date 1769193466323)
+@@ -39,7 +39,10 @@
+     )
+     val timerEffects: SharedFlow<TimerEffect> = _timerEffects.asSharedFlow()
+ 
+-    // Controls
++    // ============================================================================================
++    // CONTROLS
++    // ============================================================================================
++
+     fun start() {
+         if (_timerState.value.isTimerRunning) return
+ 
+@@ -58,16 +61,34 @@
+         _timerState.update { it.copy(isTimerRunning = false) }
+     }
+ 
++    fun skipToNext() {
++        Timber.d("Skipping to next mode")
++        cancelTimer()
++        scope.launch {
++            onTimerComplete()
++        }
++    }
++
+     fun updateConfig(timerConfig: TimerConfig) {
+-        _timerState.update { current ->
+-            val newMinutes = getDurationMinutes(current.currentMode, timerConfig)
+-            val newSeconds = newMinutes * 60L
+-            current.copy(
+-                timerConfig = timerConfig,
+-                totalTime = newSeconds,
+-                currentTime = newSeconds
+-            )
++        val current = _timerState.value
++        val shouldUpdateTime = !current.isTimerRunning && current.currentMode == Focus
++
++        _timerState.update { state ->
++            if (shouldUpdateTime) {
++                val newMinutes = getDurationMinutes(state.currentMode, timerConfig)
++                val newSeconds = newMinutes * 60L
++                state.copy(
++                    timerConfig = timerConfig,
++                    totalTime = newSeconds,
++                    currentTime = newSeconds
++                )
++            } else {
++                // Just update config, preserve current time
++                state.copy(timerConfig = timerConfig)
++            }
+         }
++
++        Timber.d("Config updated - Focus: ${timerConfig.focusDuration}m, Sets: ${timerConfig.targetSets}")
+     }
+ 
+     fun updateSessionTask(newTask: String) {
+@@ -78,9 +99,13 @@
+                 timerConfig = current.timerConfig.copy(sessionTask = newTask)
+             )
+         }
++        Timber.d("Session task updated to: $newTask")
+     }
+ 
+-    // Timer Engine
++    // ============================================================================================
++    // TIMER ENGINE
++    // ============================================================================================
++
+     private fun startCountdown(durationMillis: Long) {
+         cancelTimer()
+ 
+@@ -145,7 +170,10 @@
+         }
+     }
+ 
+-    // Pomodoro Machine
++    // ============================================================================================
++    // POMODORO MACHINE
++    // ============================================================================================
++
+     private suspend fun handleFocusComplete(
+         timerConfig: TimerConfig,
+         durationSeconds: Int,
+@@ -205,30 +233,16 @@
+         startCountdown(seconds * 1000L)
+     }
+ 
+-
+-    // Effects
+-    private suspend fun emitEffect(timerEffect: TimerEffect) {
+-        _timerEffects.emit(timerEffect)
+-    }
+-
+-    // Helpers
+-    private fun createState(): TimerState {
+-        val timerConfig = TimerConfig()
+-        val seconds = timerConfig.focusDuration * 60L
+-        return TimerState(
+-            currentTime = seconds,
+-            totalTime = seconds,
+-            timerConfig = timerConfig,
+-            currentMode = Focus,
+-            completedSets = 0,
+-            isTimerRunning = false
+-        )
+-    }
++    // ============================================================================================
++    // RESET
++    // ============================================================================================
+ 
+     fun reset() {
+         cancelTimer()
+         val config = _timerState.value.timerConfig
+         val focusSeconds = config.focusDuration * 60L
++
++        // Clear session task but keep other config
+         val resetConfig = config.copy(sessionTask = AppConstants.EMPTY_STRING)
+ 
+         _timerState.update {
+@@ -241,6 +255,33 @@
+                 timerConfig = resetConfig
+             )
+         }
++
++        Timber.d("Timer reset - preserving config but clearing task")
++    }
++
++    // ============================================================================================
++    // EFFECTS
++    // ============================================================================================
++
++    private suspend fun emitEffect(timerEffect: TimerEffect) {
++        _timerEffects.emit(timerEffect)
++    }
++
++    // ============================================================================================
++    // HELPERS
++    // ============================================================================================
++
++    private fun createState(): TimerState {
++        val timerConfig = TimerConfig()
++        val seconds = timerConfig.focusDuration * 60L
++        return TimerState(
++            currentTime = seconds,
++            totalTime = seconds,
++            timerConfig = timerConfig,
++            currentMode = Focus,
++            completedSets = 0,
++            isTimerRunning = false
++        )
+     }
+ 
+     private fun getDurationMinutes(timerMode: TimerMode, timerConfig: TimerConfig): Int {
+Index: app/src/main/java/com/yugentech/sessions/dependencyInjection/modules/TimerModule.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.yugentech.sessions.dependencyInjection.modules\r\n\r\nimport com.yugentech.sessions.timer.TimerDatastore\r\nimport com.yugentech.sessions.timer.TimerService\r\nimport com.yugentech.sessions.timer.TimerViewModel\r\nimport com.yugentech.sessions.timer.timerRepository.TimerRepository\r\nimport com.yugentech.sessions.timer.timerRepository.TimerRepositoryImpl\r\nimport kotlinx.coroutines.CoroutineScope\r\nimport kotlinx.coroutines.Dispatchers\r\nimport kotlinx.coroutines.SupervisorJob\r\nimport org.koin.core.module.dsl.viewModel\r\nimport org.koin.core.qualifier.named\r\nimport org.koin.dsl.module\r\nimport timber.log.Timber\r\n\r\nval timerModule = module {\r\n\r\n    single(named(\"timerScope\")) {\r\n        Timber.d(\"Creating Timer external CoroutineScope\")\r\n        CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)\r\n    }\r\n\r\n    single {\r\n        TimerDatastore(get(named(\"timer\")))\r\n    }\r\n\r\n    // Core timer engine (inject scope)\r\n    single {\r\n        TimerService(\r\n            scope = get(named(\"timerScope\"))\r\n        )\r\n    }\r\n\r\n    // Repository with stateIn (like AlertsRepository pattern)\r\n    single<TimerRepository> {\r\n        TimerRepositoryImpl(\r\n            timerService = get(),\r\n            externalScope = get(named(\"timerScope\"))\r\n        )\r\n    }\r\n\r\n    viewModel {\r\n        Timber.v(\"Initializing TimerViewModel\")\r\n        TimerViewModel(\r\n            timerRepository = get(),\r\n            sessionsRepository = get(),\r\n            alertsRepository = get(),\r\n            notificationRepository = get()\r\n        )\r\n    }\r\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/java/com/yugentech/sessions/dependencyInjection/modules/TimerModule.kt b/app/src/main/java/com/yugentech/sessions/dependencyInjection/modules/TimerModule.kt
+--- a/app/src/main/java/com/yugentech/sessions/dependencyInjection/modules/TimerModule.kt	(revision b5bb55643d7936ed426d4b51e037accc48b40d7b)
++++ b/app/src/main/java/com/yugentech/sessions/dependencyInjection/modules/TimerModule.kt	(date 1769192430391)
+@@ -35,7 +35,8 @@
+     single<TimerRepository> {
+         TimerRepositoryImpl(
+             timerService = get(),
+-            externalScope = get(named("timerScope"))
++            externalScope = get(named("timerScope")),
++            timerDatastore = get()
+         )
+     }
+ 
+Index: app/src/main/java/com/yugentech/sessions/timer/timerRepository/TimerRepositoryImpl.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.yugentech.sessions.timer.timerRepository\r\n\r\nimport com.yugentech.sessions.timer.TimerService\r\nimport com.yugentech.sessions.timer.states.TimerConfig\r\nimport com.yugentech.sessions.timer.states.TimerEffect\r\nimport com.yugentech.sessions.timer.states.TimerState\r\nimport kotlinx.coroutines.CoroutineScope\r\nimport kotlinx.coroutines.flow.SharedFlow\r\nimport kotlinx.coroutines.flow.SharingStarted\r\nimport kotlinx.coroutines.flow.StateFlow\r\nimport kotlinx.coroutines.flow.stateIn\r\nimport timber.log.Timber\r\n\r\nclass TimerRepositoryImpl(\r\n    private val timerService: TimerService,\r\n    externalScope: CoroutineScope\r\n) : TimerRepository {\r\n\r\n    override val timerState: StateFlow<TimerState> = timerService.timerState\r\n        .stateIn(\r\n            scope = externalScope,\r\n            started = SharingStarted.Eagerly,\r\n            initialValue = TimerState()\r\n        )\r\n\r\n    override val timerEffects: SharedFlow<TimerEffect> = timerService.timerEffects\r\n\r\n    override fun start() {\r\n        Timber.d(\"Starting timer\")\r\n        timerService.start()\r\n    }\r\n\r\n    override fun pause() {\r\n        Timber.d(\"Pausing timer\")\r\n        timerService.pause()\r\n    }\r\n\r\n    override fun reset() {\r\n        Timber.d(\"Resetting timer\")\r\n        timerService.reset()\r\n    }\r\n\r\n    override fun updateConfig(timerConfig: TimerConfig) {\r\n        Timber.d(\"Updating config: Focus=${timerConfig.focusDuration}m, Target=${timerConfig.targetSets} sets\")\r\n        timerService.updateConfig(timerConfig)\r\n    }\r\n\r\n    override fun updateSessionTask(newTask: String) {\r\n        timerService.updateSessionTask(newTask)\r\n    }\r\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/java/com/yugentech/sessions/timer/timerRepository/TimerRepositoryImpl.kt b/app/src/main/java/com/yugentech/sessions/timer/timerRepository/TimerRepositoryImpl.kt
+--- a/app/src/main/java/com/yugentech/sessions/timer/timerRepository/TimerRepositoryImpl.kt	(revision b5bb55643d7936ed426d4b51e037accc48b40d7b)
++++ b/app/src/main/java/com/yugentech/sessions/timer/timerRepository/TimerRepositoryImpl.kt	(date 1769192846803)
+@@ -1,5 +1,6 @@
+ package com.yugentech.sessions.timer.timerRepository
+ 
++import com.yugentech.sessions.timer.TimerDatastore
+ import com.yugentech.sessions.timer.TimerService
+ import com.yugentech.sessions.timer.states.TimerConfig
+ import com.yugentech.sessions.timer.states.TimerEffect
+@@ -8,23 +9,50 @@
+ import kotlinx.coroutines.flow.SharedFlow
+ import kotlinx.coroutines.flow.SharingStarted
+ import kotlinx.coroutines.flow.StateFlow
++import kotlinx.coroutines.flow.combine
+ import kotlinx.coroutines.flow.stateIn
++import kotlinx.coroutines.launch
+ import timber.log.Timber
+ 
+ class TimerRepositoryImpl(
+     private val timerService: TimerService,
+-    externalScope: CoroutineScope
++    private val timerDatastore: TimerDatastore,
++    private val externalScope: CoroutineScope
+ ) : TimerRepository {
+ 
+-    override val timerState: StateFlow<TimerState> = timerService.timerState
+-        .stateIn(
+-            scope = externalScope,
+-            started = SharingStarted.Eagerly,
+-            initialValue = TimerState()
+-        )
++    // Combine timer state with persisted config
++    override val timerState: StateFlow<TimerState> = combine(
++        timerService.timerState,
++        timerDatastore.timerConfig
++    ) { serviceState, persistedConfig ->
++        // Merge persisted config into service state
++        serviceState.copy(
++            timerConfig = serviceState.timerConfig.copy(
++                focusDuration = persistedConfig.focusDuration,
++                shortBreakDuration = persistedConfig.shortBreakDuration,
++                longBreakDuration = persistedConfig.longBreakDuration,
++                targetSets = persistedConfig.targetSets,
++                sessionTask = persistedConfig.sessionTask
++            )
++        )
++    }.stateIn(
++        scope = externalScope,
++        started = SharingStarted.Eagerly,
++        initialValue = TimerState()
++    )
+ 
+     override val timerEffects: SharedFlow<TimerEffect> = timerService.timerEffects
+ 
++    init {
++        // Initialize timer service with persisted config on startup
++        externalScope.launch {
++            timerDatastore.timerConfig.collect { persistedConfig ->
++                Timber.d("Loaded config from DataStore: $persistedConfig")
++                timerService.updateConfig(persistedConfig)
++            }
++        }
++    }
++
+     override fun start() {
+         Timber.d("Starting timer")
+         timerService.start()
+@@ -35,17 +63,43 @@
+         timerService.pause()
+     }
+ 
++    override fun skipToNext() {
++        Timber.d("Requesting skip to next")
++        timerService.skipToNext()
++    }
++
+     override fun reset() {
+         Timber.d("Resetting timer")
+         timerService.reset()
++
++        // Clear session task in DataStore when resetting
++        externalScope.launch {
++            timerDatastore.updateSessionTask("")
++        }
+     }
+ 
+     override fun updateConfig(timerConfig: TimerConfig) {
+         Timber.d("Updating config: Focus=${timerConfig.focusDuration}m, Target=${timerConfig.targetSets} sets")
++
++        // Update both service and persist to DataStore
+         timerService.updateConfig(timerConfig)
++
++        externalScope.launch {
++            timerDatastore.saveFullConfig(timerConfig)
++            Timber.d("Config persisted to DataStore")
++        }
+     }
+ 
+     override fun updateSessionTask(newTask: String) {
++        Timber.d("Updating session task: $newTask")
++
++        // Update service
+         timerService.updateSessionTask(newTask)
++
++        // Persist to DataStore
++        externalScope.launch {
++            timerDatastore.updateSessionTask(newTask)
++            Timber.d("Session task persisted to DataStore")
++        }
+     }
+ }
+\ No newline at end of file

@@ -1,0 +1,87 @@
+Index: app/src/main/java/com/yugentech/sessions/timer/TimerViewModel.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.yugentech.sessions.timer\r\n\r\nimport android.view.View\r\nimport androidx.lifecycle.ViewModel\r\nimport androidx.lifecycle.viewModelScope\r\nimport com.google.firebase.crashlytics.FirebaseCrashlytics\r\nimport com.yugentech.sessions.alerts.alertsRepository.AlertsRepository\r\nimport com.yugentech.sessions.models.Session\r\nimport com.yugentech.sessions.notifications.Notification\r\nimport com.yugentech.sessions.notifications.NotificationType\r\nimport com.yugentech.sessions.notifications.notificationRepository.NotificationRepository\r\nimport com.yugentech.sessions.sessions.sessionsRepository.SessionsRepository\r\nimport com.yugentech.sessions.sessions.sessionsUtils.SessionResult\r\nimport com.yugentech.sessions.timer.states.TimerEffect\r\nimport com.yugentech.sessions.timer.states.TimerMode\r\nimport com.yugentech.sessions.timer.timerRepository.TimerRepository\r\nimport com.yugentech.sessions.ui.dash.utils.SessionDashboardCalculator\r\nimport com.yugentech.sessions.ui.dash.states.SessionDashboardState\r\nimport kotlinx.coroutines.flow.MutableStateFlow\r\nimport kotlinx.coroutines.flow.SharingStarted\r\nimport kotlinx.coroutines.flow.StateFlow\r\nimport kotlinx.coroutines.flow.asStateFlow\r\nimport kotlinx.coroutines.flow.map\r\nimport kotlinx.coroutines.flow.stateIn\r\nimport kotlinx.coroutines.launch\r\nimport timber.log.Timber\r\nimport java.util.UUID\r\n\r\nclass TimerViewModel(\r\n    private val timerRepository: TimerRepository,\r\n    private val sessionsRepository: SessionsRepository,\r\n    private val alertsRepository: AlertsRepository,\r\n    private val notificationRepository: NotificationRepository\r\n) : ViewModel() {\r\n\r\n    // ============================================================================================\r\n    // STATE\r\n    // ============================================================================================\r\n\r\n    val timerState = timerRepository.timerState\r\n\r\n    private val _errorMessage = MutableStateFlow<String?>(null)\r\n    val errorMessage: StateFlow<String?> = _errorMessage.asStateFlow()\r\n\r\n    val dashboardState: StateFlow<SessionDashboardState> = timerState\r\n        .map { state -> SessionDashboardCalculator.calculate(state) }\r\n        .stateIn(\r\n            scope = viewModelScope,\r\n            started = SharingStarted.Eagerly,\r\n            initialValue = SessionDashboardState()\r\n        )\r\n\r\n    init {\r\n        observeTimerEffects()\r\n        observeAlertConfiguration()\r\n    }\r\n\r\n    // ============================================================================================\r\n    // TIMER EFFECTS\r\n    // ============================================================================================\r\n\r\n    private fun observeTimerEffects() {\r\n        viewModelScope.launch {\r\n            timerRepository.timerEffects.collect { effect ->\r\n                Timber.d(\"Received Timer Effect: $effect\")\r\n                when (effect) {\r\n                    is TimerEffect.FocusCompleted -> handleFocusCompleted(effect.durationSeconds)\r\n                    is TimerEffect.BreakCompleted -> handleBreakCompleted()\r\n                    is TimerEffect.EndGoalReached -> handleEndGoalReached(effect.durationSeconds)\r\n                }\r\n            }\r\n        }\r\n    }\r\n\r\n    private fun handleFocusCompleted(durationSeconds: Int) {\r\n        Timber.d(\"Handling FocusCompleted. Triggering Break Sound.\")\r\n        // 1. SOUND LOGIC (Always runs immediately)\r\n        alertsRepository.onBreakStart()\r\n\r\n        Timber.d(\"Saving chunk to DB ($durationSeconds s)\")\r\n        // 2. DATA LOGIC (Runs in parallel, ID handled by Repository)\r\n        saveSessionToDb(durationSeconds)\r\n    }\r\n\r\n    private fun handleBreakCompleted() {\r\n        Timber.d(\"Handling BreakCompleted. Triggering Focus Sound.\")\r\n        alertsRepository.onFocusStart(null)\r\n    }\r\n\r\n    private fun handleEndGoalReached(durationSeconds: Int) {\r\n        Timber.d(\"Handling EndGoalReached. Stopping Sound & Notification.\")\r\n        // 1. SOUND & UI LOGIC (Always runs immediately)\r\n        alertsRepository.onFocusStop()\r\n        stopActiveNotification()\r\n\r\n        Timber.d(\"Saving final session to DB ($durationSeconds s)\")\r\n        // 2. DATA LOGIC (Runs in parallel, ID handled by Repository)\r\n        saveSessionToDb(durationSeconds)\r\n    }\r\n\r\n    // ============================================================================================\r\n    // ALERT CONFIGURATION\r\n    // ============================================================================================\r\n\r\n    private fun observeAlertConfiguration() {\r\n        viewModelScope.launch {\r\n            alertsRepository.alertConfiguration.collect { alertConfig ->\r\n                updateBackgroundSoundId(alertConfig.backgroundSound.id)\r\n            }\r\n        }\r\n    }\r\n\r\n    // ============================================================================================\r\n    // SOUND PREVIEW\r\n    // ============================================================================================\r\n\r\n    fun playPreview(soundId: String?) {\r\n        alertsRepository.playPreview(soundId)\r\n    }\r\n\r\n    fun stopPreview() {\r\n        alertsRepository.playPreview(null)\r\n    }\r\n\r\n    // ============================================================================================\r\n    // CONFIGURATION\r\n    // ============================================================================================\r\n\r\n    // In TimerViewModel.kt\r\n\r\n    fun updateSessionTask(newTask: String) {\r\n        timerRepository.updateSessionTask(newTask)\r\n    }\r\n\r\n    fun updateFocusDuration(minutes: Int) {\r\n        val current = timerState.value.timerConfig\r\n        timerRepository.updateConfig(current.copy(focusDuration = minutes))\r\n    }\r\n\r\n    fun updateShortBreakDuration(minutes: Int) {\r\n        val current = timerState.value.timerConfig\r\n        timerRepository.updateConfig(current.copy(shortBreakDuration = minutes))\r\n    }\r\n\r\n    fun updateLongBreakDuration(minutes: Int) {\r\n        val current = timerState.value.timerConfig\r\n        timerRepository.updateConfig(current.copy(longBreakDuration = minutes))\r\n    }\r\n\r\n    fun updateTargetSets(sets: Int) {\r\n        val current = timerState.value.timerConfig\r\n        timerRepository.updateConfig(current.copy(targetSets = sets))\r\n    }\r\n\r\n    fun updateBackgroundSound(soundId: String?) {\r\n        viewModelScope.launch {\r\n            alertsRepository.setBackgroundSound(soundId)\r\n        }\r\n    }\r\n\r\n    private fun updateBackgroundSoundId(soundId: String?) {\r\n        val current = timerState.value.timerConfig\r\n        if (current.activeBackgroundSoundId != soundId) {\r\n            timerRepository.updateConfig(current.copy(activeBackgroundSoundId = soundId))\r\n        }\r\n    }\r\n\r\n    // ============================================================================================\r\n    // TIMER CONTROLS\r\n    // ============================================================================================\r\n\r\n    fun startTimer(view: View? = null) {\r\n        if (timerState.value.isTimerRunning) return\r\n\r\n        viewModelScope.launch {\r\n            // Start timer first, then trigger alerts\r\n            timerRepository.start()\r\n            startActiveNotification()\r\n            alertsRepository.onFocusStart(view)\r\n        }\r\n    }\r\n\r\n    fun stopTimer(view: View? = null) {\r\n        if (!timerState.value.isTimerRunning) return\r\n\r\n        viewModelScope.launch {\r\n            // Stop timer first, then stop alerts\r\n            timerRepository.pause()\r\n            stopActiveNotification()\r\n            alertsRepository.onFocusPause(view)\r\n        }\r\n    }\r\n\r\n    fun onFocusStop(view: View? = null) {\r\n        alertsRepository.onFocusStop(view)\r\n    }\r\n\r\n    fun stopAndDiscardSession(view: View? = null) {\r\n        viewModelScope.launch {\r\n            timerRepository.reset()\r\n            stopActiveNotification()\r\n        }\r\n    }\r\n\r\n    fun stopAndSaveSession(view: View? = null) {\r\n        val state = timerState.value\r\n        val timeSpentSeconds = (state.totalTime - state.currentTime).toInt()\r\n\r\n        // 1. Trigger Save (if valid focus time)\r\n        if (timeSpentSeconds > 0 && state.currentMode == TimerMode.Focus) {\r\n            saveSessionToDb(timeSpentSeconds)\r\n        }\r\n\r\n        // 2. Reset Timer & UI\r\n        viewModelScope.launch {\r\n            timerRepository.reset()\r\n            stopActiveNotification()\r\n            alertsRepository.onFocusStop(view)\r\n        }\r\n    }\r\n\r\n    // ============================================================================================\r\n    // DATA PERSISTENCE\r\n    // ============================================================================================\r\n\r\n    private fun saveSessionToDb(durationSeconds: Int) {\r\n        viewModelScope.launch {\r\n            val task = timerState.value.timerConfig.sessionTask\r\n            val session = Session(\r\n                sessionId = UUID.randomUUID().toString(),\r\n                duration = durationSeconds,\r\n                timestamp = System.currentTimeMillis(),\r\n                sessionTask = task.ifBlank { \"Focus Session\" }\r\n            )\r\n\r\n            when (sessionsRepository.saveSession(session)) {\r\n                is SessionResult.Success -> Timber.i(\"Session saved successfully\")\r\n                is SessionResult.Error -> Timber.e(\"Failed to save session (User might be logged out)\")\r\n            }\r\n        }\r\n    }\r\n\r\n    // ============================================================================================\r\n    // NOTIFICATIONS\r\n    // ============================================================================================\r\n\r\n    private fun startActiveNotification() {\r\n        val remainingSeconds = timerState.value.currentTime.toInt()\r\n        val task = timerState.value.timerConfig.sessionTask.ifBlank { \"Focus\" }\r\n\r\n        FirebaseCrashlytics.getInstance().setCustomKey(\"is_session_active\", true)\r\n\r\n        viewModelScope.launch {\r\n            notificationRepository.startActiveNotification(\r\n                Notification(\r\n                    id = 1001,\r\n                    title = \"Sessions\",\r\n                    message = \"$task in progress\",\r\n                    type = NotificationType.ACTIVE,\r\n                    isOngoing = true,\r\n                    remainingSeconds = remainingSeconds.toLong()\r\n                )\r\n            )\r\n        }\r\n    }\r\n\r\n    private fun stopActiveNotification() {\r\n        viewModelScope.launch {\r\n            notificationRepository.stopActiveNotification()\r\n        }\r\n        FirebaseCrashlytics.getInstance().setCustomKey(\"is_session_active\", false)\r\n    }\r\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/java/com/yugentech/sessions/timer/TimerViewModel.kt b/app/src/main/java/com/yugentech/sessions/timer/TimerViewModel.kt
+--- a/app/src/main/java/com/yugentech/sessions/timer/TimerViewModel.kt	(revision b5bb55643d7936ed426d4b51e037accc48b40d7b)
++++ b/app/src/main/java/com/yugentech/sessions/timer/TimerViewModel.kt	(date 1769193373113)
+@@ -123,31 +123,34 @@
+     }
+ 
+     // ============================================================================================
+-    // CONFIGURATION
++    // CONFIGURATION - All updates persist to DataStore automatically
+     // ============================================================================================
+ 
+-    // In TimerViewModel.kt
+-
+     fun updateSessionTask(newTask: String) {
++        Timber.d("ViewModel: Updating session task to: $newTask")
+         timerRepository.updateSessionTask(newTask)
+     }
+ 
+     fun updateFocusDuration(minutes: Int) {
++        Timber.d("ViewModel: Updating focus duration to: ${minutes}m")
+         val current = timerState.value.timerConfig
+         timerRepository.updateConfig(current.copy(focusDuration = minutes))
+     }
+ 
+     fun updateShortBreakDuration(minutes: Int) {
++        Timber.d("ViewModel: Updating short break duration to: ${minutes}m")
+         val current = timerState.value.timerConfig
+         timerRepository.updateConfig(current.copy(shortBreakDuration = minutes))
+     }
+ 
+     fun updateLongBreakDuration(minutes: Int) {
++        Timber.d("ViewModel: Updating long break duration to: ${minutes}m")
+         val current = timerState.value.timerConfig
+         timerRepository.updateConfig(current.copy(longBreakDuration = minutes))
+     }
+ 
+     fun updateTargetSets(sets: Int) {
++        Timber.d("ViewModel: Updating target sets to: $sets")
+         val current = timerState.value.timerConfig
+         timerRepository.updateConfig(current.copy(targetSets = sets))
+     }
+@@ -191,13 +194,18 @@
+         }
+     }
+ 
++    fun skipToNextMode(view: View? = null) {
++        Timber.d("ViewModel: Skipping to next mode")
++        timerRepository.skipToNext()
++    }
++
+     fun onFocusStop(view: View? = null) {
+         alertsRepository.onFocusStop(view)
+     }
+ 
+     fun stopAndDiscardSession(view: View? = null) {
+         viewModelScope.launch {
+-            timerRepository.reset()
++            timerRepository.reset() // This also clears task from DataStore
+             stopActiveNotification()
+         }
+     }
+@@ -211,7 +219,7 @@
+             saveSessionToDb(timeSpentSeconds)
+         }
+ 
+-        // 2. Reset Timer & UI
++        // 2. Reset Timer & UI (clears task from DataStore)
+         viewModelScope.launch {
+             timerRepository.reset()
+             stopActiveNotification()
+@@ -270,4 +278,8 @@
+         }
+         FirebaseCrashlytics.getInstance().setCustomKey("is_session_active", false)
+     }
++
++    fun clearErrorMessage() {
++        _errorMessage.value = null
++    }
+ }
+\ No newline at end of file
