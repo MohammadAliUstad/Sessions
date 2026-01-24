@@ -17,7 +17,7 @@ val timerModule = module {
 
     single(named("timerScope")) {
         Timber.d("Creating Timer external CoroutineScope")
-        CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
+        CoroutineScope(SupervisorJob() + Dispatchers.IO)
     }
 
     single {
@@ -27,7 +27,8 @@ val timerModule = module {
     // Core timer engine (inject scope)
     single {
         TimerService(
-            scope = get(named("timerScope"))
+            scope = get(named("timerScope")),
+            timerDatastore = get()
         )
     }
 
@@ -35,6 +36,7 @@ val timerModule = module {
     single<TimerRepository> {
         TimerRepositoryImpl(
             timerService = get(),
+            timerDatastore = get(),
             externalScope = get(named("timerScope"))
         )
     }
