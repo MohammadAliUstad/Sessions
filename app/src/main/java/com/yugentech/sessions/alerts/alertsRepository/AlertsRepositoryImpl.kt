@@ -1,12 +1,13 @@
 package com.yugentech.sessions.alerts.alertsRepository
 
 import android.view.View
+import com.yugentech.sessions.alerts.BackgroundSoundService
 import com.yugentech.sessions.alerts.HapticService
 import com.yugentech.sessions.alerts.SoundService
-import com.yugentech.sessions.alerts.models.AlertsConfiguration
 import com.yugentech.sessions.alerts.alertsDatastore.AlertsPreferences
+import com.yugentech.sessions.alerts.models.AlertsConfiguration
 import com.yugentech.sessions.alerts.models.BackgroundSound
-import com.yugentech.sessions.alerts.BackgroundSoundService
+import com.yugentech.sessions.timer.timerRepository.TimerRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -15,18 +16,23 @@ import timber.log.Timber
 
 class AlertsRepositoryImpl(
     externalScope: CoroutineScope,
+    private val timerRepository: TimerRepository,
     private val alertsPreferences: AlertsPreferences,
     private val hapticService: HapticService,
     private val soundService: SoundService,
     private val backgroundSoundService: BackgroundSoundService
 ) : AlertsRepository {
 
-    override val alertConfiguration: StateFlow<AlertsConfiguration> = alertsPreferences.alertConfiguration
-        .stateIn(
-            scope = externalScope,
-            started = SharingStarted.Eagerly,
-            initialValue = AlertsConfiguration()
-        )
+    override val alertConfiguration: StateFlow<AlertsConfiguration> =
+        alertsPreferences.alertConfiguration
+            .stateIn(
+                scope = externalScope,
+                started = SharingStarted.Eagerly,
+                initialValue = AlertsConfiguration()
+            )
+
+    private val currentSoundId: String?
+        get() = timerRepository.timerState.value.timerConfig.activeBackgroundSoundId
 
     override fun onFocusStart(view: View?) {
         Timber.d("onFocusStart triggered")
@@ -41,8 +47,8 @@ class AlertsRepositoryImpl(
 
     override fun onBreakStart(view: View?) {
         Timber.d("onBreakStart triggered")
-        playStopAlert(view)
         backgroundSoundService.fadeToBreakMode()
+        playStopAlert(view)
     }
 
     override fun onFocusStop(view: View?) {
@@ -58,38 +64,28 @@ class AlertsRepositoryImpl(
 
     override fun performHaptic(view: View?) {
         if (alertConfiguration.value.hapticsEnabled) {
-            Timber.v("Performing manual haptic feedback")
             try {
                 hapticService.performHaptic(view)
             } catch (e: Exception) {
                 Timber.e(e, "Failed to perform haptic feedback")
             }
-        } else {
-            Timber.v("Haptic feedback skipped (Disabled in settings)")
         }
     }
 
-    override suspend fun setBackgroundSound(soundId: String?) {
-        Timber.d("Setting background sound to: $soundId")
-        val sound = BackgroundSound.fromId(soundId)
-        alertsPreferences.setBackgroundSound(sound)
-    }
-
     override suspend fun setSoundEnabled(enabled: Boolean) {
-        Timber.d("Repository: Setting sound enabled to $enabled")
         alertsPreferences.setSoundEnabled(enabled)
     }
 
     override suspend fun setHapticsEnabled(enabled: Boolean) {
-        Timber.d("Repository: Setting haptics enabled to $enabled")
         alertsPreferences.setHapticsEnabled(enabled)
     }
 
     private fun startBackgroundSound() {
-        val backgroundSound = alertConfiguration.value.backgroundSound
+        // Pull the sound ID directly from the TimerRepository's current state
+        val backgroundSound = BackgroundSound.fromId(currentSoundId)
 
         if (backgroundSound != BackgroundSound.NONE) {
-            Timber.d("Starting background ambience: ${backgroundSound.id}")
+            Timber.d("Starting background ambience from TimerConfig: ${backgroundSound.id}")
             backgroundSoundService.play(backgroundSound)
         } else {
             Timber.d("Background ambience skipped (None selected)")
@@ -97,14 +93,11 @@ class AlertsRepositoryImpl(
     }
 
     private fun stopBackgroundSound() {
-        Timber.d("Stopping background ambience")
         backgroundSoundService.stop()
     }
 
     private fun playStartAlert(view: View?) {
         val alertsConfiguration = alertConfiguration.value
-        Timber.i("Triggering Session Start Alert (Sound: ${alertsConfiguration.soundEnabled}, Haptics: ${alertsConfiguration.hapticsEnabled})")
-
         try {
             if (alertsConfiguration.soundEnabled) soundService.playStartAlert()
             if (alertsConfiguration.hapticsEnabled) hapticService.performHaptic(view)
@@ -115,8 +108,6 @@ class AlertsRepositoryImpl(
 
     private fun playStopAlert(view: View?) {
         val alertsConfiguration = alertConfiguration.value
-        Timber.i("Triggering Session Stop Alert (Sound: ${alertsConfiguration.soundEnabled}, Haptics: ${alertsConfiguration.hapticsEnabled})")
-
         try {
             if (alertsConfiguration.soundEnabled) soundService.playStopAlert()
             if (alertsConfiguration.hapticsEnabled) hapticService.performHaptic(view)
