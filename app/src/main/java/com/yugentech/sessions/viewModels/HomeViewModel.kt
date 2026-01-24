@@ -10,6 +10,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import timber.log.Timber
+import java.util.Calendar
 import java.util.UUID
 import kotlin.random.Random
 
@@ -86,17 +87,26 @@ class HomeViewModel(
                 "Morning Focus", "Project Ryori", "Reading", "Meditation"
             )
 
-            // Generate 50 random sessions over the last 30 days
-            repeat(50) {
-                val randomPastDays = Random.nextLong(0, 30) // 0 to 30 days ago
+            // Generate 300 random sessions to fill up the heatmap
+            repeat(300) {
+                val randomDaysAgo = Random.nextInt(0, 365) // 0 to 365 days ago
                 val randomDurationMins = Random.nextInt(15, 120) // 15 to 120 mins
 
-                // Calculate timestamp: Current time minus random days
-                val pastTimestamp = System.currentTimeMillis() - (randomPastDays * 24 * 60 * 60 * 1000)
+                // Randomize the exact time of day (00:00 to 23:59)
+                val randomHour = Random.nextInt(0, 24)
+                val randomMinute = Random.nextInt(0, 60)
+
+                // Use Calendar to safely calculate the timestamp
+                val calendar = Calendar.getInstance()
+                calendar.add(Calendar.DAY_OF_YEAR, -randomDaysAgo)
+                calendar.set(Calendar.HOUR_OF_DAY, randomHour)
+                calendar.set(Calendar.MINUTE, randomMinute)
+
+                val pastTimestamp = calendar.timeInMillis
 
                 val dummySession = Session(
                     sessionId = UUID.randomUUID().toString(),
-                    duration = randomDurationMins * 60, // Convert mins to seconds if your app uses seconds
+                    duration = randomDurationMins * 60, // Seconds
                     timestamp = pastTimestamp,
                     sessionTask = dummyTasks.random()
                 )
@@ -104,7 +114,7 @@ class HomeViewModel(
                 // Save to repository
                 sessionsRepository.saveSession(dummySession)
             }
-            Timber.d("✅ Dummy data injection complete!")
+            Timber.d("✅ Yearly dummy data injection complete!")
         }
     }
 
