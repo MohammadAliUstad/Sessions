@@ -19,5 +19,7 @@ data class ComponentTokens(
     val bottomNavHeight: Dp,
     val bottomNavPadding: Dp,
     val controlBarItemSize: Dp,
-    val controlBarItemWidthWide: Dp
+    val controlBarItemWidthWide: Dp,
+    val onboardingImageContainer: Dp,
+    val onboardingIndicatorHeight: Dp
 )

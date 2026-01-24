@@ -28,7 +28,9 @@ val TokensCompact = DesignTokens(
         m = 16.dp,
         l = 24.dp,
         xl = 32.dp,
-        xxl = 48.dp
+        xxl = 48.dp,
+        jumbo  = 56.dp,
+        edge  = 32.dp,
     ),
     corners = CornerTokens(
         small = 8.dp,
@@ -66,7 +68,9 @@ val TokensCompact = DesignTokens(
         bottomNavHeight = 80.dp,
         bottomNavPadding = 80.dp,
         controlBarItemSize = 96.dp,
-        controlBarItemWidthWide = 128.dp
+        controlBarItemWidthWide = 128.dp,
+        onboardingImageContainer = 280.dp,
+        onboardingIndicatorHeight  = 10.dp,
     ),
     elevation = ElevationTokens(
         level0 = 0.dp,

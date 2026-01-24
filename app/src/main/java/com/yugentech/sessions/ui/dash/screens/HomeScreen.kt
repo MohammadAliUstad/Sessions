@@ -59,6 +59,7 @@ fun HomeScreen(
         homeViewModel.fetchUserOnce(userId)
         homeViewModel.fetchSessionsOnce(userId)
         homeViewModel.syncPendingSessions(userId)
+//        homeViewModel.injectDummyData()
     }
 
     Surface(
@@ -126,10 +127,7 @@ fun HomeScreen(
                     },
                     onSoundClick = { activeDialog = ActiveDialog.Sound },
                     onSetsClick = { activeDialog = ActiveDialog.SetsSettings },
-                    onStopDiscard = {
-                        timerViewModel.stopAndDiscardSession(view)
-                        timerViewModel.onFocusStop(view)
-                    },
+                    onStopDiscard = { timerViewModel.stopAndDiscardSession(view) },
                     onStopSave = { timerViewModel.stopAndSaveSession(view) }
                 )
             }
@@ -180,8 +178,8 @@ fun HomeScreen(
                             setsPerLongBreak = config.setsPerLongBreak,
                             onDismiss = closeDialog,
                             onConfirm = { newSets, newLongBreak ->
-                                timerViewModel.updateTargetSets(newSets)
-                                timerViewModel.updateLongBreakDuration(newLongBreak)
+                                // Call the single consolidated function instead of two separate ones
+                                timerViewModel.updateSessionGoals(newSets, newLongBreak)
                                 closeDialog()
                             }
                         )
