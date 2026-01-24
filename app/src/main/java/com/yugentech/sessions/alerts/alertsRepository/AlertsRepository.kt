@@ -12,7 +12,6 @@ interface AlertsRepository {
     fun onFocusStop(view: View? = null)
     fun playPreview(soundId: String?)
     fun performHaptic(view: View? = null)
-    suspend fun setBackgroundSound(soundId: String?)
     suspend fun setSoundEnabled(enabled: Boolean)
     suspend fun setHapticsEnabled(enabled: Boolean)
 }

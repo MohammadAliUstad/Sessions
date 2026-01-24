@@ -24,14 +24,16 @@ import com.yugentech.sessions.ui.auth.screens.SignInScreen
 import com.yugentech.sessions.ui.auth.screens.SignUpScreen
 import com.yugentech.sessions.ui.config.screens.AboutScreen
 import com.yugentech.sessions.ui.config.screens.AppearanceScreen
-import com.yugentech.sessions.ui.config.screens.LicensesScreen
 import com.yugentech.sessions.ui.config.screens.EditProfileScreen
-import com.yugentech.sessions.ui.dash.screens.OnboardingScreen
+import com.yugentech.sessions.ui.config.screens.InsightsScreen
+import com.yugentech.sessions.ui.config.screens.LicensesScreen
 import com.yugentech.sessions.ui.dash.screens.MainScreen
+import com.yugentech.sessions.ui.dash.screens.OnboardingScreen
 import com.yugentech.sessions.ui.dash.utils.defaultEnterTransition
 import com.yugentech.sessions.ui.dash.utils.defaultExitTransition
 import com.yugentech.sessions.ui.dash.utils.defaultPopEnterTransition
 import com.yugentech.sessions.ui.dash.utils.defaultPopExitTransition
+import com.yugentech.sessions.ui.dash.utils.formatTime
 import com.yugentech.sessions.viewModels.HomeViewModel
 import com.yugentech.sessions.viewModels.LoginViewModel
 import com.yugentech.sessions.viewModels.ProfileViewModel
@@ -48,7 +50,6 @@ fun AppNavHost(
     onOnboardingComplete: () -> Unit,
     loginViewModel: LoginViewModel
 ) {
-    // Collect Auth State to drive navigation logic
     val authState by loginViewModel.authState.collectAsStateWithLifecycle()
     val context = LocalContext.current
 
@@ -56,7 +57,7 @@ fun AppNavHost(
         when {
             showOnboarding -> Screens.Onboarding.route
             authState.isUserLoggedIn && authState.userId != null -> Screens.Main.route
-            else -> Screens.SignIn.route
+            else -> Screens.Main.route
         }
     }
 
@@ -73,7 +74,6 @@ fun AppNavHost(
         }
     )
 
-    // Trigger Google Sign-In Launcher when Intent is ready
     LaunchedEffect(authState.intent) {
         authState.intent?.let {
             Timber.d("Launching Google Sign-In Intent")
@@ -227,6 +227,9 @@ fun AppNavHost(
                     },
                     onAppearance = {
                         navController.navigate(Screens.Appearance.route)
+                    },
+                    onViewInsights = {
+                        navController.navigate(Screens.Insights.route)
                     }
                 )
             }
@@ -239,6 +242,35 @@ fun AppNavHost(
                     navController.popBackStack()
                 },
                 themeViewModel = themeViewModel
+            )
+        }
+
+        composable(Screens.Insights.route) { it ->
+            // 1. Inject the merged ProfileViewModel instead of InsightsViewModel
+            val parentEntry = remember(it) {
+                navController.getBackStackEntry(Screens.Main.route)
+            }
+            val profileViewModel: ProfileViewModel =
+                koinViewModel(viewModelStoreOwner = parentEntry)
+            // 2. Collect the consolidated UI state
+            val profileUiState by profileViewModel.uiState.collectAsStateWithLifecycle()
+            val currentUserId = authState.userId
+
+            // 3. Ensure data is loaded if it hasn't been already
+            LaunchedEffect(currentUserId) {
+                currentUserId?.let { profileViewModel.loadProfile(it) }
+            }
+
+            InsightsScreen(
+                // Pass the calculated total time from the merged state
+                totalTime = formatTime(profileUiState.totalTime),
+                // Pass the task distribution for your charts
+                taskDistribution = profileUiState.taskDistribution,
+                onBack = { navController.popBackStack() },
+                streakCount = profileUiState.streakCount,
+                dailyVolume = profileUiState.dailyVolume,
+                peakHour = profileUiState.peakHour,
+                heatmapHistory = profileUiState.heatmapHistory,
             )
         }
 

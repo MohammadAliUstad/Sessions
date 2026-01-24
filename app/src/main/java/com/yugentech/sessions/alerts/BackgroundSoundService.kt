@@ -31,14 +31,14 @@ class BackgroundSoundService(private val context: Context) {
     private val handler = Handler(Looper.getMainLooper())
 
     companion object {
-        private const val FADE_DURATION = 2000L
+        private const val FADE_DURATION = 1500L
         private const val CROSSFADE_START_OFFSET = 2000L
         private const val CROSSFADE_DURATION = 2000L
         private const val PREVIEW_DURATION = 2000L
         private const val PREVIEW_FADE_DURATION = 500L
         private const val POSITION_CHECK_INTERVAL = 100L
         private const val FOCUS_VOLUME = 1.0f
-        private const val BREAK_VOLUME = 0.2f
+        private const val BREAK_VOLUME = 0.1f
     }
 
     fun play(sound: BackgroundSound) {

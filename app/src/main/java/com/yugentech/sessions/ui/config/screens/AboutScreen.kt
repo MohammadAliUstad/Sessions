@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Intent
 import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
@@ -95,10 +96,14 @@ fun AboutScreen(
         topBar = {
             LargeTopAppBar(
                 title = {
-                    Text(
-                        text = "About",
-                        style = MaterialTheme.typography.headlineMedium
-                    )
+                    Column {
+                        Text("About")
+                        Text(
+                            "App information and credits",
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
                 },
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {

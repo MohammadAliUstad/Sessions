@@ -43,7 +43,8 @@ val alertsModule = module {
             hapticService = get(),
             soundService = get(),
             backgroundSoundService = get(),
-            externalScope = CoroutineScope(Dispatchers.IO + SupervisorJob())
+            externalScope = CoroutineScope(Dispatchers.IO + SupervisorJob()),
+            timerRepository = get()
         )
     }
 }
