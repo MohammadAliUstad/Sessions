@@ -1,7 +1,7 @@
 package com.yugentech.sessions.ui.config.components.appearanceScreen
 
 import androidx.compose.ui.graphics.Color
-import com.yugentech.sessions.theme.color.AppColorSchemes
+import com.yugentech.sessions.theme.AppColorSchemes
 import com.yugentech.sessions.theme.models.ColorTheme
 
 data class ThemeOption(

@@ -18,7 +18,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.unit.dp
+import com.yugentech.sessions.theme.tokens.spacing
 import com.yugentech.sessions.ui.dash.common.itemShape
 
 @Composable
@@ -39,7 +39,10 @@ fun SettingsSwitchItem(
             Text(
                 text = title,
                 style = MaterialTheme.typography.titleMedium,
-                modifier = Modifier.padding(start = 8.dp, top = 8.dp)
+                modifier = Modifier.padding(
+                    start = MaterialTheme.spacing.s, // 8.dp
+                    top = MaterialTheme.spacing.s    // 8.dp
+                )
             )
         },
         supportingContent = subtitle?.let {
@@ -48,8 +51,10 @@ fun SettingsSwitchItem(
                     text = it,
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    modifier = Modifier.padding(start = 8.dp, bottom = 8.dp)
-
+                    modifier = Modifier.padding(
+                        start = MaterialTheme.spacing.s, // 8.dp
+                        bottom = MaterialTheme.spacing.s // 8.dp
+                    )
                 )
             }
         },

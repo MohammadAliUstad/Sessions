@@ -13,9 +13,10 @@ import org.koin.core.qualifier.named
 import org.koin.dsl.module
 import timber.log.Timber
 
+// Koin module defining dependencies for the notification system
 val notificationModule = module {
 
-    // Initializes NotificationService and creates channels immediately on startup
+    // Initializes the notification service and creates channels immediately on app startup
     single(createdAtStart = true) {
         Timber.d("Initializing NotificationService and Channels")
         NotificationService(androidContext()).apply {
@@ -23,28 +24,28 @@ val notificationModule = module {
         }
     }
 
-    // Provides access to notification preferences
+    // Provides access to persistent notification settings
     single {
         NotificationDataStore(
             dataStore = get(named("notification"))
         )
     }
 
-    // Manages the Active Session foreground service
+    // Manages the persistent foreground notification for active timers
     single {
         ActiveNotificationManager(
             context = androidContext()
         )
     }
 
-    // Manages Scheduled Alarm logic
+    // Manages scheduling and cancelling of future alarm reminders
     single {
         ReminderNotificationManager(
             context = androidContext()
         )
     }
 
-    // Repository coordinating active and scheduled notifications
+    // Repository that coordinates both active timer notifications and scheduled reminders
     single<NotificationRepository> {
         NotificationRepositoryImpl(
             activeNotificationManager = get(),
@@ -52,7 +53,7 @@ val notificationModule = module {
         )
     }
 
-    // ViewModel for notification settings UI
+    // ViewModel for the notification settings screen
     viewModel {
         NotificationsViewModel(
             notificationRepository = get(),

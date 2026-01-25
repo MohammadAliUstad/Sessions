@@ -18,11 +18,12 @@ import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.tasks.await
 import timber.log.Timber
 
+// Service class handling direct interactions with Firebase Authentication and Google Sign-In
 class AuthService(
     private val auth: FirebaseAuth,
     private val oneTapClient: SignInClient
 ) {
-    // Observes Firebase Auth state changes (Logged In / Out)
+    // Converts the Firebase auth state listener into a cold Flow for reactive updates
     val authStateFlow: Flow<FirebaseUser?> = callbackFlow {
         val authStateListener = FirebaseAuth.AuthStateListener { firebaseAuth ->
             val user = firebaseAuth.currentUser
@@ -33,18 +34,17 @@ class AuthService(
         awaitClose { auth.removeAuthStateListener(authStateListener) }
     }
 
-    // Returns the currently signed-in user or null
+    // Returns the currently logged-in user or null
     val currentUser: FirebaseUser?
         get() = auth.currentUser
 
-    // Creates a new account with email and password
+    // Creates a new account with email and password and updates the display name
     suspend fun signUp(name: String, email: String, password: String): AuthResult<FirebaseUser> {
         return try {
             Timber.d("Attempting sign up for email: $email")
             val result = auth.createUserWithEmailAndPassword(email, password).await()
             val user = result.user!!
 
-            // Update display name immediately after creation
             user.updateProfile(
                 UserProfileChangeRequest.Builder().setDisplayName(name).build()
             ).await()
@@ -57,7 +57,7 @@ class AuthService(
         }
     }
 
-    // Signs in an existing user with email and password
+    // Authenticates an existing user using email and password
     suspend fun signIn(email: String, password: String): AuthResult<FirebaseUser> {
         return try {
             Timber.d("Attempting sign in for email: $email")
@@ -70,7 +70,7 @@ class AuthService(
         }
     }
 
-    // Sends a password reset email to the specified address
+    // Sends a password recovery email to the specified address
     suspend fun sendPasswordResetEmail(email: String): AuthResult<Unit> {
         return try {
             Timber.d("Sending password reset email to: $email")
@@ -82,14 +82,14 @@ class AuthService(
         }
     }
 
-    // Signs out from both Firebase and Google One Tap client
+    // Logs the user out of Firebase and the Google One Tap client
     fun signOut() {
         Timber.i("Signing out user")
         auth.signOut()
         oneTapClient.signOut()
     }
 
-    // Prepares the Intent for Google One Tap sign-in
+    // Builds the Google One Tap sign-in request and returns the pending intent to launch it
     suspend fun getGoogleSignInIntent(webClientId: String): AuthResult<PendingIntent> {
         return try {
             Timber.d("Preparing Google One Tap Sign-In intent")
@@ -112,7 +112,7 @@ class AuthService(
         }
     }
 
-    // Processes the result from the Google Sign-In activity
+    // Extracts credentials from the Google Sign-In result and authenticates with Firebase
     suspend fun handleGoogleSignInResult(data: Intent?): AuthResult<FirebaseUser> {
         return try {
             if (data == null) {

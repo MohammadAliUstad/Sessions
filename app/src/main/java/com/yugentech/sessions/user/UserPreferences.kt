@@ -7,7 +7,7 @@ import androidx.datastore.preferences.core.edit
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
-// FIX: Constructor now accepts DataStore directly, injected by Koin
+// Manages simple user settings like onboarding status using DataStore
 class UserPreferences(
     private val dataStore: DataStore<Preferences>
 ) {
@@ -16,13 +16,13 @@ class UserPreferences(
         private val ONBOARDING_COMPLETED = booleanPreferencesKey("onboarding_completed")
     }
 
-    // Read the value directly from the injected dataStore
+    // Observes the onboarding completion status, defaulting to false if not set
     val isOnboardingCompleted: Flow<Boolean> = dataStore.data
         .map { preferences ->
-            preferences[ONBOARDING_COMPLETED] ?: false // Default is false
+            preferences[ONBOARDING_COMPLETED] ?: false
         }
 
-    // Write the value
+    // Updates the onboarding completion status in DataStore
     suspend fun saveOnboardingCompleted(completed: Boolean) {
         dataStore.edit { preferences ->
             preferences[ONBOARDING_COMPLETED] = completed

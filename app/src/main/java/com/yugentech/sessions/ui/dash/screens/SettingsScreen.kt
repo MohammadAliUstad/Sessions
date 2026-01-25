@@ -20,17 +20,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.yugentech.sessions.R
 import com.yugentech.sessions.notifications.NotificationsViewModel
+import com.yugentech.sessions.theme.tokens.components
 import com.yugentech.sessions.theme.tokens.spacing
+import com.yugentech.sessions.ui.dash.common.LogoutConfirmationDialog
+import com.yugentech.sessions.ui.dash.common.SectionHeader
 import com.yugentech.sessions.ui.dash.components.settingsScreen.AlarmPermissionDialog
 import com.yugentech.sessions.ui.dash.components.settingsScreen.SettingsListItem
-import com.yugentech.sessions.ui.dash.common.SectionHeader
 import com.yugentech.sessions.ui.dash.components.settingsScreen.SettingsSwitchItem
 import com.yugentech.sessions.ui.dash.components.settingsScreen.TimePickerDialog
-import com.yugentech.sessions.ui.dash.common.LogoutConfirmationDialog
 import com.yugentech.sessions.viewModels.SettingsViewModel
 
 @Composable
@@ -39,7 +39,7 @@ fun SettingsScreen(
     notificationsViewModel: NotificationsViewModel,
     onSignOut: () -> Unit,
     onAbout: () -> Unit,
-    onAppearance: () -> Unit,
+    onAppearance: () -> Unit
 ) {
     val alertsConfiguration by settingsViewModel.alertConfigurations.collectAsState()
     val notificationConfiguration by notificationsViewModel.notificationConfiguration.collectAsState()
@@ -57,9 +57,11 @@ fun SettingsScreen(
             top = MaterialTheme.spacing.s,
             start = MaterialTheme.spacing.m,
             end = MaterialTheme.spacing.m,
-            bottom = 64.dp
+            // Ensure padding accounts for the bottom nav bar + some extra breathing room
+            bottom = MaterialTheme.components.bottomNavHeight + MaterialTheme.spacing.m
         ),
-        verticalArrangement = Arrangement.spacedBy(2.dp)
+        // Use token for the small gap between grouped items (2.dp)
+        verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.xxs)
     ) {
         item {
             SectionHeader(

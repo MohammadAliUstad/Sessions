@@ -6,9 +6,10 @@ import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module
 import timber.log.Timber
 
+// Koin module for Room database and DAO dependencies
 val databaseModule = module {
 
-    // Builds the Room database instance with destructive migration fallback
+    // Creates the Room database instance, wiping data if schema changes
     single {
         Timber.d("Initializing Room Database")
         Room.databaseBuilder(
@@ -18,12 +19,12 @@ val databaseModule = module {
         ).fallbackToDestructiveMigration(true).build()
     }
 
-    // Provides the UserDao
+    // Provides access to user-related database operations
     single {
         get<AppDatabase>().userDao()
     }
 
-    // Provides the SessionDao
+    // Provides access to session-related database operations
     single {
         get<AppDatabase>().sessionDao()
     }

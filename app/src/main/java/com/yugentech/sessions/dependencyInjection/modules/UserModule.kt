@@ -8,23 +8,25 @@ import com.yugentech.sessions.user.userRepository.UserRepositoryImpl
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
+// Koin module defining dependencies for user profile management
 val userModule = module {
 
-    // Singleton instance of Firestore
+    // Provides the Firestore instance
     single { FirebaseFirestore.getInstance() }
 
-    // Service handling direct Firestore user operations
+    // Service for direct Firestore user document operations
     single {
         UserService(
             firestore = get()
         )
     }
 
+    // Manages local preferences specific to the user
     single {
         UserPreferences(get(named("user")))
     }
 
-    // Repository mediating user data between remote and local sources
+    // Repository that syncs user profile data between local storage and Firestore
     single<UserRepository> {
         UserRepositoryImpl(
             userDao = get(),

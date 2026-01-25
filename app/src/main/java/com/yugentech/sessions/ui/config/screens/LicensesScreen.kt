@@ -52,7 +52,7 @@ import com.yugentech.sessions.theme.tokens.components
 import com.yugentech.sessions.theme.tokens.corners
 import com.yugentech.sessions.theme.tokens.icons
 import com.yugentech.sessions.theme.tokens.spacing
-import com.yugentech.sessions.ui.config.models.LicensesContent
+import com.yugentech.sessions.ui.config.models.license.LicensesContent
 import com.yugentech.sessions.ui.dash.common.SectionHeader
 import com.yugentech.sessions.ui.dash.common.itemShape
 import com.yugentech.sessions.utils.AppConstants.GITHUB_URL
@@ -71,7 +71,14 @@ fun LicensesScreen(
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
             LargeTopAppBar(
-                title = { Text("Licenses") },
+                title = { Column {
+                    Text("Licenses")
+                    Text(
+                        "Compliance and third-party code",
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                } },
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")

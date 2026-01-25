@@ -9,20 +9,22 @@ import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module
 import timber.log.Timber
 
+// Koin module defining dependencies for session management and data syncing
 val sessionModule = module {
 
-    // Service handling direct Firestore operations for sessions
+    // Service for performing direct Firestore operations related to sessions
     single {
         SessionsService(
             firestore = get()
         )
     }
 
+    // Manages Google Play Billing interactions
     single {
         BillingManager(androidContext())
     }
 
-    // Manages local timestamps to sync data between device and cloud
+    // Helper class to track last sync timestamps for data consistency
     single {
         Timber.d("Initializing SyncPreferences")
         SyncPreferences(
@@ -30,7 +32,7 @@ val sessionModule = module {
         )
     }
 
-    // Repository coordinating local database, remote Firestore, and sync logic
+    // Repository that synchronizes local database records with remote Firestore data
     single<SessionsRepository> {
         SessionsRepositoryImpl(
             sessionsDao = get(),

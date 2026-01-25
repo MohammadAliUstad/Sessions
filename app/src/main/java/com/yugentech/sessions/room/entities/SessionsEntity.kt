@@ -7,7 +7,7 @@ import androidx.room.PrimaryKey
 import com.yugentech.sessions.models.Session
 import java.util.UUID
 
-// Local database representation of a Session, indexed by userId for faster queries
+// Database table definition for storing session records, indexed by user for speed
 @Keep
 @Entity(
     tableName = "sessions",
@@ -22,7 +22,7 @@ data class SessionsEntity(
     val pendingSync: Boolean = true,
     val sessionTask: String = "Focus Session"
 ) {
-    // Converts local entity to domain model
+    // Maps the database entity back to the domain model
     fun toSession(): Session {
         return Session(
             sessionId = sessionId,
@@ -33,7 +33,7 @@ data class SessionsEntity(
     }
 
     companion object {
-        // Converts domain model to local entity
+        // Maps the domain model to a database entity, handling ID generation if needed
         fun fromSession(
             session: Session,
             userId: String,

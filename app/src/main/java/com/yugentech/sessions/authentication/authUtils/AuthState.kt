@@ -3,7 +3,7 @@ package com.yugentech.sessions.authentication.authUtils
 import android.app.PendingIntent
 import com.yugentech.sessions.models.UserData
 
-// Represents the current state of the authentication UI flow
+// Data class holding the current state of the authentication UI
 data class AuthState(
     val isLoading: Boolean = false,
     val userId: String? = null,

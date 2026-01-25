@@ -42,7 +42,7 @@ import androidx.core.net.toUri
 import com.yugentech.sessions.theme.tokens.spacing
 import com.yugentech.sessions.ui.config.components.aboutScreen.AppInfoCard
 import com.yugentech.sessions.ui.config.components.aboutScreen.DonationDialog
-import com.yugentech.sessions.ui.config.models.AboutContent
+import com.yugentech.sessions.ui.config.models.about.AboutContent
 import com.yugentech.sessions.ui.dash.common.SectionHeader
 import com.yugentech.sessions.ui.dash.components.settingsScreen.SettingsListItem
 import com.yugentech.sessions.utils.AppConstants

@@ -16,7 +16,7 @@ import com.yugentech.sessions.R
 import timber.log.Timber
 import java.util.Locale
 
-// Handles low-level Android Notification Manager operations
+// Handles low-level interaction with the Android Notification Manager
 class NotificationService(
     private val context: Context
 ) {
@@ -27,8 +27,10 @@ class NotificationService(
         const val REMINDER_CHANNEL_ID = "reminder_channel"
         const val ACTIVE_NOTIFICATION_ID = 1001
         const val REMINDER_NOTIFICATION_ID = 1002
+        const val EXTRA_NAVIGATE_TO_HOME = "navigate_to_home"
     }
 
+    // Creates separate channels for silent timer updates and high-priority reminders
     fun createNotificationChannels() {
         Timber.d("Creating notification channels")
         val manager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
@@ -55,6 +57,7 @@ class NotificationService(
         manager.createNotificationChannel(reminderChannel)
     }
 
+    // Displays a notification if the required runtime permission is granted
     fun showNotification(notification: Notification) {
         if (!hasNotificationPermission()) {
             Timber.w("Cannot show notification: POST_NOTIFICATIONS permission missing")
@@ -72,6 +75,7 @@ class NotificationService(
         }
     }
 
+    // Removes a specific notification from the status bar
     fun hideNotification(notificationId: Int) {
         try {
             notificationManager.cancel(notificationId)
@@ -80,6 +84,7 @@ class NotificationService(
         }
     }
 
+    // Verifies if the app has the POST_NOTIFICATIONS permission on Android 13+
     private fun hasNotificationPermission(): Boolean {
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             ContextCompat.checkSelfPermission(
@@ -91,6 +96,7 @@ class NotificationService(
         }
     }
 
+    // Constructs the notification object with appropriate flags, intents, and styles
     fun buildNotification(notification: Notification): android.app.Notification {
         val channelId = when (notification.type) {
             NotificationType.SCHEDULED -> REMINDER_CHANNEL_ID
@@ -98,7 +104,8 @@ class NotificationService(
         }
 
         val openAppIntent = Intent(context, MainActivity::class.java).apply {
-            flags = Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_CLEAR_TOP
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            putExtra(EXTRA_NAVIGATE_TO_HOME, true)
         }
 
         val pendingIntent = PendingIntent.getActivity(
@@ -134,7 +141,7 @@ class NotificationService(
                                 seconds / 60,
                                 seconds % 60
                             )
-                            setContentText("$formattedTime time remaining")
+                            setContentText("$formattedTime remaining")
                         }
                     }
                     NotificationType.SCHEDULED -> {

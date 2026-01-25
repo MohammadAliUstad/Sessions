@@ -93,7 +93,7 @@ fun SignInScreen(
                     onForgotPassword = onForgotPassword
                 )
 
-                Spacer(modifier = Modifier.height(MaterialTheme.spacing.xsSmall))
+                Spacer(modifier = Modifier.height(MaterialTheme.spacing.xs))
 
                 TextButton(
                     onClick = onNavigateToSignUp,

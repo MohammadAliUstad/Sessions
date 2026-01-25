@@ -1,5 +1,6 @@
 package com.yugentech.sessions.ui.dash.components.settingsScreen
 
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
@@ -10,6 +11,7 @@ import androidx.compose.material3.TimePickerDefaults
 import androidx.compose.material3.TimePickerLayoutType
 import androidx.compose.material3.rememberTimePickerState
 import androidx.compose.runtime.Composable
+import com.yugentech.sessions.theme.tokens.corners
 import java.util.Calendar
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -35,23 +37,17 @@ fun TimePickerDialog(
                 color = MaterialTheme.colorScheme.onSurface
             )
         },
+        shape = RoundedCornerShape(MaterialTheme.corners.large), // 24.dp
         text = {
             TimePicker(
                 state = timePickerState,
                 layoutType = TimePickerLayoutType.Vertical,
                 colors = TimePickerDefaults.colors(
                     clockDialColor = MaterialTheme.colorScheme.surfaceContainer,
-                    selectorColor = MaterialTheme.colorScheme.primary,
-                    containerColor = MaterialTheme.colorScheme.surface,
-                    periodSelectorBorderColor = MaterialTheme.colorScheme.outline,
                     periodSelectorSelectedContainerColor = MaterialTheme.colorScheme.primary,
-                    periodSelectorUnselectedContainerColor = MaterialTheme.colorScheme.surfaceVariant,
                     periodSelectorSelectedContentColor = MaterialTheme.colorScheme.onPrimary,
-                    periodSelectorUnselectedContentColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                    timeSelectorSelectedContainerColor = MaterialTheme.colorScheme.primaryContainer,
-                    timeSelectorUnselectedContainerColor = MaterialTheme.colorScheme.surfaceVariant,
-                    timeSelectorSelectedContentColor = MaterialTheme.colorScheme.onPrimaryContainer,
-                    timeSelectorUnselectedContentColor = MaterialTheme.colorScheme.onSurfaceVariant
+                    periodSelectorUnselectedContainerColor = MaterialTheme.colorScheme.surfaceVariant,
+                    timeSelectorUnselectedContainerColor = MaterialTheme.colorScheme.surfaceVariant
                 )
             )
         },

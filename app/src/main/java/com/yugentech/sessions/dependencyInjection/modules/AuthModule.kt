@@ -9,24 +9,25 @@ import com.yugentech.sessions.authentication.authRepository.AuthRepositoryImpl
 import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module
 
+// Koin module defining dependencies for authentication
 val authModule = module {
 
-    // Singleton instance of Firebase Auth
+    // Provides the standard Firebase Auth instance
     single {
         FirebaseAuth.getInstance()
     }
 
-    // Singleton instance of Firestore
+    // Provides the standard Firestore instance
     single {
         FirebaseFirestore.getInstance()
     }
 
-    // Google Sign-In Client for One Tap authentication
+    // Provides the Google Sign-In client for handling One Tap auth
     single {
         Identity.getSignInClient(androidContext())
     }
 
-    // Service handling lower-level auth operations
+    // Provides the low-level service that wraps Firebase calls
     single {
         AuthService(
             auth = get(),
@@ -34,7 +35,7 @@ val authModule = module {
         )
     }
 
-    // Repository implementation exposing auth domain logic
+    // Provides the repository interface used by the UI layer
     single<AuthRepository> {
         AuthRepositoryImpl(
             authService = get()

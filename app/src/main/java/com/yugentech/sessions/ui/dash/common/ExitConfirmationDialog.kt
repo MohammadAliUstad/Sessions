@@ -95,7 +95,6 @@ fun ExitConfirmationDialog(
                         ) {
                             Text(
                                 text = "Cancel",
-                                // Standard M3 Button Text
                                 style = MaterialTheme.typography.labelLarge,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant
                             )

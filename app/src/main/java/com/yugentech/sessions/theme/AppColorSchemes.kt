@@ -1,4 +1,4 @@
-package com.yugentech.sessions.theme.color
+package com.yugentech.sessions.theme
 
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme

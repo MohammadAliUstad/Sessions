@@ -1,12 +1,31 @@
 package com.yugentech.sessions.ui.dash.components.profileScreen
 
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ShowChart
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.LocalFireDepartment
-import androidx.compose.material3.*
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
+import androidx.compose.material3.FilledTonalButton
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonDefaults
+import androidx.compose.material3.LoadingIndicator
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -31,12 +50,12 @@ fun ProfileCard(
     Surface(
         modifier = Modifier.fillMaxWidth(),
         color = MaterialTheme.colorScheme.surfaceContainer,
-        shape = RoundedCornerShape(MaterialTheme.corners.extraLarge)
+        shape = RoundedCornerShape(MaterialTheme.corners.extraLarge) // 30.dp
     ) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(MaterialTheme.spacing.m),
+                .padding(MaterialTheme.spacing.m), // 16.dp
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.m)
         ) {
@@ -47,13 +66,15 @@ fun ProfileCard(
                     style = MaterialTheme.typography.headlineMedium,
                     color = MaterialTheme.colorScheme.onSurface,
                     textAlign = TextAlign.Center,
-                    modifier = Modifier.fillMaxWidth().align(Alignment.Center)
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .align(Alignment.Center)
                 )
 
                 IconButton(
                     onClick = onEditProfile,
                     modifier = Modifier
-                        .size(MaterialTheme.components.buttonMedium)
+                        .size(MaterialTheme.components.buttonMedium) // 48.dp
                         .align(Alignment.CenterEnd),
                     colors = IconButtonDefaults.iconButtonColors(
                         containerColor = MaterialTheme.colorScheme.secondaryContainer,
@@ -63,12 +84,11 @@ fun ProfileCard(
                     Icon(
                         imageVector = Icons.Default.Edit,
                         contentDescription = "Edit Profile",
-                        modifier = Modifier.size(MaterialTheme.icons.mediumSmall)
+                        modifier = Modifier.size(MaterialTheme.icons.mediumSmall) // 18.dp
                     )
                 }
             }
 
-            // Avatar Section
             Box(
                 contentAlignment = Alignment.Center,
                 modifier = Modifier.size(MaterialTheme.components.imageSizeLarge)
@@ -93,18 +113,16 @@ fun ProfileCard(
                 modifier = Modifier.fillMaxWidth()
             )
 
-            // Primary Actions Row
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.s)
             ) {
-                // Left: View Insights
                 FilledTonalButton(
                     onClick = onViewInsights,
                     modifier = Modifier
                         .weight(1f)
                         .height(MaterialTheme.components.buttonHeight),
-                    shape = RoundedCornerShape(MaterialTheme.corners.smallMedium),
+                    shape = RoundedCornerShape(MaterialTheme.corners.extraLarge),
                     colors = ButtonDefaults.filledTonalButtonColors(
                         containerColor = MaterialTheme.colorScheme.tertiaryContainer,
                         contentColor = MaterialTheme.colorScheme.onTertiaryContainer
@@ -123,13 +141,13 @@ fun ProfileCard(
                     )
                 }
 
-                // Right: Streak Display (Non-clickable Button for UI consistency)
+                // Right: Streak Display
                 FilledTonalButton(
-                    onClick = { /* Non-interactive or triggers streak info */ },
+                    onClick = { /* Non-interactive */ },
                     modifier = Modifier
                         .weight(1f)
-                        .height(MaterialTheme.components.buttonHeight),
-                    shape = RoundedCornerShape(MaterialTheme.corners.smallMedium),
+                        .height(MaterialTheme.components.buttonHeight), // 48.dp
+                    shape = RoundedCornerShape(MaterialTheme.corners.extraLarge), // 12.dp
                     colors = ButtonDefaults.filledTonalButtonColors(
                         containerColor = MaterialTheme.colorScheme.primaryContainer,
                         contentColor = MaterialTheme.colorScheme.onPrimaryContainer
@@ -138,7 +156,7 @@ fun ProfileCard(
                     Icon(
                         imageVector = Icons.Default.LocalFireDepartment,
                         contentDescription = null,
-                        modifier = Modifier.size(MaterialTheme.icons.mediumSmall)
+                        modifier = Modifier.size(MaterialTheme.icons.mediumSmall) // 18.dp
                     )
                     Spacer(modifier = Modifier.width(MaterialTheme.spacing.s))
                     Text(

@@ -37,6 +37,7 @@ import androidx.core.content.ContextCompat
 import com.yugentech.sessions.navigation.AppScreens
 import com.yugentech.sessions.notifications.NotificationsViewModel
 import com.yugentech.sessions.theme.tokens.dimensions.AppAnimations
+import com.yugentech.sessions.theme.tokens.components
 import com.yugentech.sessions.theme.tokens.spacing
 import com.yugentech.sessions.timer.TimerViewModel
 import com.yugentech.sessions.ui.dash.common.ExitConfirmationDialog
@@ -223,8 +224,8 @@ fun MainScreen(
             message = toastMessage,
             onDismiss = { toastMessage = null },
             modifier = Modifier
-                .align(Alignment.Center)
-                .padding(bottom = MaterialTheme.spacing.xxl)
+                .align(Alignment.BottomCenter)
+                .padding(bottom = MaterialTheme.components.bottomNavHeight + MaterialTheme.spacing.m)
                 .zIndex(3f)
         )
     }

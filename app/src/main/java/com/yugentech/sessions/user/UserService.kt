@@ -6,15 +6,15 @@ import com.yugentech.sessions.models.UserData
 import kotlinx.coroutines.tasks.await
 import timber.log.Timber
 
-// Service for handling direct Cloud Firestore operations related to user profiles
+// Handles direct network operations with Firestore for user documents
 class UserService(
     private val firestore: FirebaseFirestore
 ) {
 
-    // Helper to get the reference for a specific user's document
+    // Creates a reference to a specific user document in the 'users' collection
     private fun profileDocRef(userId: String) = firestore.collection("users").document(userId)
 
-    // Uploads or updates user profile data in Firestore
+    // Saves the user object to Firestore and handles potential errors
     suspend fun uploadUser(userData: UserData): UserResult<Unit> {
         return try {
             Timber.d("Uploading user profile for: ${userData.userId}")
@@ -29,7 +29,7 @@ class UserService(
         }
     }
 
-    // Fetches the user profile document from Firestore
+    // Retrieves user data from Firestore and maps it to the domain model
     suspend fun fetchUser(userId: String): UserResult<UserData> {
         return try {
             Timber.d("Fetching user profile for: $userId")

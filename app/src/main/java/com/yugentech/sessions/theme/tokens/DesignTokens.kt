@@ -8,6 +8,7 @@ import com.yugentech.sessions.theme.tokens.dimensions.IconSizeTokens
 import com.yugentech.sessions.theme.tokens.dimensions.SpacingTokens
 import com.yugentech.sessions.theme.tokens.dimensions.StrokeTokens
 
+// Aggregates all specific token categories into a single design system object
 data class DesignTokens(
     val spacing: SpacingTokens,
     val corners: CornerTokens,
@@ -17,9 +18,10 @@ data class DesignTokens(
     val strokeWidths: StrokeTokens
 )
 
+// Concrete implementation of values for standard phone screen sizes
 val TokensCompact = DesignTokens(
     spacing = SpacingTokens(
-        z = 0.dp,
+        none = 0.dp,
         xxs = 2.dp,
         xs = 4.dp,
         xsSmall = 6.dp,
@@ -37,7 +39,8 @@ val TokensCompact = DesignTokens(
         smallMedium = 12.dp,
         medium = 16.dp,
         large = 24.dp,
-        extraLarge = 30.dp
+        extraLarge = 30.dp,
+        pill = 50.dp
     ),
     icons = IconSizeTokens(
         extraSmall = 8.dp,

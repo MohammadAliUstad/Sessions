@@ -15,6 +15,7 @@ import timber.log.Timber
 import kotlin.math.cos
 import kotlin.math.sin
 
+// Manages playback of looping background sounds using two players for gapless crossfading
 class BackgroundSoundService(private val context: Context) {
 
     private var activePlayer: ExoPlayer? = null
@@ -41,6 +42,7 @@ class BackgroundSoundService(private val context: Context) {
         private const val BREAK_VOLUME = 0.1f
     }
 
+    // Main entry point to start playing a specific sound
     fun play(sound: BackgroundSound) {
         Timber.d("play() called with sound: ${sound.id}")
 
@@ -54,6 +56,7 @@ class BackgroundSoundService(private val context: Context) {
             isStopping = false
         }
 
+        // If the same sound is already playing, just ensure volume is up
         if (isLooping && currentSound == sound) {
             Timber.d("Same sound already playing, fading to focus mode")
             fadeToFocusMode()
@@ -72,6 +75,7 @@ class BackgroundSoundService(private val context: Context) {
                 crossfadeScheduled = false
                 isStopping = false
 
+                // Initialize two players for seamless looping via crossfading
                 activePlayer = createPlayer(uri).apply {
                     volume = 0f
                     playWhenReady = true
@@ -87,6 +91,7 @@ class BackgroundSoundService(private val context: Context) {
         }
     }
 
+    // Plays a short clip of the sound for user selection, then fades out
     fun playPreview(sound: BackgroundSound) {
         Timber.d("playPreview() called with sound: ${sound.id}")
         handler.removeCallbacksAndMessages(null)
@@ -109,6 +114,7 @@ class BackgroundSoundService(private val context: Context) {
                     playWhenReady = true
                 }
 
+                // Fade in
                 volumeAnimator = ValueAnimator.ofFloat(0f, FOCUS_VOLUME).apply {
                     duration = PREVIEW_FADE_DURATION
                     interpolator = LinearInterpolator()
@@ -116,6 +122,7 @@ class BackgroundSoundService(private val context: Context) {
                     start()
                 }
 
+                // Schedule fade out and cleanup
                 handler.postDelayed({
                     volumeAnimator?.cancel()
                     volumeAnimator =
@@ -137,16 +144,19 @@ class BackgroundSoundService(private val context: Context) {
         }
     }
 
+    // Lowers volume during break sessions
     fun fadeToBreakMode() {
         Timber.d("fadeToBreakMode() called")
         fadeVolume(FOCUS_VOLUME, BREAK_VOLUME)
     }
 
+    // Restores full volume for focus sessions
     fun fadeToFocusMode() {
         Timber.d("fadeToFocusMode() called")
         fadeVolume(BREAK_VOLUME, FOCUS_VOLUME)
     }
 
+    // Gradually fades out audio and releases resources
     fun stop() {
         Timber.d("stop() called")
 
@@ -165,11 +175,13 @@ class BackgroundSoundService(private val context: Context) {
         }
     }
 
+    // Helper to build a simple ExoPlayer instance
     private fun createPlayer(uri: String) = ExoPlayer.Builder(context).build().apply {
         setMediaItem(MediaItem.fromUri(uri))
         prepare()
     }
 
+    // Monitors playback progress to trigger crossfade near the end of the track
     private fun startPositionMonitoring(uri: String) {
         crossfadeScheduled = false
 
@@ -196,6 +208,7 @@ class BackgroundSoundService(private val context: Context) {
         handler.post(positionMonitor!!)
     }
 
+    // Seamlessly transitions from active player to next player using equal-power crossfade
     private fun performCrossfade(uri: String) {
         if (!isLooping) return
 
@@ -212,6 +225,7 @@ class BackgroundSoundService(private val context: Context) {
             duration = CROSSFADE_DURATION
             interpolator = LinearInterpolator()
 
+            // Calculate equal-power gain for smooth audio transition
             addUpdateListener { animation ->
                 val progress = animation.animatedValue as Float
                 try {
@@ -225,6 +239,7 @@ class BackgroundSoundService(private val context: Context) {
                 }
             }
 
+            // Swap players when transition completes so the cycle continues
             addListener(object : AnimatorListenerAdapter() {
                 override fun onAnimationEnd(animation: Animator) {
                     if (!isLooping) return
@@ -248,6 +263,7 @@ class BackgroundSoundService(private val context: Context) {
         }
     }
 
+    // Generic helper to animate volume changes
     private fun fadeVolume(
         from: Float,
         to: Float,
@@ -282,7 +298,8 @@ class BackgroundSoundService(private val context: Context) {
         }
     }
 
-    private fun release() {
+    // Cleans up all players, animators, and handlers to prevent leaks
+    fun release() {
         Timber.d("release() called")
         try {
             positionMonitor?.let { handler.removeCallbacks(it) }
