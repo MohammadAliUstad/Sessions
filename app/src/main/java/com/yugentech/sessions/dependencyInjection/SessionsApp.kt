@@ -2,7 +2,6 @@ package com.yugentech.sessions.dependencyInjection
 
 import android.app.Application
 import com.google.firebase.FirebaseApp
-import com.yugentech.sessions.BuildConfig
 import com.yugentech.sessions.dependencyInjection.modules.alertsModule
 import com.yugentech.sessions.dependencyInjection.modules.authModule
 import com.yugentech.sessions.dependencyInjection.modules.dataStoreModule
@@ -26,10 +25,7 @@ class SessionsApp : Application() {
         super.onCreate()
 
         // Configure logging: DebugTree for development, ReleaseTree for production
-        if (BuildConfig.DEBUG)
-            Timber.plant(Timber.DebugTree())
-        else
-            Timber.plant(ReleaseTree())
+        Timber.plant(ReleaseTree())
 
         // Initialize Firebase SDK
         FirebaseApp.initializeApp(this)
