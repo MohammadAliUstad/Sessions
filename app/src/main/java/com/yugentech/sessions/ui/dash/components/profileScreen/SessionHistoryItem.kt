@@ -48,9 +48,9 @@ fun SessionHistoryItem(
     val minutes = (session.duration % 3600) / 60
 
     val durationText = when {
-        hours > 0 && minutes == 0 -> "${hours}h"       // Exact hours (e.g.  "2h")
-        hours > 0 -> "${hours}h ${minutes}m"           // Mixed (e.g. "1h 30m")
-        else -> "${minutes}m"                          // Minutes only (e.g. "45m")
+        hours > 0 && minutes == 0 -> "${hours}h"       // Exact hours
+        hours > 0 -> "${hours}h ${minutes}m"           // Mixed
+        else -> "${minutes}m"                          // Minutes only
     }
 
     ListItem(
@@ -75,8 +75,8 @@ fun SessionHistoryItem(
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Surface(
                     color = MaterialTheme.colorScheme.secondaryContainer,
-                    shape = RoundedCornerShape(MaterialTheme.corners.small),
-                    modifier = Modifier.padding(end = MaterialTheme.spacing.sm)
+                    shape = RoundedCornerShape(MaterialTheme.corners.small), // 8.dp
+                    modifier = Modifier.padding(end = MaterialTheme.spacing.s) // 8.dp
                 ) {
                     Text(
                         text = durationText,
@@ -85,21 +85,21 @@ fun SessionHistoryItem(
                         ),
                         color = MaterialTheme.colorScheme.onSecondaryContainer,
                         modifier = Modifier.padding(
-                            horizontal = MaterialTheme.spacing.sm,
-                            vertical = MaterialTheme.spacing.xs
+                            horizontal = MaterialTheme.spacing.s, // 8.dp
+                            vertical = MaterialTheme.spacing.xs   // 4.dp
                         )
                     )
                 }
 
                 IconButton(
                     onClick = onDelete,
-                    modifier = Modifier.size(MaterialTheme.components.buttonMedium)
+                    modifier = Modifier.size(MaterialTheme.components.buttonMedium) // 48.dp
                 ) {
                     Icon(
                         imageVector = Icons.Default.Delete,
                         contentDescription = "Delete",
                         tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                        modifier = Modifier.size(MaterialTheme.icons.mediumSmall)
+                        modifier = Modifier.size(MaterialTheme.icons.mediumSmall) // 18.dp
                     )
                 }
             }

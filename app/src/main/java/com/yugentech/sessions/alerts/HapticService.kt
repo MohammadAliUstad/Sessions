@@ -11,10 +11,12 @@ import android.view.HapticFeedbackConstants
 import android.view.View
 import timber.log.Timber
 
+// Service for triggering haptic feedback across different Android API levels
 class HapticService(
     context: Context
 ) {
 
+    // Lazy initialization of the correct vibrator service based on Android version
     private val vibrator: Vibrator by lazy {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             (context.getSystemService(Context.VIBRATOR_MANAGER_SERVICE) as VibratorManager).defaultVibrator
@@ -23,6 +25,7 @@ class HapticService(
         }
     }
 
+    // Triggers feedback: prefers View-based haptics, falls back to raw vibration
     fun performHaptic(view: View? = null) {
         try {
             Timber.v("Triggering haptic feedback")

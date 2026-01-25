@@ -48,11 +48,14 @@ fun AppNavHost(
     webClientId: String,
     showOnboarding: Boolean,
     onOnboardingComplete: () -> Unit,
-    loginViewModel: LoginViewModel
+    loginViewModel: LoginViewModel,
+    shouldNavigateToHome: Boolean = false,
+    onNavigatedToHome: () -> Unit = {}
 ) {
     val authState by loginViewModel.authState.collectAsStateWithLifecycle()
     val context = LocalContext.current
 
+    // Determines the initial screen based on onboarding and login status
     val startDestination = remember {
         when {
             showOnboarding -> Screens.Onboarding.route
@@ -61,7 +64,7 @@ fun AppNavHost(
         }
     }
 
-    // Handle Google Sign-In Intent launching
+    // Handles the result from the Google Sign-In activity
     val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.StartIntentSenderForResult(),
         onResult = { result ->
@@ -74,6 +77,7 @@ fun AppNavHost(
         }
     )
 
+    // Launches the Google Sign-In intent when it becomes available
     LaunchedEffect(authState.intent) {
         authState.intent?.let {
             Timber.d("Launching Google Sign-In Intent")
@@ -81,6 +85,7 @@ fun AppNavHost(
         }
     }
 
+    // Manages automatic navigation based on authentication changes
     LaunchedEffect(authState.isUserLoggedIn, authState.userId, showOnboarding) {
         if (!authState.isLoading) {
             val currentRoute = navController.currentDestination?.route
@@ -115,6 +120,16 @@ fun AppNavHost(
         }
     }
 
+    // Forces navigation back to the main screen when requested
+    LaunchedEffect(shouldNavigateToHome) {
+        if (shouldNavigateToHome) {
+            Timber.d("Popping back to Main screen")
+            navController.popBackStack(Screens.Main.route, inclusive = false)
+            onNavigatedToHome()
+        }
+    }
+
+    // Sets up the navigation host with custom animations
     AnimatedNavHost(
         navController = navController,
         startDestination = startDestination,
@@ -123,6 +138,7 @@ fun AppNavHost(
         popEnterTransition = { defaultPopEnterTransition() },
         popExitTransition = { defaultPopExitTransition() }
     ) {
+        // Defines the onboarding screen
         composable(
             route = Screens.Onboarding.route,
             exitTransition = { defaultExitTransition() },
@@ -132,12 +148,14 @@ fun AppNavHost(
             BackHandler { (context as? Activity)?.finish() }
         }
 
+        // Defines the licenses screen
         composable(Screens.Licenses.route) {
             LicensesScreen(
                 onNavigateBack = { navController.popBackStack() }
             )
         }
 
+        // Defines the sign-in screen
         composable(
             route = Screens.SignIn.route,
             enterTransition = { defaultEnterTransition() },
@@ -157,7 +175,9 @@ fun AppNavHost(
                     loginViewModel.getGoogleSignInIntent(webClientId)
                 },
                 onNavigateToSignUp = {
-                    navController.navigate(Screens.SignUp.route)
+                    navController.navigate(Screens.SignUp.route) {
+                        launchSingleTop = true
+                    }
                 },
                 onForgotPassword = { email ->
                     loginViewModel.forgotPassword(email)
@@ -165,6 +185,7 @@ fun AppNavHost(
             )
         }
 
+        // Defines the sign-up screen
         composable(
             route = Screens.SignUp.route,
             enterTransition = { defaultEnterTransition() },
@@ -190,6 +211,7 @@ fun AppNavHost(
             }
         }
 
+        // Defines the main dashboard screen
         composable(Screens.Main.route) {
             Timber.v("Composing Main Screen")
             val currentUserId = authState.userId
@@ -205,17 +227,20 @@ fun AppNavHost(
                     userId = currentUserId,
                     onSignOut = {
                         Timber.i("User requested Sign Out")
-                        timerViewModel.stopAndDiscardSession()
+                        timerViewModel.onLeave()
+                        timerViewModel.updateSessionTask("")
                         notificationsViewModel.cancelReminders()
                         loginViewModel.signOut()
                     },
                     onExit = {
                         Timber.i("User requested App Exit")
-                        timerViewModel.stopAndDiscardSession()
+                        timerViewModel.onLeave()
                         (context as? Activity)?.finish()
                     },
                     onEditProfile = {
-                        navController.navigate(Screens.EditProfile.route)
+                        navController.navigate(Screens.EditProfile.route) {
+                            launchSingleTop = true
+                        }
                     },
                     homeViewModel = homeViewModel,
                     profileViewModel = profileViewModel,
@@ -223,18 +248,25 @@ fun AppNavHost(
                     settingsViewModel = settingsViewModel,
                     notificationsViewModel = notificationsViewModel,
                     onAbout = {
-                        navController.navigate(Screens.About.route)
+                        navController.navigate(Screens.About.route) {
+                            launchSingleTop = true
+                        }
                     },
                     onAppearance = {
-                        navController.navigate(Screens.Appearance.route)
+                        navController.navigate(Screens.Appearance.route) {
+                            launchSingleTop = true
+                        }
                     },
                     onViewInsights = {
-                        navController.navigate(Screens.Insights.route)
+                        navController.navigate(Screens.Insights.route) {
+                            launchSingleTop = true
+                        }
                     }
                 )
             }
         }
 
+        // Defines the appearance settings screen
         composable(Screens.Appearance.route) {
             val themeViewModel: ThemeViewModel = koinViewModel()
             AppearanceScreen(
@@ -245,26 +277,22 @@ fun AppNavHost(
             )
         }
 
+        // Defines the insights and statistics screen
         composable(Screens.Insights.route) { it ->
-            // 1. Inject the merged ProfileViewModel instead of InsightsViewModel
             val parentEntry = remember(it) {
                 navController.getBackStackEntry(Screens.Main.route)
             }
             val profileViewModel: ProfileViewModel =
                 koinViewModel(viewModelStoreOwner = parentEntry)
-            // 2. Collect the consolidated UI state
             val profileUiState by profileViewModel.uiState.collectAsStateWithLifecycle()
             val currentUserId = authState.userId
 
-            // 3. Ensure data is loaded if it hasn't been already
             LaunchedEffect(currentUserId) {
                 currentUserId?.let { profileViewModel.loadProfile(it) }
             }
 
             InsightsScreen(
-                // Pass the calculated total time from the merged state
                 totalTime = formatTime(profileUiState.totalTime),
-                // Pass the task distribution for your charts
                 taskDistribution = profileUiState.taskDistribution,
                 onBack = { navController.popBackStack() },
                 streakCount = profileUiState.streakCount,
@@ -274,17 +302,21 @@ fun AppNavHost(
             )
         }
 
+        // Defines the about screen
         composable(Screens.About.route) {
             AboutScreen(
                 onNavigateBack = {
                     navController.popBackStack()
                 },
                 onNavigateToLicenses = {
-                    navController.navigate(Screens.Licenses.route)
+                    navController.navigate(Screens.Licenses.route) {
+                        launchSingleTop = true
+                    }
                 }
             )
         }
 
+        // Defines the edit profile screen
         composable(Screens.EditProfile.route) {
             Timber.v("Composing EditProfile Screen")
             val currentUserId = authState.userId

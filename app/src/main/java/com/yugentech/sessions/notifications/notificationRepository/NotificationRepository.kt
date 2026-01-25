@@ -2,23 +2,23 @@ package com.yugentech.sessions.notifications.notificationRepository
 
 import com.yugentech.sessions.notifications.Notification
 
-// Defines the contract for managing active sessions and scheduled reminders
+// Interface defining the contract for managing both active session alerts and scheduled reminders
 interface NotificationRepository {
-    // Starts the foreground service for an active focus session
+    // Starts the foreground service to show the active timer in the notification tray
     suspend fun startActiveNotification(notification: Notification)
 
-    // Updates the notification content (e.g., remaining time) for the active session
+    // Updates the existing foreground notification with new data like remaining time
     suspend fun updateActiveNotification(notification: Notification)
 
-    // Stops the active session foreground service
+    // Stops the foreground service and removes the active notification
     suspend fun stopActiveNotification()
 
-    // Schedules a precise alarm for daily study reminders
+    // Schedules a system alarm to trigger a notification at a specific time
     suspend fun scheduleReminder(message: String, hour: Int, minute: Int)
 
-    // Cancels all pending scheduled reminders
+    // Cancels any currently scheduled reminder alarms
     suspend fun cancelReminders()
 
-    // Checks if the app has permission to schedule exact alarms (Android 12+)
+    // Checks if the app has the necessary system permission to schedule exact alarms
     fun hasExactAlarmPermission(): Boolean
 }

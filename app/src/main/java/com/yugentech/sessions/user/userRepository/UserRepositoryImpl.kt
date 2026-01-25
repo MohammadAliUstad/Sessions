@@ -18,6 +18,7 @@ class UserRepositoryImpl(
 ) : UserRepository {
 
     override fun getUserFlow(userId: String): Flow<UserData?> {
+        // Observe database changes and convert Entity to Domain model
         return userDao.getUserFlow(userId)
             .map { entity -> entity?.toUserData() }
     }
@@ -44,6 +45,7 @@ class UserRepositoryImpl(
 
     override suspend fun fetchUserOnce(userId: String): UserResult<Unit> {
         return try {
+            // Check if we have already fetched the initial data
             val alreadyFetched = syncPreferences.isUserFetchDone().first()
 
             if (alreadyFetched) {
@@ -51,6 +53,7 @@ class UserRepositoryImpl(
             }
 
             Timber.i("Performing initial user profile fetch")
+            // Fetch from cloud and save to local database
             when (val result = userService.fetchUser(userId)) {
                 is UserResult.Success -> {
                     val userData = result.data

@@ -31,7 +31,7 @@ fun ProfileSectionHeader(
     countLabel: String? = null,
     containerColor: Color = MaterialTheme.colorScheme.tertiaryContainer,
     contentColor: Color = MaterialTheme.colorScheme.onTertiaryContainer,
-    shape: Shape = RoundedCornerShape(MaterialTheme.corners.medium)
+    shape: Shape = RoundedCornerShape(MaterialTheme.corners.medium) // 16.dp
 ) {
     Surface(
         color = containerColor,
@@ -43,8 +43,8 @@ fun ProfileSectionHeader(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(
-                    horizontal = MaterialTheme.spacing.m,
-                    vertical = MaterialTheme.spacing.sm
+                    horizontal = MaterialTheme.spacing.m, // 16.dp
+                    vertical = MaterialTheme.spacing.sm // 12.dp
                 ),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
@@ -55,9 +55,9 @@ fun ProfileSectionHeader(
                     Icon(
                         imageVector = icon,
                         contentDescription = null,
-                        modifier = Modifier.size(MaterialTheme.icons.mediumSmall)
+                        modifier = Modifier.size(MaterialTheme.icons.mediumSmall) // 18.dp
                     )
-                    Spacer(modifier = Modifier.width(MaterialTheme.spacing.sm))
+                    Spacer(modifier = Modifier.width(MaterialTheme.spacing.sm)) // 12.dp
                 }
 
                 Text(

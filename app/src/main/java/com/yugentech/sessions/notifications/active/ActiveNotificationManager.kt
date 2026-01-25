@@ -8,12 +8,12 @@ import com.yugentech.sessions.utils.AppConstants
 import org.koin.core.component.KoinComponent
 import timber.log.Timber
 
-// Helper class to construct and launch Intents for the ActiveForeground Service
+// Helper to launch and control the ActiveForeground service via intents
 class ActiveNotificationManager(
     private val context: Context
 ) : KoinComponent {
 
-    // Starts the foreground service with initial session data
+    // Launches the service in foreground mode with initial session details
     fun startActiveNotification(notification: Notification) {
         Timber.d("Starting ActiveForeground service for: ${notification.title}")
         val intent = Intent(context, ActiveForeground::class.java).apply {
@@ -26,7 +26,7 @@ class ActiveNotificationManager(
         ContextCompat.startForegroundService(context, intent)
     }
 
-    // Sends an update command to the running service (e.g., time tick)
+    // Sends an update intent to the running service with new time data
     fun updateActiveNotification(notification: Notification) {
         val intent = Intent(context, ActiveForeground::class.java).apply {
             action = AppConstants.ACTION_UPDATE_SESSION
@@ -35,7 +35,7 @@ class ActiveNotificationManager(
         context.startService(intent)
     }
 
-    // Signals the service to stop and remove the notification
+    // Sends a stop intent to the service to end the foreground session
     fun stopActiveNotification() {
         Timber.d("Stopping ActiveForeground service")
         val intent = Intent(context, ActiveForeground::class.java).apply {

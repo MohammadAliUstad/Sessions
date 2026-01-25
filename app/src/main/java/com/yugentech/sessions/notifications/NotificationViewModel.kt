@@ -14,12 +14,13 @@ import timber.log.Timber
 import java.util.Calendar
 import java.util.Locale
 
+// Manages UI state for notification settings and handles user interactions
 class NotificationsViewModel(
     private val notificationRepository: NotificationRepository,
     private val notificationDataStore: NotificationDataStore
 ) : ViewModel() {
 
-    // Exposes current notification config as a hot flow
+    // Exposes current notification preferences as a hot state flow
     val notificationConfiguration: StateFlow<NotificationConfig> =
         notificationDataStore.notificationConfigFlow.stateIn(
             scope = viewModelScope,
@@ -40,7 +41,7 @@ class NotificationsViewModel(
         _showExactAlarmDialog.value = false
     }
 
-    // Checks permission before allowing user to enable reminders
+    // Verifies permissions before allowing the user to enable exact alarms
     fun canEnableReminders(): Boolean {
         val hasPermission = notificationRepository.hasExactAlarmPermission()
         if (!hasPermission) {
@@ -63,6 +64,7 @@ class NotificationsViewModel(
         }
     }
 
+    // Toggles global notifications and syncs scheduled alarms accordingly
     fun setNotificationsEnabled(enabled: Boolean) {
         viewModelScope.launch {
             Timber.i("User toggled notifications enabled: $enabled")
@@ -75,6 +77,7 @@ class NotificationsViewModel(
         }
     }
 
+    // Toggles focus reminders and ensures a valid time is set
     fun setFocusRemindersEnabled(enabled: Boolean) {
         viewModelScope.launch {
             Timber.i("User toggled focus reminders enabled: $enabled")
@@ -94,6 +97,7 @@ class NotificationsViewModel(
         }
     }
 
+    // Updates the reminder time preference and reschedules the alarm
     fun setReminderTime(hour: Int, minute: Int) {
         viewModelScope.launch {
             Timber.d("User updated reminder time: $hour:$minute")
@@ -106,6 +110,7 @@ class NotificationsViewModel(
         }
     }
 
+    // Formats the selected reminder time for display in the UI
     fun formatReminderTime(): String {
         val config = notificationConfiguration.value
         if (!config.focusRemindersEnabled) {
@@ -122,6 +127,7 @@ class NotificationsViewModel(
         return "Reminder is set to $formattedTime"
     }
 
+    // Schedules a new alarm via the repository, handling permission errors
     fun scheduleReminder(message: String, hour: Int, minute: Int) {
         viewModelScope.launch {
             // Guard against missing permission at runtime
@@ -156,6 +162,7 @@ class NotificationsViewModel(
         }
     }
 
+    // Syncs the system alarm with the current configuration state
     private fun updateReminders() {
         val config = notificationConfiguration.value
         if (config.notificationsEnabled && config.focusRemindersEnabled) {

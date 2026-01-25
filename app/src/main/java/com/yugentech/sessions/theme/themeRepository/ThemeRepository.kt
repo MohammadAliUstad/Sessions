@@ -3,14 +3,13 @@ package com.yugentech.sessions.theme.themeRepository
 import com.yugentech.sessions.theme.models.ThemeConfiguration
 import kotlinx.coroutines.flow.Flow
 
-// Interface exposing theme preference management
 interface ThemeRepository {
-    // Observable flow of current theme settings
+    // Provides a real-time stream of the current theme settings
     val themeConfiguration: Flow<ThemeConfiguration>
 
-    // Updates user theme preferences
+    // Updates the current theme configuration with new values
     suspend fun setThemeConfig(config: ThemeConfiguration)
 
-    // Resets theme to default values
+    // Reverts all theme settings back to the factory defaults
     suspend fun resetThemeToDefaults()
 }

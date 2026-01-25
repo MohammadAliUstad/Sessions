@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Person
@@ -33,13 +34,15 @@ import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.yugentech.sessions.models.UserData
+import com.yugentech.sessions.theme.tokens.components
+import com.yugentech.sessions.theme.tokens.corners
 import com.yugentech.sessions.theme.tokens.spacing
 import com.yugentech.sessions.ui.dash.common.SectionHeader
 import com.yugentech.sessions.ui.dash.components.profileScreen.EmptySessionsCard
 import com.yugentech.sessions.ui.dash.components.profileScreen.ProfileCard
 import com.yugentech.sessions.ui.dash.components.profileScreen.SessionHistoryItem
 import com.yugentech.sessions.ui.dash.utils.dateHeader
-import com.yugentech.sessions.utils.AppConstants
+import com.yugentech.sessions.utils.AppConstants.EMPTY_STRING
 import com.yugentech.sessions.viewModels.ProfileViewModel
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
@@ -48,7 +51,8 @@ fun ProfileScreen(
     userId: String,
     modifier: Modifier = Modifier,
     profileViewModel: ProfileViewModel,
-    onEditProfile: () -> Unit = {}
+    onEditProfile: () -> Unit = {},
+    onViewInsights: () -> Unit = {}
 ) {
     val profileUiState by profileViewModel.uiState.collectAsStateWithLifecycle()
 
@@ -58,11 +62,13 @@ fun ProfileScreen(
     val layoutDirection = LocalLayoutDirection.current
     val navBarPadding = WindowInsets.navigationBars.asPaddingValues()
 
+    // Calculate content padding that respects the bottom navigation bar
     val screenContentPadding = PaddingValues(
         top = MaterialTheme.spacing.m,
         start = MaterialTheme.spacing.m + navBarPadding.calculateStartPadding(layoutDirection),
         end = MaterialTheme.spacing.m + navBarPadding.calculateEndPadding(layoutDirection),
-        bottom = navBarPadding.calculateBottomPadding() + MaterialTheme.spacing.l
+        // Ensure padding covers the BottomNavBar height + extra spacing so list items aren't hidden
+        bottom = MaterialTheme.components.bottomNavHeight + MaterialTheme.spacing.m
     )
 
     LaunchedEffect(userId) {
@@ -81,7 +87,7 @@ fun ProfileScreen(
             contentAlignment = Alignment.Center
         ) {
             CircularWavyProgressIndicator(
-                modifier = Modifier.size(48.dp),
+                modifier = Modifier.size(MaterialTheme.components.buttonMedium), // 48.dp
                 color = MaterialTheme.colorScheme.primary,
                 trackColor = MaterialTheme.colorScheme.surfaceVariant
             )
@@ -90,7 +96,8 @@ fun ProfileScreen(
         LazyColumn(
             modifier = modifier.fillMaxSize(),
             contentPadding = screenContentPadding,
-            verticalArrangement = Arrangement.spacedBy(2.dp)
+            // Use standard token for the small gap (2.dp)
+            verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.xxs)
         ) {
             item {
                 SectionHeader(
@@ -101,9 +108,10 @@ fun ProfileScreen(
 
             item {
                 ProfileCard(
-                    userData = profileUiState.user ?: UserData(name = AppConstants.EMPTY_STRING),
-                    totalTime = profileUiState.totalTime,
-                    onEditProfile = onEditProfile
+                    userData = profileUiState.user ?: UserData(name = EMPTY_STRING),
+                    onEditProfile = onEditProfile,
+                    onViewInsights = onViewInsights,
+                    streakCount = profileUiState.streakCount
                 )
             }
 
@@ -163,6 +171,7 @@ fun ProfileScreen(
                     style = MaterialTheme.typography.bodyMedium
                 )
             },
+            shape = RoundedCornerShape(MaterialTheme.corners.large), // 24.dp
             confirmButton = {
                 TextButton(
                     onClick = {

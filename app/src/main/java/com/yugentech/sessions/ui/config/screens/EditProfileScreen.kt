@@ -112,10 +112,14 @@ fun EditProfileScreen(
             topBar = {
                 LargeTopAppBar(
                     title = {
-                        Text(
-                            text = stringResource(R.string.edit_profile),
-                            style = MaterialTheme.typography.headlineMedium
-                        )
+                        Column {
+                            Text("Edit Profile")
+                            Text(
+                                "Change your avatar and name",
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                        }
                     },
                     navigationIcon = {
                         IconButton(onClick = onNavigateBack) {

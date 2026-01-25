@@ -7,7 +7,7 @@ import com.yugentech.sessions.room.daos.UserDao
 import com.yugentech.sessions.room.entities.SessionsEntity
 import com.yugentech.sessions.room.entities.UserEntity
 
-// Central database definition for Room, managing local data persistence
+// Core Room database configuration defining tables and version
 @Database(
     entities = [
         UserEntity::class,
@@ -17,6 +17,9 @@ import com.yugentech.sessions.room.entities.UserEntity
     exportSchema = false
 )
 abstract class AppDatabase : RoomDatabase() {
+    // Exposes the Data Access Object for user operations
     abstract fun userDao(): UserDao
+
+    // Exposes the Data Access Object for session operations
     abstract fun sessionDao(): SessionsDao
 }

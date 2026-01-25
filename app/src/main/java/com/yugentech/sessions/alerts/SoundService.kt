@@ -6,23 +6,26 @@ import androidx.annotation.RawRes
 import com.yugentech.sessions.R
 import timber.log.Timber
 
+// Service for playing one-off system alert sounds
 class SoundService(
     private val context: Context
 ) {
+    // Helper for start session sound
     fun playStartAlert() {
         Timber.d("Playing session start sound")
         play(R.raw.session_start)
     }
 
+    // Helper for stop session sound
     fun playStopAlert() {
         Timber.d("Playing session stop sound")
-        play(R.raw.session_stop, 0.5f)
+        play(R.raw.session_stop)
     }
 
-    private fun play(@RawRes resId: Int, volume: Float = 0.6f) {
+    // Creates and plays a MediaPlayer, ensuring resources are released afterwards
+    private fun play(@RawRes resId: Int) {
         try {
             MediaPlayer.create(context, resId)?.apply {
-                setVolume(volume, volume)
 
                 setOnCompletionListener { mediaPlayer ->
                     try {

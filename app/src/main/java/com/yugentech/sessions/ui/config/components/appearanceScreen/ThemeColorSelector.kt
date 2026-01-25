@@ -42,12 +42,12 @@ fun ThemeColorSelector(
         )
 
         Column(
-            verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.sm)
+            verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.xs)
         ) {
             themeOptions.chunked(2).forEach { rowOptions ->
                 Row(
                     modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.sm)
+                    horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.xs)
                 ) {
                     rowOptions.forEach { themeOption ->
                         Box(modifier = Modifier.weight(1f)) {

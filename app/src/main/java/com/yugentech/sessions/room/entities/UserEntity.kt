@@ -5,7 +5,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.yugentech.sessions.models.UserData
 
-// Local database representation of a User
+// Database table definition for storing user profiles
 @Keep
 @Entity(tableName = "users")
 data class UserEntity(
@@ -15,7 +15,7 @@ data class UserEntity(
     val email: String?,
     val avatarId: Int?
 ) {
-    // Converts local entity to domain model
+    // Maps the database entity back to the domain model
     fun toUserData(): UserData {
         return UserData(
             userId = userId,
@@ -26,7 +26,7 @@ data class UserEntity(
     }
 
     companion object {
-        // Converts domain model to local entity
+        // Maps the domain model to a database entity
         fun fromUserData(userData: UserData): UserEntity {
             return UserEntity(
                 userId = userData.userId,

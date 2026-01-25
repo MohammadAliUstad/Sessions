@@ -6,9 +6,11 @@ import android.content.pm.ServiceInfo
 import android.os.Build
 import android.os.IBinder
 import androidx.core.app.ServiceCompat
+import com.yugentech.sessions.alerts.alertsRepository.AlertsRepository
 import com.yugentech.sessions.notifications.Notification
 import com.yugentech.sessions.notifications.NotificationService
 import com.yugentech.sessions.notifications.NotificationType
+import com.yugentech.sessions.timer.states.TimerMode
 import com.yugentech.sessions.utils.AppConstants
 import com.yugentech.sessions.timer.timerRepository.TimerRepository
 import kotlinx.coroutines.CoroutineScope
@@ -19,17 +21,20 @@ import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
 import timber.log.Timber
 import java.util.Locale
+
+// Foreground service that keeps the timer running and visible in the notification tray
 class ActiveForeground : Service() {
 
     private val notificationService: NotificationService by inject()
     private val timerRepository: TimerRepository by inject()
+    private val alertsRepository: AlertsRepository by inject()
 
     private var isSessionActive = false
     private var updateJob: Job? = null
     private var remainingSeconds = 0
-    private var sessionTitle = "Focus Session"
     private val serviceScope = CoroutineScope(Dispatchers.Default)
 
+    // Initializes notification channels when service is created
     override fun onCreate() {
         super.onCreate()
         Timber.d("ActiveForeground Service Created")
@@ -38,6 +43,7 @@ class ActiveForeground : Service() {
 
     override fun onBind(intent: Intent?): IBinder? = null
 
+    // Handles start, stop, and update commands via Intents
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         when (intent?.action) {
             AppConstants.ACTION_START_SESSION -> startSession(intent)
@@ -47,7 +53,8 @@ class ActiveForeground : Service() {
                 if (newTime != remainingSeconds) {
                     remainingSeconds = newTime
                     if (isSessionActive) {
-                        updateNotification(currentSeconds = remainingSeconds.toLong())
+                        val timerState = timerRepository.timerState.value
+                        updateNotification(remainingSeconds.toLong(), timerState.currentMode)
                     }
                 }
             }
@@ -55,19 +62,20 @@ class ActiveForeground : Service() {
         return if (isSessionActive) START_STICKY else START_NOT_STICKY
     }
 
+    // Promotes the service to the foreground and begins the timer update loop
     private fun startSession(intent: Intent?) {
         if (isSessionActive) return
 
         isSessionActive = true
-        sessionTitle = intent?.getStringExtra("title") ?: "Focus Session"
         remainingSeconds = intent?.getIntExtra("remainingMinutes", 0) ?: 0
 
-        Timber.i("Starting session in foreground: $sessionTitle")
+        Timber.i("Starting session in foreground")
 
+        val timerState = timerRepository.timerState.value
         val placeholderNotification = Notification(
             id = NotificationService.ACTIVE_NOTIFICATION_ID,
             type = NotificationType.ACTIVE,
-            title = sessionTitle,
+            title = getModeTitle(timerState.currentMode),
             message = "Starting session...",
             isOngoing = true,
             remainingSeconds = remainingSeconds.toLong()
@@ -96,23 +104,28 @@ class ActiveForeground : Service() {
         }
     }
 
+    // Continuously updates the notification with the latest timer state
     private fun startCountdown() {
         updateJob?.cancel()
         updateJob = serviceScope.launch {
             while (isSessionActive) {
-                val syncedSeconds = timerRepository.timerState.value.currentTime
-                updateNotification(syncedSeconds)
+                val timerState = timerRepository.timerState.value
+                val syncedSeconds = timerState.currentTime
+                val currentMode = timerState.currentMode
+                updateNotification(syncedSeconds, currentMode)
                 delay(500)
             }
         }
     }
 
-    private fun updateNotification(currentSeconds: Long) {
-        val notification = createNotification(currentSeconds)
+    // Updates the existing notification with the current remaining time
+    private fun updateNotification(currentSeconds: Long, mode: TimerMode) {
+        val notification = createNotification(currentSeconds, mode)
         notificationService.showNotification(notification)
     }
 
-    private fun createNotification(seconds: Long): Notification {
+    // Builds a notification object with formatted time string
+    private fun createNotification(seconds: Long, mode: TimerMode): Notification {
         val formattedTime = String.format(
             Locale.US,
             "%02d:%02d",
@@ -122,13 +135,23 @@ class ActiveForeground : Service() {
         return Notification(
             id = NotificationService.ACTIVE_NOTIFICATION_ID,
             type = NotificationType.ACTIVE,
-            title = sessionTitle,
+            title = getModeTitle(mode),
             message = "$formattedTime remaining",
             isOngoing = true,
             remainingSeconds = seconds
         )
     }
 
+    // Returns a displayable title based on the current timer mode
+    private fun getModeTitle(mode: TimerMode): String {
+        return when (mode) {
+            TimerMode.Focus -> "Focus"
+            TimerMode.ShortBreak -> "Short Break"
+            TimerMode.LongBreak -> "Long Break"
+        }
+    }
+
+    // Stops the service, cancels the update loop, and removes the notification
     private fun stopSession() {
         if (!isSessionActive && updateJob == null) return
 
@@ -143,12 +166,16 @@ class ActiveForeground : Service() {
         stopSelf()
     }
 
+    // Cleans up resources if the app task is swiped away
     override fun onTaskRemoved(rootIntent: Intent?) {
         Timber.d("Task removed, performing cleanup")
         stopSession()
+        timerRepository.reset()
+        alertsRepository.onLeave()
         super.onTaskRemoved(rootIntent)
     }
 
+    // Final cleanup when service is destroyed
     override fun onDestroy() {
         Timber.d("ActiveForeground Service Destroyed")
         isSessionActive = false

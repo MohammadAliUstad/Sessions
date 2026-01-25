@@ -27,7 +27,6 @@ fun EmptySessionsCard(
     Column(
         modifier = modifier
             .fillMaxWidth()
-            // Use token spacing instead of hardcoded values
             .padding(
                 vertical = MaterialTheme.spacing.m,
                 horizontal = MaterialTheme.spacing.m
@@ -35,18 +34,15 @@ fun EmptySessionsCard(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        // Use token for image size - responsive and consistent
         Image(
             painter = painterResource(id = R.drawable.new_beginnings),
             contentDescription = "No sessions illustration",
-            modifier = Modifier.size(MaterialTheme.components.imageSizeLarge),
+            modifier = Modifier.size(MaterialTheme.components.imageSizeLarge), // 160.dp
             contentScale = ContentScale.Fit
         )
 
-        // Use token spacing between elements
         Spacer(modifier = Modifier.height(MaterialTheme.spacing.m))
 
-        // Use fillMaxWidth with padding instead of fillMaxWidth(0.85f)
         Text(
             text = "Start your first session to track your progress and build productive habits! ",
             style = MaterialTheme.typography.bodyMedium,

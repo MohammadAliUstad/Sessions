@@ -8,9 +8,10 @@ import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
 import timber.log.Timber
 
+// Koin module aggregating ViewModels for major app screens
 val viewModelModule = module {
 
-    // ViewModel for the main dashboard and session management
+    // ViewModel for the home dashboard, handling session data display
     viewModel {
         Timber.v("Initializing HomeViewModel")
         HomeViewModel(
@@ -19,7 +20,7 @@ val viewModelModule = module {
         )
     }
 
-    // ViewModel for user profile display and editing
+    // ViewModel for viewing and editing the user profile
     viewModel {
         Timber.v("Initializing ProfileViewModel")
         ProfileViewModel(
@@ -29,7 +30,7 @@ val viewModelModule = module {
         )
     }
 
-    // ViewModel handling authentication flows
+    // ViewModel managing the login and registration flows
     viewModel {
         Timber.v("Initializing LoginViewModel")
         LoginViewModel(
@@ -40,7 +41,7 @@ val viewModelModule = module {
         )
     }
 
-    // ViewModel for app configuration and preferences
+    // ViewModel for general application settings
     viewModel {
         Timber.v("Initializing SettingsViewModel")
         SettingsViewModel(

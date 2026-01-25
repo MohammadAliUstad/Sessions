@@ -7,8 +7,6 @@ import com.yugentech.sessions.alerts.alertsRepository.AlertsRepository
 import com.yugentech.sessions.models.Session
 import com.yugentech.sessions.models.UserData
 import com.yugentech.sessions.sessions.sessionsRepository.SessionsRepository
-import com.yugentech.sessions.sessions.sessionsUtils.SessionResult
-import com.yugentech.sessions.utils.AppConstants
 import com.yugentech.sessions.user.userRepository.UserRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -20,11 +18,22 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import timber.log.Timber
+import java.time.Instant
+import java.time.LocalDate
+import java.time.ZoneId
+import java.util.Calendar
+import java.util.concurrent.TimeUnit
 
+// Holds user profile data, calculated statistics, and UI state flags
 data class ProfileUiState(
     val user: UserData? = null,
     val sessions: List<Session> = emptyList(),
     val totalTime: Long = 0L,
+    val streakCount: Int = 0,
+    val taskDistribution: Map<String, Int> = emptyMap(),
+    val dailyVolume: Map<Int, Int> = emptyMap(),
+    val peakHour: Int? = null,
+    val heatmapHistory: Map<LocalDate, Int> = emptyMap(),
     val isLoading: Boolean = false,
     val isSaving: Boolean = false,
     val errorMessage: String? = null
@@ -41,88 +50,139 @@ class ProfileViewModel(
 
     private var currentUserId: String? = null
 
-    // Lightweight load for editing: only fetches user details
+    // Observes the user data flow and updates UI state when it changes
     fun loadUser(userId: String) {
         if (currentUserId == userId && uiState.value.user != null) return
 
         currentUserId = userId
-        Timber.d("Loading user profile for edit: $userId")
-
-        viewModelScope.launch {
-            _uiState.update { it.copy(isLoading = true, errorMessage = null) }
-
-            userRepository.getUserFlow(userId)
-                .filterNotNull()
-                .onEach { user ->
-                    _uiState.update { state -> state.copy(user = user, isLoading = false) }
-                }
-                .catch { e ->
-                    Timber.e(e, "Error fetching user flow")
-                    _uiState.update { it.copy(errorMessage = e.message, isLoading = false) }
-                }
-                .launchIn(viewModelScope)
-        }
+        userRepository.getUserFlow(userId)
+            .filterNotNull()
+            .onEach { user ->
+                _uiState.update { state -> state.copy(user = user, isLoading = false) }
+            }
+            .catch { e ->
+                _uiState.update { it.copy(errorMessage = e.message, isLoading = false) }
+            }
+            .launchIn(viewModelScope)
     }
 
-    // Heavyweight load for dashboard: fetches user + session stats
+    // Loads user data and calculates analytics (stats, heatmaps) from session history
     fun loadProfile(userId: String) {
         if (currentUserId == userId) return
 
-        Timber.d("Loading full profile with stats: $userId")
         loadUser(userId)
 
-        viewModelScope.launch {
-            sessionsRepository.getSessionsFlow()
-                .onEach { sessions ->
-                    _uiState.update { state -> state.copy(sessions = sessions) }
+        sessionsRepository.getSessionsFlow()
+            .onEach { sessions ->
+                // Aggregate total duration across all sessions to prevent overflow
+                val totalDurationSeconds = sessions.sumOf { it.duration.toLong() }
+
+                val dailyCounts = IntArray(8)
+                val hourlyCounts = IntArray(24)
+                val heatmapData = mutableMapOf<LocalDate, Int>()
+
+                // Process each session to populate statistics arrays and the heatmap
+                sessions.forEach { session ->
+                    val cal = Calendar.getInstance().apply { timeInMillis = session.timestamp }
+                    dailyCounts[cal.get(Calendar.DAY_OF_WEEK)]++
+                    hourlyCounts[cal.get(Calendar.HOUR_OF_DAY)]++
+
+                    val date = Instant.ofEpochMilli(session.timestamp)
+                        .atZone(ZoneId.systemDefault())
+                        .toLocalDate()
+
+                    heatmapData[date] = (heatmapData[date] ?: 0) + 1
                 }
-                .catch { e -> Timber.e(e, "Error loading sessions flow") }
-                .launchIn(viewModelScope)
 
-            sessionsRepository.getTotalDuration()
-                .onEach { total ->
-                    _uiState.update { state -> state.copy(totalTime = total) }
-                }
-                .catch { e -> Timber.e(e, "Error loading total duration") }
-                .launchIn(viewModelScope)
-        }
-    }
+                _uiState.update { state ->
+                    val mostActiveHourIndex = hourlyCounts.indices.maxByOrNull { hourlyCounts[it] }
 
-    // Saves profile changes locally and syncs to cloud
-    fun upsertUser(userData: UserData) {
-        viewModelScope.launch {
-            Timber.i("Saving profile updates")
-            try {
-                _uiState.update { it.copy(isSaving = true, errorMessage = null) }
+                    // Determine peak activity hour, setting to null if no data exists
+                    val validPeakHour = if (mostActiveHourIndex != null && hourlyCounts[mostActiveHourIndex] > 0) {
+                        mostActiveHourIndex
+                    } else {
+                        null
+                    }
 
-                userRepository.upsertUser(userData)
-                userRepository.syncUser(userData)
-
-                Timber.i("Profile saved successfully")
-                _uiState.update { it.copy(isSaving = false) }
-            } catch (e: Exception) {
-                Timber.e(e, "Failed to save profile")
-                _uiState.update {
-                    it.copy(
-                        isSaving = false,
-                        errorMessage = e.message ?: "Failed to save profile"
+                    state.copy(
+                        sessions = sessions,
+                        totalTime = totalDurationSeconds,
+                        streakCount = calculateStreak(sessions),
+                        taskDistribution = sessions.groupBy { it.sessionTask }
+                            .mapValues { entry -> entry.value.sumOf { it.duration } },
+                        dailyVolume = dailyCounts.mapIndexed { index, count -> index to count }
+                            .toMap(),
+                        peakHour = validPeakHour,
+                        heatmapHistory = heatmapData,
+                        isLoading = false
                     )
                 }
             }
-        }
+            .catch { e -> Timber.e(e, "Error loading sessions flow") }
+            .launchIn(viewModelScope)
     }
 
-    // Deletes a specific session entry
-    fun deleteSession(userId: String, sessionId: String) {
-        Timber.i("Deleting session: $sessionId")
+    // logic to determine current streak based on consecutive daily activity
+    private fun calculateStreak(sessions: List<Session>): Int {
+        if (sessions.isEmpty()) return 0
+
+        val sessionDates = sessions.map {
+            val cal = Calendar.getInstance().apply { timeInMillis = it.timestamp }
+            cal.set(Calendar.HOUR_OF_DAY, 0)
+            cal.set(Calendar.MINUTE, 0)
+            cal.set(Calendar.SECOND, 0)
+            cal.set(Calendar.MILLISECOND, 0)
+            cal.timeInMillis
+        }.distinct().sortedDescending()
+
+        val today = Calendar.getInstance().apply {
+            set(Calendar.HOUR_OF_DAY, 0)
+            set(Calendar.MINUTE, 0)
+            set(Calendar.SECOND, 0)
+            set(Calendar.MILLISECOND, 0)
+        }.timeInMillis
+
+        val yesterday = today - TimeUnit.DAYS.toMillis(1)
+
+        if (sessionDates.first() < yesterday) return 0
+
+        var currentStreak = 0
+        var lastDate =
+            if (sessionDates.first() == today) today else yesterday + TimeUnit.DAYS.toMillis(1)
+
+        for (date in sessionDates) {
+            if (lastDate - date <= TimeUnit.DAYS.toMillis(1)) {
+                currentStreak++
+                lastDate = date
+            } else {
+                break
+            }
+        }
+        return currentStreak
+    }
+
+    // Saves user changes locally and syncs them to the backend
+    fun upsertUser(userData: UserData) {
         viewModelScope.launch {
-            if (sessionsRepository.deleteSession(sessionId) is SessionResult.Error) {
-                Timber.e("Failed to delete session")
-                _uiState.update { it.copy(errorMessage = "Failed to delete session") }
+            try {
+                _uiState.update { it.copy(isSaving = true, errorMessage = null) }
+                userRepository.upsertUser(userData)
+                userRepository.syncUser(userData)
+                _uiState.update { it.copy(isSaving = false) }
+            } catch (e: Exception) {
+                _uiState.update { it.copy(isSaving = false, errorMessage = e.message) }
             }
         }
     }
 
+    // Removes a session from the repository
+    fun deleteSession(userId: String, sessionId: String) {
+        viewModelScope.launch {
+            sessionsRepository.deleteSession(sessionId)
+        }
+    }
+
+    // Triggers haptic feedback via the repository
     fun performHaptic(view: View? = null) {
         viewModelScope.launch {
             alertsRepository.performHaptic(view)

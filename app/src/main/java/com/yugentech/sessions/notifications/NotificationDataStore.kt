@@ -13,7 +13,7 @@ import kotlinx.coroutines.flow.map
 import timber.log.Timber
 import java.util.Locale
 
-// Manages persistence for notification settings and reminder times
+// Manages persistent storage for notification preferences and scheduled times
 class NotificationDataStore(
     private val dataStore: DataStore<Preferences>
 ) {
@@ -24,6 +24,7 @@ class NotificationDataStore(
         private val FOCUS_REMINDERS_ENABLED = booleanPreferencesKey("focus_reminders_enabled")
     }
 
+    // Fetches the current configuration synchronously (useful for one-off checks like boot)
     suspend fun getInitialConfig(): NotificationConfig {
         return try {
             val prefs = dataStore.data.first()
@@ -34,6 +35,7 @@ class NotificationDataStore(
         }
     }
 
+    // Exposes configuration as a stream for reactive UI updates
     val notificationConfigFlow: Flow<NotificationConfig> = dataStore.data
         .catch {
             Timber.e(it, "Error in notification config flow")
@@ -42,6 +44,7 @@ class NotificationDataStore(
         }
         .map { prefs -> mapPreferencesToConfig(prefs) }
 
+    // Toggles master switch for all notifications
     suspend fun setNotificationsEnabled(enabled: Boolean) {
         Timber.d("Setting global notifications enabled: $enabled")
         dataStore.edit { prefs ->
@@ -53,6 +56,7 @@ class NotificationDataStore(
         }
     }
 
+    // Toggles the specific daily reminder feature
     suspend fun setFocusRemindersEnabled(enabled: Boolean) {
         Timber.d("Setting focus reminders enabled: $enabled")
         dataStore.edit { prefs ->
@@ -60,6 +64,7 @@ class NotificationDataStore(
         }
     }
 
+    // Saves the specific hour and minute for the daily reminder
     suspend fun setFocusReminderTime(hour: Int, minute: Int) {
         Timber.d("Saving reminder time: $hour:$minute")
         val timeString = String.format(Locale.US, "%02d:%02d", hour, minute)
@@ -68,13 +73,14 @@ class NotificationDataStore(
         }
     }
 
+    // Disables reminders effectively by turning off the flag
     suspend fun clearFocusReminderTime() {
         dataStore.edit { prefs ->
             prefs[FOCUS_REMINDERS_ENABLED] = false
         }
     }
 
-    // Helper to parse preferences into a Config object
+    // Helper to convert raw DataStore preferences into a clean config object
     private fun mapPreferencesToConfig(prefs: Preferences): NotificationConfig {
         val notificationsEnabled = prefs[NOTIFICATIONS_ENABLED] ?: true
         val focusRemindersEnabled = prefs[FOCUS_REMINDERS_ENABLED] ?: false

@@ -9,7 +9,7 @@ import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 
 fun defaultEnterTransition(
-    duration: Int = 400,
+    duration: Int = 250,
     initialOffsetX: Int = 1000
 ): EnterTransition {
     return slideInHorizontally(
@@ -19,7 +19,7 @@ fun defaultEnterTransition(
 }
 
 fun defaultExitTransition(
-    duration: Int = 400,
+    duration: Int = 250,
     targetOffsetX: Int = -1000
 ): ExitTransition {
     return slideOutHorizontally(
@@ -29,7 +29,7 @@ fun defaultExitTransition(
 }
 
 fun defaultPopEnterTransition(
-    duration: Int = 400,
+    duration: Int = 250,
     initialOffsetX: Int = -1000
 ): EnterTransition {
     return slideInHorizontally(
@@ -39,7 +39,7 @@ fun defaultPopEnterTransition(
 }
 
 fun defaultPopExitTransition(
-    duration: Int = 400,
+    duration: Int = 250,
     targetOffsetX: Int = 1000
 ): ExitTransition {
     return slideOutHorizontally(

@@ -51,7 +51,7 @@ fun SessionControlBar(
 ) {
     val interactionSources = remember { List(3) { MutableInteractionSource() } }
 
-    CompositionLocalProvider(LocalMinimumInteractiveComponentSize provides MaterialTheme.spacing.z) {
+    CompositionLocalProvider(LocalMinimumInteractiveComponentSize provides MaterialTheme.spacing.none) {
         ButtonGroup(
             overflowIndicator = { state ->
                 ButtonGroupDefaults.OverflowIndicator(

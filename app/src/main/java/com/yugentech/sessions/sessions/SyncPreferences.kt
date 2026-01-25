@@ -8,6 +8,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import timber.log.Timber
 
+// Initialize DataStore with the name "sync_prefs"
 val Context.syncDataStore by preferencesDataStore("sync_prefs")
 
 object SyncPrefsKeys {
@@ -15,24 +16,23 @@ object SyncPrefsKeys {
     val SESSIONS_FETCH_DONE = booleanPreferencesKey("sessions_fetch_done")
 }
 
-// Manages persistent flags for tracking initial data synchronization status
 class SyncPreferences(private val context: Context) {
 
-    // Observes whether the initial user profile fetch is complete
+    // Stream checking if user profile data has been fetched
     fun isUserFetchDone(): Flow<Boolean> {
         return context.syncDataStore.data.map { prefs ->
             prefs[SyncPrefsKeys.USER_FETCH_DONE] ?: false
         }
     }
 
-    // Observes whether the initial sessions history fetch is complete
+    // Stream checking if session history has been fetched
     fun isSessionsFetchDone(): Flow<Boolean> {
         return context.syncDataStore.data.map { prefs ->
             prefs[SyncPrefsKeys.SESSIONS_FETCH_DONE] ?: false
         }
     }
 
-    // Checks if both user profile and sessions have been initially synced
+    // Combined check to ensure all initial data syncing is complete
     fun isAllInitialFetchDone(): Flow<Boolean> {
         return context.syncDataStore.data.map { prefs ->
             val userDone = prefs[SyncPrefsKeys.USER_FETCH_DONE] ?: false
@@ -41,7 +41,7 @@ class SyncPreferences(private val context: Context) {
         }
     }
 
-    // Updates the user fetch completion flag
+    // Save flag indicating user profile fetch is complete
     suspend fun setUserFetchDone(done: Boolean) {
         Timber.d("Setting user fetch done: $done")
         context.syncDataStore.edit { prefs ->
@@ -49,7 +49,7 @@ class SyncPreferences(private val context: Context) {
         }
     }
 
-    // Updates the sessions fetch completion flag
+    // Save flag indicating session history fetch is complete
     suspend fun setSessionsFetchDone(done: Boolean) {
         Timber.d("Setting sessions fetch done: $done")
         context.syncDataStore.edit { prefs ->
@@ -57,6 +57,7 @@ class SyncPreferences(private val context: Context) {
         }
     }
 
+    // Reset all flags to false (used on logout)
     suspend fun clearSyncFlags() {
         Timber.d("Clearing all sync flags due to logout")
         context.syncDataStore.edit { prefs ->

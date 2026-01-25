@@ -2,29 +2,47 @@ package com.yugentech.sessions.theme
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.yugentech.sessions.theme.getters.AppFont
 import com.yugentech.sessions.theme.models.ColorTheme
 import com.yugentech.sessions.theme.models.ThemeConfiguration
 import com.yugentech.sessions.theme.models.ThemeMode
 import com.yugentech.sessions.theme.themeRepository.ThemeRepository
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
 class ThemeViewModel(
     private val repository: ThemeRepository
 ) : ViewModel() {
 
-    // Internal mutable state for immediate updates
+    // Internal mutable state for the current theme configuration
     private val _themeConfiguration = MutableStateFlow(
-        ThemeConfiguration(ThemeMode.LIGHT, ColorTheme.DYNAMIC, true)
+        ThemeConfiguration(
+            ThemeMode.LIGHT, ColorTheme.DYNAMIC,
+            useDynamicColors = true,
+            isAmoledMode = false,
+            appFont = AppFont.Google
+        )
     )
 
-    // Expose immutable state to UI
+    // Public read-only stream of theme configuration
     val themeConfiguration: StateFlow<ThemeConfiguration> = _themeConfiguration.asStateFlow()
 
+    // Derived stream specifically for the current font, helpful for UI logic
+    val currentFont: StateFlow<AppFont> = _themeConfiguration
+        .map { it.appFont }
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5000),
+            initialValue = AppFont.Google
+        )
+
     init {
-        // Sync with repository on init and keep in sync
+        // Automatically update local state whenever the repository data changes
         viewModelScope.launch {
             repository.themeConfiguration.collect { config ->
                 _themeConfiguration.value = config
@@ -32,14 +50,19 @@ class ThemeViewModel(
         }
     }
 
-    // Updates immediately for instant UI response, then persists
+    // Updates the full theme configuration and persists it
     fun updateTheme(config: ThemeConfiguration) {
-        // Optimistic update - UI changes instantly
         _themeConfiguration.value = config
 
-        // Persist to DataStore in background
         viewModelScope.launch {
             repository.setThemeConfig(config)
         }
+    }
+
+    // Helper method to update just the font while keeping other settings
+    fun setFont(font: AppFont) {
+        val current = _themeConfiguration.value
+        val newConfig = current.copy(appFont = font)
+        updateTheme(newConfig)
     }
 }

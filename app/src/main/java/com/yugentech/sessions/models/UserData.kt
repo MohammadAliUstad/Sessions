@@ -2,7 +2,7 @@ package com.yugentech.sessions.models
 
 import androidx.annotation.Keep
 
-// Represents the core user profile information synced across devices
+// Data model representing the user's profile information
 @Keep
 data class UserData(
     val userId: String = "",
@@ -10,7 +10,7 @@ data class UserData(
     val email: String? = null,
     val avatarId: Int? = 0,
 ) {
-    // Serializes user profile for Firestore persistence
+    // Converts the user object to a map for database storage
     fun toMap(): Map<String, Any?> = mapOf(
         "userId" to userId,
         "name" to name,

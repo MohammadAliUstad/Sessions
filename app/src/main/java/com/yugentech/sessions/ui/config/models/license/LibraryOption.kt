@@ -1,4 +1,4 @@
-package com.yugentech.sessions.ui.config.models
+package com.yugentech.sessions.ui.config.models.license
 
 data class LibraryOption(
     val name: String,

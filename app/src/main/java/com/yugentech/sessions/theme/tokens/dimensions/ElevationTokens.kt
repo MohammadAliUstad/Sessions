@@ -2,6 +2,7 @@ package com.yugentech.sessions.theme.tokens.dimensions
 
 import androidx.compose.ui.unit.Dp
 
+// Defines standardized elevation levels for shadows and z-index layering
 data class ElevationTokens(
     val level0: Dp,
     val level1: Dp,

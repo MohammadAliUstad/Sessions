@@ -19,25 +19,27 @@ import org.koin.android.ext.koin.androidLogger
 import org.koin.core.context.startKoin
 import timber.log.Timber
 
+// Main Application class responsible for global initialization
 class SessionsApp : Application() {
 
     override fun onCreate() {
         super.onCreate()
 
-        // Initialize logging: Logcat for Debug, Crashlytics for Release
+        // Configure logging: DebugTree for development, ReleaseTree for production
         if (BuildConfig.DEBUG)
             Timber.plant(Timber.DebugTree())
         else
             Timber.plant(ReleaseTree())
 
-        // Initialize Firebase services
+        // Initialize Firebase SDK
         FirebaseApp.initializeApp(this)
 
-        // Initialize Dependency Injection
+        // Start Koin dependency injection and load all modules
         startKoin {
             androidLogger()
             androidContext(this@SessionsApp)
             modules(
+                dataStoreModule,
                 authModule,
                 databaseModule,
                 sessionModule,
@@ -46,7 +48,6 @@ class SessionsApp : Application() {
                 viewModelModule,
                 alertsModule,
                 timerModule,
-                dataStoreModule,
                 notificationModule
             )
         }

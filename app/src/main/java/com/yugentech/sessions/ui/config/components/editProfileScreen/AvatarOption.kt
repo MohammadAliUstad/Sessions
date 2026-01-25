@@ -81,7 +81,7 @@ fun AvatarOption(
             modifier = Modifier.basicMarquee(
                 animationMode = MarqueeAnimationMode.Immediately,
                 repeatDelayMillis = AppAnimations.Durations.RepeatDelay,
-                initialDelayMillis = AppAnimations.Durations.InitialDelay,
+                initialDelayMillis = AppAnimations.Durations.Delay,
                 velocity = AppAnimations.Motion.Velocity
             )
         )

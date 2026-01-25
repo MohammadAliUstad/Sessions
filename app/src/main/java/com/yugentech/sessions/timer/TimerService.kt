@@ -1,7 +1,6 @@
 package com.yugentech.sessions.timer
 
 import android.os.SystemClock
-import com.yugentech.sessions.utils.AppConstants
 import com.yugentech.sessions.timer.states.TimerConfig
 import com.yugentech.sessions.timer.states.TimerEffect
 import com.yugentech.sessions.timer.states.TimerMode
@@ -24,26 +23,49 @@ import kotlinx.coroutines.launch
 import timber.log.Timber
 
 class TimerService(
-    private val scope: CoroutineScope
+    private val coroutineScope: CoroutineScope,
+    private val timerDatastore: TimerDatastore
 ) {
 
-    // State
     private var timerJob: Job? = null
 
-    private val _timerState = MutableStateFlow(createState())
+    // Holds the current state of the timer (time remaining, mode, etc.)
+    private val _timerState = MutableStateFlow(TimerState())
     val timerState: StateFlow<TimerState> = _timerState.asStateFlow()
 
+    // Emits one-time events like "Timer Finished" for the UI to handle
     private val _timerEffects = MutableSharedFlow<TimerEffect>(
         replay = 1,
         extraBufferCapacity = 5
     )
     val timerEffects: SharedFlow<TimerEffect> = _timerEffects.asSharedFlow()
 
-    // Controls
+    init {
+        observeConfig()
+    }
+
+    private fun observeConfig() {
+        coroutineScope.launch {
+            // Update the timer state whenever the user changes settings
+            timerDatastore.timerConfig.collect { newConfig ->
+                _timerState.update { current ->
+                    val newMinutes = getDurationMinutes(current.currentMode, newConfig)
+                    val newSeconds = newMinutes * 60L
+                    current.copy(
+                        timerConfig = newConfig,
+                        totalTime = newSeconds,
+                        currentTime = newSeconds
+                    )
+                }
+            }
+        }
+    }
+
     fun start() {
         if (_timerState.value.isTimerRunning) return
 
         val current = _timerState.value
+        // Calculate remaining duration or start from the full duration
         val durationMillis = if (current.currentTime > 0) {
             current.currentTime * 1000L
         } else {
@@ -59,69 +81,31 @@ class TimerService(
     }
 
     fun skipToNext() {
-        Timber.d("Skipping to next mode")
         cancelTimer()
-        scope.launch {
-            onTimerComplete()
-        }
+        // Immediately trigger completion logic without waiting
+        coroutineScope.launch { onTimerComplete() }
     }
 
-    fun updateConfig(timerConfig: TimerConfig) {
-        _timerState.update { current ->
-            val newMinutes = getDurationMinutes(current.currentMode, timerConfig)
-            val newSeconds = newMinutes * 60L
-            current.copy(
-                timerConfig = timerConfig,
-                totalTime = newSeconds,
-                currentTime = newSeconds
-            )
-        }
-    }
-
-    fun updateSessionTask(newTask: String) {
-        // This updates ONLY the task name.
-        // It touches nothing else (no reset, no time change).
-        _timerState.update { current ->
-            current.copy(
-                timerConfig = current.timerConfig.copy(sessionTask = newTask)
-            )
-        }
-    }
-
-    // Timer Engine
     private fun startCountdown(durationMillis: Long) {
         cancelTimer()
-
         _timerState.update { it.copy(isTimerRunning = true) }
 
-        timerJob = scope.launch {
+        // Launch a coroutine to tick down every second
+        timerJob = coroutineScope.launch {
             delay(1000)
-
             val endTime = SystemClock.elapsedRealtime() + durationMillis
             val tickInterval = 100L
 
             while (isActive) {
                 val remaining = endTime - SystemClock.elapsedRealtime()
+                if (remaining <= 0) break
 
-                if (remaining <= 0) {
-                    break
-                }
-
-                _timerState.update {
-                    it.copy(currentTime = (remaining / 1000))
-                }
-
+                _timerState.update { it.copy(currentTime = (remaining / 1000)) }
                 delay(tickInterval)
             }
 
             if (isActive) {
-                _timerState.update {
-                    it.copy(
-                        currentTime = 0,
-                        isTimerRunning = false
-                    )
-                }
-
+                _timerState.update { it.copy(currentTime = 0, isTimerRunning = false) }
                 onTimerComplete()
             }
         }
@@ -133,73 +117,54 @@ class TimerService(
     }
 
     private suspend fun onTimerComplete() {
-        val timerState = _timerState.value
-        val timerConfig = timerState.timerConfig
-        val durationSeconds = timerState.totalTime.toInt()
+        val state = _timerState.value
+        val config = state.timerConfig
+        val actualDurationSeconds = (state.totalTime - state.currentTime).toInt()
 
-        when (timerState.currentMode) {
-            Focus ->
-                handleFocusComplete(
-                    timerConfig,
-                    durationSeconds,
-                    timerState.completedSets
-                )
-
-            ShortBreak, LongBreak ->
-                handleBreakComplete(
-                    timerConfig,
-                    timerState.completedSets
-                )
+        // Decide what to do based on whether a focus session or break just finished
+        when (state.currentMode) {
+            Focus -> handleFocusComplete(config, actualDurationSeconds, state.completedSets)
+            ShortBreak, LongBreak -> handleBreakComplete(config, state.completedSets)
         }
     }
 
-    // Pomodoro Machine
     private suspend fun handleFocusComplete(
-        timerConfig: TimerConfig,
+        config: TimerConfig,
         durationSeconds: Int,
         completedSets: Int
     ) {
-        Timber.i("Focus session completed: ${durationSeconds}s")
         val newCompletedSets = completedSets + 1
 
-        if (newCompletedSets >= timerConfig.targetSets) {
-            Timber.i("Target reached ($newCompletedSets/${timerConfig.targetSets} sets). Session complete!")
+        if (newCompletedSets >= config.targetSets) {
+            Timber.i("Target reached ($newCompletedSets/${config.targetSets}). Session complete!")
             reset()
-            emitEffect(TimerEffect.EndGoalReached(durationSeconds))
+            _timerEffects.emit(TimerEffect.EndGoalReached(durationSeconds))
         } else {
-            Timber.i("Completed set $newCompletedSets/${timerConfig.targetSets}. Moving to break.")
-            transitionToBreak(timerConfig, newCompletedSets)
-            emitEffect(TimerEffect.FocusCompleted(durationSeconds))
+            Timber.i("Set $newCompletedSets/${config.targetSets} done. Moving to break.")
+            transitionToBreak(config, newCompletedSets)
+            _timerEffects.emit(TimerEffect.FocusCompleted(durationSeconds))
         }
     }
 
     private suspend fun handleBreakComplete(config: TimerConfig, completedSets: Int) {
-        Timber.i("Break Complete. Returning to Focus.")
+        // Automatically start the next focus session after a break
         transitionAndStart(Focus, config.focusDuration, completedSets)
-        emitEffect(TimerEffect.BreakCompleted)
+        _timerEffects.emit(TimerEffect.BreakCompleted)
     }
 
     private fun transitionToBreak(config: TimerConfig, newCompletedSets: Int) {
-        val setsBeforeLast = (config.targetSets - 1).coerceAtLeast(0)
-        val timeBeforeLastSet = setsBeforeLast * config.focusDuration
-        val isEligibleForLongBreak = timeBeforeLastSet >= 100
-        val isLongBreakInterval = (newCompletedSets % config.setsPerLongBreak == 0)
-        val shouldTriggerLongBreak = isLongBreakInterval && isEligibleForLongBreak
-
-        val (breakMode, breakMinutes) = if (shouldTriggerLongBreak) {
-            Timber.i("Long Break triggered!")
+        // Determine if it's time for a long break or a short break
+        val isLongBreak = (newCompletedSets % config.setsPerLongBreak == 0)
+        val (breakMode, breakMinutes) = if (isLongBreak) {
             LongBreak to config.longBreakDuration
         } else {
-            Timber.i("Short Break triggered")
             ShortBreak to config.shortBreakDuration
         }
-
         transitionAndStart(breakMode, breakMinutes, newCompletedSets)
     }
 
     private fun transitionAndStart(timerMode: TimerMode, minutes: Int, completedSets: Int) {
         val seconds = minutes * 60L
-
         _timerState.update {
             it.copy(
                 currentMode = timerMode,
@@ -209,44 +174,22 @@ class TimerService(
                 isTimerRunning = false
             )
         }
-
+        // Auto-start the next phase
         startCountdown(seconds * 1000L)
-    }
-
-
-    // Effects
-    private suspend fun emitEffect(timerEffect: TimerEffect) {
-        _timerEffects.emit(timerEffect)
-    }
-
-    // Helpers
-    private fun createState(): TimerState {
-        val timerConfig = TimerConfig()
-        val seconds = timerConfig.focusDuration * 60L
-        return TimerState(
-            currentTime = seconds,
-            totalTime = seconds,
-            timerConfig = timerConfig,
-            currentMode = Focus,
-            completedSets = 0,
-            isTimerRunning = false
-        )
     }
 
     fun reset() {
         cancelTimer()
         val config = _timerState.value.timerConfig
         val focusSeconds = config.focusDuration * 60L
-        val resetConfig = config.copy(sessionTask = AppConstants.EMPTY_STRING)
-
+        // Reset everything back to the initial focus state
         _timerState.update {
             it.copy(
                 completedSets = 0,
                 currentMode = Focus,
                 currentTime = focusSeconds,
                 totalTime = focusSeconds,
-                isTimerRunning = false,
-                timerConfig = resetConfig
+                isTimerRunning = false
             )
         }
     }

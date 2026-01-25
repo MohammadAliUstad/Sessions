@@ -1,7 +1,7 @@
 package com.yugentech.sessions.timer.timerRepository
 
+import com.yugentech.sessions.timer.TimerDatastore
 import com.yugentech.sessions.timer.TimerService
-import com.yugentech.sessions.timer.states.TimerConfig
 import com.yugentech.sessions.timer.states.TimerEffect
 import com.yugentech.sessions.timer.states.TimerState
 import kotlinx.coroutines.CoroutineScope
@@ -9,13 +9,15 @@ import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.stateIn
-import timber.log.Timber
+import kotlinx.coroutines.launch
 
 class TimerRepositoryImpl(
     private val timerService: TimerService,
-    externalScope: CoroutineScope
+    private val timerDatastore: TimerDatastore,
+    private val externalScope: CoroutineScope
 ) : TimerRepository {
 
+    // Expose the service's state flow, kept alive by the external scope
     override val timerState: StateFlow<TimerState> = timerService.timerState
         .stateIn(
             scope = externalScope,
@@ -26,31 +28,48 @@ class TimerRepositoryImpl(
     override val timerEffects: SharedFlow<TimerEffect> = timerService.timerEffects
 
     override fun start() {
-        Timber.d("Starting timer")
         timerService.start()
     }
 
     override fun pause() {
-        Timber.d("Pausing timer")
         timerService.pause()
     }
 
     override fun skipToNext() {
-        Timber.d("Requesting skip to next")
         timerService.skipToNext()
     }
 
     override fun reset() {
-        Timber.d("Resetting timer")
         timerService.reset()
     }
 
-    override fun updateConfig(timerConfig: TimerConfig) {
-        Timber.d("Updating config: Focus=${timerConfig.focusDuration}m, Target=${timerConfig.targetSets} sets")
-        timerService.updateConfig(timerConfig)
+    override fun updateSessionTask(newTask: String) {
+        externalScope.launch {
+            timerDatastore.updateSessionTask(newTask)
+        }
     }
 
-    override fun updateSessionTask(newTask: String) {
-        timerService.updateSessionTask(newTask)
+    override fun updateFocusDuration(duration: Int) {
+        externalScope.launch {
+            timerDatastore.updateFocusDuration(duration)
+        }
+    }
+
+    override fun updateShortBreakDuration(duration: Int) {
+        externalScope.launch {
+            timerDatastore.updateShortBreakDuration(duration)
+        }
+    }
+
+    override fun updateLongBreakAndTargetSets(duration: Int, sets: Int) {
+        externalScope.launch {
+            timerDatastore.updateLongBreakAndTargetSets(duration, sets)
+        }
+    }
+
+    override fun updateActiveBackgroundSound(soundId: String?) {
+        externalScope.launch {
+            timerDatastore.updateActiveBackgroundSound(soundId)
+        }
     }
 }

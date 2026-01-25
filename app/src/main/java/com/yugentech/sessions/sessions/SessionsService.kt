@@ -6,22 +6,21 @@ import com.yugentech.sessions.sessions.sessionsUtils.SessionResult
 import kotlinx.coroutines.tasks.await
 import timber.log.Timber
 
-// Service for handling direct Cloud Firestore operations related to sessions
 class SessionsService(
     private val firestore: FirebaseFirestore
 ) {
 
-    // Helper to get the reference for a specific user's sessions collection
+    // Helper to reference the "sessions" sub-collection for a specific user
     private fun userSessionsCollection(userId: String) =
         firestore.collection("users")
             .document(userId)
             .collection("sessions")
 
-    // Deletes a specific session from Firestore
     suspend fun deleteSession(userId: String, sessionId: String): SessionResult<Unit> {
         return try {
             Timber.d("Deleting session $sessionId from cloud for user: $userId")
 
+            // Locate the specific document and delete it asynchronously
             userSessionsCollection(userId)
                 .document(sessionId)
                 .delete()
@@ -35,7 +34,6 @@ class SessionsService(
         }
     }
 
-    // Uploads a batch of locally completed sessions to Firestore
     suspend fun uploadPendingSessions(userId: String, sessions: List<Session>): SessionResult<Unit> {
         return try {
             if (sessions.isEmpty()) {
@@ -43,6 +41,7 @@ class SessionsService(
             }
 
             Timber.i("Uploading ${sessions.size} pending sessions for user: $userId")
+            // Create a write batch to upload multiple sessions atomically
             val batch = firestore.batch()
             val sessionsRef = userSessionsCollection(userId)
 
@@ -51,6 +50,7 @@ class SessionsService(
                 batch.set(docRef, session.toMap())
             }
 
+            // Commit all changes to Firestore at once
             batch.commit().await()
             Timber.i("Successfully uploaded pending sessions")
             SessionResult.Success(Unit)
@@ -60,10 +60,10 @@ class SessionsService(
         }
     }
 
-    // Fetches all session history for a user from Firestore
     suspend fun fetchAllSessions(userId: String): SessionResult<List<Session>> {
         return try {
             Timber.d("Fetching all sessions for user: $userId")
+            // Retrieve all documents in the user's sessions collection
             val snapshot = userSessionsCollection(userId).get().await()
             val sessions = snapshot.documents.mapNotNull { doc ->
                 doc.toObject(Session::class.java)

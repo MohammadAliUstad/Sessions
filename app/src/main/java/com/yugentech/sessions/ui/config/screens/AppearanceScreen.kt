@@ -1,6 +1,7 @@
 package com.yugentech.sessions.ui.config.screens
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.LazyColumn
@@ -22,6 +23,7 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import com.yugentech.sessions.theme.ThemeViewModel
 import com.yugentech.sessions.theme.tokens.spacing
 import com.yugentech.sessions.ui.config.components.appearanceScreen.AmoledThemeSelector
+import com.yugentech.sessions.ui.config.components.appearanceScreen.FontSelector
 import com.yugentech.sessions.ui.config.components.appearanceScreen.ThemeColorSelector
 import com.yugentech.sessions.ui.config.components.appearanceScreen.ThemeModeSelector
 
@@ -38,10 +40,14 @@ fun AppearanceScreen(
         topBar = {
             LargeTopAppBar(
                 title = {
-                    Text(
-                        text = "Appearance",
-                        style = MaterialTheme.typography.headlineLarge
-                    )
+                    Column {
+                        Text("Appearance")
+                        Text(
+                            "Choose your preferred look",
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
                 },
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {
@@ -79,6 +85,10 @@ fun AppearanceScreen(
 
             item {
                 AmoledThemeSelector(viewModel = themeViewModel)
+            }
+
+            item {
+                FontSelector(viewModel = themeViewModel)
             }
 
             item {

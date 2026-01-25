@@ -9,6 +9,7 @@ import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.ui.graphics.vector.ImageVector
 
+// Defines the main bottom navigation screens with icons
 sealed class AppScreens(
     val route: String,
     val title: String,
@@ -37,6 +38,7 @@ sealed class AppScreens(
     )
 
     companion object {
+        // Maps a string route to its corresponding screen object
         fun fromRoute(route: String): AppScreens = when (route) {
             Home.route -> Home
             Profile.route -> Profile
@@ -46,8 +48,10 @@ sealed class AppScreens(
     }
 }
 
+// Defines all available navigation routes in the application
 sealed class Screens(val route: String) {
     data object Onboarding : Screens("onboarding")
+    data object Insights : Screens("insights")
     data object Appearance : Screens("appearance")
     data object SignUp : Screens("signUp")
     data object SignIn : Screens("signIn")

@@ -2,9 +2,10 @@ package com.yugentech.sessions.authentication.authUtils
 
 import com.google.firebase.auth.FirebaseAuthException
 
-// Utility to convert raw Firebase exceptions into user-friendly error messages
+// Utility to translate technical exceptions into user-friendly error messages
 object AuthErrorMapper {
 
+    // Main entry point to map any exception to a readable string
     fun mapFirebaseAuthError(exception: Exception): String {
         return when (exception) {
             is FirebaseAuthException -> mapFirebaseAuthException(exception)
@@ -12,42 +13,37 @@ object AuthErrorMapper {
         }
     }
 
+    // Handles specific Firebase authentication error codes
     private fun mapFirebaseAuthException(exception: FirebaseAuthException): String {
         return when (exception.errorCode) {
-            // Email/Password Sign Up Errors
             "ERROR_WEAK_PASSWORD" -> "Password is too weak. Please use at least 6 characters."
             "ERROR_EMAIL_ALREADY_IN_USE" -> "An account with this email already exists. Please sign in instead."
             "ERROR_INVALID_EMAIL" -> "Please enter a valid email address."
 
-            // Email/Password Sign In Errors
             "ERROR_USER_NOT_FOUND" -> "No account found with this email. Please check your email or sign up."
             "ERROR_WRONG_PASSWORD" -> "Incorrect password. Please try again."
             "ERROR_INVALID_CREDENTIAL" -> "Invalid email or password. Please check your credentials."
             "ERROR_USER_DISABLED" -> "This account has been disabled. Please contact support."
             "ERROR_ACCOUNT_EXISTS_WITH_DIFFERENT_CREDENTIAL" -> "An account exists with this email but a different sign-in method."
 
-            // Network and Rate Limiting
             "ERROR_NETWORK_REQUEST_FAILED" -> "Network error. Please check your internet connection."
             "ERROR_TOO_MANY_REQUESTS" -> "Too many failed attempts. Please try again later."
 
-            // General Authentication Errors
             "ERROR_OPERATION_NOT_ALLOWED" -> "This sign-in method is not enabled. Contact support."
             "ERROR_REQUIRES_RECENT_LOGIN" -> "Please sign in again to complete this action."
             "ERROR_CREDENTIAL_ALREADY_IN_USE" -> "This credential is already associated with a different account."
 
-            // Token Errors
             "ERROR_INVALID_CUSTOM_TOKEN" -> "Invalid authentication token. Please try again."
             "ERROR_CUSTOM_TOKEN_MISMATCH" -> "Authentication token mismatch. Please try again."
 
-            // User Management Errors
             "ERROR_USER_MISMATCH" -> "The credential does not correspond to the user."
             "ERROR_INVALID_USER_TOKEN", "ERROR_USER_TOKEN_EXPIRED" -> "Your session has expired. Please sign in again."
 
-            // Default case
             else -> "Authentication failed. Please try again."
         }
     }
 
+    // Handles generic system exceptions like network issues or timeouts
     private fun mapGeneralException(exception: Exception): String {
         val message = exception.message?.lowercase() ?: ""
         return when {
@@ -59,6 +55,7 @@ object AuthErrorMapper {
         }
     }
 
+    // Specific mapper for Google Sign-In related errors
     fun mapGoogleSignInError(exception: Exception): String {
         val message = exception.message?.uppercase() ?: ""
         return when {

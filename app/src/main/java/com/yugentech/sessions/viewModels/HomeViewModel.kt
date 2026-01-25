@@ -14,7 +14,7 @@ import java.util.Calendar
 import java.util.UUID
 import kotlin.random.Random
 
-// Simple state for data loading status
+// Wraps UI loading status and error messages
 data class HomeDataState(
     val isLoading: Boolean = false,
     val errorMessage: String? = null
@@ -30,9 +30,9 @@ class HomeViewModel(
 
     private var currentUserId: String? = null
 
-    // Called when the screen initializes or user logs in
+    // Loads user data and syncs sessions only if the user ID has changed
     fun initUserData(userId: String) {
-        if (currentUserId == userId) return // Prevent duplicate fetches
+        if (currentUserId == userId) return
         currentUserId = userId
 
         viewModelScope.launch {
@@ -66,9 +66,9 @@ class HomeViewModel(
         }
     }
 
-    // Can be called manually (Pull-to-Refresh)
+    // Manually triggers the synchronization of offline sessions to the cloud
     fun syncPendingSessions(userId: String? = currentUserId) {
-        val uid = userId ?: return
+        userId ?: return
         viewModelScope.launch {
             try {
                 sessionsRepository.syncSessions()
@@ -79,7 +79,7 @@ class HomeViewModel(
         }
     }
 
-    // Call this function ONCE from your UI (e.g., via a temporary button)
+    // Generates 300 random sessions over the past year to populate the heatmap for testing
     fun injectDummyData() {
         viewModelScope.launch {
             val dummyTasks = listOf(
@@ -106,7 +106,7 @@ class HomeViewModel(
 
                 val dummySession = Session(
                     sessionId = UUID.randomUUID().toString(),
-                    duration = randomDurationMins * 60, // Seconds
+                    duration = randomDurationMins * 60,
                     timestamp = pastTimestamp,
                     sessionTask = dummyTasks.random()
                 )
@@ -114,7 +114,7 @@ class HomeViewModel(
                 // Save to repository
                 sessionsRepository.saveSession(dummySession)
             }
-            Timber.d("✅ Yearly dummy data injection complete!")
+            Timber.d("Yearly dummy data injection complete!")
         }
     }
 

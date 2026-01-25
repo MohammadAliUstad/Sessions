@@ -14,14 +14,16 @@ import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import timber.log.Timber
 
-// BroadcastReceiver handling exact alarms and device boot events
+// System broadcast receiver that handles alarm triggers and device reboots
 class AlarmReceiver : BroadcastReceiver(), KoinComponent {
 
     private val notificationService: NotificationService by inject()
     private val reminderNotificationManager: ReminderNotificationManager by inject()
     private val notificationDataStore: NotificationDataStore by inject()
 
+    // Entry point for broadcast events
     override fun onReceive(context: Context, intent: Intent) {
+        // Handle device reboot by checking preferences and restoring alarms
         if (intent.action == Intent.ACTION_BOOT_COMPLETED) {
             val pendingResult = goAsync()
 
@@ -35,13 +37,14 @@ class AlarmReceiver : BroadcastReceiver(), KoinComponent {
             return
         }
 
-        // Handle scheduled alarm execution
+        // Extract alarm details from the intent
         val message = intent.getStringExtra(EXTRA_MESSAGE) ?: "Time to study!"
         val hour = intent.getIntExtra(EXTRA_HOUR, 8)
         val minute = intent.getIntExtra(EXTRA_MINUTE, 0)
 
         Timber.i("Alarm fired: $message. Showing notification.")
 
+        // Build and display the scheduled notification
         val notification = Notification(
             id = NotificationService.REMINDER_NOTIFICATION_ID,
             type = NotificationType.SCHEDULED,
@@ -51,7 +54,7 @@ class AlarmReceiver : BroadcastReceiver(), KoinComponent {
         )
         notificationService.showNotification(notification)
 
-        // Reschedule the alarm for the next day
+        // Automatically schedule the next alarm for the same time tomorrow
         if (reminderNotificationManager.canScheduleExactAlarms()) {
             try {
                 reminderNotificationManager.scheduleReminder(message, hour, minute)
@@ -61,6 +64,7 @@ class AlarmReceiver : BroadcastReceiver(), KoinComponent {
         }
     }
 
+    // Logic to re-register the alarm after a system reboot if enabled
     private suspend fun rescheduleAfterBoot() {
         if (reminderNotificationManager.canScheduleExactAlarms()) {
             try {

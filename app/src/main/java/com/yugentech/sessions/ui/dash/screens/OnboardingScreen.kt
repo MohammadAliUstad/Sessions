@@ -101,7 +101,7 @@ fun OnboardingScreen(
                     }
                 }
 
-                if (!showSkip) Spacer(Modifier.width(spacing.z))
+                if (!showSkip) Spacer(Modifier.width(spacing.none))
 
                 Button(
                     onClick = {
@@ -143,7 +143,7 @@ fun OnboardingScreen(
             val animatedProgress by animateFloatAsState(
                 targetValue = targetProgress,
                 animationSpec = tween(
-                    durationMillis = AppAnimations.Durations.InitialDelay, // 1200ms for relaxed feel
+                    durationMillis = AppAnimations.Durations.Delay,
                     easing = AppAnimations.Easings.Standard
                 ),
                 label = "OnboardingProgress"
@@ -222,11 +222,11 @@ fun OnboardingPage(page: Int, isVisible: Boolean) {
     LaunchedEffect(isVisible) {
         if (isVisible) {
             titleState.targetState = true
-            delay(AppAnimations.Durations.Rapid.toLong()) // 100ms
+            delay(AppAnimations.Durations.Rapid.toLong())
             textState.targetState = true
-            delay(AppAnimations.Durations.Fast.toLong()) // 150ms
+            delay(AppAnimations.Durations.Fast.toLong())
             imageState.targetState = true
-            delay(AppAnimations.Durations.Base.toLong()) // 200ms
+            delay(AppAnimations.Durations.Base.toLong())
             highlightsState.targetState = true
         } else {
             titleState.targetState = false
@@ -240,7 +240,7 @@ fun OnboardingPage(page: Int, isVisible: Boolean) {
         modifier = Modifier
             .fillMaxSize()
             .padding(horizontal = spacing.edge)
-            .verticalScroll(scrollState), // Ensures scrollability if content overflows
+            .verticalScroll(scrollState),
         horizontalAlignment = Alignment.Start,
         verticalArrangement = Arrangement.Top
     ) {
@@ -249,7 +249,7 @@ fun OnboardingPage(page: Int, isVisible: Boolean) {
         AnimatedVisibility(
             visibleState = titleState,
             enter = fadeIn(tween(AppAnimations.Durations.Complex)) +
-                    slideInVertically(tween(AppAnimations.Durations.Complex)) { 50 },
+                    slideInVertically(tween(AppAnimations.Durations.Complex)) { AppAnimations.Durations.Micro },
             exit = fadeOut()
         ) {
             Text(
@@ -267,7 +267,7 @@ fun OnboardingPage(page: Int, isVisible: Boolean) {
         AnimatedVisibility(
             visibleState = textState,
             enter = fadeIn(tween(AppAnimations.Durations.Complex)) +
-                    slideInVertically(tween(AppAnimations.Durations.Complex)) { 50 },
+                    slideInVertically(tween(AppAnimations.Durations.Complex)) { AppAnimations.Durations.Micro },
             exit = fadeOut()
         ) {
             Text(
@@ -286,13 +286,11 @@ fun OnboardingPage(page: Int, isVisible: Boolean) {
                 .height(components.onboardingImageContainer),
             contentAlignment = Alignment.Center
         ) {
-            // Background Layer (Wavy Circles)
-            // We call AnimatedVisibility directly; Box does not provide a scope receiver
             androidx.compose.animation.AnimatedVisibility(
                 visibleState = imageState,
                 enter = scaleIn(
                     tween(
-                        durationMillis = 700,
+                        durationMillis = AppAnimations.Durations.Slow,
                         delayMillis = AppAnimations.Durations.Base
                     )
                 ),
@@ -308,7 +306,7 @@ fun OnboardingPage(page: Int, isVisible: Boolean) {
             // Foreground Layer (Illustration)
             androidx.compose.animation.AnimatedVisibility(
                 visibleState = imageState,
-                enter = fadeIn(tween(600)) + scaleIn(tween(600)),
+                enter = fadeIn(tween(AppAnimations.Durations.Complex)) + scaleIn(tween(AppAnimations.Durations.Complex)),
                 exit = fadeOut()
             ) {
                 Image(
@@ -323,7 +321,7 @@ fun OnboardingPage(page: Int, isVisible: Boolean) {
 
         AnimatedVisibility(
             visibleState = highlightsState,
-            enter = fadeIn(tween(600)) + slideInVertically(tween(600)) { 30 },
+            enter = fadeIn(tween(AppAnimations.Durations.Complex)) + slideInVertically(tween(AppAnimations.Durations.Complex)) { AppAnimations.Durations.Micro },
             exit = fadeOut()
         ) {
             Column(
@@ -355,7 +353,7 @@ fun OnboardingPage(page: Int, isVisible: Boolean) {
             }
         }
 
-        Spacer(modifier = Modifier.height(spacing.xxl)) // Bottom spacing to ensure scrollability
+        Spacer(modifier = Modifier.height(spacing.xxl))
     }
 }
 

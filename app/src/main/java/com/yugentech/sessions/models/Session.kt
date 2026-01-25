@@ -3,7 +3,7 @@ package com.yugentech.sessions.models
 import androidx.annotation.Keep
 import java.util.UUID
 
-// Represents a completed focus session with duration, timestamp, and task name
+// Data model representing a single completed focus session
 @Keep
 data class Session(
     val sessionId: String = UUID.randomUUID().toString(),
@@ -11,7 +11,7 @@ data class Session(
     val timestamp: Long = System.currentTimeMillis(),
     val sessionTask: String = "Focus Session"
 ) {
-    // Serializes session data for Firestore persistence
+    // Converts the session object to a map for database storage
     fun toMap(): Map<String, Any> = mapOf(
         "sessionId" to sessionId,
         "duration" to duration,

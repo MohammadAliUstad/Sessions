@@ -9,23 +9,24 @@ import org.koin.core.qualifier.named
 import org.koin.dsl.module
 import timber.log.Timber
 
+// Koin module defining dependencies for UI theming
 val themeModule = module {
 
-    // Core service managing theme state persistence
+    // Service that saves and retrieves theme preferences
     single {
         ThemeService(
             dataStore = get(named("theme"))
         )
     }
 
-    // Repository abstracting theme data operations
+    // Repository acting as a source of truth for the app's current theme
     single<ThemeRepository> {
         ThemeRepositoryImpl(
             service = get()
         )
     }
 
-    // ViewModel handling theme UI logic
+    // ViewModel for managing theme selection logic in the UI
     viewModel {
         Timber.v("Initializing ThemeViewModel")
         ThemeViewModel(

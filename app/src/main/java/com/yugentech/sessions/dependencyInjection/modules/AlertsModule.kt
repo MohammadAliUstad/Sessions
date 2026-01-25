@@ -13,30 +13,32 @@ import org.koin.android.ext.koin.androidContext
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
+// Koin module defining dependencies for the alerts and sound system
 val alertsModule = module {
 
-    // Service for playing audio alerts
+    // Provides the service for playing system sound effects
     single {
         SoundService(androidContext())
     }
 
-    // Service for performing haptic feedback
+    // Provides the service for controlling device vibration
     single {
         HapticService(androidContext())
     }
 
+    // Provides the service for managing background ambient audio
     single {
         BackgroundSoundService(androidContext())
     }
 
-    // Manages persistence of alert preferences
+    // Provides the preferences manager for alert settings using a named DataStore
     single {
         AlertsPreferences(
             dataStore = get(named("alerts"))
         )
     }
 
-    // Repository coordinating hardware feedback based on user settings
+    // Provides the main repository that coordinates sounds, haptics, and preferences
     single<AlertsRepository> {
         AlertsRepositoryImpl(
             alertsPreferences = get(),
