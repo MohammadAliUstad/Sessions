@@ -68,9 +68,9 @@ fun FontOptionToggle(
         onCheckedChange = { onSelect() },
         modifier = Modifier,
         shapes = ToggleButtonShapes(
-            shape = RoundedCornerShape(MaterialTheme.corners.pill),
-            pressedShape = RoundedCornerShape(MaterialTheme.corners.pill),
-            checkedShape = RoundedCornerShape(MaterialTheme.corners.small)
+            shape = RoundedCornerShape(MaterialTheme.corners.small),
+            pressedShape = RoundedCornerShape(MaterialTheme.corners.small),
+            checkedShape = RoundedCornerShape(MaterialTheme.corners.pill)
         ),
         colors = ToggleButtonDefaults.toggleButtonColors(
             containerColor = MaterialTheme.colorScheme.surfaceContainerHighest,
@@ -83,7 +83,7 @@ fun FontOptionToggle(
             text = font.displayName,
             fontFamily = font.toFontFamily(),
             style = MaterialTheme.typography.labelLarge,
-            fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium,
+            fontWeight = FontWeight.Medium,
             modifier = Modifier.padding(
                 horizontal = MaterialTheme.spacing.s,
                 vertical = MaterialTheme.spacing.xs

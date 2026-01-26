@@ -31,7 +31,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalLayoutDirection
-import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.yugentech.sessions.models.UserData
 import com.yugentech.sessions.theme.tokens.components
@@ -67,8 +66,7 @@ fun ProfileScreen(
         top = MaterialTheme.spacing.m,
         start = MaterialTheme.spacing.m + navBarPadding.calculateStartPadding(layoutDirection),
         end = MaterialTheme.spacing.m + navBarPadding.calculateEndPadding(layoutDirection),
-        // Ensure padding covers the BottomNavBar height + extra spacing so list items aren't hidden
-        bottom = MaterialTheme.components.bottomNavHeight + MaterialTheme.spacing.m
+        bottom = MaterialTheme.components.bottomNavHeight
     )
 
     LaunchedEffect(userId) {
@@ -96,7 +94,6 @@ fun ProfileScreen(
         LazyColumn(
             modifier = modifier.fillMaxSize(),
             contentPadding = screenContentPadding,
-            // Use standard token for the small gap (2.dp)
             verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.xxs)
         ) {
             item {

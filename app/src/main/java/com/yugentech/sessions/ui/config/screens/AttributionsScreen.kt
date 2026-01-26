@@ -21,6 +21,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.OpenInNew
+import androidx.compose.material.icons.filled.Brush
 import androidx.compose.material.icons.filled.Code
 import androidx.compose.material.icons.filled.IntegrationInstructions
 import androidx.compose.material3.ButtonDefaults
@@ -59,22 +60,25 @@ import com.yugentech.sessions.utils.AppConstants.GITHUB_URL
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun LicensesScreen(
+fun AttributionsScreen(
     onNavigateBack: () -> Unit
 ) {
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
     val context = LocalContext.current
 
     val libraries = remember { LicensesContent.libraries }
+    val pabloUrl = "https://www.pablostanley.com/"
 
     Scaffold(
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
             LargeTopAppBar(
                 title = { Column {
-                    Text("Licenses")
+                    // CHANGED: "Licenses" -> "Attributions" to be more inclusive
+                    Text("Attributions")
+                    // CHANGED: Subtitle now mentions design/credits
                     Text(
-                        "Compliance and third-party code",
+                        "Powered by community",
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
@@ -107,6 +111,7 @@ fun LicensesScreen(
             ),
             verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.xxs)
         ) {
+            // --- ITEM 1: Open Source Code ---
             item {
                 Card(
                     shape = RoundedCornerShape(MaterialTheme.corners.extraLarge),
@@ -173,6 +178,79 @@ fun LicensesScreen(
                             )
                         ) {
                             Text("View Source Code")
+                        }
+                    }
+                }
+            }
+
+            item {
+                Card(
+                    shape = RoundedCornerShape(MaterialTheme.corners.extraLarge),
+                    colors = CardDefaults.cardColors(
+                        containerColor = MaterialTheme.colorScheme.secondaryContainer
+                    ),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = MaterialTheme.spacing.s)
+                ) {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(MaterialTheme.spacing.l),
+                        verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.m)
+                    ) {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Surface(
+                                shape = CircleShape,
+                                color = MaterialTheme.colorScheme.secondary,
+                                modifier = Modifier.size(MaterialTheme.components.imageSizeSmall)
+                            ) {
+                                Box(contentAlignment = Alignment.Center) {
+                                    Icon(
+                                        imageVector = Icons.Default.Brush,
+                                        contentDescription = null,
+                                        tint = MaterialTheme.colorScheme.onSecondary
+                                    )
+                                }
+                            }
+
+                            Spacer(Modifier.width(MaterialTheme.spacing.m))
+
+                            Column {
+                                Text(
+                                    "Design & Illustrations",
+                                    style = MaterialTheme.typography.titleMedium,
+                                    fontWeight = FontWeight.Bold,
+                                    color = MaterialTheme.colorScheme.onSecondaryContainer
+                                )
+
+                                Text(
+                                    "Artwork by Pablo Stanley",
+                                    style = MaterialTheme.typography.bodySmall,
+                                    color = MaterialTheme.colorScheme.onSecondaryContainer.copy(alpha = 0.8f)
+                                )
+                            }
+                        }
+
+                        Text(
+                            "The beautiful illustrations and doodles used throughout Sessions are created by Pablo Stanley. Big thanks for his amazing contributions to the open design community!",
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.onSecondaryContainer.copy(alpha = 0.8f)
+                        )
+
+                        FilledTonalButton(
+                            onClick = {
+                                val intent = Intent(Intent.ACTION_VIEW, pabloUrl.toUri())
+                                context.startActivity(intent)
+                            },
+                            modifier = Modifier.align(Alignment.End),
+                            shape = RoundedCornerShape(MaterialTheme.corners.medium),
+                            colors = ButtonDefaults.filledTonalButtonColors(
+                                containerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.5f),
+                                contentColor = MaterialTheme.colorScheme.onSurface
+                            )
+                        ) {
+                            Text("Visit Portfolio")
                         }
                     }
                 }

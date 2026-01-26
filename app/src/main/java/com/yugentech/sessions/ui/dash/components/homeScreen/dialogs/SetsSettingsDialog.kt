@@ -1,6 +1,7 @@
 package com.yugentech.sessions.ui.dash.components.homeScreen.dialogs
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -183,7 +184,10 @@ private fun SettingSliderRow(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Row(
-                verticalAlignment = Alignment.CenterVertically
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(end = MaterialTheme.spacing.s)
             ) {
                 Icon(
                     imageVector = icon,
@@ -198,7 +202,8 @@ private fun SettingSliderRow(
                     text = label,
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Medium,
-                    color = MaterialTheme.colorScheme.onSurface
+                    color = MaterialTheme.colorScheme.onSurface,
+                    modifier = Modifier.basicMarquee()
                 )
             }
 
@@ -206,7 +211,8 @@ private fun SettingSliderRow(
                 text = valueDisplay,
                 style = MaterialTheme.typography.headlineSmall,
                 fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.primary
+                color = MaterialTheme.colorScheme.primary,
+                maxLines = 1
             )
         }
 
