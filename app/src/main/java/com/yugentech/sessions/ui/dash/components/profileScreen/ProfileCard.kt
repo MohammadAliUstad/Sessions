@@ -16,7 +16,6 @@ import androidx.compose.material.icons.automirrored.filled.ShowChart
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.LocalFireDepartment
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.Icon
@@ -50,16 +49,15 @@ fun ProfileCard(
     Surface(
         modifier = Modifier.fillMaxWidth(),
         color = MaterialTheme.colorScheme.surfaceContainer,
-        shape = RoundedCornerShape(MaterialTheme.corners.extraLarge) // 30.dp
+        shape = RoundedCornerShape(MaterialTheme.corners.extraLarge)
     ) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(MaterialTheme.spacing.m), // 16.dp
+                .padding(MaterialTheme.spacing.m),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.m)
         ) {
-            // Header: Name and Edit Button
             Box(modifier = Modifier.fillMaxWidth()) {
                 Text(
                     text = userData.name ?: "User",
@@ -74,7 +72,7 @@ fun ProfileCard(
                 IconButton(
                     onClick = onEditProfile,
                     modifier = Modifier
-                        .size(MaterialTheme.components.buttonMedium) // 48.dp
+                        .size(MaterialTheme.components.buttonMedium)
                         .align(Alignment.CenterEnd),
                     colors = IconButtonDefaults.iconButtonColors(
                         containerColor = MaterialTheme.colorScheme.secondaryContainer,
@@ -84,7 +82,7 @@ fun ProfileCard(
                     Icon(
                         imageVector = Icons.Default.Edit,
                         contentDescription = "Edit Profile",
-                        modifier = Modifier.size(MaterialTheme.icons.mediumSmall) // 18.dp
+                        modifier = Modifier.size(MaterialTheme.icons.mediumSmall)
                     )
                 }
             }
@@ -141,13 +139,12 @@ fun ProfileCard(
                     )
                 }
 
-                // Right: Streak Display
                 FilledTonalButton(
                     onClick = { /* Non-interactive */ },
                     modifier = Modifier
                         .weight(1f)
-                        .height(MaterialTheme.components.buttonHeight), // 48.dp
-                    shape = RoundedCornerShape(MaterialTheme.corners.extraLarge), // 12.dp
+                        .height(MaterialTheme.components.buttonHeight),
+                    shape = RoundedCornerShape(MaterialTheme.corners.extraLarge),
                     colors = ButtonDefaults.filledTonalButtonColors(
                         containerColor = MaterialTheme.colorScheme.primaryContainer,
                         contentColor = MaterialTheme.colorScheme.onPrimaryContainer
@@ -156,11 +153,15 @@ fun ProfileCard(
                     Icon(
                         imageVector = Icons.Default.LocalFireDepartment,
                         contentDescription = null,
-                        modifier = Modifier.size(MaterialTheme.icons.mediumSmall) // 18.dp
+                        modifier = Modifier.size(MaterialTheme.icons.mediumSmall)
                     )
+
                     Spacer(modifier = Modifier.width(MaterialTheme.spacing.s))
+
+                    val unit = if (streakCount == 1) "Day" else "Days"
+
                     Text(
-                        text = "$streakCount Days",
+                        text = "$streakCount $unit",
                         style = MaterialTheme.typography.labelLarge,
                         fontWeight = FontWeight.Bold
                     )

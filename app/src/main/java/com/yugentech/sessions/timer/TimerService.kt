@@ -35,7 +35,7 @@ class TimerService(
 
     // Emits one-time events like "Timer Finished" for the UI to handle
     private val _timerEffects = MutableSharedFlow<TimerEffect>(
-        replay = 1,
+        replay = 0,
         extraBufferCapacity = 5
     )
     val timerEffects: SharedFlow<TimerEffect> = _timerEffects.asSharedFlow()
@@ -49,13 +49,24 @@ class TimerService(
             // Update the timer state whenever the user changes settings
             timerDatastore.timerConfig.collect { newConfig ->
                 _timerState.update { current ->
-                    val newMinutes = getDurationMinutes(current.currentMode, newConfig)
-                    val newSeconds = newMinutes * 60L
-                    current.copy(
-                        timerConfig = newConfig,
-                        totalTime = newSeconds,
-                        currentTime = newSeconds
-                    )
+                    // FIX: Check if the duration for the current mode actually changed
+                    val oldDuration = getDurationMinutes(current.currentMode, current.timerConfig)
+                    val newDuration = getDurationMinutes(current.currentMode, newConfig)
+
+                    if (oldDuration != newDuration) {
+                        // If duration changed, reset the timer to the new duration
+                        val newSeconds = newDuration * 60L
+                        current.copy(
+                            timerConfig = newConfig,
+                            totalTime = newSeconds,
+                            currentTime = newSeconds
+                        )
+                    } else {
+                        // If duration is the same (e.g. only task name changed), preserve current time
+                        current.copy(
+                            timerConfig = newConfig
+                        )
+                    }
                 }
             }
         }

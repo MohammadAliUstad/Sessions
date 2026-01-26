@@ -25,6 +25,7 @@ fun InsightSectionHeader(
             fontWeight = FontWeight.Bold,
             color = MaterialTheme.colorScheme.onSurface
         )
+
         Text(
             text = subtitle,
             style = MaterialTheme.typography.bodyMedium,

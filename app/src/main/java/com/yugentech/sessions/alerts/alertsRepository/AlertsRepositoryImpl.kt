@@ -47,6 +47,7 @@ class AlertsRepositoryImpl(
     // Stops background sound when timer is paused
     override fun onFocusPause(view: View?) {
         Timber.d("onFocusPause triggered")
+        playStopAlert(view)
         stopBackgroundSound()
     }
 

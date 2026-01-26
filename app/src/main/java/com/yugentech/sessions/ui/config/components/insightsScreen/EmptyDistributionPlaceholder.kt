@@ -26,7 +26,7 @@ fun EmptyDistributionPlaceholder() {
         contentAlignment = Alignment.Center
     ) {
         Text(
-            "Complete a session to see distribution",
+            text = "Complete a session to see distribution",
             style = MaterialTheme.typography.bodySmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant
         )

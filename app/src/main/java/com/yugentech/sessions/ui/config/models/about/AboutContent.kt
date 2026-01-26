@@ -100,8 +100,8 @@ object AboutContent {
                 }
             ),
             AboutOption(
-                title = "Licenses",
-                subtitle = "Libraries used to build Sessions",
+                title = "Attributions",
+                subtitle = "Open source & credits",
                 icon = Icons.Default.Description,
                 onClick = onNavigateToLicenses
             )

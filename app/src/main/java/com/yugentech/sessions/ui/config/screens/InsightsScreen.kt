@@ -179,7 +179,10 @@ fun InsightsScreen(
             item {
                 Card(
                     modifier = Modifier.fillMaxWidth(),
-                    shape = RoundedCornerShape(MaterialTheme.corners.large)
+                    shape = RoundedCornerShape(MaterialTheme.corners.large),
+                    colors = CardDefaults.cardColors(
+                        containerColor = MaterialTheme.colorScheme.surfaceContainer
+                    )
                 ) {
                     Column(
                         Modifier.padding(MaterialTheme.spacing.m)
@@ -201,7 +204,10 @@ fun InsightsScreen(
             item {
                 Card(
                     modifier = Modifier.fillMaxWidth(),
-                    shape = RoundedCornerShape(MaterialTheme.corners.large)
+                    shape = RoundedCornerShape(MaterialTheme.corners.large),
+                    colors = CardDefaults.cardColors(
+                        containerColor = MaterialTheme.colorScheme.surfaceContainer
+                    )
                 ) {
                     Column(
                         Modifier.padding(MaterialTheme.spacing.m)

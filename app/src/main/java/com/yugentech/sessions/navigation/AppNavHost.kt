@@ -26,7 +26,7 @@ import com.yugentech.sessions.ui.config.screens.AboutScreen
 import com.yugentech.sessions.ui.config.screens.AppearanceScreen
 import com.yugentech.sessions.ui.config.screens.EditProfileScreen
 import com.yugentech.sessions.ui.config.screens.InsightsScreen
-import com.yugentech.sessions.ui.config.screens.LicensesScreen
+import com.yugentech.sessions.ui.config.screens.AttributionsScreen
 import com.yugentech.sessions.ui.dash.screens.MainScreen
 import com.yugentech.sessions.ui.dash.screens.OnboardingScreen
 import com.yugentech.sessions.ui.dash.utils.defaultEnterTransition
@@ -150,7 +150,7 @@ fun AppNavHost(
 
         // Defines the licenses screen
         composable(Screens.Licenses.route) {
-            LicensesScreen(
+            AttributionsScreen(
                 onNavigateBack = { navController.popBackStack() }
             )
         }

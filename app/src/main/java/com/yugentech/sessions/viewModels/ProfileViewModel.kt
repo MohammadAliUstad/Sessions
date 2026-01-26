@@ -50,7 +50,6 @@ class ProfileViewModel(
 
     private var currentUserId: String? = null
 
-    // Observes the user data flow and updates UI state when it changes
     fun loadUser(userId: String) {
         if (currentUserId == userId && uiState.value.user != null) return
 
@@ -66,7 +65,6 @@ class ProfileViewModel(
             .launchIn(viewModelScope)
     }
 
-    // Loads user data and calculates analytics (stats, heatmaps) from session history
     fun loadProfile(userId: String) {
         if (currentUserId == userId) return
 
@@ -74,17 +72,22 @@ class ProfileViewModel(
 
         sessionsRepository.getSessionsFlow()
             .onEach { sessions ->
-                // Aggregate total duration across all sessions to prevent overflow
+                // Aggregate total duration across all sessions
                 val totalDurationSeconds = sessions.sumOf { it.duration.toLong() }
 
                 val dailyCounts = IntArray(8)
                 val hourlyCounts = IntArray(24)
                 val heatmapData = mutableMapOf<LocalDate, Int>()
 
-                // Process each session to populate statistics arrays and the heatmap
                 sessions.forEach { session ->
                     val cal = Calendar.getInstance().apply { timeInMillis = session.timestamp }
-                    dailyCounts[cal.get(Calendar.DAY_OF_WEEK)]++
+
+                    // --- FIX START ---
+                    // OLD: dailyCounts[cal.get(Calendar.DAY_OF_WEEK)]++ (This counted sessions)
+                    // NEW: Add the session duration to the daily total
+                    dailyCounts[cal.get(Calendar.DAY_OF_WEEK)] += session.duration
+                    // --- FIX END ---
+
                     hourlyCounts[cal.get(Calendar.HOUR_OF_DAY)]++
 
                     val date = Instant.ofEpochMilli(session.timestamp)
@@ -97,7 +100,6 @@ class ProfileViewModel(
                 _uiState.update { state ->
                     val mostActiveHourIndex = hourlyCounts.indices.maxByOrNull { hourlyCounts[it] }
 
-                    // Determine peak activity hour, setting to null if no data exists
                     val validPeakHour = if (mostActiveHourIndex != null && hourlyCounts[mostActiveHourIndex] > 0) {
                         mostActiveHourIndex
                     } else {
@@ -122,7 +124,6 @@ class ProfileViewModel(
             .launchIn(viewModelScope)
     }
 
-    // logic to determine current streak based on consecutive daily activity
     private fun calculateStreak(sessions: List<Session>): Int {
         if (sessions.isEmpty()) return 0
 
@@ -161,7 +162,6 @@ class ProfileViewModel(
         return currentStreak
     }
 
-    // Saves user changes locally and syncs them to the backend
     fun upsertUser(userData: UserData) {
         viewModelScope.launch {
             try {
@@ -175,14 +175,12 @@ class ProfileViewModel(
         }
     }
 
-    // Removes a session from the repository
     fun deleteSession(userId: String, sessionId: String) {
         viewModelScope.launch {
             sessionsRepository.deleteSession(sessionId)
         }
     }
 
-    // Triggers haptic feedback via the repository
     fun performHaptic(view: View? = null) {
         viewModelScope.launch {
             alertsRepository.performHaptic(view)

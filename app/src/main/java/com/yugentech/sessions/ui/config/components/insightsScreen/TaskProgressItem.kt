@@ -20,7 +20,8 @@ import com.yugentech.sessions.theme.tokens.spacing
 @Composable
 fun TaskProgressItem(
     label: String,
-    percentage: Float
+    progress: Float,
+    valueText: String
 ) {
     Column(
         modifier = Modifier.fillMaxWidth()
@@ -32,26 +33,28 @@ fun TaskProgressItem(
             Text(
                 text = label,
                 style = MaterialTheme.typography.bodyMedium,
-                fontWeight = FontWeight.SemiBold
+                fontWeight = FontWeight.SemiBold,
+                color = MaterialTheme.colorScheme.onSurface
             )
 
             Text(
-                text = "${(percentage * 100).toInt()}%",
-                style = MaterialTheme.typography.labelSmall
+                text = valueText,
+                style = MaterialTheme.typography.labelSmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
             )
         }
 
         Spacer(Modifier.height(MaterialTheme.spacing.xxs))
 
         LinearProgressIndicator(
-            progress = { percentage },
+            progress = { progress },
             modifier = Modifier
                 .fillMaxWidth()
-                .height(MaterialTheme.spacing.s)
+                .height(MaterialTheme.spacing.l)
                 .clip(RoundedCornerShape(MaterialTheme.corners.small)),
             strokeCap = androidx.compose.ui.graphics.StrokeCap.Round,
             color = MaterialTheme.colorScheme.primary,
-            trackColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.18f)
+            trackColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.3f)
         )
     }
 }

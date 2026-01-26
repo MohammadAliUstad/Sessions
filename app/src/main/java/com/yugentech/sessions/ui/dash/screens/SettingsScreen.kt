@@ -58,7 +58,7 @@ fun SettingsScreen(
             start = MaterialTheme.spacing.m,
             end = MaterialTheme.spacing.m,
             // Ensure padding accounts for the bottom nav bar + some extra breathing room
-            bottom = MaterialTheme.components.bottomNavHeight + MaterialTheme.spacing.m
+            bottom = MaterialTheme.components.bottomNavHeight
         ),
         // Use token for the small gap between grouped items (2.dp)
         verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.xxs)

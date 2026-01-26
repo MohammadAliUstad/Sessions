@@ -59,6 +59,7 @@ fun HomeScreen(
         homeViewModel.fetchUserOnce(userId)
         homeViewModel.fetchSessionsOnce(userId)
         homeViewModel.syncPendingSessions(userId)
+//        homeViewModel.injectDummyData()
     }
 
     Surface(

@@ -1,12 +1,14 @@
 package com.yugentech.sessions.ui.config.components.editProfileScreen
 
-import androidx.compose.animation.AnimatedContent
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -16,34 +18,35 @@ import androidx.compose.material3.SecondaryScrollableTabRow
 import androidx.compose.material3.Tab
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.derivedStateOf
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import com.yugentech.sessions.theme.tokens.corners
 import com.yugentech.sessions.theme.tokens.spacing
+import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 fun AvatarSection(
     selectedAvatarId: Int,
     onAvatarSelected: (Int) -> Unit
 ) {
     val categories = remember { AvatarCategory.entries }
+    val scope = rememberCoroutineScope()
 
-    val initialCategory = remember(selectedAvatarId) {
-        AvatarRepository.getAvatarById(selectedAvatarId)?.category ?: categories.first()
+    // Determine the initial page based on the currently selected avatar
+    val initialPage = remember(selectedAvatarId) {
+        val category = AvatarRepository.getAvatarById(selectedAvatarId)?.category ?: categories.first()
+        categories.indexOf(category)
     }
 
-    var currentCategory by remember { mutableStateOf(initialCategory) }
-
-    val currentAvatars by remember(currentCategory) {
-        derivedStateOf { AvatarRepository.getAvatarsByCategory(currentCategory) }
-    }
+    // Pager state controls which category is currently visible
+    val pagerState = rememberPagerState(
+        initialPage = initialPage,
+        pageCount = { categories.size }
+    )
 
     Card(
         modifier = Modifier.fillMaxWidth(),
@@ -63,16 +66,21 @@ fun AvatarSection(
                 verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.s)
             ) {
                 SecondaryScrollableTabRow(
-                    selectedTabIndex = categories.indexOf(currentCategory),
+                    selectedTabIndex = pagerState.currentPage,
                     edgePadding = MaterialTheme.spacing.m,
                     containerColor = MaterialTheme.colorScheme.surfaceContainer,
                     contentColor = MaterialTheme.colorScheme.primary,
                     divider = {}
                 ) {
-                    categories.forEach { category ->
+                    categories.forEachIndexed { index, category ->
                         Tab(
-                            selected = currentCategory == category,
-                            onClick = { currentCategory = category },
+                            selected = pagerState.currentPage == index,
+                            onClick = {
+                                // Scroll pager to the clicked tab
+                                scope.launch {
+                                    pagerState.animateScrollToPage(index)
+                                }
+                            },
                             modifier = Modifier.clip(
                                 RoundedCornerShape(
                                     topStart = MaterialTheme.corners.medium,
@@ -90,17 +98,26 @@ fun AvatarSection(
                 }
             }
 
-            AnimatedContent(
-                targetState = currentAvatars,
-                label = "avatar_grid"
-            ) { avatars ->
+            // HorizontalPager handles the swipe logic and page transitions
+            HorizontalPager(
+                state = pagerState,
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.Top
+            ) { pageIndex ->
+                val category = categories[pageIndex]
+
+                // Fetch avatars for this specific page/category
+                val categoryAvatars = remember(category) {
+                    AvatarRepository.getAvatarsByCategory(category)
+                }
+
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(MaterialTheme.spacing.l),
                     verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.m)
                 ) {
-                    avatars.chunked(3).forEach { rowAvatars ->
+                    categoryAvatars.chunked(3).forEach { rowAvatars ->
                         Row(
                             modifier = Modifier.fillMaxWidth(),
                             horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.s),
