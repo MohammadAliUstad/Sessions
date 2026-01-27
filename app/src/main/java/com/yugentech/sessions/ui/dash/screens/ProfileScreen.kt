@@ -3,13 +3,15 @@ package com.yugentech.sessions.ui.dash.screens
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.calculateEndPadding
 import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBars
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -17,7 +19,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.CircularWavyProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -61,12 +62,12 @@ fun ProfileScreen(
     val layoutDirection = LocalLayoutDirection.current
     val navBarPadding = WindowInsets.navigationBars.asPaddingValues()
 
-    // Calculate content padding that respects the bottom navigation bar
+    // 1. Standard Content Padding
     val screenContentPadding = PaddingValues(
         top = MaterialTheme.spacing.m,
         start = MaterialTheme.spacing.m + navBarPadding.calculateStartPadding(layoutDirection),
         end = MaterialTheme.spacing.m + navBarPadding.calculateEndPadding(layoutDirection),
-        bottom = MaterialTheme.components.bottomNavHeight
+        bottom = MaterialTheme.components.bottomNavHeight + MaterialTheme.spacing.m
     )
 
     LaunchedEffect(userId) {
@@ -79,80 +80,70 @@ fun ProfileScreen(
         }
     }
 
-    if (profileUiState.user == null) {
-        Box(
-            modifier = modifier.fillMaxSize(),
-            contentAlignment = Alignment.Center
-        ) {
-            CircularWavyProgressIndicator(
-                modifier = Modifier.size(MaterialTheme.components.buttonMedium), // 48.dp
-                color = MaterialTheme.colorScheme.primary,
-                trackColor = MaterialTheme.colorScheme.surfaceVariant
+    // 2. Single Standard LazyColumn
+    LazyColumn(
+        modifier = modifier.fillMaxSize(),
+        contentPadding = screenContentPadding,
+        verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.xxs)
+    ) {
+        // --- Header ---
+        item(key = "profile_header") {
+            SectionHeader(
+                title = "My Account",
+                icon = Icons.Filled.Person
             )
         }
-    } else {
-        LazyColumn(
-            modifier = modifier.fillMaxSize(),
-            contentPadding = screenContentPadding,
-            verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.xxs)
-        ) {
-            item {
-                SectionHeader(
-                    title = "My Account",
-                    icon = Icons.Filled.Person
-                )
-            }
 
-            item {
-                ProfileCard(
-                    userData = profileUiState.user ?: UserData(name = EMPTY_STRING),
-                    onEditProfile = onEditProfile,
-                    onViewInsights = onViewInsights,
-                    streakCount = profileUiState.streakCount
-                )
-            }
+        item(key = "profile_card") {
+            ProfileCard(
+                userData = profileUiState.user ?: UserData(name = EMPTY_STRING),
+                onEditProfile = onEditProfile,
+                onViewInsights = onViewInsights,
+                streakCount = profileUiState.streakCount
+            )
+        }
 
-            if (profileUiState.sessions.isEmpty()) {
-                item {
-                    Box(
-                        contentAlignment = Alignment.Center
-                    ) {
-                        EmptySessionsCard()
-                    }
+        if (profileUiState.sessions.isEmpty()) {
+            item(key = "empty_state") {
+                Box(
+                    modifier = Modifier
+                        .fillParentMaxHeight(0.4f)
+                        .fillMaxWidth(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    EmptySessionsCard()
                 }
-            } else {
-                groupedSessions.forEach { (dateHeader, sessionsInGroup) ->
-                    item(key = "header_$dateHeader") {
-                        SectionHeader(
-                            title = dateHeader,
-                            icon = Icons.Default.DateRange
-                        )
-                    }
+            }
+        } else {
+            groupedSessions.forEach { (dateHeader, sessionsInGroup) ->
+                item(key = "header_$dateHeader") {
+                    SectionHeader(
+                        title = dateHeader,
+                        icon = Icons.Default.DateRange
+                    )
+                }
 
-                    itemsIndexed(
-                        items = sessionsInGroup,
-                        key = { _, session -> session.sessionId }
-                    ) { index, session ->
-                        Box(
-                            modifier = Modifier.animateItem()
-                        ) {
-                            SessionHistoryItem(
-                                session = session,
-                                index = index,
-                                totalCount = sessionsInGroup.size,
-                                onDelete = {
-                                    sessionToDeleteId = session.sessionId
-                                    showDeleteDialog = true
-                                }
-                            )
-                        }
+                itemsIndexed(
+                    items = sessionsInGroup,
+                    key = { _, session -> session.sessionId }
+                ) { index, session ->
+                    Box(modifier = Modifier.animateItem()) {
+                        SessionHistoryItem(
+                            session = session,
+                            index = index,
+                            totalCount = sessionsInGroup.size,
+                            onDelete = {
+                                sessionToDeleteId = session.sessionId
+                                showDeleteDialog = true
+                            }
+                        )
                     }
                 }
             }
         }
     }
 
-    // Delete Confirmation Dialog
+    // --- Dialogs ---
     if (showDeleteDialog && sessionToDeleteId != null) {
         AlertDialog(
             onDismissRequest = {
@@ -168,7 +159,7 @@ fun ProfileScreen(
                     style = MaterialTheme.typography.bodyMedium
                 )
             },
-            shape = RoundedCornerShape(MaterialTheme.corners.large), // 24.dp
+            shape = RoundedCornerShape(MaterialTheme.corners.large),
             confirmButton = {
                 TextButton(
                     onClick = {

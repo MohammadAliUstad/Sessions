@@ -194,9 +194,15 @@ fun InsightsScreen(
 
                         Spacer(Modifier.height(MaterialTheme.spacing.m))
 
-                        WeeklyRhythmChart(
-                            dailyVolume = dailyVolume
-                        )
+                        if (taskDistribution.isEmpty()) {
+                            EmptyDistributionPlaceholder(
+                                "Complete a session to see distribution"
+                            )
+                        } else {
+                            WeeklyRhythmChart(
+                                dailyVolume = dailyVolume
+                            )
+                        }
                     }
                 }
             }
@@ -220,7 +226,9 @@ fun InsightsScreen(
                         Spacer(Modifier.height(MaterialTheme.spacing.s))
 
                         if (taskDistribution.isEmpty()) {
-                            EmptyDistributionPlaceholder()
+                            EmptyDistributionPlaceholder(
+                                "Complete a session to see distribution"
+                            )
                         } else {
                             TaskDistributionList(
                                 taskDistribution = taskDistribution

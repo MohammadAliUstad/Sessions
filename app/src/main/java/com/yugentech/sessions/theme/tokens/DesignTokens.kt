@@ -67,6 +67,7 @@ val TokensCompact = DesignTokens(
         imageSizeSmall = 72.dp,
         imageSizeMedium = 88.dp,
         imageSizeLarge = 160.dp,
+        imageSizeHuge = 220.dp,
         timerSize = 280.dp,
         bottomNavHeight = 80.dp,
         bottomNavPadding = 80.dp,

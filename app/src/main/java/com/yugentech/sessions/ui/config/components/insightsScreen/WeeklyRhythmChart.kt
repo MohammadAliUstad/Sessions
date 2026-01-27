@@ -18,7 +18,6 @@ fun WeeklyRhythmChart(
     dailyVolume: Map<Int, Int>
 ) {
     val days = listOf("Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday")
-
     val totalVolume = dailyVolume.values.sum().toFloat()
 
     Card(
