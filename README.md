@@ -69,7 +69,7 @@ Sessions transforms the concept of a simple timer into a comprehensive focus too
       <b>Appearance & Theming</b>
     </td>
     <td align="center">
-      <img src="screenshots/EditProfile.png" alt="Edit Profile" width="200"/>
+      <img src="screenshots/Edit Profile.png" alt="Edit Profile" width="200"/>
       <br />
       <b>Edit Profile</b>
     </td>
