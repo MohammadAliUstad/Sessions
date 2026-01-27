@@ -42,44 +42,44 @@ Sessions transforms the concept of a simple timer into a comprehensive focus too
 <table>
   <tr>
     <td align="center">
-      <img src="Screenshots/Timer.png" alt="Timer" width="200"/>
+      <img src="screenshots/Timer.png" alt="Timer" width="200"/>
       <br />
       <b>Timer (Locked In)</b>
     </td>
     <td align="center">
-      <img src="Screenshots/Insights.png" alt="Insights" width="200"/>
+      <img src="screenshots/Insights.png" alt="Insights" width="200"/>
       <br />
       <b>Insights & Heatmap</b>
     </td>
     <td align="center">
-      <img src="Screenshots/Dashboard.png" alt="Dashboard" width="200"/>
+      <img src="screenshots/Dashboard.png" alt="Dashboard" width="200"/>
       <br />
       <b>Daily Dashboard</b>
     </td>
     <td align="center">
-      <img src="Screenshots/Settings.png" alt="Settings" width="200"/>
+      <img src="screenshots/Settings.png" alt="Settings" width="200"/>
       <br />
       <b>Settings & Preferences</b>
     </td>
   </tr>
   <tr>
     <td align="center">
-      <img src="Screenshots/Appearance.png" alt="Appearance" width="200"/>
+      <img src="screenshots/Appearance.png" alt="Appearance" width="200"/>
       <br />
       <b>Appearance & Theming</b>
     </td>
     <td align="center">
-      <img src="Screenshots/EditProfile.png" alt="Edit Profile" width="200"/>
+      <img src="screenshots/EditProfile.png" alt="Edit Profile" width="200"/>
       <br />
       <b>Edit Profile</b>
     </td>
     <td align="center">
-      <img src="Screenshots/Credits.png" alt="Credits" width="200"/>
+      <img src="screenshots/Credits.png" alt="Credits" width="200"/>
       <br />
       <b>Credits</b>
     </td>
     <td align="center">
-      <img src="Screenshots/About.png" alt="About" width="200"/>
+      <img src="screenshots/About.png" alt="About" width="200"/>
       <br />
       <b>About Screen</b>
     </td>
