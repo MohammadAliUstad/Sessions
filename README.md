@@ -1,83 +1,135 @@
-# ⏳ Sessions - Your Personal Focus Companion
+# Sessions - Your Personal Focus Companion
 
-Welcome to **Sessions**, a beautifully crafted productivity application designed to help you master your time and boost efficiency. With a distraction-free timer, seamless cloud syncing, and elegant design, Sessions helps you stay focused — whenever you need to get work done.
+**Sessions** is a precision-engineered productivity application designed to help you master your time and maintain flow state. By combining a distraction-free timer with immersive audio environments and detailed analytics, Sessions provides a reliable ecosystem for deep work.
 
----
+[![Get it on Google Play](https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png)](YOUR_PLAY_STORE_LINK_HERE)
 
-## ✨ Features
-
-- **Focus Timer**: Customizable Pomodoro timer with work and break intervals.
-- **Session Tracking**: Detailed history of your focus sessions synced to the cloud.
-- **Secure Authentication**: Sign in via Google or Email to save your progress.
-- **Stability Monitoring**: Integrated crash reporting for a reliable experience.
-- **Minimalistic & Fast**: Optimized for a distraction-free workflow.
+[**Download Latest Release**](https://github.com/MohammadAliUstad/Sessions/releases) | [**Report Bug**](https://github.com/MohammadAliUstad/Sessions/issues) | [**Request Feature**](https://github.com/MohammadAliUstad/Sessions/issues)
 
 ---
 
-## 🎨 UI Highlights
+## Overview
 
-- **Modern Design**: Clean, vibrant layouts using Material 3 and intuitive animations.
-- **Dynamic Layouts**:
-  - A captivating **Timer Screen** showing animated progress and quick controls.
-  - A **History Screen** presenting your past sessions in an organized list.
-- **Effortless Navigation**: Swiftly switch between the timer, stats, and settings.
+Sessions transforms the concept of a simple timer into a comprehensive focus tool. Whether you are studying, coding, or writing, the application ensures your environment is optimized for concentration. It features a robust background service that prevents the operating system from killing the timer, ensuring your progress is tracked even when your phone is locked.
 
 ---
 
-## 🚀 Technologies Used
+## Key Features
 
-- **Language**: Kotlin  
-- **UI Framework**: Jetpack Compose  
-- **Backend**: Firebase (Auth, Firestore)  
-- **Database**: Room Database  
-- **Dependency Injection**: Koin  
-- **Architecture**: MVVM Clean Architecture  
+### Intelligent Focus Engine
+* **Customizable Cycles:** Define your exact Focus Duration, Break Duration, and Repetition count.
+* **Smart Intervals:** The application automatically calculates when to trigger a Long Break based on your completed sets.
+* **Task History:** Assign names to specific sessions to recognize and review what you worked on later.
 
----
+### Immersive Audio Environment
+* **Curated Ambience:** Includes 5 high-quality background sounds: Rain, Brown Noise, Fireplace, Library, and Riverside.
+* **Adaptive Audio Ducking:** Background volume intelligently lowers during breaks and rises during focus sessions to subconsciously guide your attention.
+* **Sensory Feedback:** Integrated haptic feedback and sound effects confirm interactions without needing visual confirmation.
 
-## 📸 Screenshots
+### Reliability & System Integration
+* **Persistent Notification:** A live notification on the lock screen allows you to track progress without unlocking the device.
+* **Background Stability:** Engineered to resist aggressive battery optimization, ensuring the timer never stops unexpectedly.
 
-<div align="center">
-  
-<img src="Screenshots/screenshot (1).png" width="30%"/>
-<img src="Screenshots/screenshot (2).png" width="30%"/>
-<img src="Screenshots/screenshot (3).png" width="30%"/>
-<img src="Screenshots/screenshot (4).png" width="30%"/>
-<img src="Screenshots/screenshot (5).png" width="30%"/>
-<img src="Screenshots/screenshot (6).png" width="30%"/>
-
-</div>
+### Analytics & Personalization
+* **Visual Insights:** A dedicated dashboard featuring heatmaps and metrics (Total Focus Time, Peak Productivity Hours).
+* **Deep Theming:** 8 Color Themes (including Dynamic Material You), OLED Black Mode, and 6 Font options.
+* **Identity System:** Choose from a variety of avatars and set a custom display name.
 
 ---
 
-## 🛠️ Setup & Installation
+## User Interface Gallery
 
-1. **Clone the Repository**:
-   ```bash
-   git clone https://github.com/MohammadAliUstad/Sessions.git
-   cd sessions
-   ```
-
-2. **Firebase Setup**: Download your `google-services.json` and place it in the `app/` directory.
-
-3. **Open in Android Studio**: Import the project and sync Gradle.
-
-4. **Run**: Build and run the app on an emulator or physical device.
+<table>
+  <tr>
+    <td align="center">
+      <img src="Screenshots/Timer.png" alt="Timer" width="200"/>
+      <br />
+      <b>Timer (Locked In)</b>
+    </td>
+    <td align="center">
+      <img src="Screenshots/Insights.png" alt="Insights" width="200"/>
+      <br />
+      <b>Insights & Heatmap</b>
+    </td>
+    <td align="center">
+      <img src="Screenshots/Dashboard.png" alt="Dashboard" width="200"/>
+      <br />
+      <b>Daily Dashboard</b>
+    </td>
+    <td align="center">
+      <img src="Screenshots/Settings.png" alt="Settings" width="200"/>
+      <br />
+      <b>Settings & Preferences</b>
+    </td>
+  </tr>
+  <tr>
+    <td align="center">
+      <img src="Screenshots/Appearance.png" alt="Appearance" width="200"/>
+      <br />
+      <b>Appearance & Theming</b>
+    </td>
+    <td align="center">
+      <img src="Screenshots/EditProfile.png" alt="Edit Profile" width="200"/>
+      <br />
+      <b>Edit Profile</b>
+    </td>
+    <td align="center">
+      <img src="Screenshots/Credits.png" alt="Credits" width="200"/>
+      <br />
+      <b>Credits</b>
+    </td>
+    <td align="center">
+      <img src="Screenshots/About.png" alt="About" width="200"/>
+      <br />
+      <b>About Screen</b>
+    </td>
+  </tr>
+</table>
 
 ---
 
-## 🌟 Contributing
+## Technical Architecture
 
-Contributions are welcome! Feel free to fork the repository, suggest improvements, and create pull requests to make Sessions even better.
+Sessions is built using modern Android development standards, ensuring a codebase that is scalable, testable, and maintainable.
+
+* **Language:** Kotlin
+* **UI Framework:** Jetpack Compose (Material 3 Design System)
+* **Architecture:** MVVM (Model-View-ViewModel) with Clean Architecture principles
+* **Dependency Injection:** Koin
+* **Local Database:** Room Database
+* **Backend Services:** Firebase (Auth, Firestore)
+* **Concurrency:** Kotlin Coroutines & Flow
 
 ---
 
-## 📞 Contact
+## Setup & Installation
 
-Have feedback, ideas, or questions? I'd love to hear from you:
+To run this project locally for development or contribution purposes:
 
-📧 Mohammadaliustad@gmail.com
+1.  **Clone the Repository**
+    ```bash
+    git clone [https://github.com/MohammadAliUstad/Sessions.git](https://github.com/MohammadAliUstad/Sessions.git)
+    cd sessions
+    ```
+
+2.  **Firebase Configuration**
+    * Create a project in the Firebase Console.
+    * Download the `google-services.json` file.
+    * Place the file in the `app/` directory of the project.
+
+3.  **Build**
+    * Open the project in Android Studio.
+    * Sync Gradle files.
+    * Select your target device/emulator and click Run.
 
 ---
 
-Made with 🍅 passion to keep you focused by **Yugen Tech**
+## Contact & Support
+
+If you encounter any issues or have suggestions for future updates, please open an issue on GitHub or contact the developer directly.
+
+**Email:** Mohammadaliustad@gmail.com
+
+---
+
+**Developed by Yugen Tech**
