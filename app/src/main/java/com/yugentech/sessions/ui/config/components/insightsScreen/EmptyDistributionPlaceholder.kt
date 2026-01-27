@@ -14,7 +14,9 @@ import com.yugentech.sessions.theme.tokens.components
 import com.yugentech.sessions.theme.tokens.corners
 
 @Composable
-fun EmptyDistributionPlaceholder() {
+fun EmptyDistributionPlaceholder(
+    message: String
+) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -26,7 +28,7 @@ fun EmptyDistributionPlaceholder() {
         contentAlignment = Alignment.Center
     ) {
         Text(
-            text = "Complete a session to see distribution",
+            text = message,
             style = MaterialTheme.typography.bodySmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant
         )

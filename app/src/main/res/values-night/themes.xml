@@ -2,7 +2,6 @@
 <resources>
 
     <style name="Theme.Sessions" parent="Theme.Material3.DayNight.NoActionBar">
-        <item name="android:windowLightStatusBar">false</item>
         <item name="android:windowBackground">@color/black</item>
     </style>
 </resources>

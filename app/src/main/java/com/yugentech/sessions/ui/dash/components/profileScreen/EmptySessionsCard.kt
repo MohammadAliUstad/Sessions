@@ -2,12 +2,12 @@ package com.yugentech.sessions.ui.dash.components.profileScreen
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -24,33 +24,28 @@ import com.yugentech.sessions.theme.tokens.spacing
 fun EmptySessionsCard(
     modifier: Modifier = Modifier
 ) {
-    Column(
+    Row(
         modifier = modifier
             .fillMaxWidth()
-            .padding(
-                vertical = MaterialTheme.spacing.m,
-                horizontal = MaterialTheme.spacing.m
-            ),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
+            .padding(MaterialTheme.spacing.m),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.Center
     ) {
+        Text(
+            text = "Start your first session to track your progress and build productive habits!",
+            style = MaterialTheme.typography.titleMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            textAlign = TextAlign.Start,
+            modifier = Modifier.weight(1f)
+        )
+
+        Spacer(modifier = Modifier.width(MaterialTheme.spacing.m))
+
         Image(
             painter = painterResource(id = R.drawable.new_beginnings),
             contentDescription = "No sessions illustration",
-            modifier = Modifier.size(MaterialTheme.components.imageSizeLarge), // 160.dp
+            modifier = Modifier.size(MaterialTheme.components.imageSizeHuge),
             contentScale = ContentScale.Fit
-        )
-
-        Spacer(modifier = Modifier.height(MaterialTheme.spacing.m))
-
-        Text(
-            text = "Start your first session to track your progress and build productive habits! ",
-            style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-            textAlign = TextAlign.Center,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = MaterialTheme.spacing.m)
         )
     }
 }

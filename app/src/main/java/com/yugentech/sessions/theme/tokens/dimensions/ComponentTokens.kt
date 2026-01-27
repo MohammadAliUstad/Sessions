@@ -16,6 +16,7 @@ data class ComponentTokens(
     val imageSizeSmall: Dp,
     val imageSizeMedium: Dp,
     val imageSizeLarge: Dp,
+    val imageSizeHuge: Dp,
     val timerSize: Dp,
     val bottomNavHeight: Dp,
     val bottomNavPadding: Dp,
