@@ -83,7 +83,7 @@ Sessions transforms the concept of a simple timer into a comprehensive focus too
       <br/><sub><b>Dashboard</b></sub>
     </td>
     <td align="center" width="25%">
-       <img src="screenshots/Appearance.png" alt="Tasks" width="100%"/>
+       <img src="screenshots/Appearance.png" alt="Appearance" width="100%"/>
       <br/><sub><b>Tasks History</b></sub>
     </td>
   </tr>
@@ -93,11 +93,11 @@ Sessions transforms the concept of a simple timer into a comprehensive focus too
       <br/><sub><b>Settings</b></sub>
     </td>
     <td align="center" width="25%">
-      <img src="screenshots/Edit Profile.png" alt="Appearance" width="100%"/>
+      <img src="screenshots/Edit Profile.png" alt="Edit Profile" width="100%"/>
       <br/><sub><b>Appearance</b></sub>
     </td>
     <td align="center" width="25%">
-      <img src="screenshots/Credits.png" alt="Profile" width="100%"/>
+      <img src="screenshots/Credits.png" alt="Credits" width="100%"/>
       <br/><sub><b>Edit Profile</b></sub>
     </td>
     <td align="center" width="25%">
