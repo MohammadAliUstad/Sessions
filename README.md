@@ -18,13 +18,8 @@
 </table>
 
 <p align="center">
-    <a href="https://play.google.com/store/apps/details?id=com.yugentech.sessions">
-        <img alt="Get it on Google Play" src="badges/playstore.png" width="200px"/>
-    </a>
-    <br/>
-    <a href="https://github.com/MohammadAliUstad/Sessions/releases">
-        <img alt="Get it on Github" src="badges/github.png" width="200px"/>
-    </a>
+  <a href="https://play.google.com/store/apps/details?id=com.yugentech.sessions"><img alt="Get it on Google Play" src="badges/playstore.png" width="200"/></a>
+  <a href="https://github.com/MohammadAliUstad/Sessions/releases"><img alt="Get it on Github" src="badges/github.png" width="200"/></a>
 </p>
 
 <br/>
@@ -35,7 +30,7 @@
 
 ---
 
-## 📖 Overview
+## Overview
 
 Sessions transforms the concept of a simple timer into a comprehensive focus tool. Whether you're studying, coding, or writing, the application ensures your environment is optimized for concentration. It features a robust background service that prevents the operating system from killing the timer, ensuring your progress is tracked even when your phone is locked.
 
@@ -43,21 +38,21 @@ Sessions transforms the concept of a simple timer into a comprehensive focus too
 
 ## ✨ Key Features
 
-### 🎯 Intelligent Focus Engine
+### Intelligent Focus Engine
 - **Customizable Cycles:** Define your exact Focus Duration, Break Duration, and Repetition count
 - **Smart Intervals:** Automatically calculates when to trigger a Long Break based on your completed sets
 - **Task History:** Assign names to specific sessions to recognize and review what you worked on later
 
-### 🎵 Immersive Audio Environment
+### Immersive Audio Environment
 - **Curated Ambience:** Includes 5 high-quality background sounds: Rain, Brown Noise, Fireplace, Library, and Riverside
 - **Adaptive Audio Ducking:** Background volume intelligently lowers during breaks and rises during focus sessions
 - **Sensory Feedback:** Integrated haptic feedback and sound effects confirm interactions without visual confirmation
 
-### 🔒 Reliability & System Integration
+### Reliability & System Integration
 - **Persistent Notification:** Live notification on the lock screen allows you to track progress without unlocking
 - **Background Stability:** Engineered to resist aggressive battery optimization
 
-### 📊 Analytics & Personalization
+### Analytics & Personalization
 - **Visual Insights:** Dedicated dashboard featuring heatmaps and metrics (Total Focus Time, Peak Productivity Hours)
 - **Deep Theming:** 8 Color Themes (including Dynamic Material You), OLED Black Mode, and 6 Font options
 - **Identity System:** Choose from a variety of avatars and set a custom display name
@@ -83,7 +78,7 @@ Sessions transforms the concept of a simple timer into a comprehensive focus too
       <br/><sub><b>Dashboard</b></sub>
     </td>
     <td align="center" width="25%">
-       <img src="screenshots/Appearance.png" alt="Tasks" width="100%"/>
+       <img src="screenshots/Appearance.png" alt="Appearance" width="100%"/>
       <br/><sub><b>Tasks History</b></sub>
     </td>
   </tr>
@@ -93,11 +88,11 @@ Sessions transforms the concept of a simple timer into a comprehensive focus too
       <br/><sub><b>Settings</b></sub>
     </td>
     <td align="center" width="25%">
-      <img src="screenshots/Edit Profile.png" alt="Appearance" width="100%"/>
+      <img src="screenshots/Credits.png" alt="Credits" width="100%"/>
       <br/><sub><b>Appearance</b></sub>
     </td>
     <td align="center" width="25%">
-      <img src="screenshots/Credits.png" alt="Profile" width="100%"/>
+      <img src="screenshots/Edit Profile.png" alt="Edit Profile" width="100%"/>
       <br/><sub><b>Edit Profile</b></sub>
     </td>
     <td align="center" width="25%">
@@ -111,7 +106,7 @@ Sessions transforms the concept of a simple timer into a comprehensive focus too
 
 ---
 
-## 🏗️ Technical Architecture
+## Technical Architecture
 
 Sessions is built using modern Android development standards, ensuring a codebase that is scalable, testable, and maintainable.
 
@@ -137,7 +132,7 @@ Concurrency:          Kotlin Coroutines & Flow
 
 ---
 
-## 🚀 Setup & Installation
+## Setup & Installation
 
 ### Prerequisites
 
@@ -184,7 +179,7 @@ Distributed under the appropriate license. See `LICENSE` file for more informati
 
 ---
 
-## 📧 Contact & Support
+## Contact & Support
 
 If you encounter any issues or have suggestions for future updates, please open an issue on GitHub or contact the developer directly.
 
