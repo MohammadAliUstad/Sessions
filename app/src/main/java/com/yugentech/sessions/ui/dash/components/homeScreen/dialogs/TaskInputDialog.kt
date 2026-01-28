@@ -16,6 +16,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.window.DialogProperties // Required import
 import com.yugentech.sessions.theme.tokens.corners
 
 @Composable
@@ -28,6 +29,8 @@ fun TaskInputDialog(
 
     AlertDialog(
         onDismissRequest = onDismiss,
+        properties = DialogProperties(usePlatformDefaultWidth = false),
+        modifier = Modifier.fillMaxWidth(0.84f),
         title = { Text("Set Task") },
         text = {
             TextField(

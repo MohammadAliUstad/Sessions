@@ -76,7 +76,6 @@ fun HomeScreen(
                     .fillMaxSize()
                     .verticalScroll(scrollState)
                     .heightIn(min = screenHeight)
-                    // Important: Add padding for the BottomNavBar to avoid overlap
                     .padding(bottom = MaterialTheme.components.bottomNavHeight),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.SpaceBetween

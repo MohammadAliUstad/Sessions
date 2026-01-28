@@ -49,6 +49,7 @@ fun DonationDialog(
 ) {
     Dialog(
         onDismissRequest = onDismiss,
+        // Samsung Fix: Disable platform default width
         properties = DialogProperties(usePlatformDefaultWidth = false)
     ) {
         Card(
@@ -75,7 +76,7 @@ fun DonationDialog(
                     Surface(
                         shape = CircleShape,
                         color = MaterialTheme.colorScheme.primary.copy(alpha = 0.1f),
-                        modifier = Modifier.size(MaterialTheme.components.imageSizeSmall)
+                        modifier = Modifier.size(MaterialTheme.components.imageSizeMedium)
                     ) {
                         Box(
                             contentAlignment = Alignment.Center

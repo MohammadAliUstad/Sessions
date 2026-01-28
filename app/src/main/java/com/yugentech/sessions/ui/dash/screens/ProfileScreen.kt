@@ -3,14 +3,12 @@ package com.yugentech.sessions.ui.dash.screens
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.calculateEndPadding
 import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
@@ -62,12 +60,10 @@ fun ProfileScreen(
     val layoutDirection = LocalLayoutDirection.current
     val navBarPadding = WindowInsets.navigationBars.asPaddingValues()
 
-    // 1. Standard Content Padding
     val screenContentPadding = PaddingValues(
-        top = MaterialTheme.spacing.m,
         start = MaterialTheme.spacing.m + navBarPadding.calculateStartPadding(layoutDirection),
         end = MaterialTheme.spacing.m + navBarPadding.calculateEndPadding(layoutDirection),
-        bottom = MaterialTheme.components.bottomNavHeight + MaterialTheme.spacing.m
+        bottom = MaterialTheme.components.bottomNavHeight
     )
 
     LaunchedEffect(userId) {
@@ -80,13 +76,11 @@ fun ProfileScreen(
         }
     }
 
-    // 2. Single Standard LazyColumn
     LazyColumn(
         modifier = modifier.fillMaxSize(),
         contentPadding = screenContentPadding,
         verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.xxs)
     ) {
-        // --- Header ---
         item(key = "profile_header") {
             SectionHeader(
                 title = "My Account",

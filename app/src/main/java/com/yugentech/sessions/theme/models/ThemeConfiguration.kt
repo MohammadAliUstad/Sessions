@@ -6,7 +6,7 @@ import com.yugentech.sessions.theme.getters.AppFont
 data class ThemeConfiguration(
     val themeMode: ThemeMode = ThemeMode.SYSTEM,
     val colorTheme: ColorTheme = ColorTheme.CANYON,
-    val useDynamicColors: Boolean = true,
+    val useDynamicColors: Boolean = false,
     val isAmoledMode: Boolean = false,
     val appFont: AppFont = AppFont.Google
 )

@@ -196,7 +196,7 @@ fun InsightsScreen(
 
                         if (taskDistribution.isEmpty()) {
                             EmptyDistributionPlaceholder(
-                                "Complete a session to see distribution"
+                                "Complete a session to see volume"
                             )
                         } else {
                             WeeklyRhythmChart(

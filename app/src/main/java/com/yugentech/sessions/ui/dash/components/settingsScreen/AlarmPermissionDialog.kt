@@ -4,13 +4,16 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.provider.Settings
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.window.DialogProperties // Required import
 import androidx.core.net.toUri
 import com.yugentech.sessions.theme.tokens.corners
 
@@ -22,6 +25,8 @@ fun AlarmPermissionDialog(
 ) {
     AlertDialog(
         onDismissRequest = onDismiss,
+        properties = DialogProperties(usePlatformDefaultWidth = false),
+        modifier = Modifier.fillMaxWidth(0.84f),
         title = { Text(text = "Permission Required") },
         text = {
             Text(
@@ -30,7 +35,7 @@ fun AlarmPermissionDialog(
                 style = MaterialTheme.typography.bodyMedium
             )
         },
-        shape = RoundedCornerShape(MaterialTheme.corners.large), // 24.dp
+        shape = RoundedCornerShape(MaterialTheme.corners.large),
         confirmButton = {
             TextButton(
                 onClick = {

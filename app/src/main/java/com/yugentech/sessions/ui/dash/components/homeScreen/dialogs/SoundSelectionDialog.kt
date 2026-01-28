@@ -36,6 +36,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.window.DialogProperties // Required import
 import com.yugentech.sessions.alerts.models.BackgroundSound
 import com.yugentech.sessions.theme.tokens.spacing
 import com.yugentech.sessions.ui.dash.models.SoundOption
@@ -62,6 +63,8 @@ fun SoundSelectionDialog(
 
     AlertDialog(
         onDismissRequest = onDismiss,
+        properties = DialogProperties(usePlatformDefaultWidth = false),
+        modifier = Modifier.fillMaxWidth(0.84f),
         title = {
             Text(
                 text = "Background Sound",
