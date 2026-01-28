@@ -1,36 +1,33 @@
 <div align="center">
 
-# Sessions
-### Your Personal Focus Companion
+<img src="graphics/Feature%20Graphic.png" width="100%" alt="Sessions Feature Graphic"/>
 
-*Precision-engineered productivity application designed to help you master your time and maintain flow state.*
+<br/>
 
-<p>
-  <a href="YOUR_PLAYSTORE_LINK_HERE">
-    <img src="https://img.shields.io/badge/Get%20it%20on-Google%20Play-414141?style=for-the-badge&logo=google-play&logoColor=white" alt="Get it on Google Play"/>
-  </a>
-  <a href="YOUR_GITHUB_LINK_HERE">
-    <img src="https://img.shields.io/badge/Get%20it%20on-Github-181717?style=for-the-badge&logo=github&logoColor=white" alt="Get it on Github"/>
-  </a>
-  <a href="YOUR_IZZYONDROID_LINK_HERE">
-    <img src="https://img.shields.io/badge/Get%20it%20on-IzzyOnDroid-1976D2?style=for-the-badge&logo=android&logoColor=white" alt="Get it on IzzyOnDroid"/>
-  </a>
-  <a href="YOUR_FDROID_LINK_HERE">
-    <img src="https://img.shields.io/badge/Get%20it%20on-F--Droid-1976D2?style=for-the-badge&logo=f-droid&logoColor=white" alt="Get it on F-Droid"/>
-  </a>
+<table border="0" width="100%">
+    <tr>
+        <td width="30%" align="center" valign="middle">
+            <img src="graphics/Icon.png" width="180" alt="Sessions App Icon"/>
+        </td>
+        <td width="70%" valign="middle">
+            <h1>Sessions</h1>
+            <h3>Your Personal Focus Companion</h3>
+            <p><i>Precision-engineered productivity application designed to help you master your time and maintain flow state.</i></p>
+        </td>
+    </tr>
+</table>
+
+<p align="center">
+    <a href="https://play.google.com/store/apps/details?id=com.yugentech.sessions">
+        <img alt="Get it on Google Play" src="badges/playstore.png" width="200px"/>
+    </a>
+    <br/>
+    <a href="https://github.com/MohammadAliUstad/Sessions/releases">
+        <img alt="Get it on Github" src="badges/github.png" width="200px"/>
+    </a>
 </p>
 
-<p>
-  <a href="https://github.com/MohammadAliUstad/Sessions/releases">
-    <img src="https://img.shields.io/github/v/release/MohammadAliUstad/Sessions?style=flat-square" alt="Latest Release"/>
-  </a>
-  <a href="https://github.com/MohammadAliUstad/Sessions/blob/main/LICENSE">
-    <img src="https://img.shields.io/github/license/MohammadAliUstad/Sessions?style=flat-square" alt="License"/>
-  </a>
-  <a href="https://github.com/MohammadAliUstad/Sessions/issues">
-    <img src="https://img.shields.io/github/issues/MohammadAliUstad/Sessions?style=flat-square" alt="Issues"/>
-  </a>
-</p>
+<br/>
 
 [Report Bug](https://github.com/MohammadAliUstad/Sessions/issues) · [Request Feature](https://github.com/MohammadAliUstad/Sessions/issues) · [Download Latest Release](https://github.com/MohammadAliUstad/Sessions/releases)
 
@@ -71,51 +68,41 @@ Sessions transforms the concept of a simple timer into a comprehensive focus too
 
 <div align="center">
 
-### Main Features
-
-<table>
+<table width="100%">
   <tr>
-    <td align="center" width="33%">
-      <img src="screenshots/Timer.png" alt="Timer Screen" width="100%"/>
-      <br />
-      <sub><b>Timer (Locked In)</b></sub>
+    <td align="center" width="25%">
+      <img src="screenshots/Timer.png" alt="Timer" width="100%"/>
+      <br/><sub><b>Timer</b></sub>
     </td>
-    <td align="center" width="33%">
-      <img src="screenshots/Insights.png" alt="Insights Screen" width="100%"/>
-      <br />
-      <sub><b>Insights & Heatmap</b></sub>
+    <td align="center" width="25%">
+      <img src="screenshots/Insights.png" alt="Insights" width="100%"/>
+      <br/><sub><b>Insights</b></sub>
     </td>
-    <td align="center" width="33%">
-      <img src="screenshots/Dashboard.png" alt="Dashboard Screen" width="100%"/>
-      <br />
-      <sub><b>Daily Dashboard</b></sub>
+    <td align="center" width="25%">
+      <img src="screenshots/Dashboard.png" alt="Dashboard" width="100%"/>
+      <br/><sub><b>Dashboard</b></sub>
+    </td>
+    <td align="center" width="25%">
+       <img src="screenshots/Appearance.png" alt="Tasks" width="100%"/>
+      <br/><sub><b>Tasks History</b></sub>
     </td>
   </tr>
-</table>
-
-### Customization & Settings
-
-<table>
   <tr>
     <td align="center" width="25%">
-      <img src="screenshots/Settings.png" alt="Settings Screen" width="100%"/>
-      <br />
-      <sub><b>Settings & Preferences</b></sub>
+      <img src="screenshots/Settings.png" alt="Settings" width="100%"/>
+      <br/><sub><b>Settings</b></sub>
     </td>
     <td align="center" width="25%">
-      <img src="screenshots/Appearance.png" alt="Appearance Screen" width="100%"/>
-      <br />
-      <sub><b>Appearance & Theming</b></sub>
+      <img src="screenshots/Edit Profile.png" alt="Appearance" width="100%"/>
+      <br/><sub><b>Appearance</b></sub>
     </td>
     <td align="center" width="25%">
-      <img src="screenshots/Edit Profile.png" alt="Edit Profile Screen" width="100%"/>
-      <br />
-      <sub><b>Edit Profile</b></sub>
+      <img src="screenshots/Credits.png" alt="Profile" width="100%"/>
+      <br/><sub><b>Edit Profile</b></sub>
     </td>
     <td align="center" width="25%">
-      <img src="screenshots/About.png" alt="About Screen" width="100%"/>
-      <br />
-      <sub><b>About Screen</b></sub>
+      <img src="screenshots/About.png" alt="About" width="100%"/>
+      <br/><sub><b>About</b></sub>
     </td>
   </tr>
 </table>
@@ -128,52 +115,54 @@ Sessions transforms the concept of a simple timer into a comprehensive focus too
 
 Sessions is built using modern Android development standards, ensuring a codebase that is scalable, testable, and maintainable.
 
-```
-Language:           Kotlin
-UI Framework:       Jetpack Compose (Material 3)
-Architecture:       MVVM + Clean Architecture
+```text
+Language:             Kotlin
+UI Framework:         Jetpack Compose (Material 3)
+Architecture:         MVVM + Clean Architecture
 Dependency Injection: Koin
-Local Database:     Room
-Backend Services:   Firebase (Auth, Firestore)
-Concurrency:        Kotlin Coroutines & Flow
+Local Database:       Room
+Backend Services:     Firebase (Auth, Firestore)
+Concurrency:          Kotlin Coroutines & Flow
 ```
 
 ### Tech Stack
-- **Kotlin** - Modern, concise, and safe programming language
-- **Jetpack Compose** - Declarative UI toolkit for building native Android interfaces
-- **Material 3** - Latest Material Design system for beautiful, accessible UIs
-- **MVVM Architecture** - Separation of concerns for maintainable code
-- **Room Database** - Robust local data persistence
-- **Firebase** - Cloud services for authentication and data sync
-- **Coroutines & Flow** - Asynchronous programming made simple
+
+* **Kotlin** - Modern, concise, and safe programming language
+* **Jetpack Compose** - Declarative UI toolkit for building native Android interfaces
+* **Material 3** - Latest Material Design system for beautiful, accessible UIs
+* **MVVM Architecture** - Separation of concerns for maintainable code
+* **Room Database** - Robust local data persistence
+* **Firebase** - Cloud services for authentication and data sync
+* **Coroutines & Flow** - Asynchronous programming made simple
 
 ---
 
 ## 🚀 Setup & Installation
 
 ### Prerequisites
-- Android Studio (latest version recommended)
-- JDK 11 or higher
-- Android SDK API 24+
+
+* Android Studio (latest version recommended)
+* JDK 11 or higher
+* Android SDK API 24+
 
 ### Steps
 
 1. **Clone the Repository**
-   ```bash
-   git clone https://github.com/MohammadAliUstad/Sessions.git
-   cd Sessions
-   ```
+```bash
+git clone https://github.com/MohammadAliUstad/Sessions.git
+cd Sessions
+```
 
 2. **Firebase Configuration**
-   - Create a project in the [Firebase Console](https://console.firebase.google.com/)
-   - Download the `google-services.json` file
-   - Place the file in the `app/` directory of the project
+* Create a project in the [Firebase Console](https://console.firebase.google.com/)
+* Download the `google-services.json` file
+* Place the file in the `app/` directory of the project
 
 3. **Build & Run**
-   - Open the project in Android Studio
-   - Sync Gradle files
-   - Select your target device/emulator
-   - Click Run ▶️
+* Open the project in Android Studio
+* Sync Gradle files
+* Select your target device/emulator
+* Click Run ▶️
 
 ---
 
@@ -199,8 +188,10 @@ Distributed under the appropriate license. See `LICENSE` file for more informati
 
 If you encounter any issues or have suggestions for future updates, please open an issue on GitHub or contact the developer directly.
 
-**Developer:** Mohammad Ali Ustad  
-**Email:** Mohammadaliustad@gmail.com  
+**Developer:** Mohammad Ali Ustad
+
+**Email:** Mohammadaliustad@gmail.com
+
 **Company:** Yugen Tech
 
 <div align="center">
@@ -214,5 +205,5 @@ If you find this project helpful, please consider giving it a ⭐!
 ---
 
 <div align="center">
-  <sub>Built with ❤️ by Yugen Tech</sub>
+<sub>Built with ❤️ by Yugen Tech</sub>
 </div>
