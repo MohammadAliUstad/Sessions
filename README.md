@@ -21,7 +21,6 @@
     <a href="https://play.google.com/store/apps/details?id=com.yugentech.sessions">
         <img alt="Get it on Google Play" src="badges/playstore.png" width="200px"/>
     </a>
-    <br/>
     <a href="https://github.com/MohammadAliUstad/Sessions/releases">
         <img alt="Get it on Github" src="badges/github.png" width="200px"/>
     </a>
