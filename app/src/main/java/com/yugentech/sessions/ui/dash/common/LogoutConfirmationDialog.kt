@@ -38,7 +38,7 @@ fun LogoutConfirmationDialog(
 ) {
     BasicAlertDialog(
         onDismissRequest = onDismiss,
-        modifier = Modifier.padding(MaterialTheme.spacing.m),
+        modifier = Modifier.fillMaxWidth(0.84f),
         properties = DialogProperties(usePlatformDefaultWidth = false),
         content = {
             Card(

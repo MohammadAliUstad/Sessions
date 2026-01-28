@@ -56,9 +56,7 @@ fun SetsSettingsDialog(
     AlertDialog(
         onDismissRequest = onDismiss,
         properties = DialogProperties(usePlatformDefaultWidth = false),
-        modifier = Modifier
-            .fillMaxWidth(0.92f)
-            .padding(MaterialTheme.spacing.m),
+        modifier = Modifier.fillMaxWidth(0.84f),
         title = {
             Column(
                 verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.xs)

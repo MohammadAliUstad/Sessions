@@ -61,7 +61,7 @@ fun SessionControlBar(
                 )
             },
             modifier = modifier.padding(
-                horizontal = MaterialTheme.spacing.l,
+                horizontal = MaterialTheme.spacing.xs,
                 vertical = MaterialTheme.spacing.s
             )
         ) {

@@ -23,7 +23,7 @@ object AboutContent {
         return listOf(
             AboutOption(
                 title = "Contact Developer",
-                subtitle = "Get in touch for support or feedback",
+                subtitle = "Get in touch for support",
                 icon = Icons.Default.Email,
                 onClick = {
                     val intent = Intent(Intent.ACTION_SENDTO, AppConstants.SUPPORT_EMAIL.toUri())
