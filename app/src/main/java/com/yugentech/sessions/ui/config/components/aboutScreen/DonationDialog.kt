@@ -44,7 +44,8 @@ import com.yugentech.sessions.theme.tokens.spacing
 @Composable
 fun DonationDialog(
     onDismiss: () -> Unit,
-    onGooglePlayClick: () -> Unit,
+    onCoffeeClick: () -> Unit,
+    onLunchClick: () -> Unit,
     onWebClick: () -> Unit
 ) {
     Dialog(
@@ -114,12 +115,21 @@ fun DonationDialog(
                     verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.sm),
                     modifier = Modifier.fillMaxWidth()
                 ) {
+                    // Button 1: Coffee
                     PaymentOptionButton(
-                        text = "Google Play (UPI / India)",
-                        icon = Icons.Default.ShoppingBag,
-                        onClick = onGooglePlayClick
+                        text = "Buy me a Coffee",
+                        icon = Icons.Default.Coffee, // You can reuse the Coffee icon
+                        onClick = onCoffeeClick
                     )
 
+                    // Button 2: Lunch
+                    PaymentOptionButton(
+                        text = "Buy me Lunch",
+                        icon = Icons.Default.ShoppingBag, // Use a different icon for distinction
+                        onClick = onLunchClick
+                    )
+
+                    // Button 3: Ko-fi
                     PaymentOptionButton(
                         text = "Ko-fi (PayPal / International)",
                         icon = Icons.Default.Public,
