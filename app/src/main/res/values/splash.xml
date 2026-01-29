@@ -5,7 +5,7 @@
         <item name="android:windowLightStatusBar">true</item>
         <item name="android:windowActionBar">false</item>
         <item name="android:windowNoTitle">true</item>
-        <item name="windowSplashScreenAnimatedIcon">@drawable/app_icon</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/ic_launcher_background</item>
         <item name="windowSplashScreenIconBackgroundColor">@color/white</item>
         <item name="android:windowBackground">@color/splash_background</item>
         <item name="windowSplashScreenBackground">@color/splash_background</item>
