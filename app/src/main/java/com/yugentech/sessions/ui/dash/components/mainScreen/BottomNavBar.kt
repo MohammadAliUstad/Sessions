@@ -5,11 +5,14 @@ import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.union
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.material3.ButtonGroupDefaults
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
@@ -38,10 +41,14 @@ fun BottomNavBar(
     onSelected: (AppScreens) -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val safeInsets = WindowInsets.navigationBars.union(
+        WindowInsets(bottom = MaterialTheme.spacing.m)
+    )
+
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .navigationBarsPadding()
+            .windowInsetsPadding(safeInsets)
             .padding(
                 start = MaterialTheme.spacing.sm,
                 end = MaterialTheme.spacing.sm,
@@ -80,7 +87,9 @@ fun BottomNavBar(
                     contentDescription = null,
                     modifier = Modifier.size(MaterialTheme.icons.medium)
                 )
+
                 Spacer(Modifier.size(ToggleButtonDefaults.IconSpacing))
+
                 Text(
                     text = screen.title,
                     style = MaterialTheme.typography.labelLarge,
