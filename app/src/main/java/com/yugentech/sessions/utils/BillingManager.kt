@@ -12,7 +12,7 @@ import timber.log.Timber
 
 class BillingManager(context: Context) {
 
-    // Emits purchase success messages to be collected by the UI
+    // Emits purchase success messages OR errors to be collected by the UI
     private val _purchaseEvent = MutableSharedFlow<String>()
     val purchaseEvent = _purchaseEvent.asSharedFlow()
 
@@ -30,7 +30,12 @@ class BillingManager(context: Context) {
         } else if (result.responseCode == BillingClient.BillingResponseCode.USER_CANCELED) {
             Timber.i("User canceled the purchase")
         } else {
-            Timber.e("Billing error: ${result.debugMessage}")
+            // ERROR HANDLING: Emit the error to the UI so the Toast can show it
+            val errorMessage = "Billing error: ${result.debugMessage.ifBlank { "Unknown Error" }}"
+            Timber.e(errorMessage)
+            CoroutineScope(Dispatchers.Main).launch {
+                _purchaseEvent.emit(errorMessage)
+            }
         }
     }
 
@@ -47,6 +52,10 @@ class BillingManager(context: Context) {
                 if (billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
                     Timber.d("Billing Setup Done")
                     queryProducts()
+                } else {
+                    CoroutineScope(Dispatchers.Main).launch {
+                        _purchaseEvent.emit("Billing Setup Failed")
+                    }
                 }
             }
             override fun onBillingServiceDisconnected() {
@@ -94,6 +103,11 @@ class BillingManager(context: Context) {
                 .build()
 
             billingClient.launchBillingFlow(activity, billingFlowParams)
+        } else {
+            // ERROR HANDLING: Product not found (e.g. no internet when loading)
+            CoroutineScope(Dispatchers.Main).launch {
+                _purchaseEvent.emit("Product details not loaded. Please check internet.")
+            }
         }
     }
 
@@ -108,7 +122,7 @@ class BillingManager(context: Context) {
                 if (result.responseCode == BillingClient.BillingResponseCode.OK) {
                     Timber.d("Donation Consumed")
                     CoroutineScope(Dispatchers.Main).launch {
-                        _purchaseEvent.emit("Thank you for your support! ☕")
+                        _purchaseEvent.emit("Thank you for your support!")
                     }
                 }
             }
