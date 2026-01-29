@@ -2,8 +2,8 @@ package com.yugentech.sessions.ui.config.screens
 
 import android.app.Activity
 import android.content.Intent
-import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.WindowInsets
@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.calculateEndPadding
 import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.navigationBars
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.icons.Icons
@@ -34,6 +35,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
@@ -44,6 +46,7 @@ import com.yugentech.sessions.ui.config.components.aboutScreen.AppInfoCard
 import com.yugentech.sessions.ui.config.components.aboutScreen.DonationDialog
 import com.yugentech.sessions.ui.config.models.about.AboutContent
 import com.yugentech.sessions.ui.dash.common.SectionHeader
+import com.yugentech.sessions.ui.dash.common.ToastMessage
 import com.yugentech.sessions.ui.dash.components.settingsScreen.SettingsListItem
 import com.yugentech.sessions.utils.AppConstants
 import com.yugentech.sessions.utils.BillingManager
@@ -59,6 +62,10 @@ fun AboutScreen(
     val context = LocalContext.current
     val activity = context as? Activity
     val layoutDirection = LocalLayoutDirection.current
+
+    // STATE: For showing the custom toast
+    var toastMessage by remember { mutableStateOf<String?>(null) }
+
     var showDonationDialog by remember { mutableStateOf(false) }
     val scrollBehavior =
         TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
@@ -67,9 +74,10 @@ fun AboutScreen(
         billingManager.startConnection()
     }
 
+    // Collect purchase events (success or error) and show Custom Toast
     LaunchedEffect(Unit) {
         billingManager.purchaseEvent.collect { message ->
-            Toast.makeText(context, message, Toast.LENGTH_LONG).show()
+            toastMessage = message
         }
     }
 
@@ -123,73 +131,91 @@ fun AboutScreen(
     ) { scaffoldPadding ->
         val navBarPadding = WindowInsets.navigationBars.asPaddingValues()
 
-        LazyColumn(
-            modifier = Modifier.fillMaxSize(),
-            verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.xxs),
-
-            contentPadding = PaddingValues(
-                top = scaffoldPadding.calculateTopPadding(),
-                bottom = navBarPadding.calculateBottomPadding() + MaterialTheme.spacing.l,
-                start = MaterialTheme.spacing.m + scaffoldPadding.calculateStartPadding(
-                    layoutDirection
-                ),
-                end = MaterialTheme.spacing.m + scaffoldPadding.calculateEndPadding(layoutDirection)
-            )
+        // WRAPPER: Use Box to overlay the ToastMessage on top of the LazyColumn
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(top = scaffoldPadding.calculateTopPadding())
         ) {
-            item { AppInfoCard() }
-
-            item { SectionHeader(Icons.Filled.Favorite, "Connect & Support") }
-            itemsIndexed(supportItems) { index, item ->
-                SettingsListItem(
-                    title = item.title,
-                    subtitle = item.subtitle,
-                    leadingIcon = item.icon,
-                    index = index,
-                    totalCount = supportItems.size,
-                    onClick = item.onClick
+            LazyColumn(
+                modifier = Modifier.fillMaxSize(),
+                verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.xxs),
+                contentPadding = PaddingValues(
+                    // Top padding handled by Box, only bottom needs calculation
+                    bottom = navBarPadding.calculateBottomPadding() + MaterialTheme.spacing.l,
+                    start = MaterialTheme.spacing.m + scaffoldPadding.calculateStartPadding(layoutDirection),
+                    end = MaterialTheme.spacing.m + scaffoldPadding.calculateEndPadding(layoutDirection)
                 )
+            ) {
+                item { AppInfoCard() }
+
+                item { SectionHeader(Icons.Filled.Favorite, "Connect & Support") }
+                itemsIndexed(supportItems) { index, item ->
+                    SettingsListItem(
+                        title = item.title,
+                        subtitle = item.subtitle,
+                        leadingIcon = item.icon,
+                        index = index,
+                        totalCount = supportItems.size,
+                        onClick = item.onClick
+                    )
+                }
+
+                item { SectionHeader(Icons.Filled.ThumbUp, "Spread the Word") }
+                itemsIndexed(communityItems) { index, item ->
+                    SettingsListItem(
+                        title = item.title,
+                        subtitle = item.subtitle,
+                        leadingIcon = item.icon,
+                        index = index,
+                        totalCount = communityItems.size,
+                        onClick = item.onClick
+                    )
+                }
+
+                item { SectionHeader(Icons.Filled.Info, "Legal") }
+                itemsIndexed(legalItems) { index, item ->
+                    SettingsListItem(
+                        title = item.title,
+                        subtitle = item.subtitle,
+                        leadingIcon = item.icon,
+                        index = index,
+                        totalCount = legalItems.size,
+                        onClick = item.onClick
+                    )
+                }
             }
 
-            item { SectionHeader(Icons.Filled.ThumbUp, "Spread the Word") }
-            itemsIndexed(communityItems) { index, item ->
-                SettingsListItem(
-                    title = item.title,
-                    subtitle = item.subtitle,
-                    leadingIcon = item.icon,
-                    index = index,
-                    totalCount = communityItems.size,
-                    onClick = item.onClick
-                )
-            }
-
-            item { SectionHeader(Icons.Filled.Info, "Legal") }
-            itemsIndexed(legalItems) { index, item ->
-                SettingsListItem(
-                    title = item.title,
-                    subtitle = item.subtitle,
-                    leadingIcon = item.icon,
-                    index = index,
-                    totalCount = legalItems.size,
-                    onClick = item.onClick
-                )
-            }
+            ToastMessage(
+                message = toastMessage,
+                onDismiss = { toastMessage = null },
+                modifier = Modifier
+                    .align(Alignment.TopCenter)
+            )
         }
 
         if (showDonationDialog) {
             DonationDialog(
                 onDismiss = { showDonationDialog = false },
-                onGooglePlayClick = {
+                onCoffeeClick = {
                     if (activity != null) {
                         billingManager.launchPurchaseFlow(activity, "donation_coffee")
                     }
                     showDonationDialog = false
                 },
+                onLunchClick = {
+                    if (activity != null) {
+                        billingManager.launchPurchaseFlow(activity, "donation_lunch")
+                    }
+                    showDonationDialog = false
+                },
                 onWebClick = {
+                    // ERROR HANDLING: Try/Catch with Custom Toast
                     try {
                         val intent = Intent(Intent.ACTION_VIEW, AppConstants.KOFI_URL.toUri())
                         context.startActivity(intent)
                     } catch (e: Exception) {
-                        Toast.makeText(context, "Could not open link", Toast.LENGTH_SHORT).show()
+                        toastMessage = "Could not open link"
                     }
                     showDonationDialog = false
                 }
