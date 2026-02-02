@@ -1,7 +1,7 @@
-package com.yugentech.sessions.sessions.sessionsRepository
+package com.yugentech.sessions.sessions.repository
 
-import com.yugentech.sessions.models.Session
-import com.yugentech.sessions.sessions.sessionsUtils.SessionResult
+import com.yugentech.sessions.sessions.model.Session
+import com.yugentech.sessions.sessions.result.SessionResult
 import kotlinx.coroutines.flow.Flow
 
 interface SessionsRepository {
