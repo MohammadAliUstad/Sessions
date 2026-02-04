@@ -24,7 +24,7 @@ foundation = "1.9.4"
 
 # Material Design
 googleMaterial = "1.12.0"
-material3 = "1.4.0-alpha14"
+material3 = "1.5.0-alpha13"
 material3WindowSizeClass = "1.4.0"
 
 # Navigation
