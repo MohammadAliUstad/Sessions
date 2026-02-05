@@ -1,4 +1,4 @@
-package com.yugentech.sessions.ui.dash.profileScreen.parent
+package com.yugentech.sessions.ui.dash.profileScreen
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -31,6 +31,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.yugentech.sessions.theme.tokens.components
 import com.yugentech.sessions.user.model.UserData
 import com.yugentech.sessions.theme.tokens.corners
 import com.yugentech.sessions.theme.tokens.spacing
@@ -38,7 +39,7 @@ import com.yugentech.sessions.ui.dash.mainScreen.components.SectionHeader
 import com.yugentech.sessions.ui.dash.profileScreen.components.EmptySessionsCard
 import com.yugentech.sessions.ui.dash.profileScreen.components.ProfileCard
 import com.yugentech.sessions.ui.dash.profileScreen.components.SessionHistoryItem
-import com.yugentech.sessions.ui.dash.utils.dateHeader
+import com.yugentech.sessions.ui.dash.util.dateHeader
 import com.yugentech.sessions.utils.AppConstants.EMPTY_STRING
 import com.yugentech.sessions.viewModels.ProfileViewModel
 
@@ -61,7 +62,8 @@ fun ProfileScreen(
 
     val screenContentPadding = PaddingValues(
         start = MaterialTheme.spacing.m + navBarPadding.calculateStartPadding(layoutDirection),
-        end = MaterialTheme.spacing.m + navBarPadding.calculateEndPadding(layoutDirection)
+        end = MaterialTheme.spacing.m + navBarPadding.calculateEndPadding(layoutDirection),
+        bottom = MaterialTheme.spacing.edge
     )
 
     LaunchedEffect(userId) {
