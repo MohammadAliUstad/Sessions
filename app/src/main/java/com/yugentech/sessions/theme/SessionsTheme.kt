@@ -6,9 +6,10 @@ import androidx.compose.material3.MotionScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.remember
-import com.yugentech.sessions.theme.getters.getColorScheme
-import com.yugentech.sessions.theme.getters.getTypography
-import com.yugentech.sessions.theme.models.ThemeConfiguration
+import com.yugentech.sessions.theme.builder.getColorScheme
+import com.yugentech.sessions.theme.builder.getFontFamily
+import com.yugentech.sessions.theme.builder.getTypography
+import com.yugentech.sessions.theme.config.ThemeConfiguration
 import com.yugentech.sessions.theme.tokens.LocalDesignTokens
 import com.yugentech.sessions.theme.tokens.TokensCompact
 
@@ -23,7 +24,7 @@ fun SessionsTheme(
 
     // Reconstruct typography only when the selected font changes
     val currentTypography = remember(themeConfiguration.appFont) {
-        getTypography(themeConfiguration.appFont.toFontFamily())
+        getTypography(getFontFamily(themeConfiguration.appFont))
     }
 
     // Load the standard design tokens (spacing, sizing, etc.)
