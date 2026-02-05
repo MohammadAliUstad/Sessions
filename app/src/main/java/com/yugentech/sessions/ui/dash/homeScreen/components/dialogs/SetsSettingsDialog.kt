@@ -1,4 +1,4 @@
-package com.yugentech.sessions.ui.dash.components.homeScreen.dialogs
+package com.yugentech.sessions.ui.dash.homeScreen.components.dialogs
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.basicMarquee
