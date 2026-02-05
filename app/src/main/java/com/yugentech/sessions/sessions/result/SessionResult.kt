@@ -1,4 +1,4 @@
-package com.yugentech.sessions.sessions.sessionsUtils
+package com.yugentech.sessions.sessions.result
 
 // A wrapper to handle success data or error messages easily
 sealed class SessionResult<out T> {
