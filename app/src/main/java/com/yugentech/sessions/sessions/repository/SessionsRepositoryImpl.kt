@@ -1,12 +1,12 @@
-package com.yugentech.sessions.sessions.sessionsRepository
+package com.yugentech.sessions.sessions.repository
 
 import com.yugentech.sessions.auth.repository.AuthRepository
-import com.yugentech.sessions.models.Session
+import com.yugentech.sessions.sessions.model.Session
 import com.yugentech.sessions.room.daos.SessionsDao
 import com.yugentech.sessions.room.entities.SessionsEntity
-import com.yugentech.sessions.sessions.SessionsService
-import com.yugentech.sessions.sessions.SyncPreferences
-import com.yugentech.sessions.sessions.sessionsUtils.SessionResult
+import com.yugentech.sessions.sessions.service.SessionsService
+import com.yugentech.sessions.sessions.datastore.SyncDataStore
+import com.yugentech.sessions.sessions.result.SessionResult
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.first
@@ -16,7 +16,7 @@ import timber.log.Timber
 class SessionsRepositoryImpl(
     private val sessionsDao: SessionsDao,
     private val sessionService: SessionsService,
-    private val syncPreferences: SyncPreferences,
+    private val syncDataStore: SyncDataStore,
     private val authRepository: AuthRepository
 ) : SessionsRepository {
 
@@ -115,7 +115,7 @@ class SessionsRepositoryImpl(
 
         return try {
             // Check preferences to see if we already downloaded the initial data
-            val alreadyFetched = syncPreferences.isSessionsFetchDone().first()
+            val alreadyFetched = syncDataStore.isSessionsFetchDone.first()
 
             if (alreadyFetched) {
                 return SessionResult.Success(Unit)
@@ -142,7 +142,7 @@ class SessionsRepositoryImpl(
                     }
 
                     // Update preference so we don't fetch everything again
-                    syncPreferences.setSessionsFetchDone(true)
+                    syncDataStore.setSessionsFetchDone(true)
                     SessionResult.Success(Unit)
                 }
 
