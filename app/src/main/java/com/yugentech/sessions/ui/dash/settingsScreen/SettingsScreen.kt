@@ -1,4 +1,4 @@
-package com.yugentech.sessions.ui.dash.settingsScreen.parent
+package com.yugentech.sessions.ui.dash.settingsScreen
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
@@ -27,6 +27,7 @@ import com.yugentech.sessions.theme.tokens.spacing
 import com.yugentech.sessions.ui.dash.homeScreen.components.LogoutConfirmationDialog
 import com.yugentech.sessions.ui.dash.mainScreen.components.SectionHeader
 import com.yugentech.sessions.alerts.viewmodel.AlertsViewModel
+import com.yugentech.sessions.theme.tokens.components
 import com.yugentech.sessions.ui.dash.settingsScreen.components.AlarmPermissionDialog
 import com.yugentech.sessions.ui.dash.settingsScreen.components.SettingsListItem
 import com.yugentech.sessions.ui.dash.settingsScreen.components.SettingsSwitchItem
@@ -54,7 +55,8 @@ fun SettingsScreen(
         modifier = Modifier.fillMaxSize(),
         contentPadding = PaddingValues(
             start = MaterialTheme.spacing.m,
-            end = MaterialTheme.spacing.m
+            end = MaterialTheme.spacing.m,
+            bottom = MaterialTheme.spacing.edge
         ),
         verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.xxs)
     ) {
