@@ -1,4 +1,4 @@
-package com.yugentech.sessions.ui.dash.components.profileScreen
+package com.yugentech.sessions.ui.dash.profileScreen.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Row
@@ -26,7 +26,7 @@ import com.yugentech.sessions.theme.tokens.components
 import com.yugentech.sessions.theme.tokens.corners
 import com.yugentech.sessions.theme.tokens.icons
 import com.yugentech.sessions.theme.tokens.spacing
-import com.yugentech.sessions.ui.dash.common.itemShape
+import com.yugentech.sessions.ui.dash.mainScreen.components.itemShape
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
