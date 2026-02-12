@@ -1,11 +1,12 @@
-package com.yugentech.sessions.dependencyInjection.modules
+package com.yugentech.sessions.di.module
 
-import com.yugentech.sessions.sessions.SyncPreferences
-import com.yugentech.sessions.sessions.SessionsService
-import com.yugentech.sessions.sessions.sessionsRepository.SessionsRepository
-import com.yugentech.sessions.sessions.sessionsRepository.SessionsRepositoryImpl
+import com.yugentech.sessions.sessions.datastore.SyncDataStore
+import com.yugentech.sessions.sessions.service.SessionsService
+import com.yugentech.sessions.sessions.repository.SessionsRepository
+import com.yugentech.sessions.sessions.repository.SessionsRepositoryImpl
 import com.yugentech.sessions.utils.BillingManager
 import org.koin.android.ext.koin.androidContext
+import org.koin.core.qualifier.named
 import org.koin.dsl.module
 import timber.log.Timber
 
@@ -27,8 +28,8 @@ val sessionModule = module {
     // Helper class to track last sync timestamps for data consistency
     single {
         Timber.d("Initializing SyncPreferences")
-        SyncPreferences(
-            context = androidContext()
+        SyncDataStore(
+            dataStore = get(named("sync"))
         )
     }
 
@@ -37,7 +38,7 @@ val sessionModule = module {
         SessionsRepositoryImpl(
             sessionsDao = get(),
             sessionService = get(),
-            syncPreferences = get(),
+            syncDataStore = get(),
             authRepository = get()
         )
     }
