@@ -1,10 +1,10 @@
-package com.yugentech.sessions.dependencyInjection.modules
+package com.yugentech.sessions.di.module
 
 import com.google.firebase.firestore.FirebaseFirestore
-import com.yugentech.sessions.user.UserPreferences
-import com.yugentech.sessions.user.UserService
-import com.yugentech.sessions.user.userRepository.UserRepository
-import com.yugentech.sessions.user.userRepository.UserRepositoryImpl
+import com.yugentech.sessions.user.datastore.UserDataStore
+import com.yugentech.sessions.user.service.UserService
+import com.yugentech.sessions.user.repository.UserRepository
+import com.yugentech.sessions.user.repository.UserRepositoryImpl
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
@@ -23,7 +23,7 @@ val userModule = module {
 
     // Manages local preferences specific to the user
     single {
-        UserPreferences(get(named("user")))
+        UserDataStore(get(named("user")))
     }
 
     // Repository that syncs user profile data between local storage and Firestore
@@ -31,7 +31,7 @@ val userModule = module {
         UserRepositoryImpl(
             userDao = get(),
             userService = get(),
-            syncPreferences = get()
+            syncDataStore = get()
         )
     }
 }
