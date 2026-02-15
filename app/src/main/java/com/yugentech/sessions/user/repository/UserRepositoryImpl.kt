@@ -1,11 +1,11 @@
-package com.yugentech.sessions.user.userRepository
+package com.yugentech.sessions.user.repository
 
-import com.yugentech.sessions.models.UserData
+import com.yugentech.sessions.user.model.UserData
 import com.yugentech.sessions.room.daos.UserDao
 import com.yugentech.sessions.room.entities.UserEntity
 import com.yugentech.sessions.sessions.datastore.SyncDataStore
-import com.yugentech.sessions.user.UserResult
-import com.yugentech.sessions.user.UserService
+import com.yugentech.sessions.user.result.UserResult
+import com.yugentech.sessions.user.service.UserService
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
@@ -44,7 +44,7 @@ class UserRepositoryImpl(
 
     override suspend fun fetchUserOnce(userId: String): UserResult<Unit> {
         return try {
-            val alreadyFetched = syncDataStore.isUserFetchDone().first()
+            val alreadyFetched = syncDataStore.isUserFetchDone.first()
 
             if (alreadyFetched) {
                 return UserResult.Success(Unit)

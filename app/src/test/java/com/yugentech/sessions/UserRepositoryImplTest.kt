@@ -1,12 +1,12 @@
 package com.yugentech.sessions
 
-import com.yugentech.sessions.models.UserData
+import com.yugentech.sessions.user.model.UserData
 import com.yugentech.sessions.room.daos.UserDao
 import com.yugentech.sessions.room.entities.UserEntity
-import com.yugentech.sessions.sessions.SyncPreferences
-import com.yugentech.sessions.user.UserResult
-import com.yugentech.sessions.user.UserService
-import com.yugentech.sessions.user.userRepository.UserRepositoryImpl
+import com.yugentech.sessions.sessions.datastore.SyncDataStore
+import com.yugentech.sessions.user.result.UserResult
+import com.yugentech.sessions.user.service.UserService
+import com.yugentech.sessions.user.repository.UserRepositoryImpl
 import io.mockk.*
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.runBlocking
@@ -18,12 +18,12 @@ class UserRepositoryImplTest {
 
     private val userDao = mockk<UserDao>(relaxed = true)
     private val userService = mockk<UserService>()
-    private val syncPreferences = mockk<SyncPreferences>(relaxed = true)
-    private val repository = UserRepositoryImpl(userDao, userService, syncPreferences)
+    private val syncDataStore = mockk<SyncDataStore>(relaxed = true)
+    private val repository = UserRepositoryImpl(userDao, userService, syncDataStore)
 
     @Test
     fun `fetchUserOnce DOES NOTHING if preferences say user already fetched`() = runBlocking {
-        every { syncPreferences.isUserFetchDone() } returns flowOf(true)
+        every { syncDataStore.isUserFetchDone() } returns flowOf(true)
 
         val result = repository.fetchUserOnce("123")
 
@@ -36,7 +36,7 @@ class UserRepositoryImplTest {
     fun `fetchUserOnce CALLS API if not fetched yet`() = runBlocking {
         val fakeUser = UserData(userId = "123", name = "Cloud User")
         
-        every { syncPreferences.isUserFetchDone() } returns flowOf(false)
+        every { syncDataStore.isUserFetchDone() } returns flowOf(false)
         
         coEvery { userService.fetchUser("123") } returns UserResult.Success(fakeUser)
 
@@ -46,13 +46,13 @@ class UserRepositoryImplTest {
 
         coVerify { userDao.saveUser(any<UserEntity>()) }
         
-        coVerify { syncPreferences.setUserFetchDone(true) }
+        coVerify { syncDataStore.setUserFetchDone(true) }
     }
 
     @Test
     fun `fetchUserOnce returns Error result when API fails`() = runBlocking {
 
-        every { syncPreferences.isUserFetchDone() } returns flowOf(false)
+        every { syncDataStore.isUserFetchDone() } returns flowOf(false)
 
         coEvery { userService.fetchUser("123") } returns UserResult.Error("Server 500 Error")
 
@@ -63,6 +63,6 @@ class UserRepositoryImplTest {
 
         coVerify(exactly = 0) { userDao.saveUser(any()) }
 
-        coVerify(exactly = 0) { syncPreferences.setUserFetchDone(true) }
+        coVerify(exactly = 0) { syncDataStore.setUserFetchDone(true) }
     }
 }
