@@ -1,4 +1,4 @@
-package com.yugentech.sessions.ui.auth.screens
+package com.yugentech.sessions.ui.auth.onboardingScreen
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.MutableTransitionState
@@ -286,7 +286,7 @@ fun OnboardingPage(page: Int, isVisible: Boolean) {
                 .height(components.onboardingImageContainer),
             contentAlignment = Alignment.Center
         ) {
-            AnimatedVisibility(
+            androidx.compose.animation.AnimatedVisibility(
                 visibleState = imageState,
                 enter = scaleIn(
                     tween(
@@ -304,7 +304,7 @@ fun OnboardingPage(page: Int, isVisible: Boolean) {
             }
 
 
-            AnimatedVisibility(
+            androidx.compose.animation.AnimatedVisibility(
                 visibleState = imageState,
                 enter = fadeIn(tween(AppAnimations.Durations.Complex)) + scaleIn(tween(AppAnimations.Durations.Complex)),
                 exit = fadeOut()
@@ -357,7 +357,11 @@ fun OnboardingPage(page: Int, isVisible: Boolean) {
     }
 }
 
-private data class FeatureHighlight(val icon: ImageVector, val text: String)
+private data class FeatureHighlight(
+    val icon: ImageVector,
+    val text: String
+)
+
 private data class PageContent(
     val title: String,
     val description: String,
