@@ -1,4 +1,4 @@
-package com.yugentech.sessions.ui.config.components.insightsScreen
+package com.yugentech.sessions.ui.config.insightsScreen.components
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
