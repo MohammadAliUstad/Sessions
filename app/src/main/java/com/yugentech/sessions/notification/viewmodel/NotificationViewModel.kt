@@ -1,16 +1,20 @@
-package com.yugentech.sessions.notification
+package com.yugentech.sessions.notification.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.yugentech.sessions.notification.notificationRepository.NotificationRepository
-import com.yugentech.sessions.notification.scheduled.NotificationConfig
+import com.yugentech.sessions.notification.model.Notification
+import com.yugentech.sessions.notification.datastore.NotificationDataStore
+import com.yugentech.sessions.notification.repository.NotificationRepository
+import com.yugentech.sessions.notification.model.NotificationConfig
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import timber.log.Timber
+import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
 
@@ -27,7 +31,7 @@ class NotificationsViewModel(
             started = SharingStarted.WhileSubscribed(5000),
             initialValue = run {
                 runCatching {
-                    kotlinx.coroutines.runBlocking {
+                    runBlocking {
                         notificationDataStore.getInitialConfig()
                     }
                 }.getOrDefault(NotificationConfig())
@@ -121,7 +125,7 @@ class NotificationsViewModel(
         calendar.set(Calendar.HOUR_OF_DAY, config.reminderTimeHour)
         calendar.set(Calendar.MINUTE, config.reminderTimeMinute)
 
-        val formattedTime = java.text.SimpleDateFormat("h:mm a", Locale.getDefault())
+        val formattedTime = SimpleDateFormat("h:mm a", Locale.getDefault())
             .format(calendar.time)
 
         return "Reminder is set to $formattedTime"
@@ -150,18 +154,6 @@ class NotificationsViewModel(
         }
     }
 
-    fun cancelReminders() {
-        viewModelScope.launch {
-            try {
-                Timber.i("Cancelling reminders")
-                notificationRepository.cancelReminders()
-            } catch (e: Exception) {
-                Timber.e(e, "Failed to cancel reminders")
-                throw e
-            }
-        }
-    }
-
     // Syncs the system alarm with the current configuration state
     private fun updateReminders() {
         val config = notificationConfiguration.value
@@ -173,6 +165,18 @@ class NotificationsViewModel(
             )
         } else {
             cancelReminders()
+        }
+    }
+
+    fun cancelReminders() {
+        viewModelScope.launch {
+            try {
+                Timber.i("Cancelling reminders")
+                notificationRepository.cancelReminders()
+            } catch (e: Exception) {
+                Timber.e(e, "Failed to cancel reminders")
+                throw e
+            }
         }
     }
 }
