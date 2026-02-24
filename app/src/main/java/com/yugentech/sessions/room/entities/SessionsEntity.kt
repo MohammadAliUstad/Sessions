@@ -4,7 +4,7 @@ import androidx.annotation.Keep
 import androidx.room.Entity
 import androidx.room.Index
 import androidx.room.PrimaryKey
-import com.yugentech.sessions.models.Session
+import com.yugentech.sessions.sessions.model.Session
 import java.util.UUID
 
 // Database table definition for storing session records, indexed by user for speed
