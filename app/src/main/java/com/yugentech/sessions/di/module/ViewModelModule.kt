@@ -1,9 +1,9 @@
-package com.yugentech.sessions.dependencyInjection.modules
+package com.yugentech.sessions.di.module
 
 import com.yugentech.sessions.viewModels.HomeViewModel
-import com.yugentech.sessions.viewModels.LoginViewModel
+import com.yugentech.sessions.auth.viewmodel.AuthViewModel
 import com.yugentech.sessions.viewModels.ProfileViewModel
-import com.yugentech.sessions.viewModels.SettingsViewModel
+import com.yugentech.sessions.alerts.viewmodel.AlertsViewModel
 import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
 import timber.log.Timber
@@ -33,18 +33,18 @@ val viewModelModule = module {
     // ViewModel managing the login and registration flows
     viewModel {
         Timber.v("Initializing LoginViewModel")
-        LoginViewModel(
+        AuthViewModel(
             authRepository = get(),
             userRepository = get(),
-            syncPreferences = get(),
-            userPreferences = get()
+            syncDataStore = get(),
+            userDataStore = get()
         )
     }
 
     // ViewModel for general application settings
     viewModel {
         Timber.v("Initializing SettingsViewModel")
-        SettingsViewModel(
+        AlertsViewModel(
             alertsRepository = get()
         )
     }
