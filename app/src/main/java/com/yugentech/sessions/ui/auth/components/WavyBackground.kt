@@ -1,4 +1,4 @@
-package com.yugentech.sessions.ui.dash.components.onBoardingScreen
+package com.yugentech.sessions.ui.auth.components
 
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.Canvas
