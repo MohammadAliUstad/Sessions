@@ -1,4 +1,4 @@
-package com.yugentech.sessions.ui.dash.components.profileScreen
+package com.yugentech.sessions.ui.dash.profileScreen.components
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
