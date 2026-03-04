@@ -11,7 +11,7 @@ import timber.log.Timber
 import java.util.Calendar
 
 // Helper class to schedule, cancel, and manage permission requests for exact alarms
-class ReminderNotificationManager(private val context: Context) {
+class ScheduledNotificationManager(private val context: Context) {
 
     private val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
 
@@ -44,10 +44,10 @@ class ReminderNotificationManager(private val context: Context) {
 
         Timber.i("Scheduling exact alarm for: ${calendar.time}")
 
-        val intent = Intent(context, AlarmReceiver::class.java).apply {
-            putExtra(AlarmReceiver.EXTRA_MESSAGE, message)
-            putExtra(AlarmReceiver.EXTRA_HOUR, hour)
-            putExtra(AlarmReceiver.EXTRA_MINUTE, minute)
+        val intent = Intent(context, ScheduledReceiver::class.java).apply {
+            putExtra(ScheduledReceiver.EXTRA_MESSAGE, message)
+            putExtra(ScheduledReceiver.EXTRA_HOUR, hour)
+            putExtra(ScheduledReceiver.EXTRA_MINUTE, minute)
         }
 
         val pendingIntent = PendingIntent.getBroadcast(
@@ -80,7 +80,7 @@ class ReminderNotificationManager(private val context: Context) {
     // Removes the pending alarm intent from the system
     fun cancelReminders() {
         Timber.i("Cancelling all scheduled reminders")
-        val intent = Intent(context, AlarmReceiver::class.java)
+        val intent = Intent(context, ScheduledReceiver::class.java)
         val pendingIntent = PendingIntent.getBroadcast(
             context,
             DAILY_REMINDER_REQUEST_CODE,
