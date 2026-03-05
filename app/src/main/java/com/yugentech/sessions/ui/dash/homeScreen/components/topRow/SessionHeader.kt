@@ -1,4 +1,4 @@
-package com.yugentech.sessions.ui.dash.components.homeScreen.topRow
+package com.yugentech.sessions.ui.dash.homeScreen.components.topRow
 
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.animateColorAsState
