@@ -18,12 +18,12 @@ import androidx.compose.ui.Modifier
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.rememberNavController
-import com.yugentech.sessions.navigation.AppNavHost
-import com.yugentech.sessions.notifications.NotificationService
+import com.yugentech.sessions.navigation.host.AppNavHost
+import com.yugentech.sessions.notification.service.NotificationService
 import com.yugentech.sessions.theme.SessionsTheme
-import com.yugentech.sessions.theme.ThemeViewModel
-import com.yugentech.sessions.theme.models.ThemeMode
-import com.yugentech.sessions.viewModels.LoginViewModel
+import com.yugentech.sessions.theme.viewmodel.ThemeViewModel
+import com.yugentech.sessions.theme.config.ThemeMode
+import com.yugentech.sessions.auth.viewmodel.AuthViewModel
 import org.koin.android.ext.android.get
 import org.koin.androidx.compose.koinViewModel
 import timber.log.Timber
@@ -40,16 +40,17 @@ class MainActivity : ComponentActivity() {
 
         handleNavigationIntent(intent)
 
-        val loginViewModel: LoginViewModel = get()
+        val authViewModel: AuthViewModel = get()
 
         splashScreen.setKeepOnScreenCondition {
-            loginViewModel.authState.value.isLoading || loginViewModel.showOnboarding.value == null
+            authViewModel.authState.value.isInitializing || authViewModel.showOnboarding.value == null
         }
 
         setContent {
             val navController = rememberNavController()
 
-            val showOnboarding by loginViewModel.showOnboarding.collectAsStateWithLifecycle()
+            val showOnboarding by authViewModel.showOnboarding.collectAsStateWithLifecycle()
+            val authState by authViewModel.authState.collectAsStateWithLifecycle()
 
             val themeViewModel: ThemeViewModel = koinViewModel()
             val themeConfiguration by themeViewModel.themeConfiguration.collectAsStateWithLifecycle()
@@ -80,14 +81,14 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    if (showOnboarding != null) {
+                    if (showOnboarding != null && !authState.isInitializing) {
                         AppNavHost(
                             navController = navController,
                             webClientId = getString(R.string.web_client_id),
-                            loginViewModel = loginViewModel,
+                            authViewModel = authViewModel,
                             showOnboarding = showOnboarding!!,
                             onOnboardingComplete = {
-                                loginViewModel.completeOnboarding()
+                                authViewModel.completeOnboarding()
                             },
                             shouldNavigateToHome = shouldNavigateToHome,
                             onNavigatedToHome = {

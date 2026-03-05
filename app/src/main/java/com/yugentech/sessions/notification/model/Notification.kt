@@ -1,4 +1,4 @@
-package com.yugentech.sessions.notification
+package com.yugentech.sessions.notification.model
 
 // Data model representing a notification to be displayed
 data class Notification(
@@ -10,9 +10,3 @@ data class Notification(
     val remainingSeconds: Long? = null,
     val totalSeconds: Int? = null
 )
-
-// Distinguishes between active timer updates and scheduled future reminders
-enum class NotificationType {
-    ACTIVE,
-    SCHEDULED
-}

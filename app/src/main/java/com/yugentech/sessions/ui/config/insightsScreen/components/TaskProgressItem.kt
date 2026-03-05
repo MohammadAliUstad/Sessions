@@ -1,4 +1,4 @@
-package com.yugentech.sessions.ui.config.components.insightsScreen
+package com.yugentech.sessions.ui.config.insightsScreen.components
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -13,6 +13,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.text.font.FontWeight
 import com.yugentech.sessions.theme.tokens.corners
 import com.yugentech.sessions.theme.tokens.spacing
@@ -52,7 +53,7 @@ fun TaskProgressItem(
                 .fillMaxWidth()
                 .height(MaterialTheme.spacing.l)
                 .clip(RoundedCornerShape(MaterialTheme.corners.small)),
-            strokeCap = androidx.compose.ui.graphics.StrokeCap.Round,
+            strokeCap = StrokeCap.Round,
             color = MaterialTheme.colorScheme.primary,
             trackColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.3f)
         )

@@ -1,4 +1,6 @@
-package com.yugentech.sessions.timer.states
+package com.yugentech.sessions.timer.state
+
+import com.yugentech.sessions.timer.config.TimerConfig
 
 // Represents the real-time snapshot of the timer, including current time and status
 data class TimerState(

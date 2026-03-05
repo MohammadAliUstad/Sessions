@@ -1,6 +1,6 @@
-package com.yugentech.sessions.notification.notificationRepository
+package com.yugentech.sessions.notification.repository
 
-import com.yugentech.sessions.notification.Notification
+import com.yugentech.sessions.notification.model.Notification
 
 // Interface defining the contract for managing both active session alerts and scheduled reminders
 interface NotificationRepository {

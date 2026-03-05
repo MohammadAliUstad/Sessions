@@ -1,4 +1,4 @@
-package com.yugentech.sessions.theme.enums
+package com.yugentech.sessions.theme.config
 
 // Represents the possible display modes
 enum class ThemeMode {

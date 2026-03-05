@@ -1,7 +1,7 @@
-package com.yugentech.sessions.timer.timerRepository
+package com.yugentech.sessions.timer.repository
 
-import com.yugentech.sessions.timer.states.TimerEffect
-import com.yugentech.sessions.timer.states.TimerState
+import com.yugentech.sessions.timer.effect.TimerEffect
+import com.yugentech.sessions.timer.state.TimerState
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 

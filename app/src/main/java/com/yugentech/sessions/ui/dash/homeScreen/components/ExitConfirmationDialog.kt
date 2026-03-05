@@ -1,4 +1,4 @@
-package com.yugentech.sessions.ui.dash.common
+package com.yugentech.sessions.ui.dash.homeScreen.components
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column

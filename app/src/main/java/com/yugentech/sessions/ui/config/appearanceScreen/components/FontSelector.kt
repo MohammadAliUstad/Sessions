@@ -1,30 +1,27 @@
-package com.yugentech.sessions.ui.config.components.appearanceScreen
+package com.yugentech.sessions.ui.config.appearanceScreen.components
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
-import androidx.compose.foundation.layout.FlowRow
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.TextFields
-import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
+import androidx.compose.material3.FilterChip
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.material3.ToggleButton
-import androidx.compose.material3.ToggleButtonDefaults
-import androidx.compose.material3.ToggleButtonShapes
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
-import com.yugentech.sessions.theme.viewmodel.ThemeViewModel
 import com.yugentech.sessions.theme.AppFont
-import com.yugentech.sessions.theme.tokens.corners
+import com.yugentech.sessions.theme.builder.getFontFamily
 import com.yugentech.sessions.theme.tokens.spacing
-import com.yugentech.sessions.ui.dash.common.SectionHeader
+import com.yugentech.sessions.theme.viewmodel.ThemeViewModel
+import com.yugentech.sessions.ui.dash.mainScreen.components.SectionHeader
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
@@ -40,54 +37,24 @@ fun FontSelector(
             title = "App Font"
         )
 
-        FlowRow(
+        LazyRow(
             horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.xs),
-            verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.none),
-            modifier = Modifier.fillMaxWidth()
+            contentPadding = PaddingValues(horizontal = MaterialTheme.spacing.xs)
         ) {
-            AppFont.entries.forEach { font ->
-                FontOptionToggle(
-                    font = font,
-                    isSelected = currentFont == font,
-                    onSelect = { viewModel.setFont(font) }
+            items(AppFont.entries) { font ->
+                FilterChip(
+                    selected = currentFont == font,
+                    onClick = { viewModel.setFont(font) },
+                    label = {
+                        Text(
+                            text = font.displayName,
+                            fontFamily = getFontFamily(font),
+                            style = MaterialTheme.typography.labelLarge,
+                            fontWeight = FontWeight.Medium
+                        )
+                    }
                 )
             }
         }
-    }
-}
-
-@OptIn(ExperimentalMaterial3ExpressiveApi::class)
-@Composable
-fun FontOptionToggle(
-    font: AppFont,
-    isSelected: Boolean,
-    onSelect: () -> Unit
-) {
-    ToggleButton(
-        checked = isSelected,
-        onCheckedChange = { onSelect() },
-        modifier = Modifier,
-        shapes = ToggleButtonShapes(
-            shape = RoundedCornerShape(MaterialTheme.corners.small),
-            pressedShape = RoundedCornerShape(MaterialTheme.corners.small),
-            checkedShape = RoundedCornerShape(MaterialTheme.corners.pill)
-        ),
-        colors = ToggleButtonDefaults.toggleButtonColors(
-            containerColor = MaterialTheme.colorScheme.surfaceContainerHighest,
-            contentColor = MaterialTheme.colorScheme.onSurface,
-            checkedContainerColor = MaterialTheme.colorScheme.primary,
-            checkedContentColor = MaterialTheme.colorScheme.onPrimary
-        )
-    ) {
-        Text(
-            text = font.displayName,
-            fontFamily = font.toFontFamily(),
-            style = MaterialTheme.typography.labelLarge,
-            fontWeight = FontWeight.Medium,
-            modifier = Modifier.padding(
-                horizontal = MaterialTheme.spacing.s,
-                vertical = MaterialTheme.spacing.xs
-            )
-        )
     }
 }

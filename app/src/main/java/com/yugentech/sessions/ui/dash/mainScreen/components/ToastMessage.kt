@@ -1,4 +1,4 @@
-package com.yugentech.sessions.ui.dash.common
+package com.yugentech.sessions.ui.dash.mainScreen.components
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn

@@ -1,4 +1,4 @@
-package com.yugentech.sessions.ui.auth.screens
+package com.yugentech.sessions.ui.auth.signInScreen
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -28,7 +28,7 @@ import com.yugentech.sessions.theme.tokens.spacing
 import com.yugentech.sessions.ui.auth.components.IconCarousel
 import com.yugentech.sessions.ui.auth.components.dialog.ForgotPasswordSuccessDialog
 import com.yugentech.sessions.ui.auth.components.forms.SignInForm
-import com.yugentech.sessions.ui.auth.states.ForgotPasswordState
+import com.yugentech.sessions.ui.auth.state.ForgotPasswordState
 import com.yugentech.sessions.ui.dash.mainScreen.components.ToastMessage
 import com.yugentech.sessions.auth.viewmodel.AuthViewModel
 

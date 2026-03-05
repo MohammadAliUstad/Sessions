@@ -33,8 +33,8 @@ import com.yugentech.sessions.theme.tokens.spacing
 import com.yugentech.sessions.ui.auth.components.AppTextField
 import com.yugentech.sessions.ui.auth.components.buttons.ActionButton
 import com.yugentech.sessions.ui.auth.components.buttons.GoogleSignInButton
-import com.yugentech.sessions.ui.auth.states.SignInFormState
-import com.yugentech.sessions.ui.auth.utils.FormValidator
+import com.yugentech.sessions.ui.auth.state.SignInFormState
+import com.yugentech.sessions.ui.auth.util.FormValidator
 import kotlinx.coroutines.launch
 
 @Composable
