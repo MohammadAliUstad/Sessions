@@ -1,4 +1,4 @@
-package com.yugentech.sessions.ui.dash.utils
+package com.yugentech.sessions.ui.dash.util
 
 import java.text.SimpleDateFormat
 import java.util.Calendar
