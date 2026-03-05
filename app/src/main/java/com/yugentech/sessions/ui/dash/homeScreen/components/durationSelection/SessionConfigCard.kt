@@ -1,4 +1,4 @@
-package com.yugentech.sessions.ui.dash.components.homeScreen.durationSelection
+package com.yugentech.sessions.ui.dash.homeScreen.components.durationSelection
 
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateFloatAsState
