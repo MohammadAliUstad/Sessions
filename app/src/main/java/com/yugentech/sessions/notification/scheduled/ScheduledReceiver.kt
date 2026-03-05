@@ -15,11 +15,17 @@ import org.koin.core.component.inject
 import timber.log.Timber
 
 // System broadcast receiver that handles alarm triggers and device reboots
-class AlarmReceiver : BroadcastReceiver(), KoinComponent {
+class ScheduledReceiver : BroadcastReceiver(), KoinComponent {
 
     private val notificationService: NotificationService by inject()
-    private val reminderNotificationManager: ReminderNotificationManager by inject()
+    private val scheduledNotificationManager: ScheduledNotificationManager by inject()
     private val notificationDataStore: NotificationDataStore by inject()
+
+    companion object {
+        const val EXTRA_MESSAGE = "message"
+        const val EXTRA_HOUR = "hour"
+        const val EXTRA_MINUTE = "minute"
+    }
 
     // Entry point for broadcast events
     override fun onReceive(context: Context, intent: Intent) {
@@ -55,9 +61,9 @@ class AlarmReceiver : BroadcastReceiver(), KoinComponent {
         notificationService.showNotification(notification)
 
         // Automatically schedule the next alarm for the same time tomorrow
-        if (reminderNotificationManager.canScheduleExactAlarms()) {
+        if (scheduledNotificationManager.canScheduleExactAlarms()) {
             try {
-                reminderNotificationManager.scheduleReminder(message, hour, minute)
+                scheduledNotificationManager.scheduleReminder(message, hour, minute)
             } catch (e: SecurityException) {
                 Timber.e(e, "Permission revoked, cannot reschedule next day alarm")
             }
@@ -66,14 +72,14 @@ class AlarmReceiver : BroadcastReceiver(), KoinComponent {
 
     // Logic to re-register the alarm after a system reboot if enabled
     private suspend fun rescheduleAfterBoot() {
-        if (reminderNotificationManager.canScheduleExactAlarms()) {
+        if (scheduledNotificationManager.canScheduleExactAlarms()) {
             try {
                 val config = notificationDataStore.getInitialConfig()
 
                 if (config.focusRemindersEnabled) {
                     Timber.d("Boot completed. Rescheduling for ${config.reminderTimeHour}:${config.reminderTimeMinute}")
 
-                    reminderNotificationManager.scheduleReminder(
+                    scheduledNotificationManager.scheduleReminder(
                         message = "Time to study!",
                         hour = config.reminderTimeHour,
                         minute = config.reminderTimeMinute
@@ -88,11 +94,5 @@ class AlarmReceiver : BroadcastReceiver(), KoinComponent {
                 Timber.e(e, "Boot reschedule failed")
             }
         }
-    }
-
-    companion object {
-        const val EXTRA_MESSAGE = "message"
-        const val EXTRA_HOUR = "hour"
-        const val EXTRA_MINUTE = "minute"
     }
 }
