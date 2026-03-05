@@ -1,4 +1,4 @@
-package com.yugentech.sessions.ui.config.components.aboutScreen
+package com.yugentech.sessions.ui.config.aboutScreen.components
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
