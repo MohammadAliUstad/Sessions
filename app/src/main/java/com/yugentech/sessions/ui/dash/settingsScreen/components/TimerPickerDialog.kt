@@ -1,4 +1,4 @@
-package com.yugentech.sessions.ui.dash.components.settingsScreen
+package com.yugentech.sessions.ui.dash.settingsScreen.components
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.shape.RoundedCornerShape

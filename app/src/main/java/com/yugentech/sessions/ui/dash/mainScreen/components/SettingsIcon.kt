@@ -1,4 +1,4 @@
-package com.yugentech.sessions.ui.dash.components.mainScreen
+package com.yugentech.sessions.ui.dash.mainScreen.components
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.size
@@ -6,7 +6,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier

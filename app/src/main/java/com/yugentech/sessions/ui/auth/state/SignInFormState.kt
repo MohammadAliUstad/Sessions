@@ -1,4 +1,4 @@
-package com.yugentech.sessions.ui.auth.states
+package com.yugentech.sessions.ui.auth.state
 
 import com.yugentech.sessions.utils.AppConstants.EMPTY_STRING
 

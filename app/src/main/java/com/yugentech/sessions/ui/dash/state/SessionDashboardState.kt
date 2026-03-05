@@ -1,4 +1,4 @@
-package com.yugentech.sessions.ui.dash.states
+package com.yugentech.sessions.ui.dash.state
 
 import com.yugentech.sessions.utils.AppConstants.EMPTY_STRING
 

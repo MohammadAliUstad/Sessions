@@ -1,9 +1,9 @@
-package com.yugentech.sessions.dependencyInjection.modules
+package com.yugentech.sessions.di.module
 
-import com.yugentech.sessions.theme.ThemeService
-import com.yugentech.sessions.theme.ThemeViewModel
-import com.yugentech.sessions.theme.themeRepository.ThemeRepository
-import com.yugentech.sessions.theme.themeRepository.ThemeRepositoryImpl
+import com.yugentech.sessions.theme.datastore.ThemeDataStore
+import com.yugentech.sessions.theme.viewmodel.ThemeViewModel
+import com.yugentech.sessions.theme.repository.ThemeRepository
+import com.yugentech.sessions.theme.repository.ThemeRepositoryImpl
 import org.koin.core.module.dsl.viewModel
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
@@ -14,7 +14,7 @@ val themeModule = module {
 
     // Service that saves and retrieves theme preferences
     single {
-        ThemeService(
+        ThemeDataStore(
             dataStore = get(named("theme"))
         )
     }
@@ -22,7 +22,7 @@ val themeModule = module {
     // Repository acting as a source of truth for the app's current theme
     single<ThemeRepository> {
         ThemeRepositoryImpl(
-            service = get()
+            dataStore = get()
         )
     }
 

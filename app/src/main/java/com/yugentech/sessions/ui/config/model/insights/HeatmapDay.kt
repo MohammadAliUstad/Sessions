@@ -1,4 +1,4 @@
-package com.yugentech.sessions.ui.config.models.insights
+package com.yugentech.sessions.ui.config.model.insights
 
 import java.time.LocalDate
 

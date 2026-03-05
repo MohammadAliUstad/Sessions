@@ -1,4 +1,4 @@
-package com.yugentech.sessions.ui.dash.components.homeScreen.dialogs
+package com.yugentech.sessions.ui.dash.homeScreen.components.dialogs
 
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateFloatAsState
@@ -39,7 +39,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.window.DialogProperties
 import com.yugentech.sessions.alerts.model.BackgroundSound
 import com.yugentech.sessions.theme.tokens.spacing
-import com.yugentech.sessions.ui.dash.models.SoundOption
+import com.yugentech.sessions.ui.dash.util.models.SoundOption
 
 @Composable
 fun SoundSelectionDialog(
@@ -111,7 +111,9 @@ fun SoundSelectionDialog(
                 Text("Cancel")
             }
         },
-        containerColor = MaterialTheme.colorScheme.surfaceContainerHigh
+        containerColor = MaterialTheme.colorScheme.surfaceContainer,
+        titleContentColor = MaterialTheme.colorScheme.onSurface,
+        textContentColor = MaterialTheme.colorScheme.onSurfaceVariant
     )
 }
 
@@ -142,8 +144,8 @@ private fun SoundToggleCard(
             checkedShape = ToggleButtonDefaults.roundShape
         ),
         colors = ToggleButtonDefaults.toggleButtonColors(
-            containerColor = MaterialTheme.colorScheme.surfaceContainerLow,
-            contentColor = MaterialTheme.colorScheme.onSurfaceVariant,
+            containerColor = MaterialTheme.colorScheme.surfaceContainerHighest,
+            contentColor = MaterialTheme.colorScheme.onSurface,
             checkedContainerColor = MaterialTheme.colorScheme.primaryContainer,
             checkedContentColor = MaterialTheme.colorScheme.onPrimaryContainer
         )

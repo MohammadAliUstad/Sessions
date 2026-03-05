@@ -1,4 +1,4 @@
-package com.yugentech.sessions.ui.dash.homeScreen.parent
+package com.yugentech.sessions.ui.dash.homeScreen
 
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.layout.Arrangement
@@ -33,7 +33,7 @@ import com.yugentech.sessions.ui.dash.homeScreen.components.durationSelection.Se
 import com.yugentech.sessions.ui.dash.homeScreen.components.durationSelection.SessionProgressCard
 import com.yugentech.sessions.ui.dash.homeScreen.components.middle.TimerDisplay
 import com.yugentech.sessions.ui.dash.homeScreen.components.topRow.SessionHeader
-import com.yugentech.sessions.ui.dash.utils.models.ActiveDialog
+import com.yugentech.sessions.ui.dash.util.models.ActiveDialog
 import com.yugentech.sessions.viewModels.HomeViewModel
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)

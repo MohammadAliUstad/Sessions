@@ -1,4 +1,4 @@
-package com.yugentech.sessions.alerts
+package com.yugentech.sessions.alerts.service
 
 import android.content.Context
 import android.media.MediaPlayer

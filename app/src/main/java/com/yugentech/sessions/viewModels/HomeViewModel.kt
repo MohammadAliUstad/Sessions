@@ -2,9 +2,9 @@ package com.yugentech.sessions.viewModels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.yugentech.sessions.models.Session
-import com.yugentech.sessions.sessions.sessionsRepository.SessionsRepository
-import com.yugentech.sessions.user.userRepository.UserRepository
+import com.yugentech.sessions.sessions.model.Session
+import com.yugentech.sessions.sessions.repository.SessionsRepository
+import com.yugentech.sessions.user.repository.UserRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow

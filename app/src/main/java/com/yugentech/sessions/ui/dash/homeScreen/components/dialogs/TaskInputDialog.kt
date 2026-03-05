@@ -1,4 +1,4 @@
-package com.yugentech.sessions.ui.dash.components.homeScreen.dialogs
+package com.yugentech.sessions.ui.dash.homeScreen.components.dialogs
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.shape.RoundedCornerShape

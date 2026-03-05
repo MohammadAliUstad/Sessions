@@ -1,4 +1,4 @@
-package com.yugentech.sessions.ui.dash.mainScreen.parent
+package com.yugentech.sessions.ui.dash.mainScreen
 
 import android.Manifest
 import android.content.pm.PackageManager
@@ -31,15 +31,12 @@ import com.yugentech.sessions.navigation.screen.BottomBarScreen
 import com.yugentech.sessions.notification.viewmodel.NotificationsViewModel
 import com.yugentech.sessions.timer.viewmodel.TimerViewModel
 import com.yugentech.sessions.ui.dash.homeScreen.components.ExitConfirmationDialog
-import com.yugentech.sessions.ui.dash.mainScreen.components.ToastMessage
-import com.yugentech.sessions.ui.dash.mainScreen.components.BottomNavBar
-import com.yugentech.sessions.ui.dash.mainScreen.components.TopAppBar
 import com.yugentech.sessions.viewModels.HomeViewModel
 import com.yugentech.sessions.viewModels.ProfileViewModel
 import com.yugentech.sessions.alerts.viewmodel.AlertsViewModel
-import com.yugentech.sessions.ui.dash.homeScreen.parent.HomeScreen
-import com.yugentech.sessions.ui.dash.profileScreen.parent.ProfileScreen
-import com.yugentech.sessions.ui.dash.settingsScreen.parent.SettingsScreen
+import com.yugentech.sessions.ui.dash.homeScreen.HomeScreen
+import com.yugentech.sessions.ui.dash.profileScreen.ProfileScreen
+import com.yugentech.sessions.ui.dash.settingsScreen.SettingsScreen
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
@@ -134,7 +131,7 @@ fun MainScreen(
             .fillMaxSize()
             .nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
-            TopAppBar(
+            _root_ide_package_.com.yugentech.sessions.ui.dash.mainScreen.components.TopAppBar(
                 currentScreen = currentScreen,
                 onLogout = {},
                 onSettings = {
@@ -146,7 +143,7 @@ fun MainScreen(
             )
         },
         bottomBar = {
-            BottomNavBar(
+            _root_ide_package_.com.yugentech.sessions.ui.dash.mainScreen.components.BottomNavBar(
                 items = bottomNavItems,
                 currentScreen = currentScreen,
                 onSelected = { screen ->
@@ -189,7 +186,7 @@ fun MainScreen(
         }
 
         if (toastMessage != null) {
-            ToastMessage(
+            _root_ide_package_.com.yugentech.sessions.ui.dash.mainScreen.components.ToastMessage(
                 message = toastMessage,
                 onDismiss = { toastMessage = null },
                 modifier = Modifier

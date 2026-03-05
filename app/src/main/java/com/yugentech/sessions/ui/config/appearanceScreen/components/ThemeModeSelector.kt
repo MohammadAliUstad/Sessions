@@ -1,4 +1,4 @@
-package com.yugentech.sessions.ui.config.components.appearanceScreen
+package com.yugentech.sessions.ui.config.appearanceScreen.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -30,8 +30,8 @@ import com.yugentech.sessions.R
 import com.yugentech.sessions.theme.viewmodel.ThemeViewModel
 import com.yugentech.sessions.theme.config.ThemeMode
 import com.yugentech.sessions.theme.tokens.spacing
-import com.yugentech.sessions.ui.dash.common.itemShape
-import com.yugentech.sessions.ui.dash.common.SectionHeader
+import com.yugentech.sessions.ui.dash.mainScreen.components.itemShape
+import com.yugentech.sessions.ui.dash.mainScreen.components.SectionHeader
 import org.koin.androidx.compose.koinViewModel
 
 @Composable

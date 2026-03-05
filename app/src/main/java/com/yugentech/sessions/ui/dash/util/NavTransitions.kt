@@ -1,4 +1,4 @@
-package com.yugentech.sessions.ui.dash.utils
+package com.yugentech.sessions.ui.dash.util
 
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition

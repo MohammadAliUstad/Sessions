@@ -1,4 +1,4 @@
-package com.yugentech.sessions.ui.auth.states
+package com.yugentech.sessions.ui.auth.state
 
 sealed class ForgotPasswordState {
     data object Idle : ForgotPasswordState()

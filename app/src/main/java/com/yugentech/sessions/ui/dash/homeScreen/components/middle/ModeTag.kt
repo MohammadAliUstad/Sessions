@@ -1,4 +1,4 @@
-package com.yugentech.sessions.ui.dash.components.homeScreen.middle
+package com.yugentech.sessions.ui.dash.homeScreen.components.middle
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.padding

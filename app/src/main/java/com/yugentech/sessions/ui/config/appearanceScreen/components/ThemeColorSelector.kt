@@ -1,4 +1,4 @@
-package com.yugentech.sessions.ui.config.components.appearanceScreen
+package com.yugentech.sessions.ui.config.appearanceScreen.components
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -17,7 +17,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.yugentech.sessions.R
 import com.yugentech.sessions.theme.viewmodel.ThemeViewModel
 import com.yugentech.sessions.theme.tokens.spacing
-import com.yugentech.sessions.ui.dash.common.SectionHeader
+import com.yugentech.sessions.ui.dash.mainScreen.components.SectionHeader
 import org.koin.androidx.compose.koinViewModel
 
 @Composable

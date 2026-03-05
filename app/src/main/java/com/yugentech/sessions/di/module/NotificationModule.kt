@@ -1,12 +1,12 @@
-package com.yugentech.sessions.dependencyInjection.modules
+package com.yugentech.sessions.di.module
 
-import com.yugentech.sessions.notifications.NotificationDataStore
-import com.yugentech.sessions.notifications.NotificationsViewModel
-import com.yugentech.sessions.notifications.active.ActiveNotificationManager
-import com.yugentech.sessions.notifications.NotificationService
-import com.yugentech.sessions.notifications.notificationRepository.NotificationRepository
-import com.yugentech.sessions.notifications.notificationRepository.NotificationRepositoryImpl
-import com.yugentech.sessions.notifications.scheduled.ReminderNotificationManager
+import com.yugentech.sessions.notification.datastore.NotificationDataStore
+import com.yugentech.sessions.notification.viewmodel.NotificationsViewModel
+import com.yugentech.sessions.notification.active.ActiveNotificationManager
+import com.yugentech.sessions.notification.service.NotificationService
+import com.yugentech.sessions.notification.repository.NotificationRepository
+import com.yugentech.sessions.notification.repository.NotificationRepositoryImpl
+import com.yugentech.sessions.notification.scheduled.ScheduledNotificationManager
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.module.dsl.viewModel
 import org.koin.core.qualifier.named
@@ -40,7 +40,7 @@ val notificationModule = module {
 
     // Manages scheduling and cancelling of future alarm reminders
     single {
-        ReminderNotificationManager(
+        ScheduledNotificationManager(
             context = androidContext()
         )
     }
@@ -49,7 +49,7 @@ val notificationModule = module {
     single<NotificationRepository> {
         NotificationRepositoryImpl(
             activeNotificationManager = get(),
-            reminderNotificationManager = get()
+            scheduledNotificationManager = get()
         )
     }
 

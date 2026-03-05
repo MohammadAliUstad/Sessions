@@ -3,7 +3,7 @@ package com.yugentech.sessions.room.entities
 import androidx.annotation.Keep
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.yugentech.sessions.models.UserData
+import com.yugentech.sessions.user.model.UserData
 
 // Database table definition for storing user profiles
 @Keep

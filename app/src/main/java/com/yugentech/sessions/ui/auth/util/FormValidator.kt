@@ -1,4 +1,4 @@
-package com.yugentech.sessions.ui.auth.utils
+package com.yugentech.sessions.ui.auth.util
 
 import android.util.Patterns
 import com.yugentech.sessions.utils.AppConstants.EMPTY_STRING

@@ -7,7 +7,7 @@ import androidx.datastore.preferences.core.edit
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
-class UserPreferences(
+class UserDataStore(
     private val dataStore: DataStore<Preferences>
 ) {
 

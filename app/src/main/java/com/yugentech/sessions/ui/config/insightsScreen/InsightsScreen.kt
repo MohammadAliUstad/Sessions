@@ -1,15 +1,22 @@
-package com.yugentech.sessions.ui.config.insightsScreen.parent
+package com.yugentech.sessions.ui.config.insightsScreen
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box // Added
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues // Added
+import androidx.compose.foundation.layout.calculateEndPadding // Added
+import androidx.compose.foundation.layout.calculateStartPadding // Added
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBars // Added
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+// Removed statusBars import
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -32,6 +39,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.platform.LocalLayoutDirection // Added
 import androidx.compose.ui.text.font.FontWeight
 import com.yugentech.sessions.theme.tokens.corners
 import com.yugentech.sessions.theme.tokens.icons
@@ -60,7 +68,13 @@ fun InsightsScreen(
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
     val topTask = taskDistribution.maxByOrNull { it.value }?.key ?: "No data yet"
 
+    // 1. Get LayoutDirection and NavBar padding manually
+    val layoutDirection = LocalLayoutDirection.current
+    val navBarPadding = WindowInsets.navigationBars.asPaddingValues()
+
     Scaffold(
+        modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection), // 2. Moved nestedScroll here
+        // 3. Removed contentWindowInsets = WindowInsets.statusBars
         topBar = {
             LargeTopAppBar(
                 title = {
@@ -81,158 +95,166 @@ fun InsightsScreen(
                 scrollBehavior = scrollBehavior
             )
         }
-    ) { padding ->
-        LazyColumn(
+    ) { paddingValues ->
+        // 4. Wrap in Box to handle Top Padding separately
+        Box(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(padding)
-                .nestedScroll(scrollBehavior.nestedScrollConnection),
-            contentPadding = PaddingValues(MaterialTheme.spacing.m),
-            verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.m)
+                .padding(top = paddingValues.calculateTopPadding())
         ) {
-            item {
-                MetricCard(
-                    title = "Total Focus Time",
-                    value = totalTime,
-                    subtitle = "Cumulative time across all sessions",
-                    icon = Icons.Default.Timer
-                )
-            }
+            LazyColumn(
+                modifier = Modifier.fillMaxSize(),
+                contentPadding = PaddingValues(
+                    bottom = navBarPadding.calculateBottomPadding(),
+                    start = MaterialTheme.spacing.m + paddingValues.calculateStartPadding(layoutDirection),
+                    end = MaterialTheme.spacing.m + paddingValues.calculateEndPadding(layoutDirection)
+                ),
+                verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.m)
+            ) {
+                item {
+                    MetricCard(
+                        title = "Total Focus Time",
+                        value = totalTime,
+                        subtitle = "Cumulative time across all sessions",
+                        icon = Icons.Default.Timer
+                    )
+                }
 
-            if (taskDistribution.isNotEmpty()) {
+                if (taskDistribution.isNotEmpty()) {
+                    item {
+                        Card(
+                            modifier = Modifier.fillMaxWidth(),
+                            shape = RoundedCornerShape(MaterialTheme.corners.large),
+                            colors = CardDefaults.cardColors(
+                                containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                                contentColor = MaterialTheme.colorScheme.onSecondaryContainer
+                            )
+                        ) {
+                            Row(
+                                modifier = Modifier.padding(MaterialTheme.spacing.m),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Icon(
+                                    Icons.Default.AutoAwesome,
+                                    contentDescription = null,
+                                    tint = MaterialTheme.colorScheme.secondary,
+                                    modifier = Modifier.size(MaterialTheme.icons.medium)
+                                )
+
+                                Spacer(Modifier.width(MaterialTheme.spacing.m))
+
+                                Column {
+                                    Text(
+                                        "Primary Focus",
+                                        style = MaterialTheme.typography.labelSmall,
+                                        color = MaterialTheme.colorScheme.onSecondaryContainer.copy(
+                                            alpha = 0.7f
+                                        )
+                                    )
+
+                                    Text(
+                                        topTask,
+                                        style = MaterialTheme.typography.titleMedium,
+                                        fontWeight = FontWeight.Bold
+                                    )
+                                }
+                            }
+                        }
+                    }
+                }
+
+                item {
+                    PeakHourCard(peakHour = peakHour)
+                }
+
+
+                item {
+                    Heatmap(data = heatmapHistory)
+                }
+
                 item {
                     Card(
                         modifier = Modifier.fillMaxWidth(),
                         shape = RoundedCornerShape(MaterialTheme.corners.large),
                         colors = CardDefaults.cardColors(
-                            containerColor = MaterialTheme.colorScheme.secondaryContainer,
-                            contentColor = MaterialTheme.colorScheme.onSecondaryContainer
+                            containerColor = MaterialTheme.colorScheme.surfaceContainer
                         )
                     ) {
-                        Row(
-                            modifier = Modifier.padding(MaterialTheme.spacing.m),
-                            verticalAlignment = Alignment.CenterVertically
+                        Column(
+                            Modifier.padding(MaterialTheme.spacing.m)
                         ) {
-                            Icon(
-                                Icons.Default.AutoAwesome,
-                                contentDescription = null,
-                                tint = MaterialTheme.colorScheme.secondary,
-                                modifier = Modifier.size(MaterialTheme.icons.medium)
+                            InsightSectionHeader(
+                                title = "Momentum",
+                                subtitle = "Your consistency streak"
                             )
 
-                            Spacer(Modifier.width(MaterialTheme.spacing.m))
+                            Spacer(Modifier.height(MaterialTheme.spacing.s))
 
-                            Column {
-                                Text(
-                                    "Primary Focus",
-                                    style = MaterialTheme.typography.labelSmall,
-                                    color = MaterialTheme.colorScheme.onSecondaryContainer.copy(
-                                        alpha = 0.7f
-                                    )
+                            ConsistencyCard(
+                                streakCount = streakCount
+                            )
+                        }
+                    }
+                }
+
+                item {
+                    Card(
+                        modifier = Modifier.fillMaxWidth(),
+                        shape = RoundedCornerShape(MaterialTheme.corners.large),
+                        colors = CardDefaults.cardColors(
+                            containerColor = MaterialTheme.colorScheme.surfaceContainer
+                        )
+                    ) {
+                        Column(
+                            Modifier.padding(MaterialTheme.spacing.m)
+                        ) {
+                            InsightSectionHeader(
+                                title = "Weekly Rhythm",
+                                subtitle = "Session volume by day of week"
+                            )
+
+                            Spacer(Modifier.height(MaterialTheme.spacing.m))
+
+                            if (taskDistribution.isEmpty()) {
+                                EmptyDistributionPlaceholder(
+                                    "Complete a session to see volume"
                                 )
-
-                                Text(
-                                    topTask,
-                                    style = MaterialTheme.typography.titleMedium,
-                                    fontWeight = FontWeight.Bold
+                            } else {
+                                WeeklyRhythmChart(
+                                    dailyVolume = dailyVolume
                                 )
                             }
                         }
                     }
                 }
-            }
 
-            item {
-                PeakHourCard(peakHour = peakHour)
-            }
-
-
-            item {
-                Heatmap(data = heatmapHistory)
-            }
-
-            item {
-                Card(
-                    modifier = Modifier.fillMaxWidth(),
-                    shape = RoundedCornerShape(MaterialTheme.corners.large),
-                    colors = CardDefaults.cardColors(
-                        containerColor = MaterialTheme.colorScheme.surfaceContainer
-                    )
-                ) {
-                    Column(
-                        Modifier.padding(MaterialTheme.spacing.m)
+                item {
+                    Card(
+                        modifier = Modifier.fillMaxWidth(),
+                        shape = RoundedCornerShape(MaterialTheme.corners.large),
+                        colors = CardDefaults.cardColors(
+                            containerColor = MaterialTheme.colorScheme.surfaceContainer
+                        )
                     ) {
-                        InsightSectionHeader(
-                            title = "Momentum",
-                            subtitle = "Your consistency streak"
-                        )
-
-                        Spacer(Modifier.height(MaterialTheme.spacing.s))
-
-                        ConsistencyCard(
-                            streakCount = streakCount
-                        )
-                    }
-                }
-            }
-
-            item {
-                Card(
-                    modifier = Modifier.fillMaxWidth(),
-                    shape = RoundedCornerShape(MaterialTheme.corners.large),
-                    colors = CardDefaults.cardColors(
-                        containerColor = MaterialTheme.colorScheme.surfaceContainer
-                    )
-                ) {
-                    Column(
-                        Modifier.padding(MaterialTheme.spacing.m)
-                    ) {
-                        InsightSectionHeader(
-                            title = "Weekly Rhythm",
-                            subtitle = "Session volume by day of week"
-                        )
-
-                        Spacer(Modifier.height(MaterialTheme.spacing.m))
-
-                        if (taskDistribution.isEmpty()) {
-                            EmptyDistributionPlaceholder(
-                                "Complete a session to see volume"
+                        Column(
+                            Modifier.padding(MaterialTheme.spacing.m)
+                        ) {
+                            InsightSectionHeader(
+                                title = "Task Allocation",
+                                subtitle = "How your time is distributed"
                             )
-                        } else {
-                            WeeklyRhythmChart(
-                                dailyVolume = dailyVolume
-                            )
-                        }
-                    }
-                }
-            }
 
-            item {
-                Card(
-                    modifier = Modifier.fillMaxWidth(),
-                    shape = RoundedCornerShape(MaterialTheme.corners.large),
-                    colors = CardDefaults.cardColors(
-                        containerColor = MaterialTheme.colorScheme.surfaceContainer
-                    )
-                ) {
-                    Column(
-                        Modifier.padding(MaterialTheme.spacing.m)
-                    ) {
-                        InsightSectionHeader(
-                            title = "Task Allocation",
-                            subtitle = "How your time is distributed"
-                        )
+                            Spacer(Modifier.height(MaterialTheme.spacing.s))
 
-                        Spacer(Modifier.height(MaterialTheme.spacing.s))
-
-                        if (taskDistribution.isEmpty()) {
-                            EmptyDistributionPlaceholder(
-                                "Complete a session to see distribution"
-                            )
-                        } else {
-                            TaskDistributionList(
-                                taskDistribution = taskDistribution
-                            )
+                            if (taskDistribution.isEmpty()) {
+                                EmptyDistributionPlaceholder(
+                                    "Complete a session to see distribution"
+                                )
+                            } else {
+                                TaskDistributionList(
+                                    taskDistribution = taskDistribution
+                                )
+                            }
                         }
                     }
                 }

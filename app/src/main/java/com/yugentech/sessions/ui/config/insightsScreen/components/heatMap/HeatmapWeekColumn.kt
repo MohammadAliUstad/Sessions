@@ -1,10 +1,10 @@
-package com.yugentech.sessions.ui.config.components.insightsScreen.heatMap
+package com.yugentech.sessions.ui.config.insightsScreen.components.heatMap
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.unit.dp
-import com.yugentech.sessions.ui.config.models.insights.HeatmapDay
+import com.yugentech.sessions.ui.config.model.insights.HeatmapDay
 
 @Composable
 fun HeatmapWeekColumn(

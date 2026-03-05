@@ -1,4 +1,4 @@
-package com.yugentech.sessions.ui.dash.utils.models
+package com.yugentech.sessions.ui.dash.util.models
 
 import androidx.compose.ui.graphics.vector.ImageVector
 

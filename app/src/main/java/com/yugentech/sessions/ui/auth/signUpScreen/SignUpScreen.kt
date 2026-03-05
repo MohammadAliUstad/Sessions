@@ -1,4 +1,4 @@
-package com.yugentech.sessions.ui.auth.screens
+package com.yugentech.sessions.ui.auth.signUpScreen
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -11,7 +11,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Timer
@@ -25,17 +25,17 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.zIndex
 import com.yugentech.sessions.R
+import com.yugentech.sessions.auth.viewmodel.AuthViewModel
 import com.yugentech.sessions.theme.tokens.components
-import com.yugentech.sessions.theme.tokens.corners
 import com.yugentech.sessions.theme.tokens.spacing
 import com.yugentech.sessions.ui.auth.components.forms.SignUpForm
 import com.yugentech.sessions.ui.dash.mainScreen.components.ToastMessage
-import com.yugentech.sessions.auth.viewmodel.AuthViewModel
 
 @Composable
 fun SignUpScreen(
@@ -66,9 +66,9 @@ fun SignUpScreen(
                 Box(
                     modifier = Modifier
                         .size(MaterialTheme.components.imageSizeMedium)
+                        .clip(CircleShape)
                         .background(
-                            color = MaterialTheme.colorScheme.surfaceContainerHigh,
-                            shape = RoundedCornerShape(MaterialTheme.corners.extraLarge)
+                            color = MaterialTheme.colorScheme.surfaceContainerHigh
                         ),
                     contentAlignment = Alignment.Center
                 ) {

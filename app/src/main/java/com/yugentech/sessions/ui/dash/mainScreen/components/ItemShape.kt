@@ -1,4 +1,4 @@
-package com.yugentech.sessions.ui.dash.common
+package com.yugentech.sessions.ui.dash.mainScreen.components
 
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme

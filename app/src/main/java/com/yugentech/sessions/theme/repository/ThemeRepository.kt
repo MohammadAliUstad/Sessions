@@ -1,6 +1,6 @@
-package com.yugentech.sessions.theme.themeRepository
+package com.yugentech.sessions.theme.repository
 
-import com.yugentech.sessions.theme.models.ThemeConfiguration
+import com.yugentech.sessions.theme.config.ThemeConfiguration
 import kotlinx.coroutines.flow.Flow
 
 interface ThemeRepository {
