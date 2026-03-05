@@ -1,4 +1,4 @@
-package com.yugentech.sessions.ui.dash.components.homeScreen.bottomRow
+package com.yugentech.sessions.ui.dash.homeScreen.components.bottomRow
 
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
