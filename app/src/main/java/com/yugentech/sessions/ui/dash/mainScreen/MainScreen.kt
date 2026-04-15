@@ -35,6 +35,9 @@ import com.yugentech.sessions.viewModels.HomeViewModel
 import com.yugentech.sessions.viewModels.ProfileViewModel
 import com.yugentech.sessions.alerts.viewmodel.AlertsViewModel
 import com.yugentech.sessions.ui.dash.homeScreen.HomeScreen
+import com.yugentech.sessions.ui.dash.mainScreen.components.BottomNavBar
+import com.yugentech.sessions.ui.dash.mainScreen.components.ToastMessage
+import com.yugentech.sessions.ui.dash.mainScreen.components.TopAppBar
 import com.yugentech.sessions.ui.dash.profileScreen.ProfileScreen
 import com.yugentech.sessions.ui.dash.settingsScreen.SettingsScreen
 import kotlinx.coroutines.delay
@@ -131,7 +134,7 @@ fun MainScreen(
             .fillMaxSize()
             .nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
-            _root_ide_package_.com.yugentech.sessions.ui.dash.mainScreen.components.TopAppBar(
+            TopAppBar(
                 currentScreen = currentScreen,
                 onLogout = {},
                 onSettings = {
@@ -143,7 +146,7 @@ fun MainScreen(
             )
         },
         bottomBar = {
-            _root_ide_package_.com.yugentech.sessions.ui.dash.mainScreen.components.BottomNavBar(
+            BottomNavBar(
                 items = bottomNavItems,
                 currentScreen = currentScreen,
                 onSelected = { screen ->
@@ -186,7 +189,7 @@ fun MainScreen(
         }
 
         if (toastMessage != null) {
-            _root_ide_package_.com.yugentech.sessions.ui.dash.mainScreen.components.ToastMessage(
+            ToastMessage(
                 message = toastMessage,
                 onDismiss = { toastMessage = null },
                 modifier = Modifier
