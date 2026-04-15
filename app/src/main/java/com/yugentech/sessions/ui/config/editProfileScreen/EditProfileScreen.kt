@@ -49,6 +49,7 @@ import com.yugentech.sessions.ui.config.editProfileScreen.components.AvatarSecti
 import com.yugentech.sessions.ui.config.editProfileScreen.components.DisplayNameSection
 import com.yugentech.sessions.ui.dash.mainScreen.components.SectionHeader
 import com.yugentech.sessions.viewModels.ProfileViewModel
+import kotlin.compareTo
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -179,29 +180,9 @@ fun EditProfileScreen(
                             }
                         },
                         validationError = validationError,
-                        isSaving = uiState.isSaving
-                    )
-                }
-
-                Spacer(modifier = Modifier.height(MaterialTheme.spacing.m))
-
-                Button(
-                    onClick = { saveProfile() },
-                    enabled = canSave && !uiState.isSaving,
-                    modifier = Modifier
-                        .align(Alignment.End)
-                        .height(MaterialTheme.components.buttonMedium),
-                    shape = RoundedCornerShape(MaterialTheme.corners.extraLarge),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = MaterialTheme.colorScheme.primaryContainer,
-                        contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
-                        disabledContainerColor = MaterialTheme.colorScheme.surfaceVariant,
-                        disabledContentColor = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
-                ) {
-                    Text(
-                        text = "Save Changes",
-                        style = MaterialTheme.typography.labelLarge
+                        isSaving = uiState.isSaving,
+                        canSave = canSave,
+                        onSaveClick = { saveProfile() }
                     )
                 }
 
