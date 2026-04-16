@@ -2,6 +2,7 @@ package com.yugentech.sessions.ui.dash.homeScreen
 
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -33,6 +34,7 @@ import com.yugentech.sessions.ui.dash.homeScreen.components.durationSelection.Se
 import com.yugentech.sessions.ui.dash.homeScreen.components.durationSelection.SessionProgressCard
 import com.yugentech.sessions.ui.dash.homeScreen.components.middle.TimerDisplay
 import com.yugentech.sessions.ui.dash.homeScreen.components.topRow.SessionHeader
+import com.yugentech.sessions.ui.dash.mainScreen.components.ToastMessage
 import com.yugentech.sessions.ui.dash.util.models.ActiveDialog
 import com.yugentech.sessions.viewModels.HomeViewModel
 
@@ -225,12 +227,15 @@ fun HomeScreen(
                     }
                 }
 
-//                ToastMessage(
-//                    message = errorMessage,
-//                    onDismiss = { timerViewModel.clearErrorMessage() },
-//                    modifier = Modifier.align(Alignment.TopCenter)
-//                )
+
             }
+            ToastMessage(
+                message = errorMessage,
+                onDismiss = { timerViewModel.clearErrorMessage() },
+                modifier = Modifier
+                    .align(Alignment.TopCenter)
+                    .fillMaxWidth()
+            )
         }
     }
 }
