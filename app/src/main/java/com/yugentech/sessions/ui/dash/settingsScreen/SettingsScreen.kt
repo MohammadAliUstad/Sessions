@@ -56,7 +56,7 @@ fun SettingsScreen(
         contentPadding = PaddingValues(
             start = MaterialTheme.spacing.m,
             end = MaterialTheme.spacing.m,
-            bottom = MaterialTheme.spacing.edge
+            bottom = MaterialTheme.spacing.s
         ),
         verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.xxs)
     ) {
