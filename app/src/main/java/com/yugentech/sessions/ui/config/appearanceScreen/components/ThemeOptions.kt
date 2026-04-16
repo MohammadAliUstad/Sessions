@@ -13,7 +13,7 @@ data class ThemeOption(
 
 fun themeOptions(
     currentPrimary: Color,
-    currentTertiary: Color
+    currentPrimaryContainer: Color
 ): List<ThemeOption> = listOf(
 
     // Dynamic
@@ -23,8 +23,7 @@ fun themeOptions(
         primaryColor = currentPrimary,
         gradientColors = listOf(
             currentPrimary,
-            currentTertiary,
-            currentPrimary.copy(alpha = 0.7f)
+            currentPrimaryContainer
         )
     ),
 
@@ -35,7 +34,6 @@ fun themeOptions(
         primaryColor = AppColorSchemes.SakuraLightColorScheme.primary,
         gradientColors = listOf(
             AppColorSchemes.SakuraLightColorScheme.primary,
-            AppColorSchemes.SakuraLightColorScheme.tertiary,
             AppColorSchemes.SakuraLightColorScheme.primaryContainer
         )
     ),
@@ -47,7 +45,6 @@ fun themeOptions(
         primaryColor = AppColorSchemes.CanyonLightColorScheme.primary,
         gradientColors = listOf(
             AppColorSchemes.CanyonLightColorScheme.primary,
-            AppColorSchemes.CanyonLightColorScheme.tertiary,
             AppColorSchemes.CanyonLightColorScheme.primaryContainer
         )
     ),
@@ -59,7 +56,6 @@ fun themeOptions(
         primaryColor = AppColorSchemes.HarvestLightColorScheme.primary,
         gradientColors = listOf(
             AppColorSchemes.HarvestLightColorScheme.primary,
-            AppColorSchemes.HarvestLightColorScheme.tertiary,
             AppColorSchemes.HarvestLightColorScheme.primaryContainer
         )
     ),
@@ -71,7 +67,6 @@ fun themeOptions(
         primaryColor = AppColorSchemes.GroveLightColorScheme.primary,
         gradientColors = listOf(
             AppColorSchemes.GroveLightColorScheme.primary,
-            AppColorSchemes.GroveLightColorScheme.tertiary,
             AppColorSchemes.GroveLightColorScheme.primaryContainer
         )
     ),
@@ -83,7 +78,6 @@ fun themeOptions(
         primaryColor = AppColorSchemes.AlpineLightColorScheme.primary,
         gradientColors = listOf(
             AppColorSchemes.AlpineLightColorScheme.primary,
-            AppColorSchemes.AlpineLightColorScheme.tertiary,
             AppColorSchemes.AlpineLightColorScheme.primaryContainer
         )
     ),
@@ -95,7 +89,6 @@ fun themeOptions(
         primaryColor = AppColorSchemes.LagoonLightColorScheme.primary,
         gradientColors = listOf(
             AppColorSchemes.LagoonLightColorScheme.primary,
-            AppColorSchemes.LagoonLightColorScheme.tertiary,
             AppColorSchemes.LagoonLightColorScheme.primaryContainer
         )
     ),
@@ -107,7 +100,6 @@ fun themeOptions(
         primaryColor = AppColorSchemes.TwilightLightColorScheme.primary,
         gradientColors = listOf(
             AppColorSchemes.TwilightLightColorScheme.primary,
-            AppColorSchemes.TwilightLightColorScheme.tertiary,
             AppColorSchemes.TwilightLightColorScheme.primaryContainer
         )
     )
