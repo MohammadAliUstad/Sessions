@@ -7,6 +7,7 @@ import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.platform.LocalContext
 import com.yugentech.sessions.theme.AppColorSchemes
 import com.yugentech.sessions.theme.config.ColorTheme
@@ -25,7 +26,7 @@ fun getColorScheme(
         ThemeMode.SYSTEM -> isSystemInDarkTheme
     }
 
-    val baseScheme = when (themeConfiguration.colorTheme) {
+    var baseScheme = when (themeConfiguration.colorTheme) {
         ColorTheme.DYNAMIC -> {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
                 val context = LocalContext.current
@@ -57,6 +58,10 @@ fun getColorScheme(
             if (isDarkMode) AppColorSchemes.LagoonDarkColorScheme else AppColorSchemes.LagoonLightColorScheme
     }
 
+    if (isDarkMode && themeConfiguration.colorTheme != ColorTheme.DYNAMIC) {
+        baseScheme = baseScheme.deepenSurfaces(fraction = 0.12f)
+    }
+
     return if (isDarkMode && themeConfiguration.isAmoledMode) {
         baseScheme.toAmoled()
     } else {
@@ -64,7 +69,21 @@ fun getColorScheme(
     }
 }
 
-// Extension to force background colors to pure black for AMOLED displays
+fun ColorScheme.deepenSurfaces(fraction: Float): ColorScheme {
+    return this.copy(
+        background = lerp(this.background, Color.Black, fraction),
+        surface = lerp(this.surface, Color.Black, fraction),
+        surfaceDim = lerp(this.surfaceDim, Color.Black, fraction),
+        surfaceBright = lerp(this.surfaceBright, Color.Black, fraction),
+        surfaceContainerLowest = lerp(this.surfaceContainerLowest, Color.Black, fraction),
+        surfaceContainerLow = lerp(this.surfaceContainerLow, Color.Black, fraction),
+        surfaceContainer = lerp(this.surfaceContainer, Color.Black, fraction),
+        surfaceContainerHigh = lerp(this.surfaceContainerHigh, Color.Black, fraction),
+        surfaceContainerHighest = lerp(this.surfaceContainerHighest, Color.Black, fraction),
+        surfaceVariant = lerp(this.surfaceVariant, Color.Black, fraction * 0.5f)
+    )
+}
+
 fun ColorScheme.toAmoled(): ColorScheme {
     return this.copy(
         background = Color.Black,
