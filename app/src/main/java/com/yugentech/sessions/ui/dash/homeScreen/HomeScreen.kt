@@ -60,7 +60,6 @@ fun HomeScreen(
         homeViewModel.fetchUserOnce(userId)
         homeViewModel.fetchSessionsOnce(userId)
         homeViewModel.syncPendingSessions(userId)
-//        homeViewModel.injectDummyData()
     }
 
     Surface(
@@ -72,20 +71,16 @@ fun HomeScreen(
         ) {
             val screenHeight = maxHeight
 
-            // 1. OUTER COLUMN: Handles the scrolling viewport only
             Column(
                 modifier = Modifier
                     .fillMaxSize()
                     .verticalScroll(scrollState)
             ) {
-                // 2. INNER COLUMN: Handles the stretching and spacing
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
-                        // Subtract 1.dp to prevent Compose float rounding errors from causing a 1px scroll
                         .heightIn(min = screenHeight - 1.dp),
                     horizontalAlignment = Alignment.CenterHorizontally,
-                    // 3. Switch to SpaceEvenly for perfect, uniform gaps!
                     verticalArrangement = Arrangement.SpaceEvenly
                 ) {
                     SessionHeader(
