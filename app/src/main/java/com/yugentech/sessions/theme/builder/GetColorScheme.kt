@@ -80,7 +80,10 @@ fun ColorScheme.deepenSurfaces(fraction: Float): ColorScheme {
         surfaceContainer = lerp(this.surfaceContainer, Color.Black, fraction),
         surfaceContainerHigh = lerp(this.surfaceContainerHigh, Color.Black, fraction),
         surfaceContainerHighest = lerp(this.surfaceContainerHighest, Color.Black, fraction),
-        surfaceVariant = lerp(this.surfaceVariant, Color.Black, fraction * 0.5f)
+        surfaceVariant = lerp(this.surfaceVariant, Color.Black, fraction * 0.5f),
+        onBackground = lerp(this.onBackground, Color.Black, fraction * 0.15f),
+        onSurface = lerp(this.onSurface, Color.Black, fraction * 0.15f),
+        onSurfaceVariant = lerp(this.onSurfaceVariant, Color.Black, fraction * 0.15f),
     )
 }
 
