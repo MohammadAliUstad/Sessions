@@ -2,7 +2,7 @@ package com.yugentech.sessions.utils
 
 object AppConstants {
     private const val APP_PACKAGE_NAME = "com.yugentech.sessions"
-    const val EMPTY_STRING = ""
+    const val EMPTY = ""
     const val ACTION_START_SESSION = "START_SESSION"
     const val ACTION_STOP_SESSION = "STOP_SESSION"
     const val ACTION_UPDATE_SESSION = "UPDATE_SESSION"

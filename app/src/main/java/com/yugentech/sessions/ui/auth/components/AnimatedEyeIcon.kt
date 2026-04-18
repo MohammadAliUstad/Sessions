@@ -1,4 +1,4 @@
-package com.yugentech.quill.ui.access.signIn.components
+package com.yugentech.sessions.ui.auth.components
 
 import android.graphics.BlendMode
 import android.graphics.BlendModeColorFilter
@@ -11,7 +11,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.viewinterop.AndroidView
-import com.yugentech.quill.R
+import com.yugentech.sessions.R
 
 @Composable
 fun AnimatedEyeIcon(
@@ -44,12 +44,13 @@ fun AnimatedEyeIcon(
             if (imageView.isActivated != isVisible) {
                 imageView.isActivated = isVisible
 
-                imageView.drawable?.colorFilter = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                    BlendModeColorFilter(iconColor, BlendMode.SRC_IN)
-                } else {
-                    @Suppress("DEPRECATION")
-                    PorterDuffColorFilter(iconColor, PorterDuff.Mode.SRC_IN)
-                }
+                imageView.drawable?.colorFilter =
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                        BlendModeColorFilter(iconColor, BlendMode.SRC_IN)
+                    } else {
+                        @Suppress("DEPRECATION")
+                        PorterDuffColorFilter(iconColor, PorterDuff.Mode.SRC_IN)
+                    }
             }
         }
     )
