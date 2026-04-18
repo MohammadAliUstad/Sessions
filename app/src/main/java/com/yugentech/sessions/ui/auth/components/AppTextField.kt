@@ -11,9 +11,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Visibility
-import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -28,10 +25,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
-import com.yugentech.sessions.R.string
 import com.yugentech.sessions.theme.tokens.components
 import com.yugentech.sessions.theme.tokens.corners
 import com.yugentech.sessions.theme.tokens.dimensions.AppAnimations
@@ -46,7 +41,7 @@ fun AppTextField(
     label: String,
     leadingIcon: ImageVector,
     modifier: Modifier = Modifier,
-    error: String = AppConstants.EMPTY_STRING,
+    error: String = AppConstants.EMPTY,
     isPassword: Boolean = false
 ) {
     var passwordVisible by remember { mutableStateOf(false) }
@@ -80,13 +75,8 @@ fun AppTextField(
                         onClick = { passwordVisible = !passwordVisible },
                         modifier = Modifier.size(MaterialTheme.components.buttonSmall)
                     ) {
-                        Icon(
-                            imageVector = if (passwordVisible)
-                                Icons.Default.Visibility
-                            else
-                                Icons.Default.VisibilityOff,
-                            contentDescription = stringResource(string.toggle_password_visibility),
-                            tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                        AnimatedEyeIcon(
+                            isVisible = passwordVisible,
                             modifier = Modifier.size(MaterialTheme.icons.medium)
                         )
                     }
