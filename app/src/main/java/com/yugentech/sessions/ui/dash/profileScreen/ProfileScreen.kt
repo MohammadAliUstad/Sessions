@@ -31,7 +31,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.yugentech.sessions.theme.tokens.components
 import com.yugentech.sessions.user.model.UserData
 import com.yugentech.sessions.theme.tokens.corners
 import com.yugentech.sessions.theme.tokens.spacing
@@ -40,7 +39,7 @@ import com.yugentech.sessions.ui.dash.profileScreen.components.EmptySessionsCard
 import com.yugentech.sessions.ui.dash.profileScreen.components.ProfileCard
 import com.yugentech.sessions.ui.dash.profileScreen.components.SessionHistoryItem
 import com.yugentech.sessions.ui.dash.util.dateHeader
-import com.yugentech.sessions.utils.AppConstants.EMPTY_STRING
+import com.yugentech.sessions.utils.AppConstants.EMPTY
 import com.yugentech.sessions.viewModels.ProfileViewModel
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
@@ -90,7 +89,7 @@ fun ProfileScreen(
 
         item(key = "profile_card") {
             ProfileCard(
-                userData = profileUiState.user ?: UserData(name = EMPTY_STRING),
+                userData = profileUiState.user ?: UserData(name = EMPTY),
                 onEditProfile = onEditProfile,
                 onViewInsights = onViewInsights,
                 streakCount = profileUiState.streakCount
