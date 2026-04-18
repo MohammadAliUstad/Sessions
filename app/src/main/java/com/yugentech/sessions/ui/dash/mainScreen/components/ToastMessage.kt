@@ -58,7 +58,7 @@ fun ToastMessage(
             contentAlignment = Alignment.Center
         ) {
             Text(
-                text = message ?: AppConstants.EMPTY_STRING,
+                text = message ?: AppConstants.EMPTY,
                 modifier = Modifier
                     .background(
                         color = MaterialTheme.colorScheme.errorContainer,

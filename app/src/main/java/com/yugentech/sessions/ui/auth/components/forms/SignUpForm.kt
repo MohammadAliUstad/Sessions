@@ -47,8 +47,7 @@ fun SignUpForm(
     LaunchedEffect(
         formState.name,
         formState.email,
-        formState.password,
-        formState.confirmPassword
+        formState.password
     ) {
         onClearError()
     }
@@ -104,37 +103,12 @@ fun SignUpForm(
                     onValueChange = { newPassword ->
                         formState = formState.copy(
                             password = newPassword,
-                            passwordError = FormValidator.validatePassword(newPassword),
-                            confirmPasswordError = if (formState.confirmPassword.isNotEmpty()) {
-                                FormValidator.validateConfirmPassword(
-                                    newPassword,
-                                    formState.confirmPassword
-                                )
-                            } else {
-                                formState.confirmPasswordError
-                            }
+                            passwordError = FormValidator.validatePassword(newPassword)
                         )
                     },
                     label = stringResource(R.string.password),
                     leadingIcon = Icons.Default.Lock,
                     error = formState.passwordError,
-                    isPassword = true
-                )
-
-                AppTextField(
-                    value = formState.confirmPassword,
-                    onValueChange = { newConfirmPassword ->
-                        formState = formState.copy(
-                            confirmPassword = newConfirmPassword,
-                            confirmPasswordError = FormValidator.validateConfirmPassword(
-                                formState.password,
-                                newConfirmPassword
-                            )
-                        )
-                    },
-                    label = stringResource(R.string.confirm_password),
-                    leadingIcon = Icons.Default.Lock,
-                    error = formState.confirmPasswordError,
                     isPassword = true
                 )
             }
@@ -148,7 +122,6 @@ fun SignUpForm(
                             name = formState.name,
                             email = formState.email,
                             password = formState.password,
-                            confirmPassword = formState.confirmPassword,
                             onNameError = { error ->
                                 formState = formState.copy(nameError = error)
                             },
@@ -157,9 +130,6 @@ fun SignUpForm(
                             },
                             onPasswordError = { error ->
                                 formState = formState.copy(passwordError = error)
-                            },
-                            onConfirmPasswordError = { error ->
-                                formState = formState.copy(confirmPasswordError = error)
                             }
                         )
 

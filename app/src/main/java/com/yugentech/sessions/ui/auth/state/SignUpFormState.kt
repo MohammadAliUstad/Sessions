@@ -1,14 +1,14 @@
 package com.yugentech.sessions.ui.auth.state
 
-import com.yugentech.sessions.utils.AppConstants.EMPTY_STRING
+import com.yugentech.sessions.utils.AppConstants.EMPTY
 
 data class SignUpFormState(
-    val name: String = EMPTY_STRING,
-    val email: String = EMPTY_STRING,
-    val password: String = EMPTY_STRING,
-    val confirmPassword: String = EMPTY_STRING,
-    val nameError: String = EMPTY_STRING,
-    val emailError: String = EMPTY_STRING,
-    val passwordError: String = EMPTY_STRING,
-    val confirmPasswordError: String = EMPTY_STRING
+    val name: String = EMPTY,
+    val email: String = EMPTY,
+    val password: String = EMPTY,
+    val confirmPassword: String = EMPTY,
+    val nameError: String = EMPTY,
+    val emailError: String = EMPTY,
+    val passwordError: String = EMPTY,
+    val confirmPasswordError: String = EMPTY
 )
