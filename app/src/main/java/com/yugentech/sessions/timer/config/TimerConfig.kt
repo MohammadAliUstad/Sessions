@@ -1,6 +1,6 @@
 package com.yugentech.sessions.timer.config
 
-import com.yugentech.sessions.utils.AppConstants.EMPTY_STRING
+import com.yugentech.sessions.utils.AppConstants.EMPTY
 import kotlin.math.ceil
 
 // Holds the user's settings for timer durations, goals, and active tasks
@@ -9,7 +9,7 @@ data class TimerConfig(
     val shortBreakDuration: Int = 5,
     val longBreakDuration: Int = 15,
     val targetSets: Int = 1,
-    val sessionTask: String = EMPTY_STRING,
+    val sessionTask: String = EMPTY,
     val activeBackgroundSoundId: String? = null
 ) {
     // Dynamically calculates how many short breaks occur before a long break

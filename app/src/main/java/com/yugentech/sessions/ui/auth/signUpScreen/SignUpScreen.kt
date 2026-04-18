@@ -26,11 +26,10 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
-import com.yugentech.sessions.R
 import com.yugentech.sessions.auth.viewmodel.AuthViewModel
 import com.yugentech.sessions.theme.tokens.components
 import com.yugentech.sessions.theme.tokens.spacing
@@ -65,7 +64,7 @@ fun SignUpScreen(
 
                 Box(
                     modifier = Modifier
-                        .size(MaterialTheme.components.imageSizeMedium)
+                        .size(120.dp)
                         .clip(CircleShape)
                         .background(
                             color = MaterialTheme.colorScheme.surfaceContainerHigh
@@ -83,7 +82,7 @@ fun SignUpScreen(
                 Spacer(modifier = Modifier.height(MaterialTheme.spacing.l))
 
                 Text(
-                    text = stringResource(R.string.app_name),
+                    text = "Sessions",
                     style = MaterialTheme.typography.headlineLarge,
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.onSurface,
@@ -93,7 +92,7 @@ fun SignUpScreen(
                 Spacer(modifier = Modifier.height(MaterialTheme.spacing.xs))
 
                 Text(
-                    text = stringResource(R.string.sign_up_message),
+                    text = "Start your productivity journey",
                     style = MaterialTheme.typography.bodyLarge,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     textAlign = TextAlign.Center
@@ -113,7 +112,7 @@ fun SignUpScreen(
                     modifier = Modifier.padding(vertical = MaterialTheme.spacing.xs)
                 ) {
                     Text(
-                        text = stringResource(R.string.have_an_account),
+                        text = "Already have an account? Sign In",
                         style = MaterialTheme.typography.labelLarge,
                         color = MaterialTheme.colorScheme.primary
                     )

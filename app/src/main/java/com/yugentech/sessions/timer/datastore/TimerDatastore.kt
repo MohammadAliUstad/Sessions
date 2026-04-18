@@ -42,7 +42,7 @@ class TimerDatastore(
                 shortBreakDuration = prefs[Keys.SHORT_BREAK] ?: 5,
                 longBreakDuration = prefs[Keys.LONG_BREAK] ?: 15,
                 targetSets = prefs[Keys.TARGET_SETS] ?: 1,
-                sessionTask = prefs[Keys.SESSION_TASK] ?: AppConstants.EMPTY_STRING,
+                sessionTask = prefs[Keys.SESSION_TASK] ?: AppConstants.EMPTY,
                 activeBackgroundSoundId = prefs[Keys.ACTIVE_SOUND]
             )
         }
@@ -91,7 +91,7 @@ class TimerDatastore(
     suspend fun updateActiveBackgroundSound(soundId: String?) {
         try {
             dataStore.edit { prefs ->
-                prefs[Keys.ACTIVE_SOUND] = soundId ?: AppConstants.EMPTY_STRING
+                prefs[Keys.ACTIVE_SOUND] = soundId ?: AppConstants.EMPTY
             }
         } catch (e: Exception) {
             Timber.e(e, "Failed to update active background sound")
