@@ -1,5 +1,4 @@
-@file:Suppress("DEPRECATION")
-
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import java.io.FileInputStream
 import java.util.Properties
 
@@ -13,21 +12,23 @@ plugins {
 }
 
 val localProperties = Properties()
+
 val localPropertiesFile = rootProject.file("local.properties")
+
 if (localPropertiesFile.exists()) {
     localProperties.load(FileInputStream(localPropertiesFile))
 }
 
 android {
     namespace = "com.yugentech.sessions"
-    compileSdk = 36
+    compileSdk = 37
 
     defaultConfig {
         applicationId = "com.yugentech.sessions"
         minSdk = 26
-        targetSdk = 36
-        versionCode = 19
-        versionName = "3.0.5"
+        targetSdk = 37
+        versionCode = 23
+        versionName = "4.0.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
         val webClientId = localProperties.getProperty("WEB_CLIENT_ID") ?: ""
@@ -64,13 +65,15 @@ android {
         targetCompatibility = JavaVersion.VERSION_11
     }
 
-    kotlinOptions {
-        jvmTarget = "11"
-    }
-
     buildFeatures {
         compose = true
         buildConfig = true
+    }
+
+    kotlin {
+        compilerOptions {
+            jvmTarget = JvmTarget.JVM_11
+        }
     }
 }
 
@@ -116,14 +119,15 @@ dependencies {
 
     // Firebase BOM (declare once)
     implementation(platform(libs.firebase.bom))
-    implementation(libs.firebase.auth.ktx)
-    implementation(libs.firebase.firestore.ktx)
-    implementation(libs.firebase.database.ktx)
+    implementation(libs.firebase.auth)
+    implementation(libs.firebase.firestore)
+    implementation(libs.firebase.database)
     implementation(libs.firebase.crashlytics)
     implementation(libs.firebase.analytics)
 
     // Google Play Services
     implementation(libs.play.services.auth)
+    implementation(libs.play.review)
 
     // Room Database
     implementation(libs.androidx.room.runtime)
@@ -151,9 +155,6 @@ dependencies {
 
     // Logging (Timber)
     implementation(libs.timber)
-
-    // Custom UI Components
-    implementation(libs.wavy.slider)
 
     // Unit Testing
     testImplementation(libs.junit)
