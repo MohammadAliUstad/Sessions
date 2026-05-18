@@ -14,6 +14,7 @@ interface AlertsRepository {
     fun onBreakStart(view: View? = null)
     fun onLeave(view: View? = null)
     fun onFocusStop(view: View? = null)
+    fun onGoalReached(view: View? = null)
 
     // Play a preview of a specific sound file
     fun playPreview(soundId: String?)

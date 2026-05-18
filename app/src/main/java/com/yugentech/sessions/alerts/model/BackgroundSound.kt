@@ -13,7 +13,8 @@ enum class BackgroundSound(
     BROWN_NOISE("brown_noise", R.raw.brown_noise),
     FIREPLACE("fireplace", R.raw.fireplace),
     LIBRARY("library", R.raw.library),
-    RIVERSIDE("riverside", R.raw.riverside);
+    RIVERSIDE("riverside", R.raw.riverside),
+    FOREST("forest", R.raw.forest);
 
     companion object {
         // Helper to find a sound by its ID, returning NONE if not found

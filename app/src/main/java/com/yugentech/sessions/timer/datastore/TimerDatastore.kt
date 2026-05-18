@@ -2,6 +2,7 @@ package com.yugentech.sessions.timer.datastore
 
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
@@ -24,6 +25,7 @@ class TimerDatastore(
         val TARGET_SETS = intPreferencesKey("target_sets")
         val SESSION_TASK = stringPreferencesKey("session_task")
         val ACTIVE_SOUND = stringPreferencesKey("active_background_sound_id")
+        val IS_AMBIENT_ENABLED = booleanPreferencesKey("is_ambient_enabled")
     }
 
     // Continuously observe DataStore and emit the latest TimerConfig
@@ -43,7 +45,8 @@ class TimerDatastore(
                 longBreakDuration = prefs[Keys.LONG_BREAK] ?: 15,
                 targetSets = prefs[Keys.TARGET_SETS] ?: 1,
                 sessionTask = prefs[Keys.SESSION_TASK] ?: AppConstants.EMPTY,
-                activeBackgroundSoundId = prefs[Keys.ACTIVE_SOUND]
+                activeBackgroundSoundId = prefs[Keys.ACTIVE_SOUND],
+                isAmbientEnabled = prefs[Keys.IS_AMBIENT_ENABLED] ?: true
             )
         }
 
@@ -95,6 +98,16 @@ class TimerDatastore(
             }
         } catch (e: Exception) {
             Timber.e(e, "Failed to update active background sound")
+        }
+    }
+
+    suspend fun toggleAmbientSound(enabled: Boolean) {
+        try {
+            dataStore.edit { prefs ->
+                prefs[Keys.IS_AMBIENT_ENABLED] = enabled
+            }
+        } catch (e: Exception) {
+            Timber.e(e, "Failed to toggle ambient sound")
         }
     }
 }
