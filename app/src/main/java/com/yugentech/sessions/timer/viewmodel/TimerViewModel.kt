@@ -5,12 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.yugentech.sessions.alerts.repository.AlertsRepository
-import com.yugentech.sessions.sessions.model.Session
-import com.yugentech.sessions.notification.model.Notification
-import com.yugentech.sessions.notification.model.NotificationType
 import com.yugentech.sessions.notification.repository.NotificationRepository
-import com.yugentech.sessions.sessions.repository.SessionsRepository
-import com.yugentech.sessions.sessions.result.SessionResult
 import com.yugentech.sessions.timer.repository.TimerRepository
 import com.yugentech.sessions.timer.effect.TimerEffect
 import com.yugentech.sessions.timer.state.TimerMode
@@ -22,13 +17,12 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import timber.log.Timber
-import java.util.UUID
 
 class TimerViewModel(
     private val timerRepository: TimerRepository,
-    private val sessionsRepository: SessionsRepository,
     private val alertsRepository: AlertsRepository,
     private val notificationRepository: NotificationRepository
 ) : ViewModel() {
@@ -38,7 +32,12 @@ class TimerViewModel(
     private val _errorMessage = MutableStateFlow<String?>(null)
     val errorMessage: StateFlow<String?> = _errorMessage.asStateFlow()
 
-    // Real-time calculation of dashboard statistics based on timer state
+    private val _showGoalReachedDialog = MutableStateFlow(false)
+    val showGoalReachedDialog: StateFlow<Boolean> = _showGoalReachedDialog.asStateFlow()
+
+    private val _showFinishConfirmation = MutableStateFlow<Int?>(null)
+    val showFinishConfirmation: StateFlow<Int?> = _showFinishConfirmation.asStateFlow()
+
     val dashboardState: StateFlow<SessionDashboardState> = timerState
         .map { state -> SessionDashboardCalculator.calculate(state) }
         .stateIn(
@@ -53,7 +52,6 @@ class TimerViewModel(
 
     private fun observeTimerEffects() {
         viewModelScope.launch {
-            // React to one-time timer events like completion or goal reached
             timerRepository.timerEffects.collect { effect ->
                 Timber.d("Received Timer Effect: $effect")
                 when (effect) {
@@ -66,34 +64,31 @@ class TimerViewModel(
     }
 
     private fun handleFocusCompleted(durationSeconds: Int) {
-        Timber.d("Handling FocusCompleted. Triggering Break Sound.")
-        // Play break start sound
-        alertsRepository.onBreakStart(null)
-
-        if (durationSeconds >= 60) {
-            saveSessionToDb(durationSeconds)
-        } else {
+        Timber.d("Handling FocusCompleted.")
+        if (durationSeconds < 60) {
             _errorMessage.value = "Session too short to be saved"
+            viewModelScope.launch {
+                delay(2000)
+                _errorMessage.value = null
+            }
         }
     }
 
     private fun handleEndGoalReached(durationSeconds: Int) {
-        Timber.d("Handling EndGoalReached. Stopping Sound & Notification.")
-        // Stop sounds and remove persistent notification
-        alertsRepository.onFocusStop()
-        stopActiveNotification()
+        Timber.d("Handling EndGoalReached.")
+        _showGoalReachedDialog.value = true
 
-        if (durationSeconds >= 60) {
-            saveSessionToDb(durationSeconds)
-        } else {
+        if (durationSeconds < 60) {
             _errorMessage.value = "Session too short to be saved"
+            viewModelScope.launch {
+                delay(2000)
+                _errorMessage.value = null
+            }
         }
     }
 
     private fun handleBreakCompleted() {
-        Timber.d("Handling BreakCompleted. Triggering Focus Sound.")
-        // Play focus start sound
-        alertsRepository.onFocusStart(null)
+        Timber.d("Handling BreakCompleted.")
     }
 
     fun playPreview(soundId: String?) {
@@ -125,16 +120,41 @@ class TimerViewModel(
         if (current.activeBackgroundSoundId != soundId) {
             Timber.i("Updating Background Sound in TimerConfig: $soundId")
             timerRepository.updateActiveBackgroundSound(soundId)
+            
+            // If a valid sound is selected, automatically enable ambient sound
+            if (soundId != null && soundId != "none") {
+                timerRepository.toggleAmbientSound(true)
+            }
         }
+    }
+
+    fun toggleAmbientSound() {
+        val current = timerState.value.timerConfig
+        // If sound is None, we don't toggle enabled state, just stay None
+        if (current.activeBackgroundSoundId == null || current.activeBackgroundSoundId == "none") return
+        
+        timerRepository.toggleAmbientSound(!current.isAmbientEnabled)
     }
 
     fun startTimer(view: View? = null) {
         if (timerState.value.isTimerRunning) return
+        clearErrorMessage()
 
         viewModelScope.launch {
+            // 1. Mark as running and start the internal engine (which has its own 1s delay)
             timerRepository.start()
-            startActiveNotification()
+            
+            // 2. Play the start sound/haptic immediately for responsive feedback
             alertsRepository.onFocusStart(view)
+
+            // 3. Match the 1-second delay of the countdown engine
+            delay(1000)
+
+            // 4. Only start the foreground service if the session is still active and running
+            // This prevents a notification from sticking around if the user rapid-toggled play/pause.
+            if (timerState.value.isTimerRunning) {
+                startActiveNotification()
+            }
         }
     }
 
@@ -143,7 +163,6 @@ class TimerViewModel(
 
         viewModelScope.launch {
             timerRepository.pause()
-            stopActiveNotification()
             alertsRepository.onFocusPause(view)
         }
     }
@@ -155,7 +174,8 @@ class TimerViewModel(
     fun stopAndDiscardSession(view: View? = null) {
         viewModelScope.launch {
             timerRepository.reset()
-            alertsRepository.onFocusStop(view)
+            // Alerts are now handled exclusively by the ActiveForeground service 
+            // to prevent double haptics/sounds when stopping from the app.
             stopActiveNotification()
         }
     }
@@ -172,67 +192,66 @@ class TimerViewModel(
         val state = timerState.value
         val timeSpentSeconds = (state.totalTime - state.currentTime).toInt()
 
-        if (timeSpentSeconds < 60) {
+        // 1. "Too short" message ONLY in Focus mode
+        if (state.currentMode == TimerMode.Focus && timeSpentSeconds < 60) {
             _errorMessage.value = "Session too short to be saved"
             viewModelScope.launch {
                 timerRepository.reset()
+                // The ActiveForeground service will handle the single onFocusStop haptic.
                 stopActiveNotification()
-                alertsRepository.onFocusStop(view)
+                delay(3000)
+                _errorMessage.value = null
             }
             return
         }
 
-        if (state.currentMode == TimerMode.Focus) {
-            saveSessionToDb(timeSpentSeconds)
+        // 2. Check remaining sets for confirmation
+        val targetSets = state.timerConfig.targetSets
+        val completedSets = state.completedSets
+        val setsRemaining = if (state.currentMode == TimerMode.Focus) {
+            (targetSets - (completedSets + 1)).coerceAtLeast(0)
+        } else {
+            (targetSets - completedSets).coerceAtLeast(0)
         }
 
-        viewModelScope.launch {
-            timerRepository.reset()
-            stopActiveNotification()
-            alertsRepository.onFocusStop(view)
+        if (setsRemaining > 0) {
+            _showFinishConfirmation.value = setsRemaining
+        } else {
+            // Final set: proceed to save and show goal reached
+            finishSession(view, showCelebration = true)
         }
     }
 
-    private fun saveSessionToDb(durationSeconds: Int) {
-        viewModelScope.launch {
-            val task = timerState.value.timerConfig.sessionTask
-            val session = Session(
-                sessionId = UUID.randomUUID().toString(),
-                duration = durationSeconds,
-                timestamp = System.currentTimeMillis(),
-                sessionTask = task.ifBlank { "Focus Session" }
-            )
+    fun confirmFinishSession(view: View? = null) {
+        _showFinishConfirmation.value = null
+        // User confirmed they want to finish early despite remaining sets
+        finishSession(view, showCelebration = false)
+    }
 
-            // Persist the completed session to local storage
-            when (sessionsRepository.saveSession(session)) {
-                is SessionResult.Success -> Timber.i("Session saved successfully")
-                is SessionResult.Error -> Timber.e("Failed to save session")
+    fun dismissFinishConfirmation() {
+        _showFinishConfirmation.value = null
+    }
+
+    private fun finishSession(view: View? = null, showCelebration: Boolean = true) {
+        timerRepository.saveCurrentSession()
+
+        viewModelScope.launch {
+            timerRepository.reset()
+            if (showCelebration) {
+                // Service will handle alertsRepository.onGoalReached(null)
+                notificationRepository.finishActiveNotification()
+                _showGoalReachedDialog.value = true
+            } else {
+                // Service will handle alertsRepository.onFocusStop(null)
+                notificationRepository.stopActiveNotification()
             }
         }
     }
 
     private fun startActiveNotification() {
-        val remainingSeconds = timerState.value.currentTime.toInt()
-        val modeName = when (timerState.value.currentMode) {
-            TimerMode.Focus -> "Focus"
-            TimerMode.ShortBreak -> "Short Break"
-            TimerMode.LongBreak -> "Long Break"
-        }
-
         FirebaseCrashlytics.getInstance().setCustomKey("is_session_active", true)
-
         viewModelScope.launch {
-            // Show a sticky notification with the current timer status
-            notificationRepository.startActiveNotification(
-                Notification(
-                    id = 1001,
-                    title = modeName,
-                    message = "Session in progress",
-                    type = NotificationType.ACTIVE,
-                    isOngoing = true,
-                    remainingSeconds = remainingSeconds.toLong()
-                )
-            )
+            notificationRepository.startActiveNotification()
         }
     }
 
@@ -245,5 +264,9 @@ class TimerViewModel(
 
     fun clearErrorMessage() {
         _errorMessage.value = null
+    }
+
+    fun dismissGoalReachedDialog() {
+        _showGoalReachedDialog.value = false
     }
 }

@@ -10,6 +10,8 @@ import timber.log.Timber
 class SoundService(
     private val context: Context
 ) {
+    private var mediaPlayer: MediaPlayer? = null
+
     // Helper for start session sound
     fun playStartAlert() {
         Timber.d("Playing session start sound")
@@ -22,23 +24,45 @@ class SoundService(
         play(R.raw.session_stop)
     }
 
+    // Helper for goal reached / congratulations sound
+    fun playGoalReachedAlert() {
+        Timber.d("Playing goal reached sound")
+        // Note: Using session_end as a fallback, you might want to add a unique sound later
+        play(R.raw.session_end)
+    }
+
     // Creates and plays a MediaPlayer, ensuring resources are released afterwards
     private fun play(@RawRes resId: Int) {
         try {
-            MediaPlayer.create(context, resId)?.apply {
+            // Release any existing player to prevent memory leaks and overlapping sounds if needed
+            mediaPlayer?.apply {
+                try {
+                    if (isPlaying) stop()
+                    release()
+                } catch (e: Exception) {
+                    Timber.w(e, "Error releasing existing MediaPlayer")
+                }
+            }
 
-                setOnCompletionListener { mediaPlayer ->
+            mediaPlayer = MediaPlayer.create(context, resId)?.apply {
+                setOnCompletionListener { mp ->
                     try {
-                        mediaPlayer.release()
+                        mp.release()
+                        if (mediaPlayer == mp) {
+                            mediaPlayer = null
+                        }
                     } catch (e: Exception) {
                         Timber.w(e, "Failed to release MediaPlayer after completion")
                     }
                 }
 
-                setOnErrorListener { mediaPlayer, what, extra ->
+                setOnErrorListener { mp, what, extra ->
                     Timber.e("MediaPlayer failed with code: $what, extra: $extra")
                     try {
-                        mediaPlayer.release()
+                        mp.release()
+                        if (mediaPlayer == mp) {
+                            mediaPlayer = null
+                        }
                     } catch (e: Exception) {
                         Timber.w(e, "Failed to release MediaPlayer during error handling")
                     }

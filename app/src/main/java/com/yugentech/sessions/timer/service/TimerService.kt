@@ -1,7 +1,6 @@
 package com.yugentech.sessions.timer.service
 
 import android.os.SystemClock
-import com.yugentech.sessions.timer.datastore.TimerDatastore
 import com.yugentech.sessions.timer.config.TimerConfig
 import com.yugentech.sessions.timer.effect.TimerEffect
 import com.yugentech.sessions.timer.state.TimerMode
@@ -20,53 +19,45 @@ import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
+// Pure countdown engine. Has no knowledge of persistence or configuration storage.
+// Config is pushed in via updateConfig() by TimerRepositoryImpl.
 class TimerService(
-    private val coroutineScope: CoroutineScope,
-    private val timerDatastore: TimerDatastore
+    private val coroutineScope: CoroutineScope
 ) {
 
     private var timerJob: Job? = null
 
-    // Holds the current state of the timer (time remaining, mode, etc.)
     private val _timerState = MutableStateFlow(TimerState())
     val timerState: StateFlow<TimerState> = _timerState.asStateFlow()
 
-    // Emits one-time events like "Timer Finished" for the UI to handle
     private val _timerEffects = MutableSharedFlow<TimerEffect>(
         replay = 0,
         extraBufferCapacity = 5
     )
     val timerEffects: SharedFlow<TimerEffect> = _timerEffects.asSharedFlow()
 
-    init {
-        observeConfig()
-    }
+    // Called by TimerRepositoryImpl whenever DataStore emits a new config.
+    // If the duration for the current mode changed, cancels any active countdown
+    // and resets to the new duration. Non-duration changes (e.g. task name) are
+    // applied without disturbing the running timer.
+    fun updateConfig(newConfig: TimerConfig) {
+        val current = _timerState.value
+        val oldDuration = getDurationMinutes(current.currentMode, current.timerConfig)
+        val newDuration = getDurationMinutes(current.currentMode, newConfig)
 
-    private fun observeConfig() {
-        coroutineScope.launch {
-            // Update the timer state whenever the user changes settings
-            timerDatastore.timerConfig.collect { newConfig ->
-                _timerState.update { current ->
-                    // FIX: Check if the duration for the current mode actually changed
-                    val oldDuration = getDurationMinutes(current.currentMode, current.timerConfig)
-                    val newDuration = getDurationMinutes(current.currentMode, newConfig)
-
-                    if (oldDuration != newDuration) {
-                        // If duration changed, reset the timer to the new duration
-                        val newSeconds = newDuration * 60L
-                        current.copy(
-                            timerConfig = newConfig,
-                            totalTime = newSeconds,
-                            currentTime = newSeconds
-                        )
-                    } else {
-                        // If duration is the same (e.g. only task name changed), preserve current time
-                        current.copy(
-                            timerConfig = newConfig
-                        )
-                    }
-                }
+        if (oldDuration != newDuration) {
+            val newSeconds = newDuration * 60L
+            cancelTimer()
+            _timerState.update {
+                it.copy(
+                    timerConfig = newConfig,
+                    totalTime = newSeconds,
+                    currentTime = newSeconds,
+                    isTimerRunning = false
+                )
             }
+        } else {
+            _timerState.update { it.copy(timerConfig = newConfig) }
         }
     }
 
@@ -92,7 +83,6 @@ class TimerService(
 
     fun skipToNext() {
         cancelTimer()
-        // Immediately trigger completion logic without waiting
         coroutineScope.launch { onTimerComplete() }
     }
 
@@ -100,7 +90,6 @@ class TimerService(
         cancelTimer()
         _timerState.update { it.copy(isTimerRunning = true) }
 
-        // Launch a coroutine to tick down every second
         timerJob = coroutineScope.launch {
             delay(1000)
             val endTime = SystemClock.elapsedRealtime() + durationMillis
@@ -131,7 +120,6 @@ class TimerService(
         val config = state.timerConfig
         val actualDurationSeconds = (state.totalTime - state.currentTime).toInt()
 
-        // Decide what to do based on whether a focus session or break just finished
         when (state.currentMode) {
             TimerMode.Focus -> handleFocusComplete(config, actualDurationSeconds, state.completedSets)
             TimerMode.ShortBreak, TimerMode.LongBreak -> handleBreakComplete(config, state.completedSets)
@@ -157,13 +145,11 @@ class TimerService(
     }
 
     private suspend fun handleBreakComplete(config: TimerConfig, completedSets: Int) {
-        // Automatically start the next focus session after a break
         transitionAndStart(TimerMode.Focus, config.focusDuration, completedSets)
         _timerEffects.emit(TimerEffect.BreakCompleted)
     }
 
     private fun transitionToBreak(config: TimerConfig, newCompletedSets: Int) {
-        // Determine if it's time for a long break or a short break
         val isLongBreak = (newCompletedSets % config.setsPerLongBreak == 0)
         val (breakMode, breakMinutes) = if (isLongBreak) {
             TimerMode.LongBreak to config.longBreakDuration
@@ -184,7 +170,6 @@ class TimerService(
                 isTimerRunning = false
             )
         }
-        // Auto-start the next phase
         startCountdown(seconds * 1000L)
     }
 
@@ -192,7 +177,6 @@ class TimerService(
         cancelTimer()
         val config = _timerState.value.timerConfig
         val focusSeconds = config.focusDuration * 60L
-        // Reset everything back to the initial focus state
         _timerState.update {
             it.copy(
                 completedSets = 0,
