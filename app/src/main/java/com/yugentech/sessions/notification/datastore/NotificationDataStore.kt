@@ -22,6 +22,7 @@ class NotificationDataStore(
         private val NOTIFICATIONS_ENABLED = booleanPreferencesKey("notifications_enabled")
         private val FOCUS_REMINDER_TIME = stringPreferencesKey("focus_reminder_time")
         private val FOCUS_REMINDERS_ENABLED = booleanPreferencesKey("focus_reminders_enabled")
+        private val SMART_REMINDERS_ENABLED = booleanPreferencesKey("smart_reminders_enabled")
     }
 
     // Fetches the current configuration synchronously (useful for one-off checks like boot)
@@ -52,6 +53,7 @@ class NotificationDataStore(
             if (!enabled) {
                 // If global notifications are off, disable specific reminders too
                 prefs[FOCUS_REMINDERS_ENABLED] = false
+                prefs[SMART_REMINDERS_ENABLED] = false
             }
         }
     }
@@ -61,6 +63,14 @@ class NotificationDataStore(
         Timber.d("Setting focus reminders enabled: $enabled")
         dataStore.edit { prefs ->
             prefs[FOCUS_REMINDERS_ENABLED] = enabled
+        }
+    }
+
+    // Toggles the smart random reminders feature
+    suspend fun setSmartRemindersEnabled(enabled: Boolean) {
+        Timber.d("Setting smart reminders enabled: $enabled")
+        dataStore.edit { prefs ->
+            prefs[SMART_REMINDERS_ENABLED] = enabled
         }
     }
 
@@ -84,6 +94,7 @@ class NotificationDataStore(
     private fun mapPreferencesToConfig(prefs: Preferences): NotificationConfig {
         val notificationsEnabled = prefs[NOTIFICATIONS_ENABLED] ?: true
         val focusRemindersEnabled = prefs[FOCUS_REMINDERS_ENABLED] ?: false
+        val smartRemindersEnabled = prefs[SMART_REMINDERS_ENABLED] ?: false
         val timeString = prefs[FOCUS_REMINDER_TIME]
 
         val (hour, minute) = if (timeString != null) {
@@ -101,6 +112,7 @@ class NotificationDataStore(
         return NotificationConfig(
             notificationsEnabled = notificationsEnabled,
             focusRemindersEnabled = focusRemindersEnabled,
+            smartRemindersEnabled = smartRemindersEnabled,
             reminderTimeHour = hour,
             reminderTimeMinute = minute
         )
