@@ -82,6 +82,11 @@ fun NavGraphBuilder.dashGraph(
                         launchSingleTop = true
                     }
                 },
+                onWhatsNew = {
+                    navController.navigate(AppScreen.WhatsNew.route) {
+                        launchSingleTop = true
+                    }
+                },
                 onAppearance = {
                     navController.navigate(AppScreen.Appearance.route) {
                         launchSingleTop = true
