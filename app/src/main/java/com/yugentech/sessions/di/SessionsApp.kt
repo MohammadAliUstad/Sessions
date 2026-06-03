@@ -1,6 +1,8 @@
 package com.yugentech.sessions.di
 
 import android.app.Application
+import androidx.work.Configuration
+import com.yugentech.sessions.BuildConfig
 import com.google.firebase.FirebaseApp
 import com.yugentech.sessions.di.module.alertsModule
 import com.yugentech.sessions.di.module.authModule
@@ -19,13 +21,18 @@ import org.koin.core.context.startKoin
 import timber.log.Timber
 
 // Main Application class responsible for global initialization
-class SessionsApp : Application() {
+class SessionsApp : Application(), Configuration.Provider {
+
+    override val workManagerConfiguration: Configuration
+        get() = Configuration.Builder()
+            .setMinimumLoggingLevel(if (BuildConfig.DEBUG) android.util.Log.DEBUG else android.util.Log.ERROR)
+            .build()
 
     override fun onCreate() {
         super.onCreate()
 
         // Configure logging: DebugTree for development, ReleaseTree for production
-        Timber.Forest.plant(ReleaseTree())
+        Timber.plant(ReleaseTree())
 
         // Initialize Firebase SDK
         FirebaseApp.initializeApp(this)
@@ -44,7 +51,7 @@ class SessionsApp : Application() {
                 viewModelModule,
                 alertsModule,
                 timerModule,
-                notificationModule
+                notificationModule,
             )
         }
     }

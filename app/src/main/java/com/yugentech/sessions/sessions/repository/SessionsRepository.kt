@@ -17,6 +17,12 @@ interface SessionsRepository {
     // Remove a session from both local storage and the server
     suspend fun deleteSession(sessionId: String): SessionResult<Unit>
 
+    // Remove multiple sessions from both local storage and the server
+    suspend fun deleteSessions(sessionIds: List<String>): SessionResult<Unit>
+
+    // Remove all sessions for the current user
+    suspend fun deleteAllSessions(): SessionResult<Unit>
+
     // Upload any sessions recorded offline to the server
     suspend fun syncSessions(): SessionResult<Unit>
 

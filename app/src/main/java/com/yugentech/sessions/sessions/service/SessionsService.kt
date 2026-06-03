@@ -34,6 +34,47 @@ class SessionsService(
         }
     }
 
+    suspend fun deleteSessions(userId: String, sessionIds: List<String>): SessionResult<Unit> {
+        return try {
+            if (sessionIds.isEmpty()) return SessionResult.Success(Unit)
+            
+            Timber.d("Deleting ${sessionIds.size} sessions from cloud for user: $userId")
+            val batch = firestore.batch()
+            val collection = userSessionsCollection(userId)
+            
+            sessionIds.forEach { id ->
+                batch.delete(collection.document(id))
+            }
+            
+            batch.commit().await()
+            Timber.i("Successfully deleted sessions batch from cloud")
+            SessionResult.Success(Unit)
+        } catch (e: Exception) {
+            Timber.e(e, "Failed to delete sessions batch from cloud")
+            SessionResult.Error(e.message ?: "Failed to delete sessions")
+        }
+    }
+
+    suspend fun deleteAllSessions(userId: String): SessionResult<Unit> {
+        return try {
+            Timber.d("Deleting all sessions from cloud for user: $userId")
+            val collection = userSessionsCollection(userId)
+            val snapshot = collection.get().await()
+            
+            val batch = firestore.batch()
+            snapshot.documents.forEach { doc ->
+                batch.delete(doc.reference)
+            }
+            
+            batch.commit().await()
+            Timber.i("Successfully deleted all sessions from cloud")
+            SessionResult.Success(Unit)
+        } catch (e: Exception) {
+            Timber.e(e, "Failed to delete all sessions from cloud")
+            SessionResult.Error(e.message ?: "Failed to delete all sessions")
+        }
+    }
+
     suspend fun uploadPendingSessions(userId: String, sessions: List<Session>): SessionResult<Unit> {
         return try {
             if (sessions.isEmpty()) {

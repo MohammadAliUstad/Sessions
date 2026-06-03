@@ -74,6 +74,34 @@ class SessionsRepositoryImpl(
         }
     }
 
+    override suspend fun deleteSessions(sessionIds: List<String>): SessionResult<Unit> {
+        val userId = currentUserId ?: return SessionResult.Error("User not logged in")
+
+        return try {
+            Timber.i("Deleting ${sessionIds.size} sessions")
+            sessionsDao.deleteSessions(sessionIds)
+            sessionService.deleteSessions(userId, sessionIds)
+            SessionResult.Success(Unit)
+        } catch (e: Exception) {
+            Timber.e(e, "Failed to delete sessions batch")
+            SessionResult.Error(e.message ?: "Failed to delete sessions")
+        }
+    }
+
+    override suspend fun deleteAllSessions(): SessionResult<Unit> {
+        val userId = currentUserId ?: return SessionResult.Error("User not logged in")
+
+        return try {
+            Timber.i("Deleting all sessions for user: $userId")
+            sessionsDao.deleteAllSessions(userId)
+            sessionService.deleteAllSessions(userId)
+            SessionResult.Success(Unit)
+        } catch (e: Exception) {
+            Timber.e(e, "Failed to delete all sessions")
+            SessionResult.Error(e.message ?: "Failed to delete all sessions")
+        }
+    }
+
     override suspend fun syncSessions(): SessionResult<Unit> {
         val userId = currentUserId ?: return SessionResult.Error("User not logged in")
 
