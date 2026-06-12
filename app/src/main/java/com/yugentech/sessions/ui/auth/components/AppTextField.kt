@@ -60,7 +60,8 @@ fun AppTextField(
                 focusedContainerColor = MaterialTheme.colorScheme.secondaryContainer,
                 unfocusedContainerColor = MaterialTheme.colorScheme.secondaryContainer,
                 focusedIndicatorColor = Color.Transparent,
-                unfocusedIndicatorColor = Color.Transparent
+                unfocusedIndicatorColor = Color.Transparent,
+                errorIndicatorColor = Color.Transparent
             ),
             leadingIcon = {
                 Icon(
