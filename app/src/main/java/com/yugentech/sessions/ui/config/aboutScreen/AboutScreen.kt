@@ -17,6 +17,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Apps
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.ThumbUp
@@ -44,12 +45,15 @@ import androidx.core.net.toUri
 import com.yugentech.sessions.theme.tokens.spacing
 import com.yugentech.sessions.ui.config.aboutScreen.components.AppInfoCard
 import com.yugentech.sessions.ui.config.aboutScreen.components.DonationDialog
+import com.yugentech.sessions.ui.config.aboutScreen.components.ThankYouDialog
 import com.yugentech.sessions.ui.config.model.about.AboutContent
 import com.yugentech.sessions.ui.dash.mainScreen.components.SectionHeader
 import com.yugentech.sessions.ui.dash.mainScreen.components.ToastMessage
 import com.yugentech.sessions.ui.dash.settingsScreen.components.SettingsListItem
 import com.yugentech.sessions.utils.AppConstants
 import com.yugentech.sessions.utils.BillingManager
+import com.yugentech.sessions.alerts.viewmodel.AlertsViewModel
+import org.koin.androidx.compose.koinViewModel
 import org.koin.compose.koinInject
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -57,16 +61,18 @@ import org.koin.compose.koinInject
 fun AboutScreen(
     onNavigateBack: () -> Unit,
     onNavigateToLicenses: () -> Unit,
-    billingManager: BillingManager = koinInject()
+    onNavigateToMoreApps: () -> Unit,
+    billingManager: BillingManager = koinInject(),
+    alertsViewModel: AlertsViewModel = koinViewModel()
 ) {
     val context = LocalContext.current
     val activity = context as? Activity
     val layoutDirection = LocalLayoutDirection.current
+    val view = androidx.compose.ui.platform.LocalView.current
 
-    // STATE: For showing the custom toast
     var toastMessage by remember { mutableStateOf<String?>(null) }
-
     var showDonationDialog by remember { mutableStateOf(false) }
+    var showThankYouDialog by remember { mutableStateOf(false) }
     val scrollBehavior =
         TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
 
@@ -74,17 +80,22 @@ fun AboutScreen(
         billingManager.startConnection()
     }
 
-    // Collect purchase events (success or error) and show Custom Toast
     LaunchedEffect(Unit) {
         billingManager.purchaseEvent.collect { message ->
-            toastMessage = message
+            if (message == "Thank you for your support!") {
+                showThankYouDialog = true
+                alertsViewModel.performHaptic(view)
+            } else {
+                toastMessage = message
+            }
         }
     }
 
     val supportItems = remember(context) {
         AboutContent.getSupportItems(
             context = context,
-            onDonateClick = { showDonationDialog = true }
+            onDonateClick = { showDonationDialog = true },
+            onMoreAppsClick = onNavigateToMoreApps
         )
     }
 
@@ -140,7 +151,6 @@ fun AboutScreen(
                 modifier = Modifier.fillMaxSize(),
                 verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.xxs),
                 contentPadding = PaddingValues(
-
                     bottom = navBarPadding.calculateBottomPadding(),
                     start = MaterialTheme.spacing.m + scaffoldPadding.calculateStartPadding(layoutDirection),
                     end = MaterialTheme.spacing.m + scaffoldPadding.calculateEndPadding(layoutDirection)
@@ -188,8 +198,7 @@ fun AboutScreen(
             ToastMessage(
                 message = toastMessage,
                 onDismiss = { toastMessage = null },
-                modifier = Modifier
-                    .align(Alignment.TopCenter)
+                modifier = Modifier.align(Alignment.TopCenter)
             )
         }
 
@@ -209,7 +218,6 @@ fun AboutScreen(
                     showDonationDialog = false
                 },
                 onWebClick = {
-
                     try {
                         val intent = Intent(Intent.ACTION_VIEW, AppConstants.KOFI_URL.toUri())
                         context.startActivity(intent)
@@ -217,6 +225,15 @@ fun AboutScreen(
                         toastMessage = "Could not open link"
                     }
                     showDonationDialog = false
+                }
+            )
+        }
+
+        if (showThankYouDialog) {
+            ThankYouDialog(
+                onDismiss = {
+                    showThankYouDialog = false
+                    alertsViewModel.performHaptic(view)
                 }
             )
         }

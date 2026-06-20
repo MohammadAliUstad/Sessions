@@ -5,10 +5,12 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ExitToApp
 import androidx.compose.material.icons.automirrored.filled.VolumeUp
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Palette
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -24,6 +26,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.yugentech.sessions.R
 import com.yugentech.sessions.notification.viewmodel.NotificationsViewModel
 import com.yugentech.sessions.theme.tokens.spacing
+import com.yugentech.sessions.ui.dash.homeScreen.components.ExitConfirmationDialog
 import com.yugentech.sessions.ui.dash.homeScreen.components.LogoutConfirmationDialog
 import com.yugentech.sessions.ui.dash.mainScreen.components.SectionHeader
 import com.yugentech.sessions.alerts.viewmodel.AlertsViewModel
@@ -38,7 +41,9 @@ fun SettingsScreen(
     alertsViewModel: AlertsViewModel,
     notificationsViewModel: NotificationsViewModel,
     onSignOut: () -> Unit,
+    onExit: () -> Unit,
     onAbout: () -> Unit,
+    onWhatsNew: () -> Unit,
     onAppearance: () -> Unit
 ) {
     val alertsConfiguration by alertsViewModel.alertConfigurations.collectAsState()
@@ -47,6 +52,7 @@ fun SettingsScreen(
 
     var showTimePickerDialog by remember { mutableStateOf(false) }
     var showLogoutDialog by remember { mutableStateOf(false) }
+    var showExitDialog by remember { mutableStateOf(false) }
 
     val view = LocalView.current
     val context = LocalContext.current
@@ -72,7 +78,7 @@ fun SettingsScreen(
                 subtitle = "Allow Sessions to send you notifications",
                 checked = notificationConfiguration.notificationsEnabled,
                 index = 0,
-                totalCount = 2,
+                totalCount = 3,
                 onCheckedChange = { enabled ->
                     notificationsViewModel.setNotificationsEnabled(enabled)
                     alertsViewModel.performHaptic(view)
@@ -86,7 +92,7 @@ fun SettingsScreen(
                 checked = notificationConfiguration.focusRemindersEnabled,
                 enabled = notificationConfiguration.notificationsEnabled,
                 index = 1,
-                totalCount = 2,
+                totalCount = 3,
                 onCheckedChange = { isChecked ->
                     if (isChecked) {
                         if (notificationsViewModel.canEnableReminders()) {
@@ -101,6 +107,20 @@ fun SettingsScreen(
                     if (notificationConfiguration.notificationsEnabled && notificationsViewModel.canEnableReminders()) {
                         showTimePickerDialog = true
                     }
+                }
+            )
+        }
+        item {
+            SettingsSwitchItem(
+                title = "Smart Reminders",
+                subtitle = "Playful nudges to help you stay consistent",
+                checked = notificationConfiguration.smartRemindersEnabled,
+                enabled = notificationConfiguration.notificationsEnabled,
+                index = 2,
+                totalCount = 3,
+                onCheckedChange = { enabled ->
+                    notificationsViewModel.setSmartRemindersEnabled(enabled)
+                    alertsViewModel.performHaptic(view)
                 }
             )
         }
@@ -171,6 +191,31 @@ fun SettingsScreen(
         }
         item {
             SettingsListItem(
+                title = "What's New",
+                subtitle = "See the latest changes",
+                index = 1,
+                totalCount = 2,
+                onClick = onWhatsNew
+            )
+        }
+
+        item {
+            SectionHeader(
+                icon = Icons.AutoMirrored.Filled.ExitToApp,
+                title = "Session"
+            )
+        }
+        item {
+            SettingsListItem(
+                title = "Exit",
+                subtitle = "Close the Sessions app",
+                index = 0,
+                totalCount = 2,
+                onClick = { showExitDialog = true }
+            )
+        }
+        item {
+            SettingsListItem(
                 title = "Sign Out",
                 subtitle = "Log out of your current session",
                 index = 1,
@@ -197,6 +242,13 @@ fun SettingsScreen(
         LogoutConfirmationDialog(
             onConfirm = onSignOut,
             onDismiss = { showLogoutDialog = false }
+        )
+    }
+
+    if (showExitDialog) {
+        ExitConfirmationDialog(
+            onConfirm = onExit,
+            onDismiss = { showExitDialog = false }
         )
     }
 

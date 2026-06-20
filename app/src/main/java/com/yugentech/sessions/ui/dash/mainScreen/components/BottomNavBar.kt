@@ -15,7 +15,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
@@ -80,10 +80,10 @@ private fun AnimatedNavIcon(
     shouldPlay: Boolean,
     modifier: Modifier = Modifier
 ) {
-    var playCount by remember { mutableIntStateOf(0) }
+    var isAnimating by remember { mutableStateOf(false) }
 
     LaunchedEffect(shouldPlay) {
-        if (shouldPlay) playCount++
+        if (shouldPlay) isAnimating = true
     }
 
     val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(jsonResId))
@@ -105,8 +105,22 @@ private fun AnimatedNavIcon(
     LottieAnimation(
         composition = composition,
         modifier = modifier.size(24.dp),
-        isPlaying = shouldPlay && playCount > 0,
+        isPlaying = isAnimating,
         iterations = 1,
-        dynamicProperties = dynamicProperties
+        dynamicProperties = dynamicProperties,
+        maintainOriginalImageBounds = true
     )
+
+    // Reset isAnimating only when the animation completes
+    LaunchedEffect(isAnimating) {
+        if (isAnimating) {
+            // LottieAnimation with iterations = 1 will stop playing.
+            // We use composition?.duration to wait for the animation to finish
+            // before resetting the state, allowing it to complete even if shouldPlay becomes false.
+            composition?.let {
+                kotlinx.coroutines.delay(it.duration.toLong())
+                isAnimating = false
+            }
+        }
+    }
 }
