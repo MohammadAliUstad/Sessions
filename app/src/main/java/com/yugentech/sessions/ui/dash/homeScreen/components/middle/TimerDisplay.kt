@@ -1,8 +1,15 @@
 package com.yugentech.sessions.ui.dash.homeScreen.components.middle
 
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.SizeTransform
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -45,7 +52,7 @@ fun TimerDisplay(
 
     val animatedProgress by animateFloatAsState(
         targetValue = targetProgress,
-        animationSpec = tween(durationMillis = 1000, easing = FastOutSlowInEasing),
+        animationSpec = tween(durationMillis = 600, easing = FastOutSlowInEasing),
         label = "timer_progress"
     )
 
@@ -64,36 +71,51 @@ fun TimerDisplay(
             trackColor = MaterialTheme.colorScheme.surfaceVariant
         )
 
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center,
-            modifier = Modifier.padding(horizontal = MaterialTheme.spacing.xl)
-        ) {
-            val showTimeDisplay = isStudying || (displayTime < selectedDuration)
+        val showTimeDisplay = isStudying || (displayTime < selectedDuration)
 
-            if (showTimeDisplay) {
-                Text(
-                    text = "%02d:%02d".format(displayTime / 60, displayTime % 60),
-                    style = MaterialTheme.typography.displayLarge.copy(
-                        fontWeight = FontWeight.Normal,
-                        fontFeatureSettings = "tnum"
-                    ),
-                    textAlign = TextAlign.Center,
-                    color = MaterialTheme.colorScheme.onSurface
-                )
+        AnimatedContent(
+            targetState = if (showTimeDisplay) "timer" else idleLabel,
+            transitionSpec = {
+                val duration = 300
+                (slideInVertically(animationSpec = tween(duration)) { it / 2 } + fadeIn(animationSpec = tween(duration)))
+                    .togetherWith(slideOutVertically(animationSpec = tween(duration)) { -it / 2 } + fadeOut(animationSpec = tween(duration)))
+                    .using(SizeTransform(clip = false))
+            },
+            contentAlignment = Alignment.Center,
+            label = "timer_text_animation"
+        ) { target ->
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center,
+                modifier = Modifier.padding(horizontal = MaterialTheme.spacing.xl)
+            ) {
+                if (target == "timer") {
+                    Text(
+                        text = "%02d:%02d".format(displayTime / 60, displayTime % 60),
+                        style = MaterialTheme.typography.displayLarge.copy(
+                            fontWeight = FontWeight.Normal,
+                            fontFeatureSettings = "tnum"
+                        ),
+                        textAlign = TextAlign.Center,
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
 
-                Spacer(modifier = Modifier.height(MaterialTheme.spacing.sm))
+                    Spacer(modifier = Modifier.height(MaterialTheme.spacing.sm))
 
-                ModeTag(mode = currentMode)
-            } else {
-                Text(
-                    text = idleLabel,
-                    style = MaterialTheme.typography.headlineSmall.copy(
-                        fontWeight = FontWeight.Medium
-                    ),
-                    textAlign = TextAlign.Center,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
+                    ModeTag(mode = currentMode)
+                } else {
+                    Text(
+                        text = target,
+                        style = MaterialTheme.typography.headlineSmall.copy(
+                            fontWeight = FontWeight.Medium
+                        ),
+                        textAlign = TextAlign.Center,
+                        color = if (target != "Press the play button\nto start.")
+                            MaterialTheme.colorScheme.error
+                        else
+                            MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
             }
         }
     }

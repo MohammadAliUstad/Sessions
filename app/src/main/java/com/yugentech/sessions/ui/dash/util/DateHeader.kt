@@ -20,6 +20,26 @@ fun dateHeader(timestamp: Long): String {
     }
 }
 
+fun weeklyHeader(timestamp: Long): String {
+    val cal = Calendar.getInstance().apply {
+        timeInMillis = timestamp
+        firstDayOfWeek = Calendar.MONDAY
+        set(Calendar.DAY_OF_WEEK, Calendar.MONDAY)
+    }
+    val startOfWeek = cal.time
+
+    cal.add(Calendar.DAY_OF_WEEK, 6)
+    val endOfWeek = cal.time
+
+    val formatter = SimpleDateFormat("EEEE, MMM dd", Locale.getDefault())
+    return "${formatter.format(startOfWeek)} - ${formatter.format(endOfWeek)}"
+}
+
+fun monthlyHeader(timestamp: Long): String {
+    val formatter = SimpleDateFormat("MMMM yyyy", Locale.getDefault())
+    return formatter.format(Date(timestamp))
+}
+
 fun isSameDay(cal1: Calendar, cal2: Calendar): Boolean {
     return cal1.get(Calendar.YEAR) == cal2.get(Calendar.YEAR) &&
             cal1.get(Calendar.DAY_OF_YEAR) == cal2.get(Calendar.DAY_OF_YEAR)

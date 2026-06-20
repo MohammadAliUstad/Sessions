@@ -14,6 +14,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.LibraryBooks
 import androidx.compose.material.icons.automirrored.rounded.VolumeOff
 import androidx.compose.material.icons.rounded.BlurOn
+import androidx.compose.material.icons.rounded.Forest
+import androidx.compose.material.icons.rounded.Headphones
 import androidx.compose.material.icons.rounded.LocalFireDepartment
 import androidx.compose.material.icons.rounded.Water
 import androidx.compose.material.icons.rounded.WaterDrop
@@ -53,18 +55,19 @@ fun SoundSelectionDialog(
     }
 
     val options = listOf(
-        SoundOption("None", BackgroundSound.NONE.id, Icons.AutoMirrored.Rounded.VolumeOff),
+        SoundOption("Forest", BackgroundSound.FOREST.id, Icons.Rounded.Forest),
         SoundOption("Rain", BackgroundSound.RAIN.id, Icons.Rounded.WaterDrop),
         SoundOption("Brown Noise", BackgroundSound.BROWN_NOISE.id, Icons.Rounded.BlurOn),
         SoundOption("Fireplace", BackgroundSound.FIREPLACE.id, Icons.Rounded.LocalFireDepartment),
         SoundOption("Library", BackgroundSound.LIBRARY.id, Icons.AutoMirrored.Rounded.LibraryBooks),
-        SoundOption("Riverside", BackgroundSound.RIVERSIDE.id, Icons.Rounded.Water)
+        SoundOption("Riverside", BackgroundSound.RIVERSIDE.id, Icons.Rounded.Water),
+        SoundOption("None", BackgroundSound.NONE.id, Icons.AutoMirrored.Rounded.VolumeOff)
     )
 
     AlertDialog(
         onDismissRequest = onDismiss,
         properties = DialogProperties(usePlatformDefaultWidth = false),
-        modifier = Modifier.fillMaxWidth(0.84f),
+        modifier = Modifier.fillMaxWidth(0.80f),
         title = {
             Text(
                 text = "Background Sound",
@@ -73,7 +76,10 @@ fun SoundSelectionDialog(
             )
         },
         text = {
-            Column(verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.s)) {
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.s)
+            ) {
                 options.chunked(2).forEach { rowOptions ->
                     Row(
                         modifier = Modifier.fillMaxWidth(),
@@ -97,13 +103,13 @@ fun SoundSelectionDialog(
             }
         },
         confirmButton = {
-            Button(
+            TextButton(
                 onClick = {
                     onConfirm(selectedOption)
                     onDismiss()
                 }
             ) {
-                Text("Done")
+                Text("Save")
             }
         },
         dismissButton = {
