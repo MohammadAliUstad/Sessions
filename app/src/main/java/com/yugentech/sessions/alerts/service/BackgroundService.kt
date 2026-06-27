@@ -44,137 +44,147 @@ class BackgroundService(private val context: Context) {
 
     // Main entry point to start playing a specific sound
     fun play(sound: BackgroundSound, isBreakMode: Boolean = false) {
-        Timber.d("play() called with sound: ${sound.id}, isBreakMode: $isBreakMode")
+        handler.post {
+            Timber.d("play() called with sound: ${sound.id}, isBreakMode: $isBreakMode")
 
-        if (sound == BackgroundSound.NONE) {
-            stop()
-            return
-        }
+            if (sound == BackgroundSound.NONE) {
+                stop()
+                return@post
+            }
 
-        if (isStopping) {
-            Timber.d("Cancelling ongoing stop operation")
-            isStopping = false
-        }
-
-        val startVolume = if (isBreakMode) BREAK_VOLUME else FOCUS_VOLUME
-
-        if (isLooping && currentSound == sound) {
-            Timber.d("Same sound already playing, adjusting volume for mode")
-            if (isBreakMode) fadeToBreakMode() else fadeToFocusMode()
-            return
-        }
-
-        Timber.d("Starting new sound: ${sound.id}")
-        release()
-
-        sound.resId?.let { resId ->
-            try {
-                val uri = "android.resource://${context.packageName}/$resId"
-                currentSound = sound
-                isLooping = true
-
-                targetVolume = startVolume
-                crossfadeScheduled = false
+            if (isStopping) {
+                Timber.d("Cancelling ongoing stop operation")
                 isStopping = false
+            }
 
-                // Initialize two players for seamless looping via crossfading
-                activePlayer = createPlayer(uri).apply {
-                    volume = 0f
-                    playWhenReady = true
+            val startVolume = if (isBreakMode) BREAK_VOLUME else FOCUS_VOLUME
+
+            if (isLooping && currentSound == sound) {
+                Timber.d("Same sound already playing, adjusting volume for mode")
+                if (isBreakMode) fadeToBreakMode() else fadeToFocusMode()
+                return@post
+            }
+
+            Timber.d("Starting new sound: ${sound.id}")
+            releaseInternal()
+
+            sound.resId?.let { resId ->
+                try {
+                    val uri = "android.resource://${context.packageName}/$resId"
+                    currentSound = sound
+                    isLooping = true
+
+                    targetVolume = startVolume
+                    crossfadeScheduled = false
+                    isStopping = false
+
+                    // Initialize two players for seamless looping via crossfading
+                    activePlayer = createPlayer(uri).apply {
+                        volume = 0f
+                        playWhenReady = true
+                    }
+                    nextPlayer = createPlayer(uri)
+
+                    startPositionMonitoring(uri)
+
+                    fadeVolumeInternal(0f, startVolume)
+                } catch (e: Exception) {
+                    Timber.e(e, "Failed to start background sound")
+                    releaseInternal()
                 }
-                nextPlayer = createPlayer(uri)
-
-                startPositionMonitoring(uri)
-
-                fadeVolume(0f, startVolume)
-            } catch (e: Exception) {
-                Timber.e(e, "Failed to start background sound")
-                release()
             }
         }
     }
 
     // Plays a short clip of the sound for user selection, then fades out
     fun playPreview(sound: BackgroundSound) {
-        Timber.d("playPreview() called with sound: ${sound.id}")
-        handler.removeCallbacksAndMessages(null)
-        release()
+        handler.post {
+            Timber.d("playPreview() called with sound: ${sound.id}")
+            handler.removeCallbacksAndMessages(null)
+            releaseInternal()
 
-        if (sound == BackgroundSound.NONE) return
+            if (sound == BackgroundSound.NONE) return@post
 
-        sound.resId?.let { resId ->
-            try {
-                val uri = "android.resource://${context.packageName}/$resId"
-                currentSound = sound
-                isLooping = false
-                isStopping = false
+            sound.resId?.let { resId ->
+                try {
+                    val uri = "android.resource://${context.packageName}/$resId"
+                    currentSound = sound
+                    isLooping = false
+                    isStopping = false
 
-                activePlayer = ExoPlayer.Builder(context).build().apply {
-                    setMediaItem(MediaItem.fromUri(uri))
-                    volume = 0f
-                    repeatMode = Player.REPEAT_MODE_OFF
-                    prepare()
-                    playWhenReady = true
+                    activePlayer = ExoPlayer.Builder(context).build().apply {
+                        setMediaItem(MediaItem.fromUri(uri))
+                        volume = 0f
+                        repeatMode = Player.REPEAT_MODE_OFF
+                        prepare()
+                        playWhenReady = true
+                    }
+
+                    // Fade in
+                    volumeAnimator = ValueAnimator.ofFloat(0f, FOCUS_VOLUME).apply {
+                        duration = PREVIEW_FADE_DURATION
+                        interpolator = LinearInterpolator()
+                        addUpdateListener { activePlayer?.volume = it.animatedValue as Float }
+                        start()
+                    }
+
+                    // Schedule fade out and cleanup
+                    handler.postDelayed({
+                        volumeAnimator?.cancel()
+                        volumeAnimator =
+                            ValueAnimator.ofFloat(activePlayer?.volume ?: FOCUS_VOLUME, 0f).apply {
+                                duration = PREVIEW_FADE_DURATION
+                                interpolator = LinearInterpolator()
+                                addUpdateListener { activePlayer?.volume = it.animatedValue as Float }
+                                addListener(object : AnimatorListenerAdapter() {
+                                    override fun onAnimationEnd(animation: Animator) = releaseInternal()
+                                })
+                                start()
+                            }
+                    }, PREVIEW_DURATION - PREVIEW_FADE_DURATION)
+
+                } catch (e: Exception) {
+                    Timber.e(e, "Preview failed")
+                    releaseInternal()
                 }
-
-                // Fade in
-                volumeAnimator = ValueAnimator.ofFloat(0f, FOCUS_VOLUME).apply {
-                    duration = PREVIEW_FADE_DURATION
-                    interpolator = LinearInterpolator()
-                    addUpdateListener { activePlayer?.volume = it.animatedValue as Float }
-                    start()
-                }
-
-                // Schedule fade out and cleanup
-                handler.postDelayed({
-                    volumeAnimator?.cancel()
-                    volumeAnimator =
-                        ValueAnimator.ofFloat(activePlayer?.volume ?: FOCUS_VOLUME, 0f).apply {
-                            duration = PREVIEW_FADE_DURATION
-                            interpolator = LinearInterpolator()
-                            addUpdateListener { activePlayer?.volume = it.animatedValue as Float }
-                            addListener(object : AnimatorListenerAdapter() {
-                                override fun onAnimationEnd(animation: Animator) = release()
-                            })
-                            start()
-                        }
-                }, PREVIEW_DURATION - PREVIEW_FADE_DURATION)
-
-            } catch (e: Exception) {
-                Timber.e(e, "Preview failed")
-                release()
             }
         }
     }
 
     // Lowers volume during break sessions
     fun fadeToBreakMode() {
-        Timber.d("fadeToBreakMode() called")
-        fadeVolume(targetVolume, BREAK_VOLUME)
+        handler.post {
+            Timber.d("fadeToBreakMode() called")
+            fadeVolumeInternal(targetVolume, BREAK_VOLUME)
+        }
     }
 
     // Restores full volume for focus sessions
     fun fadeToFocusMode() {
-        Timber.d("fadeToFocusMode() called")
-        fadeVolume(targetVolume, FOCUS_VOLUME)
+        handler.post {
+            Timber.d("fadeToFocusMode() called")
+            fadeVolumeInternal(targetVolume, FOCUS_VOLUME)
+        }
     }
 
     // Gradually fades out audio and releases resources
     fun stop() {
-        Timber.d("stop() called")
+        handler.post {
+            Timber.d("stop() called")
 
-        if (activePlayer?.isPlaying == true) {
-            isStopping = true
-            fadeVolume(targetVolume, 0f) {
-                if (isStopping) {
-                    Timber.d("Fade complete, releasing player")
-                    release()
-                } else {
-                    Timber.d("Fade complete, but stop was cancelled - keeping player")
+            if (activePlayer?.isPlaying == true) {
+                isStopping = true
+                fadeVolumeInternal(targetVolume, 0f) {
+                    if (isStopping) {
+                        Timber.d("Fade complete, releasing player")
+                        releaseInternal()
+                    } else {
+                        Timber.d("Fade complete, but stop was cancelled - keeping player")
+                    }
                 }
+            } else {
+                releaseInternal()
             }
-        } else {
-            release()
         }
     }
 
@@ -273,6 +283,17 @@ class BackgroundService(private val context: Context) {
         duration: Long = FADE_DURATION,
         onEnd: (() -> Unit)? = null
     ) {
+        handler.post {
+            fadeVolumeInternal(from, to, duration, onEnd)
+        }
+    }
+
+    private fun fadeVolumeInternal(
+        from: Float,
+        to: Float,
+        duration: Long = FADE_DURATION,
+        onEnd: (() -> Unit)? = null
+    ) {
         volumeAnimator?.cancel()
         volumeAnimator?.removeAllListeners()
         volumeAnimator?.removeAllUpdateListeners()
@@ -303,7 +324,11 @@ class BackgroundService(private val context: Context) {
 
     // Cleans up all players, animators, and handlers to prevent leaks
     fun release() {
-        Timber.d("release() called")
+        handler.post { releaseInternal() }
+    }
+
+    private fun releaseInternal() {
+        Timber.d("releaseInternal() called")
         try {
             positionMonitor?.let { handler.removeCallbacks(it) }
 

@@ -69,10 +69,52 @@ object SessionDashboardCalculator {
             }
 
             else -> {
+                val focusTaglines = listOf(
+                    "Stay in the zone",
+                    "Consistency is key",
+                    "One step at a time",
+                    "Focus on the process",
+                    "Small wins add up",
+                    "Keep the momentum",
+                    "Stay disciplined",
+                    "Trust the process",
+                    "You've got this",
+                    "Eyes on the prize",
+                    "Deep work mode",
+                    "Eliminate distractions"
+                )
+                
+                val breakTaglines = listOf(
+                    "Reset and recover",
+                    "Take a deep breath",
+                    "Time to recharge",
+                    "Stretch your legs",
+                    "Hydrate and relax",
+                    "Mindful pause",
+                    "Step away for a bit",
+                    "Enjoy the silence",
+                    "Relax your eyes",
+                    "Briefly disconnect"
+                )
+
+                val random = java.util.Random(completedSets.toLong())
+                val tagline = if (isBreakMode) {
+                    breakTaglines[random.nextInt(breakTaglines.size)]
+                } else {
+                    focusTaglines[random.nextInt(focusTaglines.size)]
+                }
+
                 when (setsLeft) {
                     0 -> "Finish line!" to "You made it"
                     1 -> "Final push!" to "Stay focused"
-                    else -> "$setsLeft sets to go" to "Keep the rhythm"
+                    else -> {
+                        if (isBreakMode) {
+                            val breakType = if (isLongBreakMode) "Long Break" else "Short Break"
+                            breakType to tagline
+                        } else {
+                            "$setsLeft sets to go" to tagline
+                        }
+                    }
                 }
             }
         }

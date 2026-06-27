@@ -25,24 +25,28 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalView
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.yugentech.sessions.theme.viewmodel.ThemeViewModel
 import com.yugentech.sessions.theme.config.ThemeMode
 import com.yugentech.sessions.theme.tokens.components
 import com.yugentech.sessions.theme.tokens.corners
 import com.yugentech.sessions.theme.tokens.spacing
+import com.yugentech.sessions.alerts.viewmodel.AlertsViewModel
 import org.koin.androidx.compose.koinViewModel
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun AmoledThemeSelector(
     modifier: Modifier = Modifier,
-    viewModel: ThemeViewModel = koinViewModel()
+    viewModel: ThemeViewModel = koinViewModel(),
+    alertsViewModel: AlertsViewModel = koinViewModel()
 ) {
     val themeConfig by viewModel.themeConfiguration.collectAsStateWithLifecycle()
     val isSystemDark = isSystemInDarkTheme()
     val isDarkThemeActive =
         themeConfig.themeMode == ThemeMode.DARK || (themeConfig.themeMode == ThemeMode.SYSTEM && isSystemDark)
+    val view = LocalView.current
 
     Card(
         modifier = modifier.fillMaxWidth(),
@@ -99,6 +103,7 @@ fun AmoledThemeSelector(
                         enabled = isDarkThemeActive,
                         onCheckedChange = { isChecked ->
                             viewModel.updateTheme(themeConfig.copy(isAmoledMode = isChecked))
+                            alertsViewModel.performHaptic(view)
                         },
                         thumbContent = if (themeConfig.isAmoledMode) {
                             {

@@ -44,7 +44,7 @@ class ScheduledReceiver : BroadcastReceiver(), KoinComponent {
         }
 
         // Extract alarm details from the intent
-        val message = intent.getStringExtra(EXTRA_MESSAGE) ?: "Time to study!"
+        val message = intent.getStringExtra(EXTRA_MESSAGE) ?: "Time to focus and be productive"
         val hour = intent.getIntExtra(EXTRA_HOUR, 8)
         val minute = intent.getIntExtra(EXTRA_MINUTE, 0)
 
@@ -80,7 +80,7 @@ class ScheduledReceiver : BroadcastReceiver(), KoinComponent {
                     Timber.d("Boot completed. Rescheduling for ${config.reminderTimeHour}:${config.reminderTimeMinute}")
 
                     scheduledNotificationManager.scheduleReminder(
-                        message = "Time to study!",
+                        message = "Time to focus and be productive",
                         hour = config.reminderTimeHour,
                         minute = config.reminderTimeMinute
                     )

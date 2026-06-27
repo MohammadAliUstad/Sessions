@@ -1,0 +1,106 @@
+<animated-vector xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt">
+
+    <aapt:attr name="android:drawable">
+        <vector
+            android:width="288dp"
+            android:height="288dp"
+            android:viewportWidth="512"
+            android:viewportHeight="512">
+
+            <group
+                android:pivotX="256"
+                android:pivotY="256"
+                android:scaleX="0.7"
+                android:scaleY="0.7">
+
+                <path
+                    android:pathData="M367.615 88.0934H143.385C129.365 88.0934 118 98.7219 118 111.833V400.665C118 413.776 129.365 424.404 143.385 424.404H367.615C381.635 424.404 393 413.776 393 400.665V111.833C393 98.7219 381.635 88.0934 367.615 88.0934Z"
+                    android:fillColor="#333333"/>
+
+                <path
+                    android:pathData="M156.077 88.0934H118V424.404H156.077V88.0934Z"
+                    android:fillColor="#1A1A1A"/>
+
+                <path
+                    android:pathData="M369.731 88.0934H348.577V424.404H369.731V88.0934Z"
+                    android:fillColor="#333333"/>
+
+                <group android:name="quill_group">
+                    <path
+                        android:pathData="M324.829 97.4676C243.055 131.253 247.663 197.27 204.281 245.381C178.559 278.648 196.795 339.034 199.867 383.045C235.187 353.359 289.895 320.191 300.26 281.193C295.653 215.176 358.231 174.228 324.829 97.4676Z"
+                        android:fillColor="#E6D3A3"/>
+
+                    <path
+                        android:pathData="M202.379 377.944L190.212 416.111"
+                        android:strokeWidth="12.0"
+                        android:fillColor="#00000000"
+                        android:strokeColor="#A88B4A"
+                        android:strokeLineCap="round"/>
+
+                    <path
+                        android:pathData="M323.771 97.4288C242.492 131.145 247.073 197.025 203.953 245.037C178.387 278.236 196.514 338.496 199.568 382.416"
+                        android:strokeWidth="12.0"
+                        android:fillColor="#00000000"
+                        android:strokeColor="#A88B4A"
+                        android:strokeLineCap="round"/>
+
+                    <path
+                        android:pathData="M325.13 98.108C358.326 174.706 292.129 224.761 300.715 281.446C290.414 320.361 236.045 353.46 200.944 383.084"
+                        android:strokeWidth="12.0"
+                        android:fillColor="#00000000"
+                        android:strokeColor="#A88B4A"
+                        android:strokeLineCap="round"/>
+                </group>
+            </group>
+
+        </vector>
+    </aapt:attr>
+
+    <target android:name="quill_group">
+        <aapt:attr name="android:animation">
+            <!--
+                Full round-trip writing stroke:
+                Phase 1 (350ms) — quill moves right and slightly down, like a writing stroke
+                Phase 2 (450ms) — quill lifts and returns to its original position
+                Total: 800ms
+            -->
+            <set android:ordering="sequentially">
+
+                <!-- Stroke down: move right + slightly down -->
+                <set android:ordering="together">
+                    <objectAnimator
+                        android:propertyName="translateX"
+                        android:valueFrom="0"
+                        android:valueTo="28"
+                        android:duration="350"
+                        android:interpolator="@android:interpolator/fast_out_slow_in" />
+                    <objectAnimator
+                        android:propertyName="translateY"
+                        android:valueFrom="0"
+                        android:valueTo="10"
+                        android:duration="350"
+                        android:interpolator="@android:interpolator/fast_out_slow_in" />
+                </set>
+
+                <!-- Lift back: return to origin -->
+                <set android:ordering="together">
+                    <objectAnimator
+                        android:propertyName="translateX"
+                        android:valueFrom="28"
+                        android:valueTo="0"
+                        android:duration="450"
+                        android:interpolator="@android:interpolator/fast_out_slow_in" />
+                    <objectAnimator
+                        android:propertyName="translateY"
+                        android:valueFrom="10"
+                        android:valueTo="0"
+                        android:duration="450"
+                        android:interpolator="@android:interpolator/fast_out_slow_in" />
+                </set>
+
+            </set>
+        </aapt:attr>
+    </target>
+
+</animated-vector>

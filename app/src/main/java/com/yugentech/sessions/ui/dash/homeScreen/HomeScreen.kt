@@ -1,8 +1,16 @@
 package com.yugentech.sessions.ui.dash.homeScreen
 
+import android.app.Activity
+import android.content.ActivityNotFoundException
+import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -24,42 +32,51 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.yugentech.sessions.alerts.viewmodel.AlertsViewModel
 import com.yugentech.sessions.timer.viewmodel.TimerViewModel
+import com.yugentech.sessions.ui.dash.homeScreen.components.FinishConfirmationDialog
 import com.yugentech.sessions.ui.dash.homeScreen.components.bottomRow.SessionControlBar
 import com.yugentech.sessions.ui.dash.homeScreen.components.dialogs.DurationPickerDialog
+import com.yugentech.sessions.ui.dash.homeScreen.components.dialogs.GoalReachedDialog
+import com.yugentech.sessions.ui.dash.homeScreen.components.dialogs.ReviewReminderDialog
 import com.yugentech.sessions.ui.dash.homeScreen.components.dialogs.SetsSettingsDialog
 import com.yugentech.sessions.ui.dash.homeScreen.components.dialogs.SoundSelectionDialog
-import com.yugentech.sessions.ui.dash.homeScreen.components.dialogs.TaskInputDialog
 import com.yugentech.sessions.ui.dash.homeScreen.components.durationSelection.SessionConfigCard
 import com.yugentech.sessions.ui.dash.homeScreen.components.durationSelection.SessionProgressCard
 import com.yugentech.sessions.ui.dash.homeScreen.components.middle.TimerDisplay
 import com.yugentech.sessions.ui.dash.homeScreen.components.topRow.SessionHeader
-import com.yugentech.sessions.ui.dash.mainScreen.components.ToastMessage
 import com.yugentech.sessions.ui.dash.util.models.ActiveDialog
+import com.yugentech.sessions.utils.AppConstants
 import com.yugentech.sessions.viewModels.HomeViewModel
+import com.google.android.play.core.review.ReviewManagerFactory
+import kotlinx.coroutines.delay
+import org.koin.androidx.compose.koinViewModel
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun HomeScreen(
     homeViewModel: HomeViewModel,
     timerViewModel: TimerViewModel,
-    userId: String
+    userId: String,
+    alertsViewModel: AlertsViewModel = koinViewModel()
 ) {
     val timerState by timerViewModel.timerState.collectAsStateWithLifecycle()
     val dashboardState by timerViewModel.dashboardState.collectAsStateWithLifecycle()
     val errorMessage by timerViewModel.errorMessage.collectAsStateWithLifecycle()
+    val showGoalReached by timerViewModel.showGoalReachedDialog.collectAsStateWithLifecycle()
+    val setsRemainingToConfirm by timerViewModel.showFinishConfirmation.collectAsStateWithLifecycle()
+    val homeDataState by homeViewModel.dataState.collectAsStateWithLifecycle()
 
     val config = timerState.timerConfig
     val isSessionActive = !timerState.isIdle
 
     val view = LocalView.current
+    val context = view.context
     val scrollState = rememberScrollState()
     var activeDialog by remember { mutableStateOf(ActiveDialog.None) }
 
     LaunchedEffect(userId) {
-        homeViewModel.fetchUserOnce(userId)
-        homeViewModel.fetchSessionsOnce(userId)
-        homeViewModel.syncPendingSessions(userId)
+        homeViewModel.initUserData(userId)
     }
 
     Surface(
@@ -86,7 +103,14 @@ fun HomeScreen(
                     SessionHeader(
                         isRunning = timerState.isTimerRunning,
                         sessionTask = config.sessionTask,
-                        onTaskClick = { activeDialog = ActiveDialog.Task },
+                        onTaskChange = { newTask ->
+                            timerViewModel.updateSessionTask(newTask)
+                        },
+                        onSoundBadgeClick = {
+                            timerViewModel.toggleAmbientSound()
+                            alertsViewModel.performHaptic(view)
+                        },
+                        isAmbientEnabled = config.isAmbientEnabled,
                         activeBackgroundSoundId = config.activeBackgroundSoundId
                     )
 
@@ -95,6 +119,7 @@ fun HomeScreen(
                         selectedDuration = timerState.totalTime.toInt(),
                         isStudying = timerState.isTimerRunning,
                         currentMode = timerState.currentMode,
+                        idleLabel = errorMessage ?: "Press the play button\nto start."
                     )
 
                     AnimatedContent(
@@ -106,14 +131,22 @@ fun HomeScreen(
                                 state = dashboardState,
                                 targetSets = config.targetSets,
                                 isTimerRunning = timerState.isTimerRunning,
-                                onSkipToNext = { timerViewModel.skipToNextMode(view) }
+                                onSkipToNext = {
+                                    timerViewModel.skipToNextMode(view)
+                                }
                             )
                         } else {
                             SessionConfigCard(
                                 focusDurationMinutes = config.focusDuration,
                                 shortBreakDurationMinutes = config.shortBreakDuration,
-                                onFocusClick = { activeDialog = ActiveDialog.Focus },
-                                onShortBreakClick = { activeDialog = ActiveDialog.ShortBreak }
+                                onFocusClick = {
+                                    activeDialog = ActiveDialog.Focus
+                                    alertsViewModel.performHaptic(view)
+                                },
+                                onShortBreakClick = {
+                                    activeDialog = ActiveDialog.ShortBreak
+                                    alertsViewModel.performHaptic(view)
+                                }
                             )
                         }
                     }
@@ -128,10 +161,20 @@ fun HomeScreen(
                                 timerViewModel.startTimer(view)
                             }
                         },
-                        onSoundClick = { activeDialog = ActiveDialog.Sound },
-                        onSetsClick = { activeDialog = ActiveDialog.SetsSettings },
-                        onStopDiscard = { timerViewModel.stopAndDiscardSession(view) },
-                        onStopSave = { timerViewModel.stopAndSaveSession(view) }
+                        onSoundClick = {
+                            activeDialog = ActiveDialog.Sound
+                            alertsViewModel.performHaptic(view)
+                        },
+                        onSetsClick = {
+                            activeDialog = ActiveDialog.SetsSettings
+                            alertsViewModel.performHaptic(view)
+                        },
+                        onStopDiscard = {
+                            timerViewModel.stopAndDiscardSession(view)
+                        },
+                        onStopSave = {
+                            timerViewModel.stopAndSaveSession(view)
+                        }
                     )
                 }
 
@@ -153,6 +196,7 @@ fun HomeScreen(
                                 onDismiss = closeDialog,
                                 onConfirm = { newMins ->
                                     timerViewModel.updateFocusDuration(newMins)
+                                    alertsViewModel.performHaptic(view)
                                     closeDialog()
                                 }
                             )
@@ -168,6 +212,7 @@ fun HomeScreen(
                                 onDismiss = closeDialog,
                                 onConfirm = { newMins ->
                                     timerViewModel.updateShortBreakDuration(newMins)
+                                    alertsViewModel.performHaptic(view)
                                     closeDialog()
                                 }
                             )
@@ -185,6 +230,7 @@ fun HomeScreen(
                                         newSets,
                                         newLongBreak
                                     )
+                                    alertsViewModel.performHaptic(view)
                                     closeDialog()
                                 }
                             )
@@ -199,20 +245,11 @@ fun HomeScreen(
                                 onConfirm = { newSoundId ->
                                     timerViewModel.stopPreview()
                                     timerViewModel.updateBackgroundSound(newSoundId)
+                                    alertsViewModel.performHaptic(view)
+                                    closeDialog()
                                 },
                                 onDismiss = {
                                     timerViewModel.stopPreview()
-                                    closeDialog()
-                                }
-                            )
-                        }
-
-                        ActiveDialog.Task -> {
-                            TaskInputDialog(
-                                currentTask = config.sessionTask,
-                                onDismiss = closeDialog,
-                                onConfirm = { newTask ->
-                                    timerViewModel.updateSessionTask(newTask)
                                     closeDialog()
                                 }
                             )
@@ -224,13 +261,78 @@ fun HomeScreen(
 
 
             }
-            ToastMessage(
-                message = errorMessage,
-                onDismiss = { timerViewModel.clearErrorMessage() },
-                modifier = Modifier
-                    .align(Alignment.TopCenter)
-                    .fillMaxWidth()
-            )
+
+            if (showGoalReached) {
+                GoalReachedDialog(
+                    onDismiss = {
+                        timerViewModel.dismissGoalReachedDialog()
+                        homeViewModel.triggerReviewPrompt()
+                    }
+                )
+            }
+
+            if (homeDataState.shouldShowReviewDialog) {
+                ReviewReminderDialog(
+                    onDismiss = { homeViewModel.onReviewDialogDismissed() },
+                    onReviewClick = {
+                        homeViewModel.onReviewPromptShown()
+                        launchReviewFlow(context)
+                    }
+                )
+            }
+
+            setsRemainingToConfirm?.let { setsLeft ->
+                FinishConfirmationDialog(
+                    setsRemaining = setsLeft,
+                    onConfirm = { timerViewModel.confirmFinishSession(view) },
+                    onDismiss = { timerViewModel.dismissFinishConfirmation() }
+                )
+            }
         }
+    }
+}
+
+private fun launchReviewFlow(context: Context) {
+    val manager = ReviewManagerFactory.create(context)
+    val request = manager.requestReviewFlow()
+    request.addOnCompleteListener { task ->
+        if (task.isSuccessful) {
+            val reviewInfo = task.result
+            val activity = context as? Activity
+            if (activity != null) {
+                val flow = manager.launchReviewFlow(activity, reviewInfo)
+                flow.addOnCompleteListener { _ ->
+                    // The flow has finished.
+                    // Google recommends opening the Play Store regardless if we want to ensure they can review.
+                    // But usually, if they saw the native dialog, we shouldn't redirect them immediately.
+                    // However, the native dialog might NOT show up due to quota.
+                    // So we can check if it actually showed up? No, the API doesn't provide that.
+                    // A common trick is to ALWAYS open the Play Store if the user explicitly clicked "Rate".
+                    openPlayStore(context)
+                }
+            } else {
+                openPlayStore(context)
+            }
+        } else {
+            openPlayStore(context)
+        }
+    }
+}
+
+private fun openPlayStore(context: Context) {
+    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(AppConstants.MARKET_URL)).apply {
+        addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_NO_HISTORY or Intent.FLAG_ACTIVITY_MULTIPLE_TASK)
+    }
+    try {
+        context.startActivity(intent)
+    } catch (e: ActivityNotFoundException) {
+        context.startActivity(
+            Intent(
+                Intent.ACTION_VIEW,
+                Uri.parse(AppConstants.PLAY_STORE_URL)
+            ).apply {
+                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            }
+        )
     }
 }

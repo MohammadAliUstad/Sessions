@@ -1,6 +1,7 @@
 package com.yugentech.sessions.notification.model
 
-// Data model representing a notification to be displayed
+import com.yugentech.sessions.timer.state.TimerMode
+
 data class Notification(
     val id: Int,
     val title: String,
@@ -8,5 +9,9 @@ data class Notification(
     val type: NotificationType,
     val isOngoing: Boolean,
     val remainingSeconds: Long? = null,
-    val totalSeconds: Int? = null
+    val totalSeconds: Long? = null,
+    val completedSets: Int? = null,
+    val totalSets: Int? = null,
+    val mode: TimerMode? = null,
+    val setsPerLongBreak: Int? = null
 )

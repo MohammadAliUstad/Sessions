@@ -5,6 +5,8 @@ import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -146,27 +148,30 @@ fun SessionProgressCard(
                     horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.s)
                 ) {
                     AnimatedContent(
-                        targetState = state.isLongBreakActive,
+                        targetState = state.isLongBreakActive to state.progressDisplay,
                         transitionSpec = {
-                            fadeIn(
-                                tween(AppAnimations.Durations.Standard)
-                            ) togetherWith
-                                    fadeOut(
-                                        tween(AppAnimations.Durations.Fast)
-                                    )
+                            if (targetState.first != initialState.first) {
+                                // Transition between Focus/Break modes (Fade)
+                                fadeIn(tween(AppAnimations.Durations.Standard)) togetherWith
+                                        fadeOut(tween(AppAnimations.Durations.Fast))
+                            } else {
+                                // Transition between numbers (Vertical Slide)
+                                (slideInVertically { it } + fadeIn(tween(AppAnimations.Durations.Standard)))
+                                    .togetherWith(slideOutVertically { -it } + fadeOut(tween(AppAnimations.Durations.Fast)))
+                            }
                         },
-                        label = "textSwap"
-                    ) { isLongBreak ->
+                        label = "progressAnimation"
+                    ) { (isLongBreak, progress) ->
                         if (isLongBreak) {
                             Text(
-                                text = state.progressDisplay,
+                                text = progress,
                                 style = MaterialTheme.typography.displaySmall.copy(fontWeight = FontWeight.Bold),
                                 color = MaterialTheme.colorScheme.onSecondaryContainer
                             )
                         } else {
                             Row(verticalAlignment = Alignment.CenterVertically) {
                                 Text(
-                                    text = state.progressDisplay,
+                                    text = progress,
                                     style = MaterialTheme.typography.displaySmall,
                                     fontWeight = FontWeight.Bold,
                                     color = MaterialTheme.colorScheme.onSecondaryContainer
@@ -216,20 +221,29 @@ fun SessionProgressCard(
                     }
                 }
 
-                Column(horizontalAlignment = Alignment.End) {
-                    Text(
-                        text = state.mainMessage,
-                        style = MaterialTheme.typography.titleMedium,
-                        fontWeight = FontWeight.SemiBold,
-                        color = MaterialTheme.colorScheme.onSecondaryContainer,
-                        textAlign = TextAlign.End
-                    )
-                    Text(
-                        text = state.subMessage,
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSecondaryContainer.copy(alpha = 0.6f),
-                        textAlign = TextAlign.End
-                    )
+                AnimatedContent(
+                    targetState = state.mainMessage to state.subMessage,
+                    transitionSpec = {
+                        fadeIn(tween(AppAnimations.Durations.Standard)) togetherWith
+                                fadeOut(tween(AppAnimations.Durations.Fast))
+                    },
+                    label = "taglineAnimation"
+                ) { (main, sub) ->
+                    Column(horizontalAlignment = Alignment.End) {
+                        Text(
+                            text = main,
+                            style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.SemiBold,
+                            color = MaterialTheme.colorScheme.onSecondaryContainer,
+                            textAlign = TextAlign.End
+                        )
+                        Text(
+                            text = sub,
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSecondaryContainer.copy(alpha = 0.6f),
+                            textAlign = TextAlign.End
+                        )
+                    }
                 }
             }
 

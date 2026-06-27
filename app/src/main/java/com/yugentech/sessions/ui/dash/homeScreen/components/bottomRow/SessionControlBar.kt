@@ -1,5 +1,7 @@
 package com.yugentech.sessions.ui.dash.homeScreen.components.bottomRow
 
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -24,14 +26,24 @@ import androidx.compose.material3.FilledTonalIconButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.IconToggleButtonShapes
+import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.LocalMinimumInteractiveComponentSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.toArgb
+import com.airbnb.lottie.LottieProperty
+import com.airbnb.lottie.compose.LottieAnimation
+import com.airbnb.lottie.compose.LottieCompositionSpec
+import com.airbnb.lottie.compose.rememberLottieComposition
+import com.airbnb.lottie.compose.rememberLottieDynamicProperties
+import com.airbnb.lottie.compose.rememberLottieDynamicProperty
+import com.yugentech.sessions.R
 import com.yugentech.sessions.theme.tokens.components
 import com.yugentech.sessions.theme.tokens.corners
 import com.yugentech.sessions.theme.tokens.icons
@@ -136,9 +148,8 @@ fun SessionControlBar(
                             )
                             .animateWidth(interactionSources[1])
                     ) {
-                        Icon(
-                            if (isStudying) Icons.Filled.Pause else Icons.Filled.PlayArrow,
-                            contentDescription = null,
+                        AnimatedPlayPauseIcon(
+                            isStudying = isStudying,
                             modifier = Modifier.size(MaterialTheme.icons.xxl)
                         )
                     }
@@ -231,3 +242,38 @@ private fun getRightButtonColors(isSessionActive: Boolean) =
     } else {
         IconButtonDefaults.filledTonalIconButtonColors()
     }
+
+@Composable
+private fun AnimatedPlayPauseIcon(
+    isStudying: Boolean,
+    modifier: Modifier = Modifier
+) {
+    val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.play_pause))
+    val currentColor = LocalContentColor.current.toArgb()
+
+    val dynamicProperties = rememberLottieDynamicProperties(
+        rememberLottieDynamicProperty(
+            property = LottieProperty.COLOR,
+            value = currentColor,
+            keyPath = arrayOf("**")
+        ),
+        rememberLottieDynamicProperty(
+            property = LottieProperty.STROKE_COLOR,
+            value = currentColor,
+            keyPath = arrayOf("**")
+        )
+    )
+
+    val progress by animateFloatAsState(
+        targetValue = if (isStudying) 0f else 1f,
+        animationSpec = tween(durationMillis = 500),
+        label = "play_pause_progress"
+    )
+
+    LottieAnimation(
+        composition = composition,
+        progress = { progress },
+        modifier = modifier,
+        dynamicProperties = dynamicProperties
+    )
+}

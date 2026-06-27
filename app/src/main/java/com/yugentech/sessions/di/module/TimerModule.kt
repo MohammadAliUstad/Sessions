@@ -31,7 +31,6 @@ val timerModule = module {
     single {
         TimerService(
             coroutineScope = get(named("timerScope")),
-            timerDatastore = get()
         )
     }
 
@@ -40,6 +39,7 @@ val timerModule = module {
         TimerRepositoryImpl(
             timerService = get(),
             timerDatastore = get(),
+            sessionsRepository = get(),
             externalScope = get(named("timerScope"))
         )
     }
@@ -49,7 +49,6 @@ val timerModule = module {
         Timber.v("Initializing TimerViewModel")
         TimerViewModel(
             timerRepository = get(),
-            sessionsRepository = get(),
             alertsRepository = get(),
             notificationRepository = get()
         )

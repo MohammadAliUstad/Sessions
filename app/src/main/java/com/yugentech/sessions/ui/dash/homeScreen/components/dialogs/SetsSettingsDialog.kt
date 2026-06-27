@@ -138,7 +138,11 @@ fun SetsSettingsDialog(
                             color = MaterialTheme.colorScheme.primary
                         )
                         Text(
-                            text = "Based on your $focusDuration min focus time, a Long Break will occur after every $setsPerLongBreak sets.",
+                            text = if (setsPerLongBreak == 1) {
+                                "Based on your $focusDuration min focus time, a Long Break will occur after every $setsPerLongBreak set."
+                            } else {
+                                "Based on your $focusDuration min focus time, a Long Break will occur after every $setsPerLongBreak sets."
+                            },
                             style = MaterialTheme.typography.bodySmall,
                             color = MaterialTheme.colorScheme.onSecondaryContainer,
                             modifier = Modifier.padding(top = MaterialTheme.spacing.xxs)

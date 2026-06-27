@@ -15,6 +15,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import com.yugentech.sessions.R
 import com.yugentech.sessions.theme.tokens.components
@@ -33,7 +34,9 @@ fun EmptySessionsCard(
     ) {
         Text(
             text = "Start your first session to track your progress and build productive habits!",
-            style = MaterialTheme.typography.titleMedium,
+            style = MaterialTheme.typography.titleMedium.copy(
+                fontWeight = FontWeight.Normal
+            ),
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             textAlign = TextAlign.Start,
             modifier = Modifier.weight(1f)
@@ -44,7 +47,9 @@ fun EmptySessionsCard(
         Image(
             painter = painterResource(id = R.drawable.new_beginnings),
             contentDescription = "No sessions illustration",
-            modifier = Modifier.size(MaterialTheme.components.imageSizeHuge),
+            modifier = Modifier
+                .size(MaterialTheme.components.imageSizeHuge)
+                .align(Alignment.CenterVertically),
             contentScale = ContentScale.Fit
         )
     }

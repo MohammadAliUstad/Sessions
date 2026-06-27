@@ -9,7 +9,9 @@ sealed class AppScreen(val route: String) {
     data object SignIn : AppScreen("sign_in")
     data object Main : AppScreen("main")
     data object About : AppScreen("about")
+    data object MoreApps : AppScreen("more_apps")
     data object EditProfile : AppScreen("edit_profile")
     data object Settings : AppScreen("settings")
     data object Licenses : AppScreen("licenses")
+    data object WhatsNew : AppScreen("whats_new")
 }
