@@ -2,7 +2,6 @@ package com.yugentech.sessions.notification.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.yugentech.sessions.notification.model.Notification
 import com.yugentech.sessions.notification.datastore.NotificationDataStore
 import com.yugentech.sessions.notification.repository.NotificationRepository
 import com.yugentech.sessions.notification.model.NotificationConfig
@@ -18,24 +17,21 @@ import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
 
-// Manages UI state for notification settings and handles user interactions
+// Manages UI state for notification settings and handles user interactions.
+// Active session notifications (start/stop) are owned by TimerViewModel — not here.
 class NotificationsViewModel(
     private val notificationRepository: NotificationRepository,
     private val notificationDataStore: NotificationDataStore
 ) : ViewModel() {
 
-    // Exposes current notification preferences as a hot state flow
+    // Exposes current notification preferences as a hot state flow.
     val notificationConfiguration: StateFlow<NotificationConfig> =
         notificationDataStore.notificationConfigFlow.stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5000),
-            initialValue = run {
-                runCatching {
-                    runBlocking {
-                        notificationDataStore.getInitialConfig()
-                    }
-                }.getOrDefault(NotificationConfig())
-            }
+            initialValue = runCatching {
+                runBlocking { notificationDataStore.getInitialConfig() }
+            }.getOrDefault(NotificationConfig())
         )
 
     private val _showExactAlarmDialog = MutableStateFlow(false)
@@ -45,7 +41,7 @@ class NotificationsViewModel(
         _showExactAlarmDialog.value = false
     }
 
-    // Verifies permissions before allowing the user to enable exact alarms
+    // Verifies permissions before allowing the user to enable exact alarms.
     fun canEnableReminders(): Boolean {
         val hasPermission = notificationRepository.hasExactAlarmPermission()
         if (!hasPermission) {
@@ -56,38 +52,31 @@ class NotificationsViewModel(
         return true
     }
 
-    fun startActiveSession(notification: Notification) {
-        viewModelScope.launch {
-            notificationRepository.startActiveNotification(notification)
-        }
-    }
-
-    fun stopActiveSession() {
-        viewModelScope.launch {
-            notificationRepository.stopActiveNotification()
-        }
-    }
-
-    // Toggles global notifications and syncs scheduled alarms accordingly
+    // Toggles global notifications and syncs scheduled alarms accordingly.
     fun setNotificationsEnabled(enabled: Boolean) {
         viewModelScope.launch {
             Timber.i("User toggled notifications enabled: $enabled")
             notificationDataStore.setNotificationsEnabled(enabled)
             if (!enabled) {
                 cancelReminders()
-            } else if (notificationConfiguration.value.focusRemindersEnabled) {
-                updateReminders()
+                notificationRepository.cancelSmartReminders()
+            } else {
+                if (notificationConfiguration.value.focusRemindersEnabled) {
+                    updateReminders()
+                }
+                if (notificationConfiguration.value.smartRemindersEnabled) {
+                    notificationRepository.scheduleSmartReminders()
+                }
             }
         }
     }
 
-    // Toggles focus reminders and ensures a valid time is set
+    // Toggles focus reminders and ensures a valid time is set.
     fun setFocusRemindersEnabled(enabled: Boolean) {
         viewModelScope.launch {
             Timber.i("User toggled focus reminders enabled: $enabled")
             notificationDataStore.setFocusRemindersEnabled(enabled)
             if (enabled) {
-                // If enabling without changing time, set default or ensure valid time
                 val config = notificationConfiguration.value
                 if (config.reminderTimeHour == 8 && config.reminderTimeMinute == 0) {
                     notificationDataStore.setFocusReminderTime(9, 0)
@@ -101,7 +90,7 @@ class NotificationsViewModel(
         }
     }
 
-    // Updates the reminder time preference and reschedules the alarm
+    // Updates the reminder time preference and reschedules the alarm.
     fun setReminderTime(hour: Int, minute: Int) {
         viewModelScope.launch {
             Timber.d("User updated reminder time: $hour:$minute")
@@ -114,27 +103,38 @@ class NotificationsViewModel(
         }
     }
 
-    // Formats the selected reminder time for display in the UI
+    // Formats the selected reminder time for display in the UI.
     fun formatReminderTime(): String {
         val config = notificationConfiguration.value
         if (!config.focusRemindersEnabled) {
             return "Get notified to start your focus sessions"
         }
 
-        val calendar = Calendar.getInstance()
-        calendar.set(Calendar.HOUR_OF_DAY, config.reminderTimeHour)
-        calendar.set(Calendar.MINUTE, config.reminderTimeMinute)
+        val calendar = Calendar.getInstance().apply {
+            set(Calendar.HOUR_OF_DAY, config.reminderTimeHour)
+            set(Calendar.MINUTE, config.reminderTimeMinute)
+        }
 
-        val formattedTime = SimpleDateFormat("h:mm a", Locale.getDefault())
-            .format(calendar.time)
-
+        val formattedTime = SimpleDateFormat("h:mm a", Locale.getDefault()).format(calendar.time)
         return "Reminder is set to $formattedTime"
     }
 
-    // Schedules a new alarm via the repository, handling permission errors
+    // Toggles the smart random reminders feature
+    fun setSmartRemindersEnabled(enabled: Boolean) {
+        viewModelScope.launch {
+            Timber.i("User toggled smart reminders enabled: $enabled")
+            notificationDataStore.setSmartRemindersEnabled(enabled)
+            if (enabled && notificationConfiguration.value.notificationsEnabled) {
+                notificationRepository.scheduleSmartReminders()
+            } else {
+                notificationRepository.cancelSmartReminders()
+            }
+        }
+    }
+
+    // Schedules a new alarm via the repository, handling permission errors.
     fun scheduleReminder(message: String, hour: Int, minute: Int) {
         viewModelScope.launch {
-            // Guard against missing permission at runtime
             if (!notificationRepository.hasExactAlarmPermission()) {
                 Timber.w("Cannot schedule: Permission revoked")
                 _showExactAlarmDialog.value = true
@@ -154,7 +154,7 @@ class NotificationsViewModel(
         }
     }
 
-    // Syncs the system alarm with the current configuration state
+    // Syncs the system alarm with the current configuration state.
     private fun updateReminders() {
         val config = notificationConfiguration.value
         if (config.notificationsEnabled && config.focusRemindersEnabled) {

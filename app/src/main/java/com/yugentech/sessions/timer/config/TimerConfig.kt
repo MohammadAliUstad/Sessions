@@ -10,7 +10,8 @@ data class TimerConfig(
     val longBreakDuration: Int = 15,
     val targetSets: Int = 1,
     val sessionTask: String = EMPTY,
-    val activeBackgroundSoundId: String? = null
+    val activeBackgroundSoundId: String? = null,
+    val isAmbientEnabled: Boolean = true
 ) {
     // Dynamically calculates how many short breaks occur before a long break
     val setsPerLongBreak: Int

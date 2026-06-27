@@ -7,13 +7,18 @@ import com.yugentech.sessions.alerts.repository.AlertsRepository
 import com.yugentech.sessions.sessions.model.Session
 import com.yugentech.sessions.user.model.UserData
 import com.yugentech.sessions.sessions.repository.SessionsRepository
+import com.yugentech.sessions.user.datastore.UserDataStore
 import com.yugentech.sessions.user.repository.UserRepository
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -24,9 +29,14 @@ import java.time.ZoneId
 import java.util.Calendar
 import java.util.concurrent.TimeUnit
 
+enum class SessionSortOption {
+    DAILY, WEEKLY, MONTHLY
+}
+
 data class ProfileUiState(
     val user: UserData? = null,
     val sessions: List<Session> = emptyList(),
+    val sortOption: SessionSortOption = SessionSortOption.DAILY,
     val totalTime: Long = 0L,
     val streakCount: Int = 0,
     val taskDistribution: Map<String, Int> = emptyMap(),
@@ -41,7 +51,8 @@ data class ProfileUiState(
 class ProfileViewModel(
     private val userRepository: UserRepository,
     private val sessionsRepository: SessionsRepository,
-    private val alertsRepository: AlertsRepository
+    private val alertsRepository: AlertsRepository,
+    private val userDataStore: UserDataStore
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(ProfileUiState())
@@ -69,8 +80,20 @@ class ProfileViewModel(
 
         loadUser(userId)
 
+        // Observe sort option from DataStore
+        userDataStore.sessionSortOption
+            .onEach { optionName ->
+                val option = try {
+                    if (optionName != null) SessionSortOption.valueOf(optionName) else SessionSortOption.DAILY
+                } catch (e: Exception) {
+                    SessionSortOption.DAILY
+                }
+                _uiState.update { it.copy(sortOption = option) }
+            }
+            .launchIn(viewModelScope)
+
         sessionsRepository.getSessionsFlow()
-            .onEach { sessions ->
+            .map { sessions ->
                 val totalDurationSeconds = sessions.sumOf { it.duration.toLong() }
 
                 val dailyCounts = IntArray(8)
@@ -91,25 +114,35 @@ class ProfileViewModel(
                     heatmapData[date] = (heatmapData[date] ?: 0) + 1
                 }
 
+                val mostActiveHourIndex = hourlyCounts.indices.maxByOrNull { hourlyCounts[it] }
+                val validPeakHour = if (mostActiveHourIndex != null && hourlyCounts[mostActiveHourIndex] > 0) {
+                    mostActiveHourIndex
+                } else {
+                    null
+                }
+
+                ProfileStats(
+                    sessions = sessions,
+                    totalTime = totalDurationSeconds,
+                    streakCount = calculateStreak(sessions),
+                    taskDistribution = sessions.groupBy { it.sessionTask }
+                        .mapValues { entry -> entry.value.sumOf { it.duration } },
+                    dailyVolume = dailyCounts.mapIndexed { index, count -> index to count }.toMap(),
+                    peakHour = validPeakHour,
+                    heatmapHistory = heatmapData
+                )
+            }
+            .flowOn(Dispatchers.Default)
+            .onEach { stats ->
                 _uiState.update { state ->
-                    val mostActiveHourIndex = hourlyCounts.indices.maxByOrNull { hourlyCounts[it] }
-
-                    val validPeakHour = if (mostActiveHourIndex != null && hourlyCounts[mostActiveHourIndex] > 0) {
-                        mostActiveHourIndex
-                    } else {
-                        null
-                    }
-
                     state.copy(
-                        sessions = sessions,
-                        totalTime = totalDurationSeconds,
-                        streakCount = calculateStreak(sessions),
-                        taskDistribution = sessions.groupBy { it.sessionTask }
-                            .mapValues { entry -> entry.value.sumOf { it.duration } },
-                        dailyVolume = dailyCounts.mapIndexed { index, count -> index to count }
-                            .toMap(),
-                        peakHour = validPeakHour,
-                        heatmapHistory = heatmapData,
+                        sessions = stats.sessions,
+                        totalTime = stats.totalTime,
+                        streakCount = stats.streakCount,
+                        taskDistribution = stats.taskDistribution,
+                        dailyVolume = stats.dailyVolume,
+                        peakHour = stats.peakHour,
+                        heatmapHistory = stats.heatmapHistory,
                         isLoading = false
                     )
                 }
@@ -117,6 +150,16 @@ class ProfileViewModel(
             .catch { e -> Timber.e(e, "Error loading sessions flow") }
             .launchIn(viewModelScope)
     }
+
+    private data class ProfileStats(
+        val sessions: List<Session>,
+        val totalTime: Long,
+        val streakCount: Int,
+        val taskDistribution: Map<String, Int>,
+        val dailyVolume: Map<Int, Int>,
+        val peakHour: Int?,
+        val heatmapHistory: Map<LocalDate, Int>
+    )
 
     private fun calculateStreak(sessions: List<Session>): Int {
         if (sessions.isEmpty()) return 0
@@ -175,9 +218,28 @@ class ProfileViewModel(
         }
     }
 
+    fun deleteSessions(sessionIds: List<String>) {
+        viewModelScope.launch {
+            sessionsRepository.deleteSessions(sessionIds)
+        }
+    }
+
+    fun deleteAllSessions() {
+        viewModelScope.launch {
+            sessionsRepository.deleteAllSessions()
+        }
+    }
+
     fun performHaptic(view: View? = null) {
         viewModelScope.launch {
             alertsRepository.performHaptic(view)
+        }
+    }
+
+    fun updateSortOption(option: SessionSortOption) {
+        viewModelScope.launch {
+            _uiState.update { it.copy(sortOption = option) }
+            userDataStore.saveSessionSortOption(option.name)
         }
     }
 }

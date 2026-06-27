@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<set xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- SQUASH: 0–144ms -->
+    <objectAnimator android:propertyName="scaleX" android:valueFrom="1.0"  android:valueTo="1.38" android:valueType="floatType" android:duration="144" android:startOffset="0"   android:interpolator="@android:interpolator/decelerate_quad"/>
+    <objectAnimator android:propertyName="scaleY" android:valueFrom="1.0"  android:valueTo="0.63" android:valueType="floatType" android:duration="144" android:startOffset="0"   android:interpolator="@android:interpolator/decelerate_quad"/>
+    <!-- STRETCH: 144–360ms -->
+    <objectAnimator android:propertyName="scaleX" android:valueFrom="1.38" android:valueTo="0.88" android:valueType="floatType" android:duration="216" android:startOffset="144" android:interpolator="@android:interpolator/decelerate_quad"/>
+    <objectAnimator android:propertyName="scaleY" android:valueFrom="0.63" android:valueTo="1.2"  android:valueType="floatType" android:duration="216" android:startOffset="144" android:interpolator="@android:interpolator/decelerate_quad"/>
+    <!-- LAND: 360–522ms -->
+    <objectAnimator android:propertyName="scaleX" android:valueFrom="0.88" android:valueTo="1.1"  android:valueType="floatType" android:duration="162" android:startOffset="360" android:interpolator="@android:interpolator/decelerate_quad"/>
+    <objectAnimator android:propertyName="scaleY" android:valueFrom="1.2"  android:valueTo="0.92" android:valueType="floatType" android:duration="162" android:startOffset="360" android:interpolator="@android:interpolator/decelerate_quad"/>
+    <!-- SMALL BOUNCE: 522–657ms -->
+    <objectAnimator android:propertyName="scaleX" android:valueFrom="1.1"  android:valueTo="0.96" android:valueType="floatType" android:duration="135" android:startOffset="522" android:interpolator="@android:interpolator/decelerate_quad"/>
+    <objectAnimator android:propertyName="scaleY" android:valueFrom="0.92" android:valueTo="1.05" android:valueType="floatType" android:duration="135" android:startOffset="522" android:interpolator="@android:interpolator/decelerate_quad"/>
+    <!-- SETTLE: 657–765ms -->
+    <objectAnimator android:propertyName="scaleX" android:valueFrom="0.96" android:valueTo="1.02" android:valueType="floatType" android:duration="108" android:startOffset="657" android:interpolator="@android:interpolator/decelerate_quad"/>
+    <objectAnimator android:propertyName="scaleY" android:valueFrom="1.05" android:valueTo="0.99" android:valueType="floatType" android:duration="108" android:startOffset="657" android:interpolator="@android:interpolator/decelerate_quad"/>
+    <!-- FINAL: 765–900ms -->
+    <objectAnimator android:propertyName="scaleX" android:valueFrom="1.02" android:valueTo="1.0"  android:valueType="floatType" android:duration="135" android:startOffset="765" android:interpolator="@android:interpolator/accelerate_decelerate"/>
+    <objectAnimator android:propertyName="scaleY" android:valueFrom="0.99" android:valueTo="1.0"  android:valueType="floatType" android:duration="135" android:startOffset="765" android:interpolator="@android:interpolator/accelerate_decelerate"/>
+</set>

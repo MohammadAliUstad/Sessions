@@ -16,7 +16,8 @@ val viewModelModule = module {
         Timber.v("Initializing HomeViewModel")
         HomeViewModel(
             sessionsRepository = get(),
-            userRepository = get()
+            userRepository = get(),
+            userDataStore = get()
         )
     }
 
@@ -26,7 +27,8 @@ val viewModelModule = module {
         ProfileViewModel(
             userRepository = get(),
             sessionsRepository = get(),
-            alertsRepository = get()
+            alertsRepository = get(),
+            userDataStore = get()
         )
     }
 

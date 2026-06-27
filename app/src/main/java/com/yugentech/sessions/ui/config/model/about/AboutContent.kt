@@ -3,6 +3,7 @@ package com.yugentech.sessions.ui.config.model.about
 import android.content.Context
 import android.content.Intent
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Apps
 import androidx.compose.material.icons.filled.Code
 import androidx.compose.material.icons.filled.Description
 import androidx.compose.material.icons.filled.Email
@@ -18,7 +19,8 @@ object AboutContent {
 
     fun getSupportItems(
         context: Context,
-        onDonateClick: () -> Unit
+        onDonateClick: () -> Unit,
+        onMoreAppsClick: () -> Unit
     ): List<AboutOption> {
         return listOf(
             AboutOption(
@@ -44,6 +46,12 @@ object AboutContent {
                     val urlIntent = Intent(Intent.ACTION_VIEW, AppConstants.GITHUB_URL.toUri())
                     context.startActivity(urlIntent)
                 }
+            ),
+            AboutOption(
+                title = "More Apps",
+                subtitle = "Check out our other projects",
+                icon = Icons.Default.Apps,
+                onClick = onMoreAppsClick
             )
         )
     }

@@ -13,17 +13,19 @@ import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Timer
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import kotlinx.coroutines.delay
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
@@ -33,6 +35,7 @@ import androidx.compose.ui.zIndex
 import com.yugentech.sessions.auth.viewmodel.AuthViewModel
 import com.yugentech.sessions.theme.tokens.components
 import com.yugentech.sessions.theme.tokens.spacing
+import com.yugentech.sessions.ui.auth.components.AnimatedAlarmIcon
 import com.yugentech.sessions.ui.auth.components.forms.SignUpForm
 import com.yugentech.sessions.ui.dash.mainScreen.components.ToastMessage
 
@@ -45,6 +48,12 @@ fun SignUpScreen(
 ) {
     val authState by authViewModel.authState.collectAsState()
     val scrollState = rememberScrollState()
+    var isIconActivated by remember { mutableStateOf(false) }
+
+    LaunchedEffect(Unit) {
+        delay(500) // Small delay to ensure view is ready
+        isIconActivated = true
+    }
 
     Surface(
         modifier = Modifier.fillMaxSize()
@@ -71,11 +80,9 @@ fun SignUpScreen(
                         ),
                     contentAlignment = Alignment.Center
                 ) {
-                    Icon(
-                        imageVector = Icons.Default.Timer,
-                        contentDescription = null,
-                        modifier = Modifier.size(MaterialTheme.components.imageSizeSmall),
-                        tint = MaterialTheme.colorScheme.primary
+                    AnimatedAlarmIcon(
+                        isActivated = isIconActivated,
+                        modifier = Modifier.size(MaterialTheme.components.imageSizeSmall)
                     )
                 }
 

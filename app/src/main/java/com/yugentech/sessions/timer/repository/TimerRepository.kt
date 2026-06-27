@@ -17,6 +17,7 @@ interface TimerRepository {
     fun pause()
     fun skipToNext()
     fun reset()
+    fun saveCurrentSession()
 
     // Methods to update timer settings and persist them
     fun updateSessionTask(newTask: String)
@@ -24,4 +25,5 @@ interface TimerRepository {
     fun updateShortBreakDuration(duration: Int)
     fun updateLongBreakAndTargetSets(duration: Int, sets: Int)
     fun updateActiveBackgroundSound(soundId: String?)
+    fun toggleAmbientSound(enabled: Boolean)
 }

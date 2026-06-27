@@ -26,6 +26,14 @@ interface SessionsDao {
     @Query("DELETE FROM sessions WHERE sessionId = :sessionId")
     suspend fun deleteSession(sessionId: String)
 
+    // Removes multiple sessions by their IDs
+    @Query("DELETE FROM sessions WHERE sessionId IN (:sessionIds)")
+    suspend fun deleteSessions(sessionIds: List<String>)
+
+    // Removes all sessions for a specific user
+    @Query("DELETE FROM sessions WHERE userId = :userId")
+    suspend fun deleteAllSessions(userId: String)
+
     // Observes the sum of all session durations for a user
     @Query("SELECT IFNULL(SUM(duration), 0) FROM sessions WHERE userId = :userId")
     fun getTotalDuration(userId: String): Flow<Long>

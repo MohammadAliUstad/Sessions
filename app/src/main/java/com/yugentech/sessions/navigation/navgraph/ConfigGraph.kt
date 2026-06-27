@@ -12,6 +12,8 @@ import com.yugentech.sessions.auth.viewmodel.AuthViewModel
 import com.yugentech.sessions.navigation.screen.AppScreen
 import com.yugentech.sessions.theme.viewmodel.ThemeViewModel
 import com.yugentech.sessions.ui.config.aboutScreen.AboutScreen
+import com.yugentech.sessions.ui.config.aboutScreen.MoreAppsScreen
+import com.yugentech.sessions.ui.config.whatsNewScreen.WhatsNewScreen
 import com.yugentech.sessions.ui.config.appearanceScreen.AppearanceScreen
 import com.yugentech.sessions.ui.config.attributionsScreen.AttributionsScreen
 import com.yugentech.sessions.ui.config.editProfileScreen.EditProfileScreen
@@ -43,7 +45,26 @@ fun NavGraphBuilder.configGraph(
                 navController.navigate(AppScreen.Licenses.route) {
                     launchSingleTop = true
                 }
+            },
+            onNavigateToMoreApps = {
+                navController.navigate(AppScreen.MoreApps.route) {
+                    launchSingleTop = true
+                }
             }
+        )
+    }
+
+    // Defines the what's new screen
+    composable(AppScreen.WhatsNew.route) {
+        WhatsNewScreen(
+            onNavigateBack = { navController.popBackStack() }
+        )
+    }
+
+    // Defines the more apps screen
+    composable(AppScreen.MoreApps.route) {
+        MoreAppsScreen(
+            onNavigateBack = { navController.popBackStack() }
         )
     }
 

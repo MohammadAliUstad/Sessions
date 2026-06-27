@@ -20,24 +20,30 @@ class BillingManager(context: Context) {
     private val productIds = listOf("donation_coffee", "donation_lunch")
 
     private val purchasesUpdatedListener = PurchasesUpdatedListener { result, purchases ->
-        if (result.responseCode == BillingClient.BillingResponseCode.OK && purchases != null) {
-            for (purchase in purchases) {
-                handlePurchase(purchase)
+        when (result.responseCode) {
+            BillingClient.BillingResponseCode.OK if purchases != null -> {
+                for (purchase in purchases) {
+                    handlePurchase(purchase)
+                }
             }
-        } else if (result.responseCode == BillingClient.BillingResponseCode.USER_CANCELED) {
-            Timber.i("User canceled the purchase")
-        } else {
-            val errorMessage = "Billing error: ${result.debugMessage.ifBlank { "Unknown Error" }}"
-            Timber.e(errorMessage)
-            CoroutineScope(Dispatchers.Main).launch {
-                _purchaseEvent.emit(errorMessage)
+            BillingClient.BillingResponseCode.USER_CANCELED -> {
+                Timber.i("User canceled the purchase")
+            }
+            else -> {
+                val errorMessage = "Billing error: ${result.debugMessage.ifBlank { "Unknown Error" }}"
+                Timber.e(errorMessage)
+                CoroutineScope(Dispatchers.Main).launch {
+                    _purchaseEvent.emit(errorMessage)
+                }
             }
         }
     }
 
     private val billingClient = BillingClient.newBuilder(context)
         .setListener(purchasesUpdatedListener)
-        .enablePendingPurchases()
+        .enablePendingPurchases(
+            PendingPurchasesParams.newBuilder().enableOneTimeProducts().build()
+        )
         .build()
 
     fun startConnection() {
@@ -70,10 +76,10 @@ class BillingManager(context: Context) {
             )
             .build()
 
-        billingClient.queryProductDetailsAsync(params) { result, productDetailsList ->
+        billingClient.queryProductDetailsAsync(params) { result: BillingResult, queryResult: QueryProductDetailsResult ->
             if (result.responseCode == BillingClient.BillingResponseCode.OK) {
-                productDetailsCache = productDetailsList
-                Timber.d("Products fetched: ${productDetailsList.size}")
+                productDetailsCache = queryResult.productDetailsList
+                Timber.d("Products fetched: ${queryResult.productDetailsList.size}")
             } else {
                 Timber.e("Failed to query products: ${result.debugMessage}")
             }
