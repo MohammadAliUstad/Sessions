@@ -17,16 +17,21 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.compose.rememberNavController
+import com.yugentech.sessions.auth.viewmodel.AuthViewModel
 import com.yugentech.sessions.navigation.host.AppNavHost
 import com.yugentech.sessions.notification.service.NotificationService
 import com.yugentech.sessions.theme.SessionsTheme
-import com.yugentech.sessions.theme.viewmodel.ThemeViewModel
 import com.yugentech.sessions.theme.config.ThemeMode
-import com.yugentech.sessions.auth.viewmodel.AuthViewModel
+import com.yugentech.sessions.theme.viewmodel.ThemeViewModel
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.launch
 import org.koin.android.ext.android.get
 import org.koin.androidx.compose.koinViewModel
 import timber.log.Timber
+import kotlin.time.Duration.Companion.milliseconds
 
 class MainActivity : ComponentActivity() {
 
@@ -34,6 +39,12 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         val splashScreen = installSplashScreen()
+
+        val animationReady = MutableStateFlow(false)
+        lifecycleScope.launch {
+            delay(1000.milliseconds)
+            animationReady.value = true
+        }
 
         super.onCreate(savedInstanceState)
         Timber.v("MainActivity onCreate: App launching")
@@ -43,7 +54,9 @@ class MainActivity : ComponentActivity() {
         val authViewModel: AuthViewModel = get()
 
         splashScreen.setKeepOnScreenCondition {
-            authViewModel.authState.value.isInitializing || authViewModel.showOnboarding.value == null
+            !animationReady.value ||
+                    authViewModel.authState.value.isInitializing ||
+                    authViewModel.showOnboarding.value == null
         }
 
         setContent {
