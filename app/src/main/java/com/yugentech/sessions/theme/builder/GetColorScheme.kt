@@ -32,7 +32,7 @@ fun getColorScheme(
                 val context = LocalContext.current
                 if (isDarkMode) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
             } else {
-                if (isDarkMode) AppColorSchemes.CanyonDarkColorScheme else AppColorSchemes.CanyonLightColorScheme
+                if (isDarkMode) AppColorSchemes.SessionsDarkColorScheme else AppColorSchemes.SessionsLightColorScheme
             }
         }
 
@@ -42,8 +42,8 @@ fun getColorScheme(
         ColorTheme.SAKURA ->
             if (isDarkMode) AppColorSchemes.SakuraDarkColorScheme else AppColorSchemes.SakuraLightColorScheme
 
-        ColorTheme.CANYON ->
-            if (isDarkMode) AppColorSchemes.CanyonDarkColorScheme else AppColorSchemes.CanyonLightColorScheme
+        ColorTheme.SESSIONS ->
+            if (isDarkMode) AppColorSchemes.SessionsDarkColorScheme else AppColorSchemes.SessionsLightColorScheme
 
         ColorTheme.HARVEST ->
             if (isDarkMode) AppColorSchemes.HarvestDarkColorScheme else AppColorSchemes.HarvestLightColorScheme

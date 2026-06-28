@@ -16,7 +16,6 @@ fun themeOptions(
     currentPrimaryContainer: Color
 ): List<ThemeOption> = listOf(
 
-    // Dynamic
     ThemeOption(
         colorTheme = ColorTheme.DYNAMIC,
         displayName = "Dynamic",
@@ -27,62 +26,16 @@ fun themeOptions(
         )
     ),
 
-    // Sakura (Pink/Red)
     ThemeOption(
-        colorTheme = ColorTheme.SAKURA,
-        displayName = "Sakura",
-        primaryColor = AppColorSchemes.SakuraLightColorScheme.primary,
+        colorTheme = ColorTheme.SESSIONS,
+        displayName = "Sessions",
+        primaryColor = AppColorSchemes.SessionsLightColorScheme.primary,
         gradientColors = listOf(
-            AppColorSchemes.SakuraLightColorScheme.primary,
-            AppColorSchemes.SakuraLightColorScheme.primaryContainer
+            AppColorSchemes.SessionsLightColorScheme.primary,
+            AppColorSchemes.SessionsLightColorScheme.primaryContainer
         )
     ),
 
-    // Canyon (Brown/Orange)
-    ThemeOption(
-        colorTheme = ColorTheme.CANYON,
-        displayName = "Canyon",
-        primaryColor = AppColorSchemes.CanyonLightColorScheme.primary,
-        gradientColors = listOf(
-            AppColorSchemes.CanyonLightColorScheme.primary,
-            AppColorSchemes.CanyonLightColorScheme.primaryContainer
-        )
-    ),
-
-    // Harvest (Gold/Yellow)
-    ThemeOption(
-        colorTheme = ColorTheme.HARVEST,
-        displayName = "Harvest",
-        primaryColor = AppColorSchemes.HarvestLightColorScheme.primary,
-        gradientColors = listOf(
-            AppColorSchemes.HarvestLightColorScheme.primary,
-            AppColorSchemes.HarvestLightColorScheme.primaryContainer
-        )
-    ),
-
-    // Grove (Olive/Yellow-Green)
-    ThemeOption(
-        colorTheme = ColorTheme.GROVE,
-        displayName = "Grove",
-        primaryColor = AppColorSchemes.GroveLightColorScheme.primary,
-        gradientColors = listOf(
-            AppColorSchemes.GroveLightColorScheme.primary,
-            AppColorSchemes.GroveLightColorScheme.primaryContainer
-        )
-    ),
-
-    // Alpine (Deep Green/Forest)
-    ThemeOption(
-        colorTheme = ColorTheme.ALPINE,
-        displayName = "Alpine",
-        primaryColor = AppColorSchemes.AlpineLightColorScheme.primary,
-        gradientColors = listOf(
-            AppColorSchemes.AlpineLightColorScheme.primary,
-            AppColorSchemes.AlpineLightColorScheme.primaryContainer
-        )
-    ),
-
-    // Lagoon (Cyan/Teal)
     ThemeOption(
         colorTheme = ColorTheme.LAGOON,
         displayName = "Lagoon",
@@ -93,7 +46,46 @@ fun themeOptions(
         )
     ),
 
-    // Twilight (Indigo/Purple tones)
+    ThemeOption(
+        colorTheme = ColorTheme.HARVEST,
+        displayName = "Harvest",
+        primaryColor = AppColorSchemes.HarvestLightColorScheme.primary,
+        gradientColors = listOf(
+            AppColorSchemes.HarvestLightColorScheme.primary,
+            AppColorSchemes.HarvestLightColorScheme.primaryContainer
+        )
+    ),
+
+    ThemeOption(
+        colorTheme = ColorTheme.GROVE,
+        displayName = "Grove",
+        primaryColor = AppColorSchemes.GroveLightColorScheme.primary,
+        gradientColors = listOf(
+            AppColorSchemes.GroveLightColorScheme.primary,
+            AppColorSchemes.GroveLightColorScheme.primaryContainer
+        )
+    ),
+
+    ThemeOption(
+        colorTheme = ColorTheme.SAKURA,
+        displayName = "Sakura",
+        primaryColor = AppColorSchemes.SakuraLightColorScheme.primary,
+        gradientColors = listOf(
+            AppColorSchemes.SakuraLightColorScheme.primary,
+            AppColorSchemes.SakuraLightColorScheme.primaryContainer
+        )
+    ),
+
+    ThemeOption(
+        colorTheme = ColorTheme.ALPINE,
+        displayName = "Alpine",
+        primaryColor = AppColorSchemes.AlpineLightColorScheme.primary,
+        gradientColors = listOf(
+            AppColorSchemes.AlpineLightColorScheme.primary,
+            AppColorSchemes.AlpineLightColorScheme.primaryContainer
+        )
+    ),
+
     ThemeOption(
         colorTheme = ColorTheme.TWILIGHT,
         displayName = "Twilight",
