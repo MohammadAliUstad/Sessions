@@ -32,30 +32,32 @@
 
 ## Overview
 
-Sessions transforms the concept of a simple timer into a comprehensive focus tool. Whether you're studying, coding, or writing, the application ensures your environment is optimized for concentration. It features a robust background service that prevents the operating system from killing the timer, ensuring your progress is tracked even when your phone is locked.
+Sessions transforms the concept of a simple timer into a comprehensive focus tool. Whether you're studying, coding, or writing, the application ensures your environment is optimized for concentration. It features a robust background service and intelligent reminder system that ensures your progress is tracked and your habits are maintained, even when life gets busy.
 
 ---
 
 ## ✨ Key Features
 
 ### Intelligent Focus Engine
-- **Customizable Cycles:** Define your exact Focus Duration, Break Duration, and Repetition count
-- **Smart Intervals:** Automatically calculates when to trigger a Long Break based on your completed sets
-- **Task History:** Assign names to specific sessions to recognize and review what you worked on later
+- **Smart Reminders:** Intelligent check-ins that trigger if you've been away too long, helping you stay consistent.
+- **Personalised Nudges:** Playful, unique reminders based on your actual task history and focus habits.
+- **Customisable Cycles:** Define your exact Focus Duration, Break Duration, and Repetition count.
+- **Smart Intervals:** Automatically calculates when to trigger a Long Break based on your completed sets.
 
 ### Immersive Audio Environment
-- **Curated Ambience:** Includes 5 high-quality background sounds: Rain, Brown Noise, Fireplace, Library, and Riverside
-- **Adaptive Audio Ducking:** Background volume intelligently lowers during breaks and rises during focus sessions
-- **Sensory Feedback:** Integrated haptic feedback and sound effects confirm interactions without visual confirmation
+- **Curated Ambience:** Includes 6 high-quality background sounds: Rain, Brown Noise, Fireplace, Library, Riverside, and Forest.
+- **Adaptive Audio Ducking:** Background volume intelligently lowers during breaks and rises during focus sessions.
+- **Sensory Feedback:** Integrated haptic feedback and sound effects confirm interactions without needing to look at the screen.
 
 ### Reliability & System Integration
-- **Persistent Notification:** Live notification on the lock screen allows you to track progress without unlocking
-- **Background Stability:** Engineered to resist aggressive battery optimization
+- **Live Activity Support:** Persistent notification on the lock screen and status bar allows you to track progress at a glance.
+- **Quick Actions:** Skip focus or break periods directly from the notification tray for seamless session control.
+- **Background Stability:** Engineered to resist aggressive battery optimization, ensuring your timer never stops unexpectedly.
 
 ### Analytics & Personalization
-- **Visual Insights:** Dedicated dashboard featuring heatmaps and metrics (Total Focus Time, Peak Productivity Hours)
-- **Deep Theming:** 8 Color Themes (including Dynamic Material You), OLED Black Mode, and 6 Font options
-- **Identity System:** Choose from a variety of avatars and set a custom display name
+- **Visual Insights:** Dedicated dashboard featuring heatmaps and metrics (Total Focus Time, Peak Productivity Hours).
+- **Deep Theming:** 8 Color Themes (including Dynamic Material You), OLED Black Mode, and 6 Font options.
+- **Identity System:** Choose from a variety of animated avatars and set a custom display name.
 
 ---
 
@@ -66,7 +68,7 @@ Sessions transforms the concept of a simple timer into a comprehensive focus too
 <table width="100%">
   <tr>
     <td align="center" width="25%">
-      <img src="screenshots/Timer.png" alt="Timer" width="100%"/>
+      <img src="screenshots/Timer.jpg" alt="Timer" width="100%"/>
       <br/><sub><b>Timer</b></sub>
     </td>
     <td align="center" width="25%">
@@ -74,7 +76,7 @@ Sessions transforms the concept of a simple timer into a comprehensive focus too
       <br/><sub><b>Insights</b></sub>
     </td>
     <td align="center" width="25%">
-      <img src="screenshots/Dashboard.png" alt="Dashboard" width="100%"/>
+      <img src="screenshots/Dashboard.jpg" alt="Dashboard" width="100%"/>
       <br/><sub><b>Dashboard</b></sub>
     </td>
     <td align="center" width="25%">
@@ -88,7 +90,7 @@ Sessions transforms the concept of a simple timer into a comprehensive focus too
       <br/><sub><b>Settings</b></sub>
     </td>
     <td align="center" width="25%">
-      <img src="screenshots/Credits.png" alt="Credits" width="100%"/>
+      <img src="screenshots/Open Source.png" alt="Credits" width="100%"/>
       <br/><sub><b>Appearance</b></sub>
     </td>
     <td align="center" width="25%">
@@ -118,17 +120,19 @@ Dependency Injection: Koin
 Local Database:       Room
 Backend Services:     Firebase (Auth, Firestore)
 Concurrency:          Kotlin Coroutines & Flow
+Background Tasks:     WorkManager
 ```
 
 ### Tech Stack
 
-* **Kotlin** - Modern, concise, and safe programming language
-* **Jetpack Compose** - Declarative UI toolkit for building native Android interfaces
-* **Material 3** - Latest Material Design system for beautiful, accessible UIs
-* **MVVM Architecture** - Separation of concerns for maintainable code
-* **Room Database** - Robust local data persistence
-* **Firebase** - Cloud services for authentication and data sync
-* **Coroutines & Flow** - Asynchronous programming made simple
+* **Kotlin** - Modern, concise, and safe programming language.
+* **Jetpack Compose** - Declarative UI toolkit for building native Android interfaces.
+* **Material 3** - Latest Material Design system for beautiful, accessible UIs.
+* **MVVM Architecture** - Separation of concerns for maintainable code.
+* **Room Database** - Robust local data persistence.
+* **WorkManager** - Reliable background task scheduling for smart reminders.
+* **Firebase** - Cloud services for authentication and data sync.
+* **Coroutines & Flow** - Asynchronous programming made simple.
 
 ---
 
@@ -138,7 +142,7 @@ Concurrency:          Kotlin Coroutines & Flow
 
 * Android Studio (latest version recommended)
 * JDK 11 or higher
-* Android SDK API 24+
+* Android SDK API 26+
 
 ### Steps
 
@@ -175,7 +179,7 @@ Contributions are what make the open source community such an amazing place to l
 
 ## 📄 License
 
-Distributed under the appropriate license. See `LICENSE` file for more information.
+Distributed under the MIT License. See `LICENSE` file for more information.
 
 ---
 
