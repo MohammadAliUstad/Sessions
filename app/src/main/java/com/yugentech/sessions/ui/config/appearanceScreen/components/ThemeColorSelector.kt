@@ -27,10 +27,13 @@ fun ThemeColorSelector(
 ) {
     val themeConfig by viewModel.themeConfiguration.collectAsStateWithLifecycle()
     val currentPrimary = MaterialTheme.colorScheme.primary
-    val currentTertiary = MaterialTheme.colorScheme.tertiary
+    val currentPrimaryContainer = MaterialTheme.colorScheme.primaryContainer
 
-    val themeOptions = remember(currentPrimary, currentTertiary) {
-        themeOptions(currentPrimary, currentTertiary)
+    val themeOptions = remember(currentPrimary, currentPrimaryContainer) {
+        themeOptions(
+            currentPrimary,
+            currentPrimaryContainer
+        )
     }
 
     Column(

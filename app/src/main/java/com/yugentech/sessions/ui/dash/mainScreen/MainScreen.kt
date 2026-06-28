@@ -111,7 +111,7 @@ fun MainScreen(
     )
 
     val currentScreen by remember {
-        derivedStateOf { bottomNavItems[pagerState.currentPage] }
+        derivedStateOf { bottomNavItems[pagerState.targetPage] }
     }
 
     BackHandler(enabled = true) {
