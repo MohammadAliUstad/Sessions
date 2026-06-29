@@ -1,5 +1,6 @@
 package com.yugentech.sessions.ui.auth.components.forms
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -15,6 +16,7 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.material3.contentColorFor
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -23,10 +25,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import com.yugentech.sessions.R
+import com.yugentech.sessions.auth.viewmodel.AuthViewModel
 import com.yugentech.sessions.theme.tokens.components
 import com.yugentech.sessions.theme.tokens.corners
 import com.yugentech.sessions.theme.tokens.spacing
@@ -37,9 +41,11 @@ import com.yugentech.sessions.ui.auth.state.SignInFormState
 import com.yugentech.sessions.ui.auth.util.FormValidator
 import kotlinx.coroutines.launch
 
+@SuppressLint("LocalContextGetResourceValueCall")
 @Composable
 fun SignInForm(
     isLoading: Boolean,
+    authViewModel: AuthViewModel,
     onSignIn: (email: String, password: String) -> Unit,
     onGoogleSignIn: () -> Unit,
     onForgotPassword: (email: String) -> Unit,
@@ -63,7 +69,7 @@ fun SignInForm(
     ) {
         Column(
             modifier = Modifier.padding(MaterialTheme.spacing.l),
-            verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.m)
+            verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.s)
         ) {
             Text(
                 text = stringResource(R.string.welcome_back),
@@ -118,7 +124,7 @@ fun SignInForm(
                             },
                             modifier = Modifier
                                 .padding(end = MaterialTheme.spacing.xs)
-                                .height(MaterialTheme.components.buttonMedium)
+                                .height(MaterialTheme.components.buttonSmall)
                         ) {
                             Text(
                                 text = stringResource(R.string.forgot_password),
@@ -152,6 +158,12 @@ fun SignInForm(
                             }
                         }
                     }
+                )
+
+                ActionButton(
+                    text = stringResource(R.string.continue_as_guest),
+                    isLoading = isLoading,
+                    onClick = { authViewModel.continueAsGuest() },
                 )
 
                 GoogleSignInButton(

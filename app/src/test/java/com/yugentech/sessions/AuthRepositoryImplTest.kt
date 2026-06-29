@@ -5,6 +5,8 @@ import com.google.firebase.auth.FirebaseUser
 import com.yugentech.sessions.auth.service.AuthService
 import com.yugentech.sessions.auth.repository.AuthRepositoryImpl
 import com.yugentech.sessions.auth.result.AuthResult
+import com.yugentech.sessions.user.datastore.UserDataStore
+import com.yugentech.sessions.utils.AppConstants
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
@@ -18,8 +20,9 @@ import org.junit.Test
 class AuthRepositoryImplTest {
 
     private val authService = mockk<AuthService>(relaxed = true)
+    private val userDataStore = mockk<UserDataStore>(relaxed = true)
 
-    private val repository = AuthRepositoryImpl(authService)
+    private val repository = AuthRepositoryImpl(authService, userDataStore)
 
     @Test
     fun `signIn delegates to service and returns success`() = runBlocking {
@@ -76,7 +79,7 @@ class AuthRepositoryImplTest {
 
         every { authService.authStateFlow } returns flowOf(fakeUser)
 
-        val freshRepository = AuthRepositoryImpl(authService)
+        val freshRepository = AuthRepositoryImpl(authService, userDataStore)
 
         var receivedUser: FirebaseUser? = null
 
@@ -85,5 +88,25 @@ class AuthRepositoryImplTest {
         }
 
         assertEquals(fakeUser, receivedUser)
+    }
+
+    @Test
+    fun `currentUser returns GUEST_USER_ID when in guest mode`() = runBlocking {
+        every { authService.currentUser } returns null
+        
+        repository.setGuestMode(true)
+        
+        assertEquals(AppConstants.GUEST_USER_ID, repository.currentUser)
+    }
+
+    @Test
+    fun `currentUser returns firebase uid when logged in`() = runBlocking {
+        val fakeUser = mockk<FirebaseUser>()
+        every { fakeUser.uid } returns "firebase_uid"
+        every { authService.currentUser } returns fakeUser
+        
+        repository.setGuestMode(false)
+        
+        assertEquals("firebase_uid", repository.currentUser)
     }
 }

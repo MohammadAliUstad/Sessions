@@ -35,11 +35,13 @@ import com.yugentech.sessions.ui.dash.settingsScreen.components.AlarmPermissionD
 import com.yugentech.sessions.ui.dash.settingsScreen.components.SettingsListItem
 import com.yugentech.sessions.ui.dash.settingsScreen.components.SettingsSwitchItem
 import com.yugentech.sessions.ui.dash.settingsScreen.components.TimePickerDialog
+import com.yugentech.sessions.auth.viewmodel.AuthViewModel
 
 @Composable
 fun SettingsScreen(
     alertsViewModel: AlertsViewModel,
     notificationsViewModel: NotificationsViewModel,
+    authViewModel: AuthViewModel,
     onSignOut: () -> Unit,
     onExit: () -> Unit,
     onAbout: () -> Unit,
@@ -49,6 +51,7 @@ fun SettingsScreen(
     val alertsConfiguration by alertsViewModel.alertConfigurations.collectAsState()
     val notificationConfiguration by notificationsViewModel.notificationConfiguration.collectAsState()
     val showPermissionDialog by notificationsViewModel.showExactAlarmDialog.collectAsStateWithLifecycle()
+    val authState by authViewModel.authState.collectAsStateWithLifecycle()
 
     var showTimePickerDialog by remember { mutableStateOf(false) }
     var showLogoutDialog by remember { mutableStateOf(false) }
@@ -216,8 +219,8 @@ fun SettingsScreen(
         }
         item {
             SettingsListItem(
-                title = "Sign Out",
-                subtitle = "Log out of your current session",
+                title = if (authState.isGuest) stringResource(R.string.exit_guest_mode) else "Sign Out",
+                subtitle = if (authState.isGuest) "Go back to sign in screen" else "Log out of your current session",
                 index = 1,
                 totalCount = 2,
                 onClick = { showLogoutDialog = true }

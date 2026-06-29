@@ -8,7 +8,7 @@ crashlytics = "3.0.7"
 googleServices = "4.5.0"
 
 # AndroidX Core
-coreKtx = "1.19.0-alpha02"
+coreKtx = "1.19.0"
 coreSplashscreen = "1.2.0"
 
 # Lifecycle

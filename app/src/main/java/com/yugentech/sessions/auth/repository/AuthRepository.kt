@@ -14,6 +14,8 @@ interface AuthRepository {
     suspend fun signIn(email: String, password: String): AuthResult<FirebaseUser>
     suspend fun sendPasswordResetEmail(email: String): AuthResult<Unit>
     fun signOut()
+    suspend fun setGuestMode(isGuest: Boolean)
+    suspend fun isGuestMode(): Boolean
     suspend fun getGoogleSignInIntent(webClientId: String): AuthResult<PendingIntent>
     suspend fun handleGoogleSignInResult(data: Intent?): AuthResult<FirebaseUser>
 }

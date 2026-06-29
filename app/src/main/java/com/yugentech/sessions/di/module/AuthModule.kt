@@ -38,7 +38,8 @@ val authModule = module {
     // Provides the repository interface used by the UI layer
     single<AuthRepository> {
         AuthRepositoryImpl(
-            authService = get()
+            authService = get(),
+            userDataStore = get()
         )
     }
 }
