@@ -90,7 +90,9 @@ fun SignInScreen(
                     onClearError = { authViewModel.clearError() },
                     onSignIn = onSignIn,
                     onGoogleSignIn = onGoogleSignIn,
-                    onForgotPassword = onForgotPassword
+                    onForgotPassword = onForgotPassword,
+                    authViewModel = authViewModel,
+                    modifier = Modifier
                 )
 
                 Spacer(modifier = Modifier.height(MaterialTheme.spacing.xs))

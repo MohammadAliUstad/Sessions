@@ -14,6 +14,7 @@ import com.yugentech.sessions.user.datastore.UserDataStore
 import com.yugentech.sessions.user.model.UserData
 import com.yugentech.sessions.user.repository.UserRepository
 import com.yugentech.sessions.user.result.UserResult
+import com.yugentech.sessions.utils.AppConstants
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -51,6 +52,27 @@ class AuthViewModel(
 
     init {
         observeAuthState()
+        checkGuestMode()
+    }
+
+    private fun checkGuestMode() {
+        viewModelScope.launch {
+            val isGuest = authRepository.isGuestMode()
+            if (isGuest && _authState.value.userId == null) {
+                // Ensure guest profile exists in DB to prevent blank screens after restart
+                userRepository.upsertUser(UserData(userId = AppConstants.GUEST_USER_ID, name = "Guest"))
+
+                _authState.update {
+                    it.copy(
+                        isInitializing = false,
+                        isUserLoggedIn = false,
+                        isGuest = true,
+                        userId = authRepository.currentUser,
+                        userData = UserData(name = "Guest")
+                    )
+                }
+            }
+        }
     }
 
     private fun observeAuthState() {
@@ -126,6 +148,13 @@ class AuthViewModel(
     }
 
     fun getGoogleSignInIntent(webClientId: String) {
+        Timber.w("getGoogleSignInIntent called with webClientId: '$webClientId'")
+        
+        if (webClientId.isBlank()) {
+            _authState.update { it.copy(error = "Google Sign-In configuration missing (Check local.properties)") }
+            return
+        }
+
         _authState.update { it.copy(isLoading = true, error = null) }
 
         viewModelScope.launch {
@@ -159,7 +188,25 @@ class AuthViewModel(
         _authState.update { it.copy(isLoading = true) }
         viewModelScope.launch {
             authRepository.signOut()
+            authRepository.setGuestMode(false)
             syncDataStore.clearSyncFlags()
+        }
+    }
+
+    fun continueAsGuest() {
+        _authState.update { it.copy(isLoading = true, error = null) }
+        viewModelScope.launch {
+            userRepository.upsertUser(UserData(userId = AppConstants.GUEST_USER_ID, name = "Guest"))
+            authRepository.setGuestMode(true)
+            _authState.update {
+                it.copy(
+                    isLoading = false,
+                    isUserLoggedIn = false,
+                    isGuest = true,
+                    userId = authRepository.currentUser,
+                    userData = UserData(name = "Guest")
+                )
+            }
         }
     }
 

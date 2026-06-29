@@ -31,6 +31,9 @@
     <string name="sign_up_message">Start your productivity journey</string>
     <string name="have_an_account">Already have an account? Sign In</string>
     <string name="toggle_password_visibility">Toggle Password Visibility</string>
+    <string name="continue_as_guest">Continue as Guest</string>
+    <string name="exit_guest_mode">Exit Guest Mode</string>
+    <string name="guest_user">Guest User</string>
 
     <string name="visit_github">Visit GitHub</string>
     <string name="view_source_code_and_contribute">View source code and contribute</string>

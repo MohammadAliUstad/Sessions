@@ -47,6 +47,7 @@ import com.yugentech.sessions.ui.dash.mainScreen.components.ToastMessage
 import com.yugentech.sessions.ui.dash.mainScreen.components.TopAppBar
 import com.yugentech.sessions.ui.dash.profileScreen.ProfileScreen
 import com.yugentech.sessions.ui.dash.settingsScreen.SettingsScreen
+import com.yugentech.sessions.auth.viewmodel.AuthViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
@@ -60,6 +61,7 @@ fun MainScreen(
     homeViewModel: HomeViewModel,
     timerViewModel: TimerViewModel,
     profileViewModel: ProfileViewModel,
+    authViewModel: AuthViewModel = koinViewModel(),
     alertsViewModel: AlertsViewModel = koinViewModel(),
     notificationsViewModel: NotificationsViewModel = koinViewModel(),
     onSignOut: () -> Unit,
@@ -220,6 +222,7 @@ fun MainScreen(
                 BottomBarScreen.Settings -> SettingsScreen(
                     alertsViewModel = alertsViewModel,
                     notificationsViewModel = notificationsViewModel,
+                    authViewModel = authViewModel,
                     onSignOut = onSignOut,
                     onExit = onExit,
                     onAbout = onAbout,

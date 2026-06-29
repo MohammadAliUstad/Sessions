@@ -105,6 +105,10 @@ class SessionsRepositoryImpl(
     override suspend fun syncSessions(): SessionResult<Unit> {
         val userId = currentUserId ?: return SessionResult.Error("User not logged in")
 
+        if (userId == com.yugentech.sessions.utils.AppConstants.GUEST_USER_ID) {
+            return SessionResult.Success(Unit)
+        }
+
         return try {
             // Find sessions that haven't been uploaded yet
             val pendingSessions = sessionsDao.getPendingSessions(userId)
@@ -140,6 +144,10 @@ class SessionsRepositoryImpl(
 
     override suspend fun fetchSessionsOnce(): SessionResult<Unit> {
         val userId = currentUserId ?: return SessionResult.Error("User not logged in")
+
+        if (userId == com.yugentech.sessions.utils.AppConstants.GUEST_USER_ID) {
+            return SessionResult.Success(Unit)
+        }
 
         return try {
             // Check preferences to see if we already downloaded the initial data

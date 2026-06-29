@@ -14,7 +14,8 @@ import timber.log.Timber
 class UserRepositoryImpl(
     private val userDao: UserDao,
     private val userService: UserService,
-    private val syncDataStore: SyncDataStore
+    private val syncDataStore: SyncDataStore,
+    private val authRepository: com.yugentech.sessions.auth.repository.AuthRepository
 ) : UserRepository {
 
     override fun getUserFlow(userId: String): Flow<UserData?> {
@@ -38,11 +39,17 @@ class UserRepositoryImpl(
     }
 
     override suspend fun syncUser(userData: UserData): UserResult<Unit> {
+        if (userData.userId == com.yugentech.sessions.utils.AppConstants.GUEST_USER_ID) {
+            return UserResult.Success(Unit)
+        }
         Timber.i("Syncing user data to cloud: ${userData.userId}")
         return userService.uploadUser(userData)
     }
 
     override suspend fun fetchUserOnce(userId: String): UserResult<Unit> {
+        if (userId == com.yugentech.sessions.utils.AppConstants.GUEST_USER_ID) {
+            return UserResult.Success(Unit)
+        }
         return try {
             val alreadyFetched = syncDataStore.isUserFetchDone.first()
 

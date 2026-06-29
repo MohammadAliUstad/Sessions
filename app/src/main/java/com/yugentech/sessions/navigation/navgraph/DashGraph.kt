@@ -55,6 +55,7 @@ fun NavGraphBuilder.dashGraph(
         if (currentUserId != null) {
             MainScreen(
                 userId = currentUserId,
+                authViewModel = authViewModel,
                 onSignOut = {
                     Timber.i("User requested Sign Out")
                     timerViewModel.onLeave()
