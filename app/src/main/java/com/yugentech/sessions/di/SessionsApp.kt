@@ -3,7 +3,6 @@ package com.yugentech.sessions.di
 import android.app.Application
 import androidx.work.Configuration
 import com.yugentech.sessions.BuildConfig
-import com.google.firebase.FirebaseApp
 import com.yugentech.sessions.di.module.alertsModule
 import com.yugentech.sessions.di.module.authModule
 import com.yugentech.sessions.di.module.dataStoreModule
@@ -32,10 +31,14 @@ class SessionsApp : Application(), Configuration.Provider {
         super.onCreate()
 
         // Configure logging: DebugTree for development, ReleaseTree for production
-        Timber.plant(ReleaseTree())
+        if (BuildConfig.DEBUG) {
+            Timber.plant(Timber.DebugTree())
+        } else {
+            Timber.plant(ReleaseTree())
+        }
 
         // Initialize Firebase SDK
-        FirebaseApp.initializeApp(this)
+//        FirebaseApp.initializeApp(this)
 
         // Start Koin dependency injection and load all modules
         startKoin {

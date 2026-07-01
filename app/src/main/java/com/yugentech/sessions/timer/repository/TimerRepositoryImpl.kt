@@ -3,8 +3,8 @@ package com.yugentech.sessions.timer.repository
 import com.yugentech.sessions.sessions.model.Session
 import com.yugentech.sessions.sessions.repository.SessionsRepository
 import com.yugentech.sessions.timer.datastore.TimerDatastore
-import com.yugentech.sessions.timer.service.TimerService
 import com.yugentech.sessions.timer.effect.TimerEffect
+import com.yugentech.sessions.timer.service.TimerService
 import com.yugentech.sessions.timer.state.TimerMode
 import com.yugentech.sessions.timer.state.TimerState
 import kotlinx.coroutines.CoroutineScope

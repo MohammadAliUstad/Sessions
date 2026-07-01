@@ -1,12 +1,12 @@
 package com.yugentech.sessions.di.module
 
-import com.yugentech.sessions.notification.service.NotificationService
-import com.yugentech.sessions.notification.datastore.NotificationDataStore
-import com.yugentech.sessions.notification.viewmodel.NotificationsViewModel
 import com.yugentech.sessions.notification.active.ActiveNotificationManager
+import com.yugentech.sessions.notification.datastore.NotificationDataStore
 import com.yugentech.sessions.notification.repository.NotificationRepository
 import com.yugentech.sessions.notification.repository.NotificationRepositoryImpl
 import com.yugentech.sessions.notification.scheduled.ScheduledNotificationManager
+import com.yugentech.sessions.notification.service.NotificationService
+import com.yugentech.sessions.notification.viewmodel.NotificationsViewModel
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.module.dsl.viewModel
 import org.koin.core.qualifier.named

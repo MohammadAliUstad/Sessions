@@ -24,9 +24,9 @@
               <option name="connection">
                 <ConnectionSetting>
                   <option name="appId" value="com.yugentech.sessions" />
-                  <option name="mobileSdkAppId" value="1:364008177026:android:4baf6d29870ddb10d6e39b" />
-                  <option name="projectId" value="sessions-abfbc" />
-                  <option name="projectNumber" value="364008177026" />
+                  <option name="mobileSdkAppId" value="1:474638026693:android:6df533417f49e6bc8a2dac" />
+                  <option name="projectId" value="trial-app-725e2" />
+                  <option name="projectNumber" value="474638026693" />
                 </ConnectionSetting>
               </option>
               <option name="signal" value="SIGNAL_UNSPECIFIED" />

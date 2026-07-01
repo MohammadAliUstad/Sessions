@@ -6,6 +6,7 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import com.yugentech.sessions.auth.state.AuthState
+import com.yugentech.sessions.auth.viewmodel.AuthViewModel
 import com.yugentech.sessions.navigation.screen.AppScreen
 import com.yugentech.sessions.ui.auth.signInScreen.SignInScreen
 import com.yugentech.sessions.ui.auth.signUpScreen.SignUpScreen
@@ -13,7 +14,6 @@ import com.yugentech.sessions.ui.dash.util.defaultEnterTransition
 import com.yugentech.sessions.ui.dash.util.defaultExitTransition
 import com.yugentech.sessions.ui.dash.util.defaultPopEnterTransition
 import com.yugentech.sessions.ui.dash.util.defaultPopExitTransition
-import com.yugentech.sessions.auth.viewmodel.AuthViewModel
 import timber.log.Timber
 
 fun NavGraphBuilder.authGraph(

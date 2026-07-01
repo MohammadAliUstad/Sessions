@@ -3,10 +3,8 @@ package com.yugentech.sessions.ui.config.aboutScreen.components
 
 import android.graphics.drawable.Animatable
 import android.widget.ImageView
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.viewinterop.AndroidView
 import com.yugentech.sessions.R
 

@@ -33,23 +33,25 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.zIndex
 import androidx.core.content.ContextCompat
+import com.yugentech.sessions.alerts.viewmodel.AlertsViewModel
+import com.yugentech.sessions.auth.viewmodel.AuthViewModel
 import com.yugentech.sessions.navigation.screen.BottomBarScreen
 import com.yugentech.sessions.notification.viewmodel.NotificationsViewModel
-import com.yugentech.sessions.timer.viewmodel.TimerViewModel
 import com.yugentech.sessions.theme.tokens.corners
-import com.yugentech.sessions.ui.dash.homeScreen.components.ExitConfirmationDialog
-import com.yugentech.sessions.viewModels.HomeViewModel
-import com.yugentech.sessions.viewModels.ProfileViewModel
-import com.yugentech.sessions.alerts.viewmodel.AlertsViewModel
+import com.yugentech.sessions.timer.viewmodel.TimerViewModel
 import com.yugentech.sessions.ui.dash.homeScreen.HomeScreen
+import com.yugentech.sessions.ui.dash.homeScreen.components.ExitConfirmationDialog
 import com.yugentech.sessions.ui.dash.mainScreen.components.BottomNavBar
 import com.yugentech.sessions.ui.dash.mainScreen.components.ToastMessage
 import com.yugentech.sessions.ui.dash.mainScreen.components.TopAppBar
 import com.yugentech.sessions.ui.dash.profileScreen.ProfileScreen
 import com.yugentech.sessions.ui.dash.settingsScreen.SettingsScreen
+import com.yugentech.sessions.viewModels.HomeViewModel
+import com.yugentech.sessions.viewModels.ProfileViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
+import kotlin.time.Duration.Companion.milliseconds
 
 private val bottomNavItems = listOf(BottomBarScreen.Profile, BottomBarScreen.Home, BottomBarScreen.Settings)
 
@@ -60,6 +62,7 @@ fun MainScreen(
     homeViewModel: HomeViewModel,
     timerViewModel: TimerViewModel,
     profileViewModel: ProfileViewModel,
+    authViewModel: AuthViewModel = koinViewModel(),
     alertsViewModel: AlertsViewModel = koinViewModel(),
     notificationsViewModel: NotificationsViewModel = koinViewModel(),
     onSignOut: () -> Unit,
@@ -96,7 +99,7 @@ fun MainScreen(
             ) == PackageManager.PERMISSION_GRANTED
 
             if (!hasPermission) {
-                delay(500)
+                delay(500.milliseconds)
                 notificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
             }
             hasCheckedPermission = true
@@ -220,6 +223,7 @@ fun MainScreen(
                 BottomBarScreen.Settings -> SettingsScreen(
                     alertsViewModel = alertsViewModel,
                     notificationsViewModel = notificationsViewModel,
+                    authViewModel = authViewModel,
                     onSignOut = onSignOut,
                     onExit = onExit,
                     onAbout = onAbout,

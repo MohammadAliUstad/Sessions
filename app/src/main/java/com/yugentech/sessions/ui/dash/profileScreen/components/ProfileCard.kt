@@ -30,13 +30,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import com.yugentech.sessions.user.model.UserData
 import com.yugentech.sessions.theme.tokens.components
 import com.yugentech.sessions.theme.tokens.corners
 import com.yugentech.sessions.theme.tokens.icons
 import com.yugentech.sessions.theme.tokens.spacing
 import com.yugentech.sessions.ui.config.editProfileScreen.components.AvatarImage
 import com.yugentech.sessions.ui.config.editProfileScreen.components.AvatarRepository
+import com.yugentech.sessions.user.model.UserData
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable

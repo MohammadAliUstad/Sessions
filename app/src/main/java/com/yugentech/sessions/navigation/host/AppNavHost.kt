@@ -13,6 +13,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
+import com.yugentech.sessions.auth.viewmodel.AuthViewModel
 import com.yugentech.sessions.navigation.navgraph.authGraph
 import com.yugentech.sessions.navigation.navgraph.configGraph
 import com.yugentech.sessions.navigation.navgraph.dashGraph
@@ -21,7 +22,6 @@ import com.yugentech.sessions.ui.dash.util.defaultEnterTransition
 import com.yugentech.sessions.ui.dash.util.defaultExitTransition
 import com.yugentech.sessions.ui.dash.util.defaultPopEnterTransition
 import com.yugentech.sessions.ui.dash.util.defaultPopExitTransition
-import com.yugentech.sessions.auth.viewmodel.AuthViewModel
 import timber.log.Timber
 
 @OptIn(ExperimentalAnimationApi::class)
@@ -41,7 +41,7 @@ fun AppNavHost(
     val startDestination = remember  {
         when {
             showOnboarding -> AppScreen.Onboarding.route
-            authState.isUserLoggedIn && authState.userId != null -> AppScreen.Main.route
+            (authState.isUserLoggedIn && authState.userId != null) || authState.isGuest -> AppScreen.Main.route
             else -> AppScreen.SignIn.route
         }
     }
@@ -68,7 +68,7 @@ fun AppNavHost(
     }
 
     // Manages auth-driven navigation
-    LaunchedEffect(authState.isUserLoggedIn, authState.userId, showOnboarding) {
+    LaunchedEffect(authState.isUserLoggedIn, authState.userId, authState.isGuest, showOnboarding) {
         if (!authState.isLoading && !authState.isInitializing) {
             val currentRoute = navController.currentDestination?.route
 
@@ -82,7 +82,7 @@ fun AppNavHost(
                     }
                 }
 
-                authState.isUserLoggedIn && authState.userId != null -> {
+                (authState.isUserLoggedIn && authState.userId != null) || authState.isGuest -> {
                     if (currentRoute != AppScreen.Main.route) {
                         navController.navigate(AppScreen.Main.route) {
                             popUpTo(0) { inclusive = true }
@@ -106,8 +106,11 @@ fun AppNavHost(
     // Forces navigation back to main when requested
     LaunchedEffect(shouldNavigateToHome) {
         if (shouldNavigateToHome) {
-            Timber.d("Popping back to Main screen")
-            navController.popBackStack(AppScreen.Main.route, inclusive = false)
+            Timber.d("Navigating to Main screen")
+            navController.navigate(AppScreen.Main.route) {
+                popUpTo(0) { inclusive = true }
+                launchSingleTop = true
+            }
             onNavigatedToHome()
         }
     }

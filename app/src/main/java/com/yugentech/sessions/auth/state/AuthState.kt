@@ -11,5 +11,6 @@ data class AuthState(
     val error: String? = null,
     val intent: PendingIntent? = null,
     val userData: UserData? = null,
-    val isUserLoggedIn: Boolean = false
+    val isUserLoggedIn: Boolean = false,
+    val isGuest: Boolean = false
 )
