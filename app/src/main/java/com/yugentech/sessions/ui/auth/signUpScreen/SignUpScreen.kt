@@ -25,7 +25,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
-import kotlinx.coroutines.delay
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
@@ -38,6 +37,8 @@ import com.yugentech.sessions.theme.tokens.spacing
 import com.yugentech.sessions.ui.auth.components.AnimatedAlarmIcon
 import com.yugentech.sessions.ui.auth.components.forms.SignUpForm
 import com.yugentech.sessions.ui.dash.mainScreen.components.ToastMessage
+import kotlinx.coroutines.delay
+import kotlin.time.Duration.Companion.milliseconds
 
 @Composable
 fun SignUpScreen(
@@ -51,7 +52,7 @@ fun SignUpScreen(
     var isIconActivated by remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
-        delay(500) // Small delay to ensure view is ready
+        delay(500.milliseconds) // Small delay to ensure view is ready
         isIconActivated = true
     }
 

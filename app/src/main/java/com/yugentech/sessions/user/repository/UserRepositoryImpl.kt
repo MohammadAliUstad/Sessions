@@ -1,9 +1,9 @@
 package com.yugentech.sessions.user.repository
 
-import com.yugentech.sessions.user.model.UserData
 import com.yugentech.sessions.room.daos.UserDao
 import com.yugentech.sessions.room.entities.UserEntity
 import com.yugentech.sessions.sessions.datastore.SyncDataStore
+import com.yugentech.sessions.user.model.UserData
 import com.yugentech.sessions.user.result.UserResult
 import com.yugentech.sessions.user.service.UserService
 import kotlinx.coroutines.flow.Flow

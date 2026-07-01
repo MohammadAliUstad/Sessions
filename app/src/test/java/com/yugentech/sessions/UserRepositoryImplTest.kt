@@ -1,15 +1,18 @@
 package com.yugentech.sessions
 
-import com.yugentech.sessions.user.model.UserData
+import com.yugentech.sessions.auth.repository.AuthRepository
 import com.yugentech.sessions.room.daos.UserDao
 import com.yugentech.sessions.room.entities.UserEntity
 import com.yugentech.sessions.sessions.datastore.SyncDataStore
+import com.yugentech.sessions.user.model.UserData
+import com.yugentech.sessions.user.repository.UserRepositoryImpl
 import com.yugentech.sessions.user.result.UserResult
 import com.yugentech.sessions.user.service.UserService
-import com.yugentech.sessions.user.repository.UserRepositoryImpl
-import com.yugentech.sessions.auth.repository.AuthRepository
 import com.yugentech.sessions.utils.AppConstants
-import io.mockk.*
+import io.mockk.coEvery
+import io.mockk.coVerify
+import io.mockk.every
+import io.mockk.mockk
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals

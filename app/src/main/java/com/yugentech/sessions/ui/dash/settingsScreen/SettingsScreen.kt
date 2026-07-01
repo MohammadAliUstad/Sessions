@@ -10,7 +10,6 @@ import androidx.compose.material.icons.automirrored.filled.VolumeUp
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Palette
-import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -24,18 +23,17 @@ import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.yugentech.sessions.R
+import com.yugentech.sessions.alerts.viewmodel.AlertsViewModel
+import com.yugentech.sessions.auth.viewmodel.AuthViewModel
 import com.yugentech.sessions.notification.viewmodel.NotificationsViewModel
 import com.yugentech.sessions.theme.tokens.spacing
 import com.yugentech.sessions.ui.dash.homeScreen.components.ExitConfirmationDialog
 import com.yugentech.sessions.ui.dash.homeScreen.components.LogoutConfirmationDialog
 import com.yugentech.sessions.ui.dash.mainScreen.components.SectionHeader
-import com.yugentech.sessions.alerts.viewmodel.AlertsViewModel
-import com.yugentech.sessions.theme.tokens.components
 import com.yugentech.sessions.ui.dash.settingsScreen.components.AlarmPermissionDialog
 import com.yugentech.sessions.ui.dash.settingsScreen.components.SettingsListItem
 import com.yugentech.sessions.ui.dash.settingsScreen.components.SettingsSwitchItem
 import com.yugentech.sessions.ui.dash.settingsScreen.components.TimePickerDialog
-import com.yugentech.sessions.auth.viewmodel.AuthViewModel
 
 @Composable
 fun SettingsScreen(

@@ -27,12 +27,12 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalView
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.yugentech.sessions.theme.viewmodel.ThemeViewModel
+import com.yugentech.sessions.alerts.viewmodel.AlertsViewModel
 import com.yugentech.sessions.theme.config.ThemeMode
 import com.yugentech.sessions.theme.tokens.components
 import com.yugentech.sessions.theme.tokens.corners
 import com.yugentech.sessions.theme.tokens.spacing
-import com.yugentech.sessions.alerts.viewmodel.AlertsViewModel
+import com.yugentech.sessions.theme.viewmodel.ThemeViewModel
 import org.koin.androidx.compose.koinViewModel
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)

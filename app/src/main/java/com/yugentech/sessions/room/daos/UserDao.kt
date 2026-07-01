@@ -1,6 +1,8 @@
 package com.yugentech.sessions.room.daos
 
-import androidx.room.*
+import androidx.room.Dao
+import androidx.room.Query
+import androidx.room.Upsert
 import com.yugentech.sessions.room.entities.UserEntity
 import kotlinx.coroutines.flow.Flow
 

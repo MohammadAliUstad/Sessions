@@ -24,13 +24,13 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.zIndex
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.yugentech.sessions.R
+import com.yugentech.sessions.auth.viewmodel.AuthViewModel
 import com.yugentech.sessions.theme.tokens.spacing
 import com.yugentech.sessions.ui.auth.components.IconCarousel
 import com.yugentech.sessions.ui.auth.components.dialog.ForgotPasswordSuccessDialog
 import com.yugentech.sessions.ui.auth.components.forms.SignInForm
 import com.yugentech.sessions.ui.auth.state.ForgotPasswordState
 import com.yugentech.sessions.ui.dash.mainScreen.components.ToastMessage
-import com.yugentech.sessions.auth.viewmodel.AuthViewModel
 
 @Composable
 fun SignInScreen(

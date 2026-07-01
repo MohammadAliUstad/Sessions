@@ -1,9 +1,9 @@
 package com.yugentech.sessions.di.module
 
 import com.yugentech.sessions.sessions.datastore.SyncDataStore
-import com.yugentech.sessions.sessions.service.SessionsService
 import com.yugentech.sessions.sessions.repository.SessionsRepository
 import com.yugentech.sessions.sessions.repository.SessionsRepositoryImpl
+import com.yugentech.sessions.sessions.service.SessionsService
 import com.yugentech.sessions.utils.BillingManager
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.qualifier.named

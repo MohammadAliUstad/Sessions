@@ -4,16 +4,15 @@ import android.graphics.BlendMode
 import android.graphics.BlendModeColorFilter
 import android.graphics.PorterDuff
 import android.graphics.PorterDuffColorFilter
+import android.graphics.drawable.AnimatedVectorDrawable
 import android.os.Build
 import android.widget.ImageView
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.viewinterop.AndroidView
 import com.yugentech.sessions.R
-import android.graphics.drawable.AnimatedVectorDrawable
 
 @Composable
 fun AnimatedAlarmIcon(

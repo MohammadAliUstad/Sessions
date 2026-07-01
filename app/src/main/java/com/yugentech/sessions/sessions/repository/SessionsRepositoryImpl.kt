@@ -1,12 +1,12 @@
 package com.yugentech.sessions.sessions.repository
 
 import com.yugentech.sessions.auth.repository.AuthRepository
-import com.yugentech.sessions.sessions.model.Session
 import com.yugentech.sessions.room.daos.SessionsDao
 import com.yugentech.sessions.room.entities.SessionsEntity
-import com.yugentech.sessions.sessions.service.SessionsService
 import com.yugentech.sessions.sessions.datastore.SyncDataStore
+import com.yugentech.sessions.sessions.model.Session
 import com.yugentech.sessions.sessions.result.SessionResult
+import com.yugentech.sessions.sessions.service.SessionsService
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.first

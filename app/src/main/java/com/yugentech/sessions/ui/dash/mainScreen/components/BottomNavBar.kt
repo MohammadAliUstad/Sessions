@@ -4,7 +4,6 @@ import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
@@ -29,6 +28,7 @@ import com.airbnb.lottie.compose.rememberLottieDynamicProperties
 import com.airbnb.lottie.compose.rememberLottieDynamicProperty
 import com.yugentech.sessions.R
 import com.yugentech.sessions.navigation.screen.BottomBarScreen
+import kotlin.time.Duration.Companion.milliseconds
 
 @Composable
 fun BottomNavBar(
@@ -118,7 +118,7 @@ private fun AnimatedNavIcon(
             // We use composition?.duration to wait for the animation to finish
             // before resetting the state, allowing it to complete even if shouldPlay becomes false.
             composition?.let {
-                kotlinx.coroutines.delay(it.duration.toLong())
+                kotlinx.coroutines.delay(it.duration.toLong().milliseconds)
                 isAnimating = false
             }
         }

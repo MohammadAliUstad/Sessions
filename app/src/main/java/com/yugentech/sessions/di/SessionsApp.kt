@@ -3,7 +3,6 @@ package com.yugentech.sessions.di
 import android.app.Application
 import androidx.work.Configuration
 import com.yugentech.sessions.BuildConfig
-import com.google.firebase.FirebaseApp
 import com.yugentech.sessions.di.module.alertsModule
 import com.yugentech.sessions.di.module.authModule
 import com.yugentech.sessions.di.module.dataStoreModule

@@ -3,8 +3,8 @@ package com.yugentech.sessions.notification.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.yugentech.sessions.notification.datastore.NotificationDataStore
-import com.yugentech.sessions.notification.repository.NotificationRepository
 import com.yugentech.sessions.notification.model.NotificationConfig
+import com.yugentech.sessions.notification.repository.NotificationRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow

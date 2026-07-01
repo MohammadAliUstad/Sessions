@@ -13,6 +13,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
+import com.yugentech.sessions.auth.viewmodel.AuthViewModel
 import com.yugentech.sessions.navigation.navgraph.authGraph
 import com.yugentech.sessions.navigation.navgraph.configGraph
 import com.yugentech.sessions.navigation.navgraph.dashGraph
@@ -21,7 +22,6 @@ import com.yugentech.sessions.ui.dash.util.defaultEnterTransition
 import com.yugentech.sessions.ui.dash.util.defaultExitTransition
 import com.yugentech.sessions.ui.dash.util.defaultPopEnterTransition
 import com.yugentech.sessions.ui.dash.util.defaultPopExitTransition
-import com.yugentech.sessions.auth.viewmodel.AuthViewModel
 import timber.log.Timber
 
 @OptIn(ExperimentalAnimationApi::class)
