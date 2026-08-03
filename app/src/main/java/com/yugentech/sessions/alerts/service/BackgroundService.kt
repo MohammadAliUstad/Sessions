@@ -178,7 +178,7 @@ class BackgroundService(private val context: Context) {
 
             if (isStopping) {
                 Timber.d("Already fading out - absorbing callback")
-                if (onComplete != null) pendingOnComplete = onComplete
+                pendingOnComplete = onComplete
                 return@post
             }
 

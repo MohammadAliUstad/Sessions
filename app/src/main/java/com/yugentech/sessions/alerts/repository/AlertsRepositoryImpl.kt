@@ -96,10 +96,9 @@ class AlertsRepositoryImpl(
         playStopAlert(view)
     }
 
-    // Handles transition to break mode, fading audio and playing alert
+    // Handles transition to break mode — sound is handled by handleBackgroundSoundState
     override fun onBreakStart(view: View?) {
         Timber.d("onBreakStart triggered")
-        backgroundSoundService.stop { startBackgroundSound() }
         playStopAlert(view)
     }
 
