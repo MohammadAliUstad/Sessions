@@ -326,35 +326,23 @@ class NotificationService(
         val completedSets = timerState.completedSets
         val isFocusMode = timerState.currentMode == TimerMode.Focus
 
-        // accent1 (primary) and accent2 (secondary) are both generated from the same wallpaper
-        // hue and look nearly identical. Use neutral1_200 for short break — a lightly-tinted
-        // grey that is clearly distinct from the vivid primary and tertiary hues.
-        val primaryColor   = context.getColor(android.R.color.system_accent1_200)
-        val secondaryColor = context.getColor(android.R.color.system_neutral1_200)
-        val tertiaryColor  = context.getColor(android.R.color.system_accent3_200)
+        val primaryColor     = context.getColor(android.R.color.system_accent1_200)
+        val shortBreakColor  = context.getColor(android.R.color.system_accent3_200)
+        val longBreakColor   = Color.argb(255, 255, 180, 171)
 
-        val shortBreakLen = 1
-        val longBreakLen = 2
-
-        val totalBreakLen = if (targetSets > 1) (1 until targetSets).sumOf { i ->
-            if (config.longBreakEnabled && i % config.setsPerLongBreak == 0) longBreakLen else shortBreakLen
-        } else 0
+        val breakLen = 1
+        val totalBreakLen = (targetSets - 1).coerceAtLeast(0) * breakLen
         val totalFocusLen = PROGRESS_MAX_PERCENT - totalBreakLen
         val baseFocusLen = (totalFocusLen / targetSets).coerceAtLeast(1)
         val extraUnits = totalFocusLen - baseFocusLen * targetSets
 
-        // Discrete progress = cumulative position at the END of the currently active block.
-        // The system lights up everything before this boundary (active/past) and dims everything
-        // after (upcoming). We raise the dim alpha high enough that upcoming segments stay
-        // visually present even after the system applies its unfilled treatment.
         var discreteProgress = 0
         var pos = 0
         outer@ for (i in 1..targetSets) {
             pos += baseFocusLen + if (i <= extraUnits) 1 else 0
             if (isFocusMode && i == completedSets + 1) { discreteProgress = pos; break@outer }
             if (i < targetSets) {
-                val isLongBreak = config.longBreakEnabled && i % config.setsPerLongBreak == 0
-                pos += if (isLongBreak) longBreakLen else shortBreakLen
+                pos += breakLen
                 if (!isFocusMode && i == completedSets) { discreteProgress = pos; break@outer }
             }
         }
@@ -369,11 +357,10 @@ class NotificationService(
                 NotificationCompat.ProgressStyle.Segment(focusLen).setColor(primaryColor)
             )
             if (i < targetSets) {
-                val isLongBreak = config.longBreakEnabled && i % config.setsPerLongBreak == 0
-                val breakColor = if (isLongBreak) tertiaryColor else secondaryColor
-                val breakLen = if (isLongBreak) longBreakLen else shortBreakLen
+                val isLongBreak = config.longBreakEnabled && (i % config.setsPerLongBreak == 0)
+                val segmentColor = if (isLongBreak) longBreakColor else shortBreakColor
                 progressStyle.addProgressSegment(
-                    NotificationCompat.ProgressStyle.Segment(breakLen).setColor(breakColor)
+                    NotificationCompat.ProgressStyle.Segment(breakLen).setColor(segmentColor)
                 )
             }
         }
@@ -392,7 +379,10 @@ class NotificationService(
 
     private fun openAppIntent(): PendingIntent {
         val intent = Intent(context, MainActivity::class.java).apply {
-            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            // SINGLE_TOP: if MainActivity is already at the top of its task (always true for a
+            // single-Activity app), onNewIntent is called instead of recreating the whole app.
+            // NEW_TASK: required when starting an Activity from a non-Activity context (Service).
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_SINGLE_TOP
             putExtra(EXTRA_NAVIGATE_TO_HOME, true)
         }
         return PendingIntent.getActivity(
