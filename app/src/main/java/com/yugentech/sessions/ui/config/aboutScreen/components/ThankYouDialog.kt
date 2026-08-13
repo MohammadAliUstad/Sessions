@@ -93,7 +93,7 @@ fun ThankYouDialog(
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(MaterialTheme.components.buttonLarge),
-                    shape = RoundedCornerShape(MaterialTheme.corners.medium)
+                    shape = CircleShape
                 ) {
                     Text("You're Welcome!")
                 }
