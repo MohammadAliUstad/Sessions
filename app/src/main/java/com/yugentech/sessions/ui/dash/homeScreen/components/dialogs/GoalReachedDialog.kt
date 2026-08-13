@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredSize
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.BasicAlertDialog
 import androidx.compose.material3.Button
@@ -115,7 +116,7 @@ fun GoalReachedDialog(
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(MaterialTheme.components.buttonLarge),
-                    shape = RoundedCornerShape(MaterialTheme.corners.medium)
+                    shape = CircleShape
                 ) {
                     Text(
                         text = "Great!",
