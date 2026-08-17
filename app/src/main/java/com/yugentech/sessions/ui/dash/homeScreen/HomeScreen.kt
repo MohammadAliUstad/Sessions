@@ -100,6 +100,7 @@ fun HomeScreen(
                 ) {
                     SessionHeader(
                         isRunning = timerState.isTimerRunning,
+                        isSessionActive = isSessionActive,
                         sessionTask = config.sessionTask,
                         onTaskClick = {
                             activeDialog = ActiveDialog.TaskSelection
