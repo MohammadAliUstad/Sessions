@@ -45,6 +45,7 @@ import com.yugentech.sessions.theme.tokens.spacing
 @Composable
 fun SessionHeader(
     isRunning: Boolean,
+    isSessionActive: Boolean,
     sessionTask: String,
     onTaskClick: () -> Unit,
     onSoundBadgeClick: () -> Unit,
@@ -69,7 +70,7 @@ fun SessionHeader(
             modifier = Modifier
                 .weight(1f)
                 .clip(RoundedCornerShape(MaterialTheme.corners.medium))
-                .clickable(enabled = !isRunning, onClick = onTaskClick),
+                .clickable(enabled = !isSessionActive, onClick = onTaskClick),
             color = MaterialTheme.colorScheme.surfaceContainer,
             shape = RoundedCornerShape(MaterialTheme.corners.medium)
         ) {
@@ -103,7 +104,7 @@ fun SessionHeader(
                     )
                 }
 
-                if (!isRunning) {
+                if (!isSessionActive) {
                     Icon(
                         imageVector = Icons.Rounded.Edit,
                         contentDescription = "Edit",
@@ -174,11 +175,8 @@ fun StatusBadge(
             AnimatedContent(
                 targetState = isRunning,
                 transitionSpec = {
-                    fadeIn(
-                        tween(AppAnimations.Durations.Standard)
-                    ) togetherWith fadeOut(
-                        tween(AppAnimations.Durations.Standard)
-                    )
+                    fadeIn(tween(AppAnimations.Durations.Standard)) togetherWith
+                            fadeOut(tween(AppAnimations.Durations.Standard))
                 },
                 label = "statusText"
             ) { running ->
@@ -251,11 +249,8 @@ fun SoundBadge(
             AnimatedContent(
                 targetState = isMuted,
                 transitionSpec = {
-                    fadeIn(
-                        tween(AppAnimations.Durations.Standard)
-                    ) togetherWith fadeOut(
-                        tween(AppAnimations.Durations.Standard)
-                    )
+                    fadeIn(tween(AppAnimations.Durations.Standard)) togetherWith
+                            fadeOut(tween(AppAnimations.Durations.Standard))
                 },
                 label = "soundIcon"
             ) { muted ->
@@ -275,11 +270,8 @@ fun SoundBadge(
             AnimatedContent(
                 targetState = if (isMuted) "Muted" else soundName,
                 transitionSpec = {
-                    fadeIn(
-                        tween(AppAnimations.Durations.Standard)
-                    ) togetherWith fadeOut(
-                        tween(AppAnimations.Durations.Standard)
-                    )
+                    fadeIn(tween(AppAnimations.Durations.Standard)) togetherWith
+                            fadeOut(tween(AppAnimations.Durations.Standard))
                 },
                 label = "soundText"
             ) { text ->
