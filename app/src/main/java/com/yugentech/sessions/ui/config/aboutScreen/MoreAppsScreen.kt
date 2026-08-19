@@ -251,7 +251,7 @@ private fun QuillCapabilitiesCarousel() {
     val items = listOf(
         CapabilityItem(
             icon = Icons.Default.AutoAwesome,
-            title = "Aira - AI Companion",
+            title = "Aira - AI Assistant",
             description = "Ask anything about your book. Aira finds the right passages and gives you a thoughtful, spoiler-free answer.",
             slot = 0
         ),

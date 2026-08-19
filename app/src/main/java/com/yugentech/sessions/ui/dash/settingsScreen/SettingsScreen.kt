@@ -217,7 +217,7 @@ fun SettingsScreen(
         item {
             SettingsListItem(
                 title = "Sign Out",
-                subtitle = "Log out of your current session",
+                subtitle = "Log out of your current account",
                 index = 1,
                 totalCount = 2,
                 onClick = { showLogoutDialog = true }

@@ -201,7 +201,8 @@ fun MainScreen(
             modifier = Modifier
                 .padding(innerPadding)
                 .fillMaxSize(),
-            beyondViewportPageCount = 1
+            beyondViewportPageCount = 1,
+            userScrollEnabled = false
         ) { page ->
             when (bottomNavItems[page]) {
                 BottomBarScreen.Home -> HomeScreen(
