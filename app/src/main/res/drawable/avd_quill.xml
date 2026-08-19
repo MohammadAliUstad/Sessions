@@ -61,43 +61,27 @@
         <aapt:attr name="android:animation">
             <!--
                 Full round-trip writing stroke:
-                Phase 1 (350ms) — quill moves right and slightly down, like a writing stroke
-                Phase 2 (450ms) — quill lifts and returns to its original position
+                Phase 1 (350ms) — quill strokes right
+                Phase 2 (450ms) — quill lifts back to original position
                 Total: 800ms
             -->
             <set android:ordering="sequentially">
 
-                <!-- Stroke down: move right + slightly down -->
-                <set android:ordering="together">
-                    <objectAnimator
-                        android:propertyName="translateX"
-                        android:valueFrom="0"
-                        android:valueTo="28"
-                        android:duration="350"
-                        android:interpolator="@android:interpolator/fast_out_slow_in" />
-                    <objectAnimator
-                        android:propertyName="translateY"
-                        android:valueFrom="0"
-                        android:valueTo="10"
-                        android:duration="350"
-                        android:interpolator="@android:interpolator/fast_out_slow_in" />
-                </set>
+                <!-- Stroke right: purely horizontal -->
+                <objectAnimator
+                    android:propertyName="translateX"
+                    android:valueFrom="0"
+                    android:valueTo="55"
+                    android:duration="350"
+                    android:interpolator="@android:interpolator/fast_out_slow_in" />
 
                 <!-- Lift back: return to origin -->
-                <set android:ordering="together">
-                    <objectAnimator
-                        android:propertyName="translateX"
-                        android:valueFrom="28"
-                        android:valueTo="0"
-                        android:duration="450"
-                        android:interpolator="@android:interpolator/fast_out_slow_in" />
-                    <objectAnimator
-                        android:propertyName="translateY"
-                        android:valueFrom="10"
-                        android:valueTo="0"
-                        android:duration="450"
-                        android:interpolator="@android:interpolator/fast_out_slow_in" />
-                </set>
+                <objectAnimator
+                    android:propertyName="translateX"
+                    android:valueFrom="55"
+                    android:valueTo="0"
+                    android:duration="450"
+                    android:interpolator="@android:interpolator/fast_out_slow_in" />
 
             </set>
         </aapt:attr>

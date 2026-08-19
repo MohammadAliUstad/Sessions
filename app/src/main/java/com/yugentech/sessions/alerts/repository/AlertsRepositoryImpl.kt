@@ -91,28 +91,24 @@ class AlertsRepositoryImpl(
     // Stops background sound when timer is paused
     override fun onFocusPause(view: View?) {
         Timber.d("onFocusPause triggered")
-        playStopAlert(view)
-        stopBackgroundSound()
+        backgroundSoundService.stop { playStopAlert(view) }
     }
 
     // Handles transition to break mode, fading audio and playing alert
     override fun onBreakStart(view: View?) {
         Timber.d("onBreakStart triggered")
-        backgroundSoundService.fadeToBreakMode()
-        playStopAlert(view)
+        backgroundSoundService.stop { playStopAlert(view) { startBackgroundSound() } }
     }
 
     override fun onGoalReached(view: View?) {
         Timber.d("onGoalReached triggered")
-        backgroundSoundService.stop()
-        playGoalReachedAlert(view)
+        backgroundSoundService.stop { playGoalReachedAlert(view) }
     }
 
     // Handles stopping a session completely
     override fun onFocusStop(view: View?) {
         Timber.d("onSessionStop triggered")
-        playStopAlert(view)
-        stopBackgroundSound()
+        backgroundSoundService.stop { playStopAlert(view) }
     }
 
     // cleans up resources when leaving the screen
@@ -180,35 +176,39 @@ class AlertsRepositoryImpl(
         backgroundSoundService.release()
     }
 
-    // Plays the start sound and haptic based on configuration
-    private fun playStartAlert(view: View?) {
+    private fun playStartAlert(view: View?, onComplete: (() -> Unit)? = null) {
         val alertsConfiguration = alertConfiguration.value
         try {
-            if (alertsConfiguration.soundEnabled) soundService.playStartAlert()
+            if (alertsConfiguration.soundEnabled) soundService.playStartAlert(onComplete)
+            else onComplete?.invoke()
             if (alertsConfiguration.hapticsEnabled) hapticService.performHaptic(view)
         } catch (e: Exception) {
             Timber.e(e, "Failed to play session start alert")
+            onComplete?.invoke()
         }
     }
 
-    // Plays the stop sound and haptic based on configuration
-    private fun playStopAlert(view: View?) {
+    private fun playStopAlert(view: View?, onComplete: (() -> Unit)? = null) {
         val alertsConfiguration = alertConfiguration.value
         try {
-            if (alertsConfiguration.soundEnabled) soundService.playStopAlert()
+            if (alertsConfiguration.soundEnabled) soundService.playStopAlert(onComplete)
+            else onComplete?.invoke()
             if (alertsConfiguration.hapticsEnabled) hapticService.performHaptic(view)
         } catch (e: Exception) {
             Timber.e(e, "Failed to play session stop alert")
+            onComplete?.invoke()
         }
     }
 
-    private fun playGoalReachedAlert(view: View?) {
+    private fun playGoalReachedAlert(view: View?, onComplete: (() -> Unit)? = null) {
         val alertsConfiguration = alertConfiguration.value
         try {
-            if (alertsConfiguration.soundEnabled) soundService.playGoalReachedAlert()
+            if (alertsConfiguration.soundEnabled) soundService.playGoalReachedAlert(onComplete)
+            else onComplete?.invoke()
             if (alertsConfiguration.hapticsEnabled) hapticService.performCompletionHaptic(view)
         } catch (e: Exception) {
             Timber.e(e, "Failed to play goal reached alert")
+            onComplete?.invoke()
         }
     }
 }

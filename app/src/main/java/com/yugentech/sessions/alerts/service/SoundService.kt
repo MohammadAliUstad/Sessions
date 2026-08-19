@@ -1,6 +1,9 @@
 package com.yugentech.sessions.alerts.service
 
 import android.content.Context
+import android.media.AudioAttributes
+import android.media.AudioFocusRequest
+import android.media.AudioManager
 import android.media.MediaPlayer
 import androidx.annotation.RawRes
 import com.yugentech.sessions.R
@@ -11,30 +14,31 @@ class SoundService(
     private val context: Context
 ) {
     private var mediaPlayer: MediaPlayer? = null
+    private val audioManager = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
+    private var focusRequest: AudioFocusRequest? = null
 
-    // Helper for start session sound
-    fun playStartAlert() {
+    private val alertAudioAttributes = AudioAttributes.Builder()
+        .setUsage(AudioAttributes.USAGE_NOTIFICATION_EVENT)
+        .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+        .build()
+
+    fun playStartAlert(onComplete: (() -> Unit)? = null) {
         Timber.d("Playing session start sound")
-        play(R.raw.session_start)
+        play(R.raw.session_start, onComplete)
     }
 
-    // Helper for stop session sound
-    fun playStopAlert() {
+    fun playStopAlert(onComplete: (() -> Unit)? = null) {
         Timber.d("Playing session stop sound")
-        play(R.raw.session_stop)
+        play(R.raw.session_stop, onComplete)
     }
 
-    // Helper for goal reached / congratulations sound
-    fun playGoalReachedAlert() {
+    fun playGoalReachedAlert(onComplete: (() -> Unit)? = null) {
         Timber.d("Playing goal reached sound")
-        // Note: Using session_end as a fallback, you might want to add a unique sound later
-        play(R.raw.session_end)
+        play(R.raw.session_end, onComplete)
     }
 
-    // Creates and plays a MediaPlayer, ensuring resources are released afterwards
-    private fun play(@RawRes resId: Int) {
+    private fun play(@RawRes resId: Int, onComplete: (() -> Unit)? = null) {
         try {
-            // Release any existing player to prevent memory leaks and overlapping sounds if needed
             mediaPlayer?.apply {
                 try {
                     if (isPlaying) stop()
@@ -43,36 +47,51 @@ class SoundService(
                     Timber.w(e, "Error releasing existing MediaPlayer")
                 }
             }
+            abandonFocus()
+
+            val request = AudioFocusRequest.Builder(AudioManager.AUDIOFOCUS_GAIN_TRANSIENT_MAY_DUCK)
+                .setAudioAttributes(alertAudioAttributes)
+                .build()
+            focusRequest = request
+            audioManager.requestAudioFocus(request)
 
             mediaPlayer = MediaPlayer.create(context, resId)?.apply {
+                setAudioAttributes(alertAudioAttributes)
                 setOnCompletionListener { mp ->
                     try {
                         mp.release()
-                        if (mediaPlayer == mp) {
-                            mediaPlayer = null
-                        }
+                        if (mediaPlayer == mp) mediaPlayer = null
                     } catch (e: Exception) {
                         Timber.w(e, "Failed to release MediaPlayer after completion")
                     }
+                    abandonFocus()
+                    onComplete?.invoke()
                 }
-
                 setOnErrorListener { mp, what, extra ->
                     Timber.e("MediaPlayer failed with code: $what, extra: $extra")
                     try {
                         mp.release()
-                        if (mediaPlayer == mp) {
-                            mediaPlayer = null
-                        }
+                        if (mediaPlayer == mp) mediaPlayer = null
                     } catch (e: Exception) {
                         Timber.w(e, "Failed to release MediaPlayer during error handling")
                     }
+                    abandonFocus()
+                    onComplete?.invoke()
                     true
                 }
-
                 start()
             }
         } catch (e: Exception) {
             Timber.e(e, "Failed to initialize MediaPlayer for resId: $resId")
+            abandonFocus()
+            onComplete?.invoke()
+        }
+    }
+
+    private fun abandonFocus() {
+        focusRequest?.let {
+            audioManager.abandonAudioFocusRequest(it)
+            focusRequest = null
         }
     }
 }

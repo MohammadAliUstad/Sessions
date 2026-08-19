@@ -167,8 +167,8 @@ class BackgroundService(private val context: Context) {
         }
     }
 
-    // Gradually fades out audio and releases resources
-    fun stop() {
+    // Gradually fades out audio, releases resources, then invokes onComplete
+    fun stop(onComplete: (() -> Unit)? = null) {
         handler.post {
             Timber.d("stop() called")
 
@@ -181,9 +181,11 @@ class BackgroundService(private val context: Context) {
                     } else {
                         Timber.d("Fade complete, but stop was cancelled - keeping player")
                     }
+                    onComplete?.invoke()
                 }
             } else {
                 releaseInternal()
+                onComplete?.invoke()
             }
         }
     }

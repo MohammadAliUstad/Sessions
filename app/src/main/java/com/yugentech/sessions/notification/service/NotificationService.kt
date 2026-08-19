@@ -226,14 +226,16 @@ class NotificationService(
 
     private fun addSessionActions(builder: NotificationCompat.Builder, state: TimerState) {
         builder.addAction(pauseResumeAction(state))
-        builder.addAction(
-            action(
-                android.R.drawable.ic_media_next,
-                "Skip",
-                AppConstants.ACTION_SKIP_SESSION,
-                RC_SKIP
+        if (state.timerConfig.targetSets > 1) {
+            builder.addAction(
+                action(
+                    android.R.drawable.ic_media_next,
+                    "Skip",
+                    AppConstants.ACTION_SKIP_SESSION,
+                    RC_SKIP
+                )
             )
-        )
+        }
         builder.addAction(
             action(
                 android.R.drawable.ic_menu_save,
