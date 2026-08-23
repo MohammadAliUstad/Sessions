@@ -32,11 +32,11 @@ import androidx.compose.material.icons.filled.AutoAwesome
 import androidx.compose.material.icons.filled.Bookmark
 import androidx.compose.material.icons.filled.Celebration
 import androidx.compose.material.icons.filled.CheckCircle
+import androidx.compose.material.icons.filled.EmojiEvents
 import androidx.compose.material.icons.filled.ExpandMore
 import androidx.compose.material.icons.filled.Flag
 import androidx.compose.material.icons.filled.History
 import androidx.compose.material.icons.filled.NotificationsActive
-import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.SmartDisplay
 import androidx.compose.material.icons.filled.SwipeLeft
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -90,8 +90,8 @@ fun WhatsNewScreen(
             Icons.AutoMirrored.Filled.VolumeUp
         ),
         UpdateItem(
-            "Polished Dialogs & Clean Formatting",
-            "All dialogs now feature solid action buttons, clean surface card date highlights, and compact weekly date ranges without cluttered quotes.",
+            "Fully Rounded Dialog Buttons",
+            "All confirmation and reward dialogs now use fully pill-shaped buttons for a more consistent, polished look throughout the app.",
             Icons.Default.CheckCircle
         ),
         UpdateItem(
@@ -105,24 +105,29 @@ fun WhatsNewScreen(
             Icons.Default.Tune
         ),
         UpdateItem(
-            "Updated Goal Defaults",
-            "Updated default goals to 25m focus, 5m short break, 30m long break, 4 target sets, and long break intervals set to every 3 sets.",
-            Icons.Default.Flag
-        ),
-        UpdateItem(
             "Removed Swipe Navigation",
             "The swipe gesture to switch between main screens has been removed. It was causing unintended navigation and interfering with horizontal interactions.",
             Icons.Default.SwipeLeft
         ),
         UpdateItem(
-            "Edit Profile Avatar Fixes",
-            "Avatar sizes on the Edit Profile screen have been corrected so selections display consistently at the intended size.",
-            Icons.Default.Person
+            "Achievements Coming Soon",
+            "A new Achievements section has been added to your profile screen. Earn badges as you build your study habits — launching in a future update.",
+            Icons.Default.EmojiEvents
         ),
         UpdateItem(
-            "UI & Animation Improvements",
-            "Smoother sheet open and close animations, animated task label transitions, animated button colour changes, and a pinned configuration section in the task sheet.",
-            Icons.Default.AutoAwesome
+            "Notification Always Opens Home Screen",
+            "Tapping the session notification now always navigates you straight to the home screen, even if the app was open on a different screen.",
+            Icons.Default.NotificationsActive
+        ),
+        UpdateItem(
+            "Sound System Critical Fix",
+            "Fixed a bug where ambient audio would continue playing in the background after a session ended. Background sounds now stop correctly when your session is over.",
+            Icons.AutoMirrored.Filled.VolumeUp
+        ),
+        UpdateItem(
+            "Color-Coded Notification Progress",
+            "On Android 16 and above, the live session notification now shows a segmented progress bar with distinct colors for focus, short break, and long break phases.",
+            Icons.Default.Flag
         )
     )
 
