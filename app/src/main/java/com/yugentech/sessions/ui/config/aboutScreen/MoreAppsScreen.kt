@@ -23,7 +23,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.AutoAwesome
 import androidx.compose.material.icons.filled.Description
-import androidx.compose.material.icons.filled.Download
+import androidx.compose.material.icons.filled.OpenInNew
 import androidx.compose.material.icons.outlined.Analytics
 import androidx.compose.material.icons.outlined.Code
 import androidx.compose.material.icons.outlined.History
@@ -228,7 +228,7 @@ private fun QuillHeroSection(onDownloadClick: () -> Unit) {
                     )
                 ) {
                     Icon(
-                        imageVector = Icons.Filled.Download,
+                        imageVector = Icons.Default.OpenInNew,
                         contentDescription = null,
                         modifier = Modifier.size(18.dp)
                     )
