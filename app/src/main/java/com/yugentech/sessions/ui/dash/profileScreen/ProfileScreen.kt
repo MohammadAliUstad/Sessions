@@ -183,6 +183,7 @@ fun ProfileScreen(
                             index = index,
                             totalCount = sessionsInGroup.size,
                             onDelete = {
+                                alertsViewModel.performHaptic(view)
                                 sessionToDeleteId = session.sessionId
                                 showDeleteDialog = true
                             }
