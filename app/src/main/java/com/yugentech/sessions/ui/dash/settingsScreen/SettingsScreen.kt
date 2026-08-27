@@ -147,7 +147,7 @@ fun SettingsScreen(
         item {
             SettingsSwitchItem(
                 title = "Haptic Feedback",
-                subtitle = "Feel vibrations for timer events",
+                subtitle = "Feel vibrations throughout the app",
                 checked = alertsConfiguration.hapticsEnabled,
                 index = 1,
                 totalCount = 2,
