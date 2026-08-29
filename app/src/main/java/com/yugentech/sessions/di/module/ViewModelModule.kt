@@ -4,6 +4,7 @@ import com.yugentech.sessions.viewModels.HomeViewModel
 import com.yugentech.sessions.auth.viewmodel.AuthViewModel
 import com.yugentech.sessions.viewModels.ProfileViewModel
 import com.yugentech.sessions.alerts.viewmodel.AlertsViewModel
+import com.yugentech.sessions.notification.viewmodel.NotificationsViewModel
 import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
 import timber.log.Timber
@@ -48,6 +49,14 @@ val viewModelModule = module {
         Timber.v("Initializing SettingsViewModel")
         AlertsViewModel(
             alertsRepository = get()
+        )
+    }
+
+    // ViewModel for the notification settings screen
+    viewModel {
+        NotificationsViewModel(
+            notificationRepository = get(),
+            notificationDataStore = get()
         )
     }
 }

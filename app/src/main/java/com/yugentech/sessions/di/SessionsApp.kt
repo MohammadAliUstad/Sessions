@@ -6,6 +6,7 @@ import com.yugentech.sessions.BuildConfig
 import com.google.firebase.FirebaseApp
 import com.yugentech.sessions.di.module.alertsModule
 import com.yugentech.sessions.di.module.authModule
+import com.yugentech.sessions.di.module.firebaseModule
 import com.yugentech.sessions.di.module.dataStoreModule
 import com.yugentech.sessions.di.module.databaseModule
 import com.yugentech.sessions.di.module.notificationModule
@@ -43,6 +44,7 @@ class SessionsApp : Application(), Configuration.Provider {
             androidLogger()
             androidContext(this@SessionsApp)
             modules(
+                firebaseModule,
                 dataStoreModule,
                 authModule,
                 databaseModule,
