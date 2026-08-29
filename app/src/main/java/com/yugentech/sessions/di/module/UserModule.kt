@@ -1,6 +1,5 @@
 package com.yugentech.sessions.di.module
 
-import com.google.firebase.firestore.FirebaseFirestore
 import com.yugentech.sessions.user.datastore.UserDataStore
 import com.yugentech.sessions.user.service.UserService
 import com.yugentech.sessions.user.repository.UserRepository
@@ -10,9 +9,6 @@ import org.koin.dsl.module
 
 // Koin module defining dependencies for user profile management
 val userModule = module {
-
-    // Provides the Firestore instance
-    single { FirebaseFirestore.getInstance() }
 
     // Service for direct Firestore user document operations
     single {

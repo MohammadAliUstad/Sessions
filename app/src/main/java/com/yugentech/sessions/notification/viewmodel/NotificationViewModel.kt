@@ -11,7 +11,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import timber.log.Timber
 import java.text.SimpleDateFormat
 import java.util.Calendar
@@ -29,9 +28,7 @@ class NotificationsViewModel(
         notificationDataStore.notificationConfigFlow.stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5000),
-            initialValue = runCatching {
-                runBlocking { notificationDataStore.getInitialConfig() }
-            }.getOrDefault(NotificationConfig())
+            initialValue = NotificationConfig()
         )
 
     private val _showExactAlarmDialog = MutableStateFlow(false)

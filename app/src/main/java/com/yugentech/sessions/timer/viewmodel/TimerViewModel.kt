@@ -182,8 +182,8 @@ class TimerViewModel(
     fun stopAndDiscardSession(view: View? = null) {
         viewModelScope.launch {
             timerRepository.reset()
-            // Alerts are now handled exclusively by the ActiveForeground service 
-            // to prevent double haptics/sounds when stopping from the app.
+            // Alerts are handled by ActiveForeground.stopSession(); reset() above ensures
+            // state is clean even if the service is not reachable.
             stopActiveNotification()
         }
     }
