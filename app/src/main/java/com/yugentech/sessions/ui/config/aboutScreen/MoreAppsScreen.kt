@@ -1,7 +1,6 @@
 package com.yugentech.sessions.ui.config.aboutScreen
 
 import android.content.Intent
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
@@ -60,16 +59,15 @@ import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.net.toUri
-import com.yugentech.sessions.R
 import com.yugentech.sessions.ui.config.aboutScreen.components.AnimatedQuillIcon
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlin.time.Duration.Companion.milliseconds
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
@@ -185,7 +183,7 @@ private fun QuillHeroSection(onDownloadClick: () -> Unit) {
                         if (!isAnimating) {
                             isAnimating = true
                             scope.launch {
-                                delay(800) // matches avd_quill.xml total duration (350 + 450ms)
+                                delay(800.milliseconds) // matches avd_quill.xml total duration (350 + 450ms)
                                 isAnimating = false
                             }
                         }

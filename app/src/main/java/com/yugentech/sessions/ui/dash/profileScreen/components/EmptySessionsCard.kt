@@ -30,7 +30,7 @@ fun EmptySessionsCard(
             .fillMaxWidth()
             .padding(MaterialTheme.spacing.m),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.Center
+        horizontalArrangement = Arrangement.SpaceEvenly
     ) {
         Text(
             text = "Start your first session to track your progress and build productive habits!",
@@ -38,7 +38,7 @@ fun EmptySessionsCard(
                 fontWeight = FontWeight.Normal
             ),
             color = MaterialTheme.colorScheme.onSurfaceVariant,
-            textAlign = TextAlign.Start,
+            textAlign = TextAlign.Left,
             modifier = Modifier.weight(1f)
         )
 
@@ -48,7 +48,7 @@ fun EmptySessionsCard(
             painter = painterResource(id = R.drawable.new_beginnings),
             contentDescription = "No sessions illustration",
             modifier = Modifier
-                .size(MaterialTheme.components.imageSizeHuge)
+                .size(MaterialTheme.components.imageSizeLarge)
                 .align(Alignment.CenterVertically),
             contentScale = ContentScale.Fit
         )

@@ -1,9 +1,9 @@
 package com.yugentech.sessions.di.module
 
 import com.yugentech.sessions.theme.datastore.ThemeDataStore
-import com.yugentech.sessions.theme.viewmodel.ThemeViewModel
 import com.yugentech.sessions.theme.repository.ThemeRepository
 import com.yugentech.sessions.theme.repository.ThemeRepositoryImpl
+import com.yugentech.sessions.theme.viewmodel.ThemeViewModel
 import org.koin.core.module.dsl.viewModel
 import org.koin.core.qualifier.named
 import org.koin.dsl.module

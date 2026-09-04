@@ -1,12 +1,12 @@
 package com.yugentech.sessions.sessions.repository
 
 import com.yugentech.sessions.auth.repository.AuthRepository
-import com.yugentech.sessions.sessions.model.Session
 import com.yugentech.sessions.room.daos.SessionsDao
 import com.yugentech.sessions.room.entities.SessionsEntity
-import com.yugentech.sessions.sessions.service.SessionsService
 import com.yugentech.sessions.sessions.datastore.SyncDataStore
+import com.yugentech.sessions.sessions.model.Session
 import com.yugentech.sessions.sessions.result.SessionResult
+import com.yugentech.sessions.sessions.service.SessionsService
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.first
@@ -105,6 +105,10 @@ class SessionsRepositoryImpl(
     override suspend fun syncSessions(): SessionResult<Unit> {
         val userId = currentUserId ?: return SessionResult.Error("User not logged in")
 
+        if (userId == com.yugentech.sessions.utils.AppConstants.GUEST_USER_ID) {
+            return SessionResult.Success(Unit)
+        }
+
         return try {
             // Find sessions that haven't been uploaded yet
             val pendingSessions = sessionsDao.getPendingSessions(userId)
@@ -140,6 +144,10 @@ class SessionsRepositoryImpl(
 
     override suspend fun fetchSessionsOnce(): SessionResult<Unit> {
         val userId = currentUserId ?: return SessionResult.Error("User not logged in")
+
+        if (userId == com.yugentech.sessions.utils.AppConstants.GUEST_USER_ID) {
+            return SessionResult.Success(Unit)
+        }
 
         return try {
             // Check preferences to see if we already downloaded the initial data

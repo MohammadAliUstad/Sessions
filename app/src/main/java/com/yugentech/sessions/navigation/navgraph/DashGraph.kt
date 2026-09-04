@@ -8,18 +8,18 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
+import com.yugentech.sessions.alerts.viewmodel.AlertsViewModel
 import com.yugentech.sessions.auth.state.AuthState
+import com.yugentech.sessions.auth.viewmodel.AuthViewModel
 import com.yugentech.sessions.navigation.screen.AppScreen
 import com.yugentech.sessions.notification.viewmodel.NotificationsViewModel
 import com.yugentech.sessions.timer.viewmodel.TimerViewModel
-import com.yugentech.sessions.ui.dash.mainScreen.MainScreen
 import com.yugentech.sessions.ui.auth.onboardingScreen.OnboardingScreen
+import com.yugentech.sessions.ui.dash.mainScreen.MainScreen
 import com.yugentech.sessions.ui.dash.util.defaultExitTransition
 import com.yugentech.sessions.ui.dash.util.defaultPopExitTransition
 import com.yugentech.sessions.viewModels.HomeViewModel
-import com.yugentech.sessions.auth.viewmodel.AuthViewModel
 import com.yugentech.sessions.viewModels.ProfileViewModel
-import com.yugentech.sessions.alerts.viewmodel.AlertsViewModel
 import org.koin.androidx.compose.koinViewModel
 import timber.log.Timber
 
@@ -55,6 +55,7 @@ fun NavGraphBuilder.dashGraph(
         if (currentUserId != null) {
             MainScreen(
                 userId = currentUserId,
+                authViewModel = authViewModel,
                 onSignOut = {
                     Timber.i("User requested Sign Out")
                     timerViewModel.onLeave()

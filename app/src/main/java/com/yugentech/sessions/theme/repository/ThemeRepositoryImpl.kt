@@ -1,7 +1,7 @@
 package com.yugentech.sessions.theme.repository
 
-import com.yugentech.sessions.theme.datastore.ThemeDataStore
 import com.yugentech.sessions.theme.config.ThemeConfiguration
+import com.yugentech.sessions.theme.datastore.ThemeDataStore
 import timber.log.Timber
 
 class ThemeRepositoryImpl(

@@ -114,7 +114,7 @@ fun HomeScreen(
                         selectedDuration = timerState.totalTime.toInt(),
                         isStudying = timerState.isTimerRunning,
                         currentMode = timerState.currentMode,
-                        idleLabel = errorMessage ?: "Press the play button\nto start."
+                        errorMessage = errorMessage
                     )
 
                     AnimatedContent(

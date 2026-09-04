@@ -19,6 +19,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalLocale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import com.yugentech.sessions.sessions.model.Session
@@ -29,7 +30,6 @@ import com.yugentech.sessions.theme.tokens.spacing
 import com.yugentech.sessions.ui.dash.mainScreen.components.itemShape
 import java.text.SimpleDateFormat
 import java.util.Date
-import java.util.Locale
 
 @Composable
 fun SessionHistoryItem(
@@ -40,7 +40,7 @@ fun SessionHistoryItem(
 ) {
     val shape = itemShape(index, totalCount)
 
-    val timeFormat = SimpleDateFormat("hh:mm a", Locale.getDefault())
+    val timeFormat = SimpleDateFormat("hh:mm a", LocalLocale.current.platformLocale)
     val formattedTime = timeFormat.format(Date(session.timestamp))
 
     val hours = session.duration / 3600

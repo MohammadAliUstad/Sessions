@@ -1,10 +1,10 @@
 package com.yugentech.sessions.di.module
 
 import com.yugentech.sessions.timer.datastore.TimerDatastore
-import com.yugentech.sessions.timer.service.TimerService
-import com.yugentech.sessions.timer.viewmodel.TimerViewModel
 import com.yugentech.sessions.timer.repository.TimerRepository
 import com.yugentech.sessions.timer.repository.TimerRepositoryImpl
+import com.yugentech.sessions.timer.service.TimerService
+import com.yugentech.sessions.timer.viewmodel.TimerViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob

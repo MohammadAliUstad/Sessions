@@ -1,11 +1,11 @@
 package com.yugentech.sessions.di.module
 
-import com.yugentech.sessions.alerts.service.HapticService
-import com.yugentech.sessions.alerts.service.SoundService
 import com.yugentech.sessions.alerts.datastore.AlertsDataStore
 import com.yugentech.sessions.alerts.repository.AlertsRepository
-import com.yugentech.sessions.alerts.service.BackgroundService
 import com.yugentech.sessions.alerts.repository.AlertsRepositoryImpl
+import com.yugentech.sessions.alerts.service.BackgroundService
+import com.yugentech.sessions.alerts.service.HapticService
+import com.yugentech.sessions.alerts.service.SoundService
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob

@@ -5,12 +5,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.yugentech.sessions.alerts.repository.AlertsRepository
 import com.yugentech.sessions.sessions.model.Session
-import com.yugentech.sessions.user.model.UserData
 import com.yugentech.sessions.sessions.repository.SessionsRepository
 import com.yugentech.sessions.user.datastore.UserDataStore
+import com.yugentech.sessions.user.model.UserData
 import com.yugentech.sessions.user.repository.UserRepository
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow

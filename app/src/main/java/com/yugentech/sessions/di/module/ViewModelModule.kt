@@ -1,9 +1,9 @@
 package com.yugentech.sessions.di.module
 
-import com.yugentech.sessions.viewModels.HomeViewModel
-import com.yugentech.sessions.auth.viewmodel.AuthViewModel
-import com.yugentech.sessions.viewModels.ProfileViewModel
 import com.yugentech.sessions.alerts.viewmodel.AlertsViewModel
+import com.yugentech.sessions.auth.viewmodel.AuthViewModel
+import com.yugentech.sessions.viewModels.HomeViewModel
+import com.yugentech.sessions.viewModels.ProfileViewModel
 import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
 import timber.log.Timber

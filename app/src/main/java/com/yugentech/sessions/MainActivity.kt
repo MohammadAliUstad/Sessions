@@ -95,9 +95,11 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colorScheme.background
                 ) {
                     if (showOnboarding != null && !authState.isInitializing) {
+                        val webClientId = getString(R.string.web_client_id)
+                        Timber.w("Web Client ID: '$webClientId'")
                         AppNavHost(
                             navController = navController,
-                            webClientId = getString(R.string.web_client_id),
+                            webClientId = webClientId,
                             authViewModel = authViewModel,
                             showOnboarding = showOnboarding!!,
                             onOnboardingComplete = {

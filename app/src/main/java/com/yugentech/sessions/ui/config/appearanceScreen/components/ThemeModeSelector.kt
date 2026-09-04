@@ -27,11 +27,11 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.yugentech.sessions.R
-import com.yugentech.sessions.theme.viewmodel.ThemeViewModel
 import com.yugentech.sessions.theme.config.ThemeMode
 import com.yugentech.sessions.theme.tokens.spacing
-import com.yugentech.sessions.ui.dash.mainScreen.components.itemShape
+import com.yugentech.sessions.theme.viewmodel.ThemeViewModel
 import com.yugentech.sessions.ui.dash.mainScreen.components.SectionHeader
+import com.yugentech.sessions.ui.dash.mainScreen.components.itemShape
 import org.koin.androidx.compose.koinViewModel
 
 @Composable

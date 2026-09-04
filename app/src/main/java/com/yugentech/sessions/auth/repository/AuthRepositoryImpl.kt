@@ -2,22 +2,37 @@ package com.yugentech.sessions.auth.repository
 
 import android.content.Intent
 import com.google.firebase.auth.FirebaseUser
-import com.yugentech.sessions.auth.service.AuthService
 import com.yugentech.sessions.auth.result.AuthResult
+import com.yugentech.sessions.auth.service.AuthService
+import com.yugentech.sessions.user.datastore.UserDataStore
+import com.yugentech.sessions.utils.AppConstants
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
 import timber.log.Timber
 
 // Implementation that delegates calls to the underlying AuthService
 class AuthRepositoryImpl(
-    private val authService: AuthService
+    private val authService: AuthService,
+    private val userDataStore: UserDataStore
 ) : AuthRepository {
+
+    private var _isGuestModeCached = false
 
     // Exposes real-time authentication state updates
     override val authState: Flow<FirebaseUser?> = authService.authStateFlow
 
     // Retrieves the current user's unique ID if logged in
     override val currentUser: String?
-        get() = authService.currentUser?.uid
+        get() {
+            val firebaseUserId = authService.currentUser?.uid
+            return if (firebaseUserId != null) {
+                firebaseUserId
+            } else if (_isGuestModeCached) {
+                AppConstants.GUEST_USER_ID
+            } else {
+                null
+            }
+        }
 
     // Registers a new user with email and password
     override suspend fun signUp(name: String, email: String, password: String): AuthResult<FirebaseUser> {
@@ -37,10 +52,21 @@ class AuthRepositoryImpl(
         return authService.sendPasswordResetEmail(email)
     }
 
-    // Logs the current user out of the application
+    // Logs the user out of the application
     override fun signOut() {
         Timber.i("Signing out current user")
         authService.signOut()
+    }
+
+    override suspend fun setGuestMode(isGuest: Boolean) {
+        _isGuestModeCached = isGuest
+        userDataStore.saveGuestMode(isGuest)
+    }
+
+    override suspend fun isGuestMode(): Boolean {
+        // Update cache from DataStore if needed, or just return cache if we keep it in sync
+        _isGuestModeCached = userDataStore.isGuestMode.first()
+        return _isGuestModeCached
     }
 
     // Prepares the intent required to launch the Google Sign-In flow

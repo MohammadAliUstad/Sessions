@@ -6,20 +6,21 @@ import androidx.lifecycle.viewModelScope
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.yugentech.sessions.alerts.repository.AlertsRepository
 import com.yugentech.sessions.notification.repository.NotificationRepository
-import com.yugentech.sessions.timer.repository.TimerRepository
 import com.yugentech.sessions.timer.effect.TimerEffect
+import com.yugentech.sessions.timer.repository.TimerRepository
 import com.yugentech.sessions.timer.state.TimerMode
 import com.yugentech.sessions.ui.dash.state.SessionDashboardState
 import com.yugentech.sessions.ui.dash.util.SessionDashboardCalculator
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import timber.log.Timber
+import kotlin.time.Duration.Companion.milliseconds
 
 class TimerViewModel(
     private val timerRepository: TimerRepository,
@@ -68,7 +69,7 @@ class TimerViewModel(
         if (durationSeconds < 60) {
             _errorMessage.value = "Session too short to be saved"
             viewModelScope.launch {
-                delay(2000)
+                delay(2000.milliseconds)
                 _errorMessage.value = null
             }
         }
@@ -81,7 +82,7 @@ class TimerViewModel(
         if (durationSeconds < 60) {
             _errorMessage.value = "Session too short to be saved"
             viewModelScope.launch {
-                delay(2000)
+                delay(2000.milliseconds)
                 _errorMessage.value = null
             }
         }
@@ -148,7 +149,7 @@ class TimerViewModel(
             alertsRepository.onFocusStart(view)
 
             // 3. Match the 1-second delay of the countdown engine
-            delay(1000)
+            delay(1000.milliseconds)
 
             // 4. Only start the foreground service if the session is still active and running
             // This prevents a notification from sticking around if the user rapid-toggled play/pause.
@@ -199,7 +200,7 @@ class TimerViewModel(
                 timerRepository.reset()
                 // The ActiveForeground service will handle the single onFocusStop haptic.
                 stopActiveNotification()
-                delay(3000)
+                delay(3000.milliseconds)
                 _errorMessage.value = null
             }
             return

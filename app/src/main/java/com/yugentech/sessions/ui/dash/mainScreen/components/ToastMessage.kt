@@ -22,9 +22,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import com.yugentech.sessions.theme.tokens.corners
-import com.yugentech.sessions.utils.AppConstants
 import com.yugentech.sessions.theme.tokens.spacing
+import com.yugentech.sessions.utils.AppConstants
 import kotlinx.coroutines.delay
+import kotlin.time.Duration.Companion.milliseconds
 
 @Composable
 fun ToastMessage(
@@ -38,9 +39,9 @@ fun ToastMessage(
     LaunchedEffect(message) {
         if (message != null) {
             isVisible = true
-            delay(duration)
+            delay(duration.milliseconds)
             isVisible = false
-            delay(300)
+            delay(300.milliseconds)
             onDismiss()
         }
     }

@@ -11,6 +11,7 @@ object AppConstants {
     const val ACTION_FINISH_SESSION = "FINISH_SESSION"
     const val ACTION_UPDATE_SESSION = "UPDATE_SESSION"
     const val GITHUB_URL = "https://github.com/MohammadAliUstad/Sessions"
+    const val GUEST_USER_ID = "guest_user"
     const val PRIVACY_POLICY_URL = "https://sites.google.com/view/sessionsprivacypolicy/home"
     const val TERMS_OF_SERVICE_URL = "https://sites.google.com/view/sessionstermsofservice/home"
     const val KOFI_URL = "https://ko-fi.com/yugentech"

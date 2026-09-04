@@ -17,7 +17,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.Apps
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.ThumbUp
@@ -42,6 +41,7 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.core.net.toUri
+import com.yugentech.sessions.alerts.viewmodel.AlertsViewModel
 import com.yugentech.sessions.theme.tokens.spacing
 import com.yugentech.sessions.ui.config.aboutScreen.components.AppInfoCard
 import com.yugentech.sessions.ui.config.aboutScreen.components.DonationDialog
@@ -52,7 +52,6 @@ import com.yugentech.sessions.ui.dash.mainScreen.components.ToastMessage
 import com.yugentech.sessions.ui.dash.settingsScreen.components.SettingsListItem
 import com.yugentech.sessions.utils.AppConstants
 import com.yugentech.sessions.utils.BillingManager
-import com.yugentech.sessions.alerts.viewmodel.AlertsViewModel
 import org.koin.androidx.compose.koinViewModel
 import org.koin.compose.koinInject
 

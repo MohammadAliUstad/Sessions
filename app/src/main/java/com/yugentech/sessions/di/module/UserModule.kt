@@ -2,9 +2,9 @@ package com.yugentech.sessions.di.module
 
 import com.google.firebase.firestore.FirebaseFirestore
 import com.yugentech.sessions.user.datastore.UserDataStore
-import com.yugentech.sessions.user.service.UserService
 import com.yugentech.sessions.user.repository.UserRepository
 import com.yugentech.sessions.user.repository.UserRepositoryImpl
+import com.yugentech.sessions.user.service.UserService
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
@@ -31,7 +31,8 @@ val userModule = module {
         UserRepositoryImpl(
             userDao = get(),
             userService = get(),
-            syncDataStore = get()
+            syncDataStore = get(),
+            authRepository = get()
         )
     }
 }

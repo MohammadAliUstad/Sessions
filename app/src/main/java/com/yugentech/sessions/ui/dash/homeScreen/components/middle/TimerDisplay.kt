@@ -41,6 +41,7 @@ fun TimerDisplay(
     isStudying: Boolean,
     currentMode: TimerMode,
     modifier: Modifier = Modifier,
+    errorMessage: String? = null,
     idleLabel: String = "Press the play button\nto start."
 ) {
     val targetProgress = if (selectedDuration > 0) {
@@ -74,7 +75,11 @@ fun TimerDisplay(
         val showTimeDisplay = isStudying || (displayTime < selectedDuration)
 
         AnimatedContent(
-            targetState = if (showTimeDisplay) "timer" else idleLabel,
+            targetState = when {
+                errorMessage != null -> errorMessage
+                showTimeDisplay -> "timer"
+                else -> idleLabel
+            },
             transitionSpec = {
                 val duration = 300
                 (slideInVertically(animationSpec = tween(duration)) { it / 2 } + fadeIn(animationSpec = tween(duration)))
@@ -110,7 +115,7 @@ fun TimerDisplay(
                             fontWeight = FontWeight.Medium
                         ),
                         textAlign = TextAlign.Center,
-                        color = if (target != "Press the play button\nto start.")
+                        color = if (target == errorMessage)
                             MaterialTheme.colorScheme.error
                         else
                             MaterialTheme.colorScheme.onSurfaceVariant
