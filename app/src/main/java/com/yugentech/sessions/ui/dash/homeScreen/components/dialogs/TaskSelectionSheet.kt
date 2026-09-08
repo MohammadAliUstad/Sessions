@@ -119,12 +119,12 @@ fun TaskSelectionSheet(
 
     val setTaskContainerColor by animateColorAsState(
         targetValue = if (hasTask) MaterialTheme.colorScheme.secondaryContainer
-        else MaterialTheme.colorScheme.surfaceContainerHighest,
+        else MaterialTheme.colorScheme.surfaceContainerHigh,
         label = "setTaskContainer"
     )
     val setTaskContentColor by animateColorAsState(
         targetValue = if (hasTask) MaterialTheme.colorScheme.onSecondaryContainer
-        else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f),
+        else MaterialTheme.colorScheme.onSurfaceVariant,
         label = "setTaskContent"
     )
     val saveContainerColor by animateColorAsState(
@@ -319,7 +319,6 @@ fun TaskSelectionSheet(
 
                         FilledTonalButton(
                             modifier = Modifier.fillMaxWidth(),
-                            enabled = hasTask,
                             colors = ButtonDefaults.filledTonalButtonColors(
                                 containerColor = setTaskContainerColor,
                                 contentColor = setTaskContentColor,
