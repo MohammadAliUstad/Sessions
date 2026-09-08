@@ -207,6 +207,7 @@ class BackgroundService(private val context: Context) {
     // Helper to build a simple ExoPlayer instance
     private fun createPlayer(uri: String) = ExoPlayer.Builder(context).build().apply {
         setMediaItem(MediaItem.fromUri(uri))
+        repeatMode = Player.REPEAT_MODE_ALL
         prepare()
     }
 
