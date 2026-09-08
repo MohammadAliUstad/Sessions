@@ -94,7 +94,7 @@ fun SessionHeader(
                     Text(
                         text = task.ifEmpty { "Enter a name..." },
                         style = MaterialTheme.typography.titleMedium,
-                        fontWeight = if (task.isEmpty()) FontWeight.Normal else FontWeight.SemiBold,
+                        fontWeight = if (task.isEmpty()) FontWeight.Medium else FontWeight.SemiBold,
                         color = if (task.isEmpty())
                             MaterialTheme.colorScheme.onSurfaceVariant
                         else
