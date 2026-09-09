@@ -47,7 +47,14 @@ class UserRepositoryImpl(
             val alreadyFetched = syncDataStore.isUserFetchDone.first()
 
             if (alreadyFetched) {
-                return UserResult.Success(Unit)
+                val localUser = userDao.getUser(userId)
+                if (localUser != null) {
+                    return UserResult.Success(Unit)
+                }
+                // Sync flag is set but local DB is empty — stale flag from a DB wipe.
+                // Reset it so we fall through to a fresh Firestore fetch.
+                Timber.w("Sync flag set but local user missing; re-fetching from cloud")
+                syncDataStore.setUserFetchDone(false)
             }
 
             Timber.i("Performing initial user profile fetch")

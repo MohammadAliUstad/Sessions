@@ -77,11 +77,13 @@ class TimerService(
     }
 
     fun pause() {
+        if (!_timerState.value.isTimerRunning) return
         cancelTimer()
         _timerState.update { it.copy(isTimerRunning = false) }
     }
 
     fun skipToNext() {
+        if (!_timerState.value.isTimerRunning) return
         cancelTimer()
         coroutineScope.launch { onTimerComplete() }
     }
@@ -135,8 +137,8 @@ class TimerService(
 
         if (newCompletedSets >= config.targetSets) {
             Timber.i("Target reached ($newCompletedSets/${config.targetSets}). Session complete!")
-            reset()
             _timerEffects.emit(TimerEffect.EndGoalReached(durationSeconds))
+            reset()
         } else {
             Timber.i("Set $newCompletedSets/${config.targetSets} done. Moving to break.")
             transitionToBreak(config, newCompletedSets)
@@ -150,7 +152,7 @@ class TimerService(
     }
 
     private fun transitionToBreak(config: TimerConfig, newCompletedSets: Int) {
-        val isLongBreak = (newCompletedSets % config.setsPerLongBreak == 0)
+        val isLongBreak = config.longBreakEnabled && (newCompletedSets % config.setsPerLongBreak == 0)
         val (breakMode, breakMinutes) = if (isLongBreak) {
             TimerMode.LongBreak to config.longBreakDuration
         } else {

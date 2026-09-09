@@ -6,11 +6,13 @@ import com.yugentech.sessions.BuildConfig
 import com.google.firebase.FirebaseApp
 import com.yugentech.sessions.di.module.alertsModule
 import com.yugentech.sessions.di.module.authModule
+import com.yugentech.sessions.di.module.firebaseModule
 import com.yugentech.sessions.di.module.dataStoreModule
 import com.yugentech.sessions.di.module.databaseModule
 import com.yugentech.sessions.di.module.notificationModule
 import com.yugentech.sessions.di.module.sessionModule
 import com.yugentech.sessions.di.module.themeModule
+import com.yugentech.sessions.di.module.templateModule
 import com.yugentech.sessions.di.module.timerModule
 import com.yugentech.sessions.di.module.userModule
 import com.yugentech.sessions.di.module.viewModelModule
@@ -42,6 +44,7 @@ class SessionsApp : Application(), Configuration.Provider {
             androidLogger()
             androidContext(this@SessionsApp)
             modules(
+                firebaseModule,
                 dataStoreModule,
                 authModule,
                 databaseModule,
@@ -52,6 +55,7 @@ class SessionsApp : Application(), Configuration.Provider {
                 alertsModule,
                 timerModule,
                 notificationModule,
+                templateModule,
             )
         }
     }

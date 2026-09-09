@@ -2,7 +2,6 @@ package com.yugentech.sessions.ui.dash.homeScreen.components.topRow
 
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.animateColorAsState
-import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -20,9 +19,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.BasicTextField
-import androidx.compose.foundation.text.KeyboardActions
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.VolumeOff
 import androidx.compose.material.icons.automirrored.rounded.VolumeUp
@@ -32,19 +28,12 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.SolidColor
-import androidx.compose.ui.platform.LocalFocusManager
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextOverflow
 import com.yugentech.sessions.alerts.model.BackgroundSound
 import com.yugentech.sessions.theme.tokens.components
@@ -56,24 +45,16 @@ import com.yugentech.sessions.theme.tokens.spacing
 @Composable
 fun SessionHeader(
     isRunning: Boolean,
+    isSessionActive: Boolean,
     sessionTask: String,
-    onTaskChange: (String) -> Unit,
+    onTaskClick: () -> Unit,
     onSoundBadgeClick: () -> Unit,
     isAmbientEnabled: Boolean = true,
     activeBackgroundSoundId: String? = null
 ) {
-    var textFieldValue by remember { mutableStateOf(sessionTask) }
-
-    LaunchedEffect(sessionTask) {
-        if (textFieldValue != sessionTask) {
-            textFieldValue = sessionTask
-        }
-    }
-
     val backgroundSound = remember(activeBackgroundSoundId) {
         BackgroundSound.fromId(activeBackgroundSoundId)
     }
-    val focusManager = LocalFocusManager.current
 
     Row(
         modifier = Modifier
@@ -88,7 +69,8 @@ fun SessionHeader(
         Surface(
             modifier = Modifier
                 .weight(1f)
-                .clip(RoundedCornerShape(MaterialTheme.corners.medium)),
+                .clip(RoundedCornerShape(MaterialTheme.corners.medium))
+                .clickable(enabled = !isSessionActive, onClick = onTaskClick),
             color = MaterialTheme.colorScheme.surfaceContainer,
             shape = RoundedCornerShape(MaterialTheme.corners.medium)
         ) {
@@ -100,37 +82,29 @@ fun SessionHeader(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.xs)
             ) {
-                BasicTextField(
-                    value = textFieldValue,
-                    onValueChange = { newValue ->
-                        textFieldValue = newValue
-                        onTaskChange(newValue)
+                AnimatedContent(
+                    targetState = sessionTask,
+                    transitionSpec = {
+                        fadeIn(tween(AppAnimations.Durations.Standard)) togetherWith
+                                fadeOut(tween(AppAnimations.Durations.Standard))
                     },
-                    enabled = !isRunning,
-                    modifier = Modifier.weight(1f),
-                    textStyle = MaterialTheme.typography.titleMedium.copy(
-                        color = MaterialTheme.colorScheme.onSurface,
-                        fontWeight = FontWeight.SemiBold
-                    ),
-                    cursorBrush = SolidColor(MaterialTheme.colorScheme.primary),
-                    singleLine = true,
-                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
-                    keyboardActions = KeyboardActions(onDone = { focusManager.clearFocus() }),
-                    decorationBox = { innerTextField ->
-                        if (sessionTask.isEmpty()) {
-                            Text(
-                                text = "Enter a name...",
-                                style = MaterialTheme.typography.titleMedium,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                                maxLines = 1,
-                                overflow = TextOverflow.Ellipsis
-                            )
-                        }
-                        innerTextField()
-                    }
-                )
+                    label = "sessionTaskText",
+                    modifier = Modifier.weight(1f)
+                ) { task ->
+                    Text(
+                        text = task.ifEmpty { "Enter a name..." },
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = if (task.isEmpty()) FontWeight.Medium else FontWeight.SemiBold,
+                        color = if (task.isEmpty())
+                            MaterialTheme.colorScheme.onSurfaceVariant
+                        else
+                            MaterialTheme.colorScheme.onSurface,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                }
 
-                if (!isRunning) {
+                if (!isSessionActive) {
                     Icon(
                         imageVector = Icons.Rounded.Edit,
                         contentDescription = "Edit",
@@ -146,6 +120,7 @@ fun SessionHeader(
         SoundBadge(
             backgroundSound = backgroundSound,
             isEnabled = isAmbientEnabled,
+            isRunning = isRunning,
             onClick = onSoundBadgeClick
         )
     }
@@ -200,11 +175,8 @@ fun StatusBadge(
             AnimatedContent(
                 targetState = isRunning,
                 transitionSpec = {
-                    fadeIn(
-                        tween(AppAnimations.Durations.Standard)
-                    ) togetherWith fadeOut(
-                        tween(AppAnimations.Durations.Standard)
-                    )
+                    fadeIn(tween(AppAnimations.Durations.Standard)) togetherWith
+                            fadeOut(tween(AppAnimations.Durations.Standard))
                 },
                 label = "statusText"
             ) { running ->
@@ -225,6 +197,7 @@ fun StatusBadge(
 fun SoundBadge(
     backgroundSound: BackgroundSound,
     isEnabled: Boolean,
+    isRunning: Boolean = false,
     onClick: () -> Unit
 ) {
     val soundName = when (backgroundSound) {
@@ -241,16 +214,21 @@ fun SoundBadge(
     val isMuted = !isEnabled && !isNone
 
     val containerColor by animateColorAsState(
-        targetValue = if (isMuted)
-            MaterialTheme.colorScheme.surfaceContainer
-        else
-            MaterialTheme.colorScheme.surfaceContainerHigh,
+        targetValue = when {
+            isMuted -> MaterialTheme.colorScheme.surfaceContainer
+            isRunning -> MaterialTheme.colorScheme.tertiaryContainer
+            else -> MaterialTheme.colorScheme.surfaceContainerHigh
+        },
         label = "soundBadgeContainer"
     )
 
-    val contentAlpha by animateFloatAsState(
-        targetValue = if (isMuted) 0.5f else 1f,
-        label = "soundBadgeAlpha"
+    val contentColor by animateColorAsState(
+        targetValue = when {
+            isMuted -> MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f)
+            isRunning -> MaterialTheme.colorScheme.onTertiaryContainer
+            else -> MaterialTheme.colorScheme.onSurfaceVariant
+        },
+        label = "soundBadgeContent"
     )
 
     Surface(
@@ -271,11 +249,8 @@ fun SoundBadge(
             AnimatedContent(
                 targetState = isMuted,
                 transitionSpec = {
-                    fadeIn(
-                        tween(AppAnimations.Durations.Standard)
-                    ) togetherWith fadeOut(
-                        tween(AppAnimations.Durations.Standard)
-                    )
+                    fadeIn(tween(AppAnimations.Durations.Standard)) togetherWith
+                            fadeOut(tween(AppAnimations.Durations.Standard))
                 },
                 label = "soundIcon"
             ) { muted ->
@@ -286,7 +261,7 @@ fun SoundBadge(
                         Icons.AutoMirrored.Rounded.VolumeUp,
                     contentDescription = "Sound",
                     modifier = Modifier.size(MaterialTheme.icons.smallMedium),
-                    tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = contentAlpha)
+                    tint = contentColor
                 )
             }
 
@@ -295,11 +270,8 @@ fun SoundBadge(
             AnimatedContent(
                 targetState = if (isMuted) "Muted" else soundName,
                 transitionSpec = {
-                    fadeIn(
-                        tween(AppAnimations.Durations.Standard)
-                    ) togetherWith fadeOut(
-                        tween(AppAnimations.Durations.Standard)
-                    )
+                    fadeIn(tween(AppAnimations.Durations.Standard)) togetherWith
+                            fadeOut(tween(AppAnimations.Durations.Standard))
                 },
                 label = "soundText"
             ) { text ->
@@ -308,7 +280,7 @@ fun SoundBadge(
                     style = MaterialTheme.typography.labelMedium.copy(
                         fontWeight = FontWeight.Medium
                     ),
-                    color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = contentAlpha),
+                    color = contentColor,
                     maxLines = 1
                 )
             }

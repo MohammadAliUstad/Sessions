@@ -9,6 +9,7 @@ import com.yugentech.sessions.alerts.model.AlertsConfiguration
 import com.yugentech.sessions.alerts.model.BackgroundSound
 import com.yugentech.sessions.timer.repository.TimerRepository
 import com.yugentech.sessions.timer.state.TimerMode // Added Import
+import com.yugentech.sessions.timer.state.TimerState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -40,7 +41,7 @@ class AlertsRepositoryImpl(
     private var lastSoundId: String? = null
     private var lastMode: TimerMode? = null
 
-    private fun handleBackgroundSoundState(state: com.yugentech.sessions.timer.state.TimerState) {
+    private fun handleBackgroundSoundState(state: TimerState) {
         val config = state.timerConfig
         val isRunning = state.isTimerRunning
         val isAmbientEnabled = config.isAmbientEnabled
@@ -91,24 +92,27 @@ class AlertsRepositoryImpl(
     // Stops background sound when timer is paused
     override fun onFocusPause(view: View?) {
         Timber.d("onFocusPause triggered")
-        backgroundSoundService.stop { playStopAlert(view) }
+        backgroundSoundService.stop()
+        playStopAlert(view)
     }
 
-    // Handles transition to break mode, fading audio and playing alert
+    // Handles transition to break mode — sound is handled by handleBackgroundSoundState
     override fun onBreakStart(view: View?) {
         Timber.d("onBreakStart triggered")
-        backgroundSoundService.stop { playStopAlert(view) { startBackgroundSound() } }
+        playStopAlert(view)
     }
 
     override fun onGoalReached(view: View?) {
         Timber.d("onGoalReached triggered")
-        backgroundSoundService.stop { playGoalReachedAlert(view) }
+        backgroundSoundService.stop()
+        playGoalReachedAlert(view)
     }
 
     // Handles stopping a session completely
     override fun onFocusStop(view: View?) {
         Timber.d("onSessionStop triggered")
-        backgroundSoundService.stop { playStopAlert(view) }
+        backgroundSoundService.stop()
+        playStopAlert(view)
     }
 
     // cleans up resources when leaving the screen

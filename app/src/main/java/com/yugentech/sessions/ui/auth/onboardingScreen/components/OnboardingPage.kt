@@ -63,7 +63,7 @@ fun OnboardingPage(page: Int, isVisible: Boolean) {
     val (title, description, highlights, imageRes) = when (page) {
         0 -> PageContent(
             title = "Enter Your\nOrbit",
-            description = "In a noisy world, focus is your superpower. Block distractions with proven Pomodoro techniques—work in timed sessions, your way.",
+            description = "In a noisy world, focus is your superpower. Block distractions with proven Pomodoro techniques, work in timed sessions, your way.",
             highlights = listOf(
                 FeatureHighlight(Icons.Default.Settings, "Customizable sessions"),
                 FeatureHighlight(Icons.Default.Timer, "Set your own focus & break times"),

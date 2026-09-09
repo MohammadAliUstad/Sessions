@@ -155,7 +155,7 @@ private fun PaymentOptionButton(
         modifier = Modifier
             .fillMaxWidth()
             .height(MaterialTheme.components.buttonLarge),
-        shape = RoundedCornerShape(MaterialTheme.corners.medium),
+        shape = CircleShape,
         colors = ButtonDefaults.filledTonalButtonColors(
             containerColor = MaterialTheme.colorScheme.primaryContainer,
             contentColor = MaterialTheme.colorScheme.onPrimaryContainer

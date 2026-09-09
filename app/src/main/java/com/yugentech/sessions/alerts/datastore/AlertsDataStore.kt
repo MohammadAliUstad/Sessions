@@ -15,9 +15,6 @@ import timber.log.Timber
 class AlertsDataStore(
     private val dataStore: DataStore<Preferences>
 ) {
-    private val soundKey = booleanPreferencesKey("sound_enabled")
-    private val hapticsKey = booleanPreferencesKey("haptics_enabled")
-
     // Exposes current settings as a stream, defaulting to true if errors occur
     val alertConfiguration: Flow<AlertsConfiguration> = dataStore.data
         .catch {
@@ -26,20 +23,25 @@ class AlertsDataStore(
         }
         .map { preferences ->
             AlertsConfiguration(
-                soundEnabled = preferences[soundKey] ?: true,
-                hapticsEnabled = preferences[hapticsKey] ?: true
+                soundEnabled = preferences[SOUND_ENABLED] ?: true,
+                hapticsEnabled = preferences[HAPTICS_ENABLED] ?: true
             )
         }
 
     // Saves the user's sound preference setting
     suspend fun setSoundEnabled(enabled: Boolean) {
         Timber.d("Updating sound preference: $enabled")
-        dataStore.edit { it[soundKey] = enabled }
+        dataStore.edit { it[SOUND_ENABLED] = enabled }
     }
 
     // Saves the user's haptic preference setting
     suspend fun setHapticsEnabled(enabled: Boolean) {
         Timber.d("Updating haptics preference: $enabled")
-        dataStore.edit { it[hapticsKey] = enabled }
+        dataStore.edit { it[HAPTICS_ENABLED] = enabled }
+    }
+
+    companion object {
+        private val SOUND_ENABLED = booleanPreferencesKey("sound_enabled")
+        private val HAPTICS_ENABLED = booleanPreferencesKey("haptics_enabled")
     }
 }

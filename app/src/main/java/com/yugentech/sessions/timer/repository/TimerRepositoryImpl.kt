@@ -129,6 +129,18 @@ class TimerRepositoryImpl(
         }
     }
 
+    override fun updateSetsPerLongBreak(sets: Int) {
+        externalScope.launch {
+            timerDatastore.updateSetsPerLongBreak(sets)
+        }
+    }
+
+    override fun updateLongBreakEnabled(enabled: Boolean) {
+        externalScope.launch {
+            timerDatastore.updateLongBreakEnabled(enabled)
+        }
+    }
+
     override fun updateActiveBackgroundSound(soundId: String?) {
         externalScope.launch {
             timerDatastore.updateActiveBackgroundSound(soundId)

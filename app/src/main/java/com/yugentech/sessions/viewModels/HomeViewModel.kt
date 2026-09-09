@@ -68,7 +68,10 @@ class HomeViewModel(
     }
 
     fun onReviewDialogDismissed() {
-        _dataState.update { it.copy(shouldShowReviewDialog = false) }
+        viewModelScope.launch {
+            userDataStore.updateLastReviewPromptTime(System.currentTimeMillis())
+            _dataState.update { it.copy(shouldShowReviewDialog = false) }
+        }
     }
 
     fun onReviewPromptShown() {

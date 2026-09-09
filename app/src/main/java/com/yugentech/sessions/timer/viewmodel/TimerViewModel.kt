@@ -115,6 +115,14 @@ class TimerViewModel(
         timerRepository.updateLongBreakAndTargetSets(longBreakMins, sets)
     }
 
+    fun updateSetsPerLongBreak(sets: Int) {
+        timerRepository.updateSetsPerLongBreak(sets)
+    }
+
+    fun updateLongBreakEnabled(enabled: Boolean) {
+        timerRepository.updateLongBreakEnabled(enabled)
+    }
+
     fun updateBackgroundSound(soundId: String?) {
         val current = timerState.value.timerConfig
         if (current.activeBackgroundSoundId != soundId) {
@@ -143,8 +151,8 @@ class TimerViewModel(
         viewModelScope.launch {
             // 1. Mark as running and start the internal engine (which has its own 1s delay)
             timerRepository.start()
-            
-            // 2. Play the start sound/haptic immediately for responsive feedback
+
+            // 2. Play the start sound/haptic
             alertsRepository.onFocusStart(view)
 
             // 3. Match the 1-second delay of the countdown engine
@@ -174,8 +182,8 @@ class TimerViewModel(
     fun stopAndDiscardSession(view: View? = null) {
         viewModelScope.launch {
             timerRepository.reset()
-            // Alerts are now handled exclusively by the ActiveForeground service 
-            // to prevent double haptics/sounds when stopping from the app.
+            // Alerts are handled by ActiveForeground.stopSession(); reset() above ensures
+            // state is clean even if the service is not reachable.
             stopActiveNotification()
         }
     }

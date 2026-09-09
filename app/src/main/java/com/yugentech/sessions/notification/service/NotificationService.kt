@@ -7,6 +7,7 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.Color
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
@@ -37,7 +38,6 @@ class NotificationService(
     companion object {
         const val ACTIVE_CHANNEL_ID = "active_session_channel"
         const val REMINDER_CHANNEL_ID = "reminder_channel"
-        const val EXTRA_NAVIGATE_TO_HOME = "navigate_to_home"
 
         const val ACTIVE_NOTIFICATION_ID = 1001
         const val REMINDER_NOTIFICATION_ID = 1002
@@ -158,7 +158,9 @@ class NotificationService(
         addSessionActions(builder, timerState)
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.BAKLAVA) {
-            attachLiveProgress(builder, notification, content.formattedTime)
+            attachLiveProgress(builder, notification, timerState, content.formattedTime)
+        } else {
+            attachBasicProgress(builder, notification, timerState)
         }
     }
 
@@ -277,29 +279,94 @@ class NotificationService(
 
     // endregion
 
-    // region Live progress (Android 16+)
+    // region Progress (all API levels)
 
+    // Overall session progress as a 0–100 value, spanning all sets.
+    // Focus sets each contribute an equal share; breaks sit at the boundary between sets.
+    private fun computeOverallProgress(notification: Notification, timerState: TimerState): Int {
+        val targetSets = timerState.timerConfig.targetSets.coerceAtLeast(1)
+        val completedSets = timerState.completedSets
+        val isBreakMode = timerState.currentMode != TimerMode.Focus
+
+        return if (isBreakMode) {
+            (completedSets.toFloat() / targetSets * PROGRESS_MAX_PERCENT).toInt()
+        } else {
+            val totalSeconds = (notification.totalSeconds ?: 1L).coerceAtLeast(1L)
+            val remainingSeconds = notification.remainingSeconds ?: 0L
+            val elapsedFraction = (totalSeconds - remainingSeconds).toFloat() / totalSeconds
+            ((completedSets + elapsedFraction) / targetSets * PROGRESS_MAX_PERCENT).toInt()
+        }.coerceIn(0, PROGRESS_MAX_PERCENT)
+    }
+
+    // Basic progress bar for pre-Android 16 — overall session progress across all sets.
+    private fun attachBasicProgress(
+        builder: NotificationCompat.Builder,
+        notification: Notification,
+        timerState: TimerState
+    ) {
+        val overall = computeOverallProgress(notification, timerState)
+        builder.setProgress(PROGRESS_MAX_PERCENT, overall, false)
+    }
+
+    // Android 16+ segmented progress bar. All segments have explicit colours so they always
+    // render at full visual thickness. setStyledByProgress(true) lets the system light up the
+    // "filled" region and dim the "unfilled" region. We drive a discrete progress value that
+    // jumps to the end of whichever block just became active, so each segment flips fully on
+    // the moment its phase starts rather than filling second-by-second.
     @RequiresApi(Build.VERSION_CODES.BAKLAVA)
     private fun attachLiveProgress(
         builder: NotificationCompat.Builder,
         notification: Notification,
+        timerState: TimerState,
         formattedTime: String?
     ) {
-        val remainingSeconds = notification.remainingSeconds ?: 0L
-        val totalSeconds = (notification.totalSeconds ?: 1L).coerceAtLeast(1L)
-        val elapsedSeconds = (totalSeconds - remainingSeconds).coerceAtLeast(0L)
-        val elapsedPercent = ((elapsedSeconds.toFloat() / totalSeconds) * PROGRESS_MAX_PERCENT)
-            .toInt()
-            .coerceIn(0, PROGRESS_MAX_PERCENT)
+        val config = timerState.timerConfig
+        val targetSets = config.targetSets.coerceAtLeast(1)
+        val completedSets = timerState.completedSets
+        val isFocusMode = timerState.currentMode == TimerMode.Focus
 
-        builder.setProgress(totalSeconds.toInt(), elapsedSeconds.toInt(), false)
+        val primaryColor     = context.getColor(android.R.color.system_accent1_200)
+        val shortBreakColor  = context.getColor(android.R.color.system_accent3_200)
+        val longBreakColor   = Color.argb(255, 255, 180, 171)
+
+        val breakLen = 1
+        val totalBreakLen = (targetSets - 1).coerceAtLeast(0) * breakLen
+        val totalFocusLen = PROGRESS_MAX_PERCENT - totalBreakLen
+        val baseFocusLen = (totalFocusLen / targetSets).coerceAtLeast(1)
+        val extraUnits = totalFocusLen - baseFocusLen * targetSets
+
+        var discreteProgress = 0
+        var pos = 0
+        outer@ for (i in 1..targetSets) {
+            pos += baseFocusLen + if (i <= extraUnits) 1 else 0
+            if (isFocusMode && i == completedSets + 1) { discreteProgress = pos; break@outer }
+            if (i < targetSets) {
+                pos += breakLen
+                if (!isFocusMode && i == completedSets) { discreteProgress = pos; break@outer }
+            }
+        }
 
         val progressStyle = NotificationCompat.ProgressStyle()
-            .setProgress(elapsedPercent)
+            .setProgress(discreteProgress.coerceIn(0, PROGRESS_MAX_PERCENT))
             .setStyledByProgress(true)
+
+        for (i in 1..targetSets) {
+            val focusLen = baseFocusLen + if (i <= extraUnits) 1 else 0
+            progressStyle.addProgressSegment(
+                NotificationCompat.ProgressStyle.Segment(focusLen).setColor(primaryColor)
+            )
+            if (i < targetSets) {
+                val isLongBreak = config.longBreakEnabled && (i % config.setsPerLongBreak == 0)
+                val segmentColor = if (isLongBreak) longBreakColor else shortBreakColor
+                progressStyle.addProgressSegment(
+                    NotificationCompat.ProgressStyle.Segment(breakLen).setColor(segmentColor)
+                )
+            }
+        }
 
         builder
             .setStyle(progressStyle)
+            .setProgress(PROGRESS_MAX_PERCENT, discreteProgress, false)
             .setRequestPromotedOngoing(true)
 
         formattedTime?.let { builder.setShortCriticalText(it) }
@@ -311,8 +378,7 @@ class NotificationService(
 
     private fun openAppIntent(): PendingIntent {
         val intent = Intent(context, MainActivity::class.java).apply {
-            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-            putExtra(EXTRA_NAVIGATE_TO_HOME, true)
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_SINGLE_TOP
         }
         return PendingIntent.getActivity(
             context,
@@ -321,6 +387,7 @@ class NotificationService(
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
     }
+
 
     private fun servicePendingIntent(action: String, requestCode: Int): PendingIntent {
         val intent = Intent(context, ActiveForeground::class.java).apply {

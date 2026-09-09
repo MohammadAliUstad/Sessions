@@ -1,6 +1,5 @@
 package com.yugentech.sessions.ui.dash.homeScreen
 
-import android.app.Activity
 import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
@@ -28,7 +27,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.google.android.play.core.review.ReviewManagerFactory
 import com.yugentech.sessions.alerts.viewmodel.AlertsViewModel
 import com.yugentech.sessions.timer.viewmodel.TimerViewModel
 import com.yugentech.sessions.ui.dash.homeScreen.components.FinishConfirmationDialog
@@ -36,8 +34,10 @@ import com.yugentech.sessions.ui.dash.homeScreen.components.bottomRow.SessionCon
 import com.yugentech.sessions.ui.dash.homeScreen.components.dialogs.DurationPickerDialog
 import com.yugentech.sessions.ui.dash.homeScreen.components.dialogs.GoalReachedDialog
 import com.yugentech.sessions.ui.dash.homeScreen.components.dialogs.ReviewReminderDialog
-import com.yugentech.sessions.ui.dash.homeScreen.components.dialogs.SetsSettingsDialog
-import com.yugentech.sessions.ui.dash.homeScreen.components.dialogs.SoundSelectionDialog
+import com.yugentech.sessions.ui.dash.homeScreen.components.dialogs.SetsSettingsSheet
+import com.yugentech.sessions.ui.dash.homeScreen.components.dialogs.SoundSelectionSheet
+import com.yugentech.sessions.ui.dash.homeScreen.components.dialogs.TaskSelectionSheet
+import com.yugentech.sessions.templates.viewmodel.TemplateViewModel
 import com.yugentech.sessions.ui.dash.homeScreen.components.durationSelection.SessionConfigCard
 import com.yugentech.sessions.ui.dash.homeScreen.components.durationSelection.SessionProgressCard
 import com.yugentech.sessions.ui.dash.homeScreen.components.middle.TimerDisplay
@@ -46,6 +46,7 @@ import com.yugentech.sessions.ui.dash.util.models.ActiveDialog
 import com.yugentech.sessions.utils.AppConstants
 import com.yugentech.sessions.viewModels.HomeViewModel
 import org.koin.androidx.compose.koinViewModel
+import androidx.core.net.toUri
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
@@ -53,10 +54,12 @@ fun HomeScreen(
     homeViewModel: HomeViewModel,
     timerViewModel: TimerViewModel,
     userId: String,
-    alertsViewModel: AlertsViewModel = koinViewModel()
+    alertsViewModel: AlertsViewModel = koinViewModel(),
+    templateViewModel: TemplateViewModel = koinViewModel()
 ) {
     val timerState by timerViewModel.timerState.collectAsStateWithLifecycle()
     val dashboardState by timerViewModel.dashboardState.collectAsStateWithLifecycle()
+    val templates by templateViewModel.templates.collectAsStateWithLifecycle()
     val errorMessage by timerViewModel.errorMessage.collectAsStateWithLifecycle()
     val showGoalReached by timerViewModel.showGoalReachedDialog.collectAsStateWithLifecycle()
     val setsRemainingToConfirm by timerViewModel.showFinishConfirmation.collectAsStateWithLifecycle()
@@ -97,9 +100,11 @@ fun HomeScreen(
                 ) {
                     SessionHeader(
                         isRunning = timerState.isTimerRunning,
+                        isSessionActive = isSessionActive,
                         sessionTask = config.sessionTask,
-                        onTaskChange = { newTask ->
-                            timerViewModel.updateSessionTask(newTask)
+                        onTaskClick = {
+                            activeDialog = ActiveDialog.TaskSelection
+                            alertsViewModel.performHaptic(view)
                         },
                         onSoundBadgeClick = {
                             timerViewModel.toggleAmbientSound()
@@ -186,14 +191,15 @@ fun HomeScreen(
                                 title = "Focus Duration",
                                 description = "Choose how long you want to focus before taking a break.",
                                 initialValue = currentFocus,
-                                range = 15..120,
+                                range = 5..120,
                                 step = 5,
                                 onDismiss = closeDialog,
                                 onConfirm = { newMins ->
                                     timerViewModel.updateFocusDuration(newMins)
                                     alertsViewModel.performHaptic(view)
                                     closeDialog()
-                                }
+                                },
+                                onHaptic = { alertsViewModel.performHaptic(view) }
                             )
                         }
 
@@ -209,44 +215,81 @@ fun HomeScreen(
                                     timerViewModel.updateShortBreakDuration(newMins)
                                     alertsViewModel.performHaptic(view)
                                     closeDialog()
-                                }
+                                },
+                                onHaptic = { alertsViewModel.performHaptic(view) }
                             )
                         }
 
                         ActiveDialog.SetsSettings -> {
-                            SetsSettingsDialog(
+                            SetsSettingsSheet(
                                 currentSets = config.targetSets,
                                 currentLongBreak = currentLong,
-                                focusDuration = currentFocus,
-                                setsPerLongBreak = config.setsPerLongBreak,
-                                onDismiss = closeDialog,
-                                onConfirm = { newSets, newLongBreak ->
-                                    timerViewModel.updateLongBreakAndTargetSets(
-                                        newSets,
-                                        newLongBreak
-                                    )
-                                    alertsViewModel.performHaptic(view)
+                                currentSetsPerLongBreak = config.setsPerLongBreak,
+                                currentLongBreakEnabled = config.longBreakEnabled,
+                                onSave = { newSets, newLongBreak, newSetsPerLongBreak, newLongBreakEnabled ->
+                                    timerViewModel.updateLongBreakAndTargetSets(newSets, newLongBreak)
+                                    timerViewModel.updateSetsPerLongBreak(newSetsPerLongBreak)
+                                    timerViewModel.updateLongBreakEnabled(newLongBreakEnabled)
                                     closeDialog()
-                                }
+                                },
+                                onDismiss = closeDialog,
+                                onHaptic = { alertsViewModel.performHaptic(view) }
+                            )
+                        }
+
+                        ActiveDialog.TaskSelection -> {
+                            TaskSelectionSheet(
+                                currentTask = config.sessionTask,
+                                templates = templates,
+                                focusDuration = config.focusDuration,
+                                shortBreakDuration = config.shortBreakDuration,
+                                longBreakDuration = config.longBreakDuration,
+                                targetSets = config.targetSets,
+                                longBreakEnabled = config.longBreakEnabled,
+                                setsPerLongBreak = config.setsPerLongBreak,
+                                onSetTask = { newTask ->
+                                    timerViewModel.updateSessionTask(newTask)
+                                    closeDialog()
+                                },
+                                onApplyTemplate = { template ->
+                                    timerViewModel.updateSessionTask(template.name)
+                                    timerViewModel.updateFocusDuration(template.focusDuration)
+                                    timerViewModel.updateShortBreakDuration(template.shortBreakDuration)
+                                    timerViewModel.updateLongBreakAndTargetSets(
+                                        template.targetSets,
+                                        template.longBreakDuration
+                                    )
+                                    timerViewModel.updateSetsPerLongBreak(template.setsPerLongBreak)
+                                    timerViewModel.updateLongBreakEnabled(template.longBreakEnabled)
+                                    closeDialog()
+                                },
+                                onSaveTemplate = { name ->
+                                    templateViewModel.saveTemplate(name, config)
+                                },
+                                onDeleteTemplate = { id ->
+                                    templateViewModel.deleteTemplate(id)
+                                },
+                                onDismiss = closeDialog,
+                                onHaptic = { alertsViewModel.performHaptic(view) }
                             )
                         }
 
                         ActiveDialog.Sound -> {
-                            SoundSelectionDialog(
+                            SoundSelectionSheet(
                                 currentSoundId = config.activeBackgroundSoundId,
-                                onPreview = { previewId ->
-                                    timerViewModel.playPreview(previewId)
-                                },
                                 onConfirm = { newSoundId ->
                                     timerViewModel.stopPreview()
                                     timerViewModel.updateBackgroundSound(newSoundId)
-                                    alertsViewModel.performHaptic(view)
                                     closeDialog()
                                 },
                                 onDismiss = {
                                     timerViewModel.stopPreview()
                                     closeDialog()
-                                }
+                                },
+                                onPreview = { previewId ->
+                                    timerViewModel.playPreview(previewId)
+                                },
+                                onHaptic = { alertsViewModel.performHaptic(view) }
                             )
                         }
 
@@ -271,7 +314,7 @@ fun HomeScreen(
                     onDismiss = { homeViewModel.onReviewDialogDismissed() },
                     onReviewClick = {
                         homeViewModel.onReviewPromptShown()
-                        launchReviewFlow(context)
+                        openPlayStore(context)
                     }
                 )
             }
@@ -287,35 +330,8 @@ fun HomeScreen(
     }
 }
 
-private fun launchReviewFlow(context: Context) {
-    val manager = ReviewManagerFactory.create(context)
-    val request = manager.requestReviewFlow()
-    request.addOnCompleteListener { task ->
-        if (task.isSuccessful) {
-            val reviewInfo = task.result
-            val activity = context as? Activity
-            if (activity != null) {
-                val flow = manager.launchReviewFlow(activity, reviewInfo)
-                flow.addOnCompleteListener { _ ->
-                    // The flow has finished.
-                    // Google recommends opening the Play Store regardless if we want to ensure they can review.
-                    // But usually, if they saw the native dialog, we shouldn't redirect them immediately.
-                    // However, the native dialog might NOT show up due to quota.
-                    // So we can check if it actually showed up? No, the API doesn't provide that.
-                    // A common trick is to ALWAYS open the Play Store if the user explicitly clicked "Rate".
-                    openPlayStore(context)
-                }
-            } else {
-                openPlayStore(context)
-            }
-        } else {
-            openPlayStore(context)
-        }
-    }
-}
-
 private fun openPlayStore(context: Context) {
-    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(AppConstants.MARKET_URL)).apply {
+    val intent = Intent(Intent.ACTION_VIEW, AppConstants.MARKET_URL.toUri()).apply {
         addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_NO_HISTORY or Intent.FLAG_ACTIVITY_MULTIPLE_TASK)
     }
     try {
@@ -324,7 +340,7 @@ private fun openPlayStore(context: Context) {
         context.startActivity(
             Intent(
                 Intent.ACTION_VIEW,
-                Uri.parse(AppConstants.PLAY_STORE_URL)
+                AppConstants.PLAY_STORE_URL.toUri()
             ).apply {
                 addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             }
