@@ -151,8 +151,8 @@ class TimerViewModel(
         viewModelScope.launch {
             // 1. Mark as running and start the internal engine (which has its own 1s delay)
             timerRepository.start()
-            
-            // 2. Play the start sound/haptic immediately for responsive feedback
+
+            // 2. Play the start sound/haptic
             alertsRepository.onFocusStart(view)
 
             // 3. Match the 1-second delay of the countdown engine

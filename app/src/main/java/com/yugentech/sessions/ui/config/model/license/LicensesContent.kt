@@ -23,19 +23,14 @@ object LicensesContent {
             url = "https://insert-koin.io/"
         ),
         Library(
-            name = "Coil",
-            author = "Coil Contributors",
-            url = "https://coil-kt.github.io/coil/"
-        ),
-        Library(
             name = "Timber",
             author = "Jake Wharton",
             url = "https://github.com/JakeWharton/timber"
         ),
         Library(
-            name = "Accompanist",
-            author = "Google",
-            url = "https://github.com/google/accompanist"
+            name = "Lottie",
+            author = "Airbnb",
+            url = "https://airbnb.io/lottie/"
         ),
         Library(
             name = "Room",

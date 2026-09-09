@@ -115,7 +115,6 @@ dependencies {
 
     // Navigation
     implementation(libs.androidx.navigation.compose)
-    implementation(libs.accompanist.navigation.animation)
 
     // Firebase BOM (declare once)
     implementation(platform(libs.firebase.bom))
@@ -148,9 +147,6 @@ dependencies {
     // Dependency Injection (Koin)
     implementation(libs.koin.android)
     implementation(libs.koin.androidx.compose)
-
-    // Image Loading (Coil)
-    implementation(libs.coil.compose)
 
     // Logging (Timber)
     implementation(libs.timber)

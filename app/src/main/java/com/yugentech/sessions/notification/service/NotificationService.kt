@@ -38,7 +38,6 @@ class NotificationService(
     companion object {
         const val ACTIVE_CHANNEL_ID = "active_session_channel"
         const val REMINDER_CHANNEL_ID = "reminder_channel"
-        const val EXTRA_NAVIGATE_TO_HOME = "navigate_to_home"
 
         const val ACTIVE_NOTIFICATION_ID = 1001
         const val REMINDER_NOTIFICATION_ID = 1002
@@ -379,11 +378,7 @@ class NotificationService(
 
     private fun openAppIntent(): PendingIntent {
         val intent = Intent(context, MainActivity::class.java).apply {
-            // SINGLE_TOP: if MainActivity is already at the top of its task (always true for a
-            // single-Activity app), onNewIntent is called instead of recreating the whole app.
-            // NEW_TASK: required when starting an Activity from a non-Activity context (Service).
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_SINGLE_TOP
-            putExtra(EXTRA_NAVIGATE_TO_HOME, true)
         }
         return PendingIntent.getActivity(
             context,
