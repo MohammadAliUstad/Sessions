@@ -73,7 +73,7 @@ Sessions transforms the concept of a simple timer into a comprehensive focus too
 <table width="100%">
   <tr>
     <td align="center" width="25%">
-      <img src="screenshots/Timer.jpg" alt="Timer" width="100%"/>
+      <img src="screenshots/Timer.png" alt="Timer" width="100%"/>
       <br/><sub><b>Timer</b></sub>
     </td>
     <td align="center" width="25%">
@@ -81,7 +81,7 @@ Sessions transforms the concept of a simple timer into a comprehensive focus too
       <br/><sub><b>Insights</b></sub>
     </td>
     <td align="center" width="25%">
-      <img src="screenshots/Dashboard.jpg" alt="Dashboard" width="100%"/>
+      <img src="screenshots/Dashboard.png" alt="Dashboard" width="100%"/>
       <br/><sub><b>Dashboard</b></sub>
     </td>
     <td align="center" width="25%">
@@ -95,8 +95,8 @@ Sessions transforms the concept of a simple timer into a comprehensive focus too
       <br/><sub><b>Settings</b></sub>
     </td>
     <td align="center" width="25%">
-      <img src="screenshots/Open Source.png" alt="Open Source" width="100%"/>
-      <br/><sub><b>Open Source</b></sub>
+      <img src="screenshots/Notification.png" alt="Notification" width="100%"/>
+      <br/><sub><b>Notification</b></sub>
     </td>
     <td align="center" width="25%">
       <img src="screenshots/Edit Profile.png" alt="Edit Profile" width="100%"/>
