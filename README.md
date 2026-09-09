@@ -7,7 +7,7 @@
 <table border="0" width="100%">
     <tr>
         <td width="30%" align="center" valign="middle">
-            <img src="graphics/Icon.png" width="180" alt="Sessions App Icon"/>
+            <img src="graphics/App%20Icon.png" width="180" alt="Sessions App Icon"/>
         </td>
         <td width="70%" valign="middle">
             <h1>Sessions</h1>
@@ -44,9 +44,9 @@ Sessions transforms the concept of a simple timer into a comprehensive focus too
 
 ### Intelligent Focus Engine
 - **Focus Reminders:** Intelligent check-ins that trigger if you've been away too long, helping you stay on track.
-- **Playful Nudges:** Smart, personalised reminders crafted around your actual task history and focus habits — distinct from focus reminders and designed to feel less like a notification and more like a friend checking in.
+- **Playful Nudges:** Smart, personalised reminders crafted around your actual task history and focus habits, distinct from focus reminders and designed to feel less like a notification and more like a friend checking in.
 - **Customisable Cycles:** Define your exact Focus Duration, Short Break Duration, and Target Set count.
-- **Flexible Long Breaks:** Opt into long breaks, set their duration, and choose the interval — every set, every 2 sets, every 3 sets, and so on up to your full target count. Long breaks can also be turned off entirely.
+- **Flexible Long Breaks:** Opt into long breaks, set their duration, and choose the interval: every set, every 2 sets, every 3 sets, and so on up to your full target count. Long breaks can also be turned off entirely.
 
 ### Immersive Audio Environment
 - **Curated Ambience:** Includes 6 high-quality background sounds: Rain, Brown Noise, Fireplace, Library, Riverside, and Forest.
@@ -60,7 +60,7 @@ Sessions transforms the concept of a simple timer into a comprehensive focus too
 
 ### Analytics & Personalization
 - **Visual Insights:** Dedicated dashboard featuring heatmaps and metrics (Total Focus Time, Peak Productivity Hours).
-- **Session Management:** Full control over your history — sort sessions by day, week, or month, and delete sessions individually, by period (daily, weekly, or monthly), or all at once.
+- **Session Management:** Full control over your history: sort sessions by day, week, or month, and delete sessions individually, by period (daily, weekly, or monthly), or all at once.
 - **Deep Theming:** 8 Color Themes (including Dynamic Material You), OLED Black Mode, and 6 Font options.
 - **Identity System:** Choose from a variety of animated avatars and set a custom display name.
 
