@@ -1,6 +1,5 @@
 package com.yugentech.sessions
 
-import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -12,8 +11,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -21,7 +18,6 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.compose.rememberNavController
 import com.yugentech.sessions.auth.viewmodel.AuthViewModel
 import com.yugentech.sessions.navigation.host.AppNavHost
-import com.yugentech.sessions.notification.service.NotificationService
 import com.yugentech.sessions.theme.SessionsTheme
 import com.yugentech.sessions.theme.config.ThemeMode
 import com.yugentech.sessions.theme.viewmodel.ThemeViewModel
@@ -35,8 +31,6 @@ import kotlin.time.Duration.Companion.milliseconds
 
 class MainActivity : ComponentActivity() {
 
-    private var shouldNavigateToHome by mutableStateOf(false)
-
     override fun onCreate(savedInstanceState: Bundle?) {
         val splashScreen = installSplashScreen()
 
@@ -48,8 +42,6 @@ class MainActivity : ComponentActivity() {
 
         super.onCreate(savedInstanceState)
         Timber.v("MainActivity onCreate: App launching")
-
-        handleNavigationIntent(intent)
 
         val authViewModel: AuthViewModel = get()
 
@@ -102,32 +94,11 @@ class MainActivity : ComponentActivity() {
                             showOnboarding = showOnboarding!!,
                             onOnboardingComplete = {
                                 authViewModel.completeOnboarding()
-                            },
-                            shouldNavigateToHome = shouldNavigateToHome,
-                            onNavigatedToHome = {
-                                shouldNavigateToHome = false
                             }
                         )
                     }
                 }
             }
-        }
-    }
-
-    override fun onNewIntent(intent: Intent) {
-        super.onNewIntent(intent)
-        setIntent(intent)
-        handleNavigationIntent(intent)
-    }
-
-    private fun handleNavigationIntent(intent: Intent?) {
-        if (intent?.getBooleanExtra(
-                NotificationService.EXTRA_NAVIGATE_TO_HOME,
-                false
-            ) == true
-        ) {
-            Timber.d("Navigation to home requested from notification")
-            shouldNavigateToHome = true
         }
     }
 }

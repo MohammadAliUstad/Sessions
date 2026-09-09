@@ -5,12 +5,12 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -20,7 +20,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
 import com.yugentech.sessions.theme.tokens.corners
 import com.yugentech.sessions.utils.AppConstants
 import com.yugentech.sessions.theme.tokens.spacing
@@ -57,21 +59,23 @@ fun ToastMessage(
                 .padding(horizontal = MaterialTheme.spacing.m),
             contentAlignment = Alignment.Center
         ) {
-            Text(
-                text = message ?: AppConstants.EMPTY,
-                modifier = Modifier
-                    .background(
-                        color = MaterialTheme.colorScheme.errorContainer,
-                        shape = RoundedCornerShape(MaterialTheme.corners.medium)
-                    )
-                    .padding(
+            Surface(
+                shape = RoundedCornerShape(MaterialTheme.corners.pill),
+                color = MaterialTheme.colorScheme.inverseSurface,
+                shadowElevation = 6.dp
+            ) {
+                Text(
+                    text = message ?: AppConstants.EMPTY,
+                    modifier = Modifier.padding(
                         horizontal = MaterialTheme.spacing.l,
-                        vertical = MaterialTheme.spacing.m
+                        vertical = MaterialTheme.spacing.s
                     ),
-                color = MaterialTheme.colorScheme.onErrorContainer,
-                style = MaterialTheme.typography.bodyMedium,
-                textAlign = TextAlign.Center
-            )
+                    color = MaterialTheme.colorScheme.inverseOnSurface,
+                    style = MaterialTheme.typography.bodyMedium,
+                    fontWeight = FontWeight.Medium,
+                    textAlign = TextAlign.Center
+                )
+            }
         }
     }
 }

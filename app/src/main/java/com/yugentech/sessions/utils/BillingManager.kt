@@ -47,19 +47,23 @@ class BillingManager(context: Context) {
         .build()
 
     fun startConnection() {
+        if (billingClient.isReady) {
+            queryProducts()
+            return
+        }
         billingClient.startConnection(object : BillingClientStateListener {
             override fun onBillingSetupFinished(billingResult: BillingResult) {
                 if (billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
-                    Timber.d("Billing Setup Done")
+                    Timber.d("Billing setup done")
                     queryProducts()
                 } else {
-                    CoroutineScope(Dispatchers.Main).launch {
-                        _purchaseEvent.emit("Billing Setup Failed")
-                    }
+                    // Transient Play Store issue — auto-resolves on retry, not user-actionable
+                    Timber.e("Billing setup failed: ${billingResult.debugMessage}")
                 }
             }
             override fun onBillingServiceDisconnected() {
-                Timber.w("Billing Service Disconnected")
+                Timber.w("Billing service disconnected — retrying")
+                startConnection()
             }
         })
     }
@@ -102,6 +106,7 @@ class BillingManager(context: Context) {
 
             billingClient.launchBillingFlow(activity, billingFlowParams)
         } else {
+            startConnection()
             CoroutineScope(Dispatchers.Main).launch {
                 _purchaseEvent.emit("Product details not loaded. Please check internet.")
             }

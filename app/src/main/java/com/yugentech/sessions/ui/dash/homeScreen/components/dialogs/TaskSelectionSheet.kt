@@ -1,7 +1,12 @@
 package com.yugentech.sessions.ui.dash.homeScreen.components.dialogs
 
+import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -452,13 +457,19 @@ fun TaskSelectionSheet(
                             }
                         }
                     ) {
-                        Text(
-                            text = when {
+                        AnimatedContent(
+                            targetState = when {
                                 isExistingTemplate && isConfigChanged -> "Update Template"
                                 isExistingTemplate && !isConfigChanged -> "Close"
                                 else -> "Save as Template"
-                            }
-                        )
+                            },
+                            transitionSpec = {
+                                fadeIn(tween(200)) togetherWith fadeOut(tween(200))
+                            },
+                            label = "saveButtonLabel"
+                        ) { label ->
+                            Text(text = label)
+                        }
                     }
                 }
             }

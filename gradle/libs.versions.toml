@@ -33,8 +33,6 @@ material3WindowSizeClass = "1.4.0"
 
 # Navigation
 navigationCompose = "2.9.8"
-accompanistNavigationAnimation = "0.36.0"
-
 # Firebase
 firebaseBom = "34.15.0"
 
@@ -62,8 +60,6 @@ koinAndroid = "4.2.2"
 koinAndroidxCompose = "4.2.2"
 
 # Image Loading
-coilCompose = "2.7.0"
-
 # Logging
 timber = "5.0.1"
 
@@ -108,8 +104,6 @@ androidx-compose-material3-window-size-class1 = { group = "androidx.compose.mate
 
 # Navigation
 androidx-navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "navigationCompose" }
-accompanist-navigation-animation = { module = "com.google.accompanist:accompanist-navigation-animation", version.ref = "accompanistNavigationAnimation" }
-
 # Firebase
 firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebaseBom" }
 firebase-auth = { module = "com.google.firebase:firebase-auth" }
@@ -141,9 +135,6 @@ kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-t
 # Dependency Injection (Koin)
 koin-android = { module = "io.insert-koin:koin-android", version.ref = "koinAndroid" }
 koin-androidx-compose = { module = "io.insert-koin:koin-androidx-compose", version.ref = "koinAndroidxCompose" }
-
-# Image Loading (Coil)
-coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coilCompose" }
 
 # Logging (Timber)
 timber = { module = "com.jakewharton.timber:timber", version.ref = "timber" }

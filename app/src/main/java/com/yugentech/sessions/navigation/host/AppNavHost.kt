@@ -32,8 +32,6 @@ fun AppNavHost(
     showOnboarding: Boolean,
     onOnboardingComplete: () -> Unit,
     authViewModel: AuthViewModel,
-    shouldNavigateToHome: Boolean = false,
-    onNavigatedToHome: () -> Unit = {}
 ) {
     val authState by authViewModel.authState.collectAsStateWithLifecycle()
     val context = LocalContext.current
@@ -100,21 +98,6 @@ fun AppNavHost(
                     }
                 }
             }
-        }
-    }
-
-    // Forces navigation back to the home screen when requested (e.g. notification tap).
-    // popUpTo(0) clears the entire back stack so MainScreen gets a fresh NavBackStackEntry,
-    // which resets its internal pagerState to the Home tab — regardless of which tab or
-    // config screen (About, Insights, etc.) the user was on when they left the app.
-    LaunchedEffect(shouldNavigateToHome) {
-        if (shouldNavigateToHome) {
-            Timber.d("Navigating to home from notification")
-            navController.navigate(AppScreen.Main.route) {
-                popUpTo(0) { inclusive = true }
-                launchSingleTop = true
-            }
-            onNavigatedToHome()
         }
     }
 
