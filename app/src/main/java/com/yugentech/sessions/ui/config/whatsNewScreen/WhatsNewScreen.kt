@@ -96,12 +96,17 @@ fun WhatsNewScreen(
         ),
         UpdateItem(
             "Connected Insights Cards",
-            "The Insights screen top metrics (Total Focus, Primary Focus, and Peak Productivity) are now grouped into a connected Material 3 list layout with 2dp spacing.",
+            "The Insights screen top metrics are now grouped into a connected Material 3 list layout.",
             Icons.AutoMirrored.Filled.ShowChart
         ),
         UpdateItem(
             "Redesigned Settings Sheets",
             "Background sound and session goal controls are now full bottom sheets with explicit Save buttons. Changes are only applied when you choose to save them.",
+            Icons.Default.Tune
+        ),
+        UpdateItem(
+            "Redesigned Long Break System",
+            "Long breaks are now fully configurable. You can choose whether to enable them at all, and if so, set the interval: after every set, every two sets, every three sets, and so on. Previously, long breaks were only triggered automatically once your total session time crossed 100 minutes.",
             Icons.Default.Tune
         ),
         UpdateItem(
@@ -111,22 +116,17 @@ fun WhatsNewScreen(
         ),
         UpdateItem(
             "Achievements Coming Soon",
-            "A new Achievements section has been added to your profile screen. Earn badges as you build your study habits — launching in a future update.",
+            "A new Achievements section has been added to your profile screen. Earn badges as you build your focus habits launching in a future update.",
             Icons.Default.EmojiEvents
         ),
         UpdateItem(
-            "Notification Always Opens Home Screen",
-            "Tapping the session notification now always navigates you straight to the home screen, even if the app was open on a different screen.",
-            Icons.Default.NotificationsActive
-        ),
-        UpdateItem(
-            "Sound System Critical Fix",
-            "Fixed a bug where ambient audio would continue playing in the background after a session ended. Background sounds now stop correctly when your session is over.",
+            "General Improvements & Bug Fixes",
+            "Various under-the-hood improvements and bug fixes to enhance stability and overall performance.",
             Icons.AutoMirrored.Filled.VolumeUp
         ),
         UpdateItem(
-            "Color-Coded Notification Progress",
-            "On Android 16 and above, the live session notification now shows a segmented progress bar with distinct colors for focus, short break, and long break phases.",
+            "Segmented Notification Progress",
+            "The notification progress bar is now segmented with the appropriate color roles for each session phase.",
             Icons.Default.Flag
         )
     )
