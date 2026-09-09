@@ -12,6 +12,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.ExitToApp
 import androidx.compose.material3.BasicAlertDialog
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -100,15 +102,17 @@ fun ExitConfirmationDialog(
                             )
                         }
 
-                        TextButton(
+                        Button(
                             onClick = onConfirm,
-                            modifier = Modifier.weight(1f)
+                            modifier = Modifier.weight(1f),
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = MaterialTheme.colorScheme.primary,
+                                contentColor = MaterialTheme.colorScheme.onPrimary
+                            )
                         ) {
                             Text(
                                 text = "Exit",
-                                style = MaterialTheme.typography.labelLarge,
-                                fontWeight = FontWeight.Medium,
-                                color = MaterialTheme.colorScheme.error
+                                style = MaterialTheme.typography.labelLarge
                             )
                         }
                     }

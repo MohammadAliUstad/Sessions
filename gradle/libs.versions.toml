@@ -33,14 +33,11 @@ material3WindowSizeClass = "1.4.0"
 
 # Navigation
 navigationCompose = "2.9.8"
-accompanistNavigationAnimation = "0.36.0"
-
 # Firebase
 firebaseBom = "34.15.0"
 
 # Google Play Services
 playServicesAuth = "21.6.0"
-playReview = "2.0.2"
 
 # Room
 roomRuntime = "2.8.4"
@@ -63,8 +60,6 @@ koinAndroid = "4.2.2"
 koinAndroidxCompose = "4.2.2"
 
 # Image Loading
-coilCompose = "2.7.0"
-
 # Logging
 timber = "5.0.1"
 
@@ -109,8 +104,6 @@ androidx-compose-material3-window-size-class1 = { group = "androidx.compose.mate
 
 # Navigation
 androidx-navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "navigationCompose" }
-accompanist-navigation-animation = { module = "com.google.accompanist:accompanist-navigation-animation", version.ref = "accompanistNavigationAnimation" }
-
 # Firebase
 firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebaseBom" }
 firebase-auth = { module = "com.google.firebase:firebase-auth" }
@@ -122,7 +115,6 @@ firebase-analytics = { module = "com.google.firebase:firebase-analytics" }
 # Google Play Services
 lottie-compose = { module = "com.airbnb.android:lottie-compose", version.ref = "lottieCompose" }
 play-services-auth = { group = "com.google.android.gms", name = "play-services-auth", version.ref = "playServicesAuth" }
-play-review = { module = "com.google.android.play:review-ktx", version.ref = "playReview" }
 
 # Room Database
 androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "roomRuntime" }
@@ -143,9 +135,6 @@ kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-t
 # Dependency Injection (Koin)
 koin-android = { module = "io.insert-koin:koin-android", version.ref = "koinAndroid" }
 koin-androidx-compose = { module = "io.insert-koin:koin-androidx-compose", version.ref = "koinAndroidxCompose" }
-
-# Image Loading (Coil)
-coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coilCompose" }
 
 # Logging (Timber)
 timber = { module = "com.jakewharton.timber:timber", version.ref = "timber" }

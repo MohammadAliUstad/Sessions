@@ -20,8 +20,12 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
+import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -34,6 +38,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.platform.LocalView
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.withStyle
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.yugentech.sessions.user.model.UserData
 import com.yugentech.sessions.theme.tokens.corners
@@ -174,6 +183,7 @@ fun ProfileScreen(
                             index = index,
                             totalCount = sessionsInGroup.size,
                             onDelete = {
+                                alertsViewModel.performHaptic(view)
                                 sessionToDeleteId = session.sessionId
                                 showDeleteDialog = true
                             }
@@ -200,22 +210,50 @@ fun ProfileScreen(
                 Text("Delete $groupType?", style = MaterialTheme.typography.headlineSmall)
             },
             text = {
-                Text(
-                    "This will delete all sessions for \"$groupDeleteTitle\". This action cannot be undone.",
-                    style = MaterialTheme.typography.bodyMedium
-                )
+                Column(
+                    verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.m),
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Surface(
+                        color = MaterialTheme.colorScheme.surfaceContainerHigh,
+                        shape = RoundedCornerShape(MaterialTheme.corners.medium),
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Text(
+                            text = groupDeleteTitle,
+                            style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.onSurface,
+                            textAlign = TextAlign.Center,
+                            modifier = Modifier.padding(
+                                horizontal = MaterialTheme.spacing.m,
+                                vertical = MaterialTheme.spacing.s
+                            )
+                        )
+                    }
+
+                    Text(
+                        text = "All sessions recorded for this period will be permanently removed. This action cannot be undone.",
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
             },
             shape = RoundedCornerShape(MaterialTheme.corners.large),
             confirmButton = {
-                TextButton(
+                Button(
                     onClick = {
                         profileViewModel.deleteSessions(sessionsToGroupDelete)
                         alertsViewModel.performHaptic(view)
                         showGroupDeleteDialog = false
                         sessionsToGroupDelete = emptyList()
-                    }
+                    },
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = MaterialTheme.colorScheme.error,
+                        contentColor = MaterialTheme.colorScheme.onError
+                    )
                 ) {
-                    Text("Delete All", color = MaterialTheme.colorScheme.error)
+                    Text("Delete All")
                 }
             },
             dismissButton = {
@@ -225,7 +263,7 @@ fun ProfileScreen(
                         sessionsToGroupDelete = emptyList()
                     }
                 ) {
-                    Text("Cancel")
+                    Text("Cancel", color = MaterialTheme.colorScheme.onSurfaceVariant)
                 }
             },
             containerColor = MaterialTheme.colorScheme.surfaceContainer
@@ -249,15 +287,19 @@ fun ProfileScreen(
             },
             shape = RoundedCornerShape(MaterialTheme.corners.large),
             confirmButton = {
-                TextButton(
+                Button(
                     onClick = {
                         profileViewModel.deleteSession(userId, sessionToDeleteId!!)
                         alertsViewModel.performHaptic(view)
                         showDeleteDialog = false
                         sessionToDeleteId = null
-                    }
+                    },
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = MaterialTheme.colorScheme.error,
+                        contentColor = MaterialTheme.colorScheme.onError
+                    )
                 ) {
-                    Text("Delete", color = MaterialTheme.colorScheme.error)
+                    Text("Delete")
                 }
             },
             dismissButton = {
@@ -267,7 +309,7 @@ fun ProfileScreen(
                         sessionToDeleteId = null
                     }
                 ) {
-                    Text("Cancel")
+                    Text("Cancel", color = MaterialTheme.colorScheme.onSurfaceVariant)
                 }
             },
             containerColor = MaterialTheme.colorScheme.surfaceContainer

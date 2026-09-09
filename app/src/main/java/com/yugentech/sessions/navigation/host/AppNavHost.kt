@@ -32,8 +32,6 @@ fun AppNavHost(
     showOnboarding: Boolean,
     onOnboardingComplete: () -> Unit,
     authViewModel: AuthViewModel,
-    shouldNavigateToHome: Boolean = false,
-    onNavigatedToHome: () -> Unit = {}
 ) {
     val authState by authViewModel.authState.collectAsStateWithLifecycle()
     val context = LocalContext.current
@@ -100,15 +98,6 @@ fun AppNavHost(
                     }
                 }
             }
-        }
-    }
-
-    // Forces navigation back to main when requested
-    LaunchedEffect(shouldNavigateToHome) {
-        if (shouldNavigateToHome) {
-            Timber.d("Popping back to Main screen")
-            navController.popBackStack(AppScreen.Main.route, inclusive = false)
-            onNavigatedToHome()
         }
     }
 

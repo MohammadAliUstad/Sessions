@@ -27,8 +27,8 @@ android {
         applicationId = "com.yugentech.sessions"
         minSdk = 26
         targetSdk = 37
-        versionCode = 23
-        versionName = "4.0.0"
+        versionCode = 24
+        versionName = "5.0.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
         val webClientId = localProperties.getProperty("WEB_CLIENT_ID") ?: ""
@@ -115,7 +115,6 @@ dependencies {
 
     // Navigation
     implementation(libs.androidx.navigation.compose)
-    implementation(libs.accompanist.navigation.animation)
 
     // Firebase BOM (declare once)
     implementation(platform(libs.firebase.bom))
@@ -127,7 +126,6 @@ dependencies {
 
     // Google Play Services
     implementation(libs.play.services.auth)
-    implementation(libs.play.review)
 
     // Room Database
     implementation(libs.androidx.room.runtime)
@@ -149,9 +147,6 @@ dependencies {
     // Dependency Injection (Koin)
     implementation(libs.koin.android)
     implementation(libs.koin.androidx.compose)
-
-    // Image Loading (Coil)
-    implementation(libs.coil.compose)
 
     // Logging (Timber)
     implementation(libs.timber)

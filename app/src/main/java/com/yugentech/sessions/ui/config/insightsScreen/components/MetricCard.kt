@@ -14,6 +14,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import com.yugentech.sessions.theme.tokens.corners
@@ -25,11 +26,12 @@ fun MetricCard(
     title: String,
     value: String,
     subtitle: String,
-    icon: ImageVector
+    icon: ImageVector,
+    shape: Shape = RoundedCornerShape(MaterialTheme.corners.large)
 ) {
     Card(
         modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(MaterialTheme.corners.large),
+        shape = shape,
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.primaryContainer
         )

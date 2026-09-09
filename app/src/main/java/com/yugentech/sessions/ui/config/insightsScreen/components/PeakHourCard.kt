@@ -14,17 +14,19 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.text.font.FontWeight
 import com.yugentech.sessions.theme.tokens.corners
 import com.yugentech.sessions.theme.tokens.spacing
 
 @Composable
 fun PeakHourCard(
-    peakHour: Int?
+    peakHour: Int?,
+    shape: Shape = RoundedCornerShape(MaterialTheme.corners.large)
 ) {
     Card(
         modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(MaterialTheme.corners.large),
+        shape = shape,
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.tertiaryContainer
         )

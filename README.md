@@ -22,6 +22,10 @@
   <a href="https://github.com/MohammadAliUstad/Sessions/releases"><img alt="Get it on Github" src="badges/github.png" width="200"/></a>
 </p>
 
+<p align="center">
+  <b>2,500+ Downloads</b> &nbsp;·&nbsp; <b>⭐ 4.9 Rating</b> &nbsp;·&nbsp; <b>60+ Reviews</b> on Google Play
+</p>
+
 <br/>
 
 [Report Bug](https://github.com/MohammadAliUstad/Sessions/issues) · [Request Feature](https://github.com/MohammadAliUstad/Sessions/issues) · [Download Latest Release](https://github.com/MohammadAliUstad/Sessions/releases)
@@ -39,10 +43,10 @@ Sessions transforms the concept of a simple timer into a comprehensive focus too
 ## ✨ Key Features
 
 ### Intelligent Focus Engine
-- **Smart Reminders:** Intelligent check-ins that trigger if you've been away too long, helping you stay consistent.
-- **Personalised Nudges:** Playful, unique reminders based on your actual task history and focus habits.
-- **Customisable Cycles:** Define your exact Focus Duration, Break Duration, and Repetition count.
-- **Smart Intervals:** Automatically calculates when to trigger a Long Break based on your completed sets.
+- **Focus Reminders:** Intelligent check-ins that trigger if you've been away too long, helping you stay on track.
+- **Playful Nudges:** Smart, personalised reminders crafted around your actual task history and focus habits — distinct from focus reminders and designed to feel less like a notification and more like a friend checking in.
+- **Customisable Cycles:** Define your exact Focus Duration, Short Break Duration, and Target Set count.
+- **Flexible Long Breaks:** Opt into long breaks, set their duration, and choose the interval — every set, every 2 sets, every 3 sets, and so on up to your full target count. Long breaks can also be turned off entirely.
 
 ### Immersive Audio Environment
 - **Curated Ambience:** Includes 6 high-quality background sounds: Rain, Brown Noise, Fireplace, Library, Riverside, and Forest.
@@ -56,6 +60,7 @@ Sessions transforms the concept of a simple timer into a comprehensive focus too
 
 ### Analytics & Personalization
 - **Visual Insights:** Dedicated dashboard featuring heatmaps and metrics (Total Focus Time, Peak Productivity Hours).
+- **Session Management:** Full control over your history — sort sessions by day, week, or month, and delete sessions individually, by period (daily, weekly, or monthly), or all at once.
 - **Deep Theming:** 8 Color Themes (including Dynamic Material You), OLED Black Mode, and 6 Font options.
 - **Identity System:** Choose from a variety of animated avatars and set a custom display name.
 

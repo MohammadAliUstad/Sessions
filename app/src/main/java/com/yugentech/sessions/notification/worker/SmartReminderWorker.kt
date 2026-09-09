@@ -12,6 +12,9 @@ import kotlinx.coroutines.flow.first
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import timber.log.Timber
+import java.time.Instant
+import java.time.LocalDate
+import java.time.ZoneId
 import java.util.concurrent.TimeUnit
 import kotlin.random.Random
 
@@ -57,7 +60,7 @@ class SmartReminderWorker(
                 
                 if (isCorrectDay && isFirstHalfOfDay) {
                     Timber.d("SmartReminderWorker: Triggering inactivity notification (Once every 2 days logic)")
-                    sendInactivityNotification()
+                    sendInactivityNotification(daysSinceLast)
                 } else {
                     Timber.d("SmartReminderWorker: Skipping inactivity notification to maintain 2-day interval.")
                 }
@@ -65,6 +68,16 @@ class SmartReminderWorker(
             }
         } else {
             Timber.d("SmartReminderWorker: No sessions found.")
+        }
+
+        // Enforce at most one playful reminder per calendar day
+        val lastSent = notificationDataStore.getLastPlayfulReminderSent()
+        if (lastSent > 0) {
+            val lastSentDate = Instant.ofEpochMilli(lastSent).atZone(ZoneId.systemDefault()).toLocalDate()
+            if (lastSentDate == LocalDate.now()) {
+                Timber.d("SmartReminderWorker: Already sent a playful reminder today. Skipping.")
+                return Result.success()
+            }
         }
 
         // Random playful reminder (approx 30% chance when worker runs)
@@ -83,6 +96,7 @@ class SmartReminderWorker(
 
             Timber.d("SmartReminderWorker: Triggering playful notification for $selectedTask")
             sendPlayfulNotification(selectedTask)
+            notificationDataStore.setLastPlayfulReminderSent(currentTime)
         } else {
             Timber.d("SmartReminderWorker: Random roll failed. No playful notification.")
         }
@@ -90,12 +104,12 @@ class SmartReminderWorker(
         return Result.success()
     }
 
-    private fun sendInactivityNotification() {
+    private fun sendInactivityNotification(daysSinceLast: Long) {
         val messages = listOf(
-            "It's been a while! Your focus streak is waiting for you.",
-            "We miss seeing you focus. Ready for a quick session?",
+            "It's been $daysSinceLast days! Your focus streak is waiting for you.",
+            "We miss seeing you focus. $daysSinceLast days without a session — ready to get back?",
             "Don't let your progress slip away. Let's get back to it!",
-            "6 days is a long time! How about a 15-minute focus session?"
+            "$daysSinceLast days is a long time! How about a 15-minute focus session?"
         )
         showNotification("Come back!", messages.random())
     }

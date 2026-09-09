@@ -17,6 +17,7 @@ import com.yugentech.sessions.timer.repository.TimerRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
@@ -73,15 +74,22 @@ class ActiveForeground : Service() {
     private fun skipSession() {
         Timber.i("Skipping session from notification")
         timerRepository.skipToNext()
-        val state = timerRepository.timerState.value
-        updateNotification(state.currentTime, state.currentMode)
     }
 
     private fun finishSession() {
         Timber.i("Finishing session from notification (Save and Stop)")
+        val state = timerRepository.timerState.value
+        val durationSeconds = (state.totalTime - state.currentTime).toInt()
+        val isFocusWithEnoughTime = state.currentMode == TimerMode.Focus && durationSeconds >= 60
+
         timerRepository.saveCurrentSession()
-        alertsRepository.onGoalReached(null)
-        stopSession(playStopAlert = false)
+
+        if (isFocusWithEnoughTime) {
+            alertsRepository.onGoalReached(null)
+            stopSession(playStopAlert = false)
+        } else {
+            stopSession(playStopAlert = true)
+        }
     }
 
     private fun startSession() {
@@ -223,9 +231,7 @@ class ActiveForeground : Service() {
 
     override fun onTaskRemoved(rootIntent: Intent?) {
         Timber.d("Task removed, performing cleanup")
-        // stopSession handles reset and onFocusStop
         stopSession()
-        alertsRepository.onLeave()
         super.onTaskRemoved(rootIntent)
     }
 
@@ -234,6 +240,7 @@ class ActiveForeground : Service() {
         isSessionActive = false
         updateJob?.cancel()
         effectsJob?.cancel()
+        serviceScope.cancel()
         notificationService.hideNotification(NotificationService.ACTIVE_NOTIFICATION_ID)
         super.onDestroy()
     }
