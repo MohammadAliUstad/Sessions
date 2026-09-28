@@ -1,4 +1,33 @@
-<animated-vector xmlns:android="http://schemas.android.com/apk/res/android"
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    ABOUT SCREEN ANIMATED VECTOR — Amatyaa Quill Icon (tap-to-replay)
+    ───────────────────────────────────────────────────────────────
+    Colors:
+      Outer feather : #F5EDD6  (Antique Ivory) — also used as the trace stroke
+      Inner vane    : #E0B01C  (gold)
+
+    Animation sequence (total ~1900ms):
+      150 – 1150ms: outside and inside of the border trace at the same time
+                    (trimPathEnd 0→1 on both stroke paths, in parallel)
+      1100 – 1900ms: once both traces finish, the border fill and the vane
+                    fill color both fade in together, traced strokes fade out
+
+    Rest pose (before any tap) is the FINISHED icon — trimPathEnd/fillAlpha
+    are declared at their end-of-animation values below, so the icon shows
+    normally as soon as the About screen opens. Tapping calls Animatable
+    .start(), which resets every animator to its valueFrom and replays.
+
+    The border trace is split into two separate stroke-only paths (outer
+    contour + inner swirl) so each subpath draws as one continuous sweep
+    instead of jumping mid-animation, while both run in parallel so it
+    reads as a single pen tracing the whole border at once.
+
+    Requires:
+      android:fillType="evenOdd" / trimPath* → API 24+ (Android 7.0)
+      For older devices use VectorDrawableCompat from AndroidX.
+-->
+<animated-vector
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:aapt="http://schemas.android.com/aapt">
 
     <aapt:attr name="android:drawable">
@@ -8,82 +37,156 @@
             android:viewportWidth="512"
             android:viewportHeight="512">
 
+            <!--
+                Scale bridge: the quill paths are copied from
+                ic_launcher_foreground.xml and live in its 260×233 coordinate
+                space. They're drawn into a virtual 292.5-unit-wide box
+                (16.25-unit safe-area margin, 6.25% per side) so the trace
+                stroke and its miter spikes at the sharp nib tip have room to
+                render without being clipped by the viewport bounds, and
+                centered vertically. 1.7504 = 512 ÷ 292.5;
+                28.444 = 16.25 × 1.7504; 52.08 = (512 − 233 × 1.7504) ÷ 2.
+            -->
             <group
-                android:pivotX="256"
-                android:pivotY="256"
-                android:scaleX="0.7"
-                android:scaleY="0.7">
+                android:scaleX="1.7504"
+                android:scaleY="1.7504"
+                android:translateX="28.444"
+                android:translateY="52.08">
+
+                <!--
+                    LAYER 1 — Inner vane (solid fill, sits behind the feather)
+                    Rest pose is fully filled; tapping resets to 0 and replays.
+                -->
+                <path
+                    android:name="inner_vane"
+                    android:fillAlpha="1"
+                    android:fillColor="#E0B01C"
+                    android:pathData="M256.96,7.57C255.45,2.31 249.58,-0.92 243.65,0.23C97.39,28.67 29.03,129.02 0.43,219.54C-0.96,223.91 1.09,228.57 5.43,230.92C7.41,232.01 9.65,232.49 11.85,232.38C14.5,220.9 25.97,212.25 39.75,212.19L43,209.45C47.55,205.63 47.77,199.23 43.5,195.16C41.06,192.83 37.67,191.76 34.36,192.01L34.8,191C35.16,190.53 35.49,190.04 35.77,189.51C38.08,185.18 40.67,182.71 43.26,181.15C45.93,179.54 49.33,178.47 53.91,177.88C58.57,177.3 64.01,177.27 70.58,177.47C72.72,177.53 75.03,177.62 77.45,177.72C82.1,177.91 87.15,178.12 92.12,178.16C107.78,178.36 125.89,177.21 144.7,169.77C163.62,162.3 182.3,148.85 199.99,125.81C202.73,122.23 202.62,117.49 199.72,114.03C199.38,113.61 199.01,113.24 198.61,112.88C210.4,106.9 220.76,98.81 229.31,89.73C240.75,77.6 249.34,63.37 254.27,49.2C259.16,35.13 260.68,20.41 256.96,7.57Z"/>
+
+                <!--
+                    LAYER 2 — Outer feather (evenOdd punches out the inner vane,
+                    letting the golden layer show through).
+                    Fill only — the border is traced by the two stroke-only
+                    paths below, and this fades in once they finish.
+                    Requires API 24+ for fillType="evenOdd".
+                -->
+                <path
+                    android:name="outer_feather"
+                    android:fillColor="#F5EDD6"
+                    android:fillAlpha="1"
+                    android:fillType="evenOdd"
+                    android:pathData="M256.96,7.57C255.45,2.31 249.58,-0.92 243.65,0.23C97.39,28.67 29.03,129.02 0.43,219.54C-0.96,223.91 1.09,228.57 5.43,230.92C7.41,232.01 9.65,232.49 11.85,232.38C14.5,220.9 25.97,212.25 39.75,212.19L43,209.45C47.55,205.63 47.77,199.23 43.5,195.16C41.06,192.83 37.67,191.76 34.36,192.01L34.8,191C35.16,190.53 35.49,190.04 35.77,189.51C38.08,185.18 40.67,182.71 43.26,181.15C45.93,179.54 49.33,178.47 53.91,177.88C58.57,177.3 64.01,177.27 70.58,177.47C72.72,177.53 75.03,177.62 77.45,177.72C82.1,177.91 87.15,178.12 92.12,178.16C107.78,178.36 125.89,177.21 144.7,169.77C163.62,162.3 182.3,148.85 199.99,125.81C202.73,122.23 202.62,117.49 199.72,114.03C199.38,113.61 199.01,113.24 198.61,112.88C210.4,106.9 220.76,98.81 229.31,89.73C240.75,77.6 249.34,63.37 254.27,49.2C259.16,35.13 260.68,20.41 256.96,7.57ZM71.36,157.27C64.77,157.07 57.92,157.03 51.39,157.8C85.97,97.62 143.52,43.94 236.48,22.52C236.53,28.74 235.31,35.77 232.73,43.19C228.7,54.77 221.57,66.62 212.07,76.7C193.01,96.94 165.98,108.79 135.9,100.57C131.39,99.33 126.51,100.74 123.64,104.09C120.79,107.45 120.55,112.04 123.07,115.61C130.32,125.94 144.97,133.01 163.57,133.76C153.98,142.28 144.57,147.73 135.6,151.28C121.03,157.04 106.61,158.13 92.42,157.97C87.75,157.91 83.43,157.74 79.07,157.55C76.54,157.45 73.99,157.35 71.36,157.27Z"/>
+
+                <!--
+                    LAYER 3 — Trace-only strokes (no fill).
+                    Two separate paths so each subpath's trimPathEnd runs as
+                    one uninterrupted sweep, then both fade out once the
+                    real fill (layer 2) takes over.
+                -->
+                <path
+                    android:name="trace_outer_contour"
+                    android:fillAlpha="0"
+                    android:strokeColor="#F5EDD6"
+                    android:strokeWidth="3.6"
+                    android:strokeAlpha="0"
+                    android:strokeLineCap="butt"
+                    android:strokeLineJoin="miter"
+                    android:strokeMiterLimit="4"
+                    android:trimPathStart="0"
+                    android:trimPathEnd="1"
+                    android:pathData="M256.96,7.57C255.45,2.31 249.58,-0.92 243.65,0.23C97.39,28.67 29.03,129.02 0.43,219.54C-0.96,223.91 1.09,228.57 5.43,230.92C7.41,232.01 9.65,232.49 11.85,232.38C14.5,220.9 25.97,212.25 39.75,212.19L43,209.45C47.55,205.63 47.77,199.23 43.5,195.16C41.06,192.83 37.67,191.76 34.36,192.01L34.8,191C35.16,190.53 35.49,190.04 35.77,189.51C38.08,185.18 40.67,182.71 43.26,181.15C45.93,179.54 49.33,178.47 53.91,177.88C58.57,177.3 64.01,177.27 70.58,177.47C72.72,177.53 75.03,177.62 77.45,177.72C82.1,177.91 87.15,178.12 92.12,178.16C107.78,178.36 125.89,177.21 144.7,169.77C163.62,162.3 182.3,148.85 199.99,125.81C202.73,122.23 202.62,117.49 199.72,114.03C199.38,113.61 199.01,113.24 198.61,112.88C210.4,106.9 220.76,98.81 229.31,89.73C240.75,77.6 249.34,63.37 254.27,49.2C259.16,35.13 260.68,20.41 256.96,7.57Z"/>
 
                 <path
-                    android:pathData="M367.615 88.0934H143.385C129.365 88.0934 118 98.7219 118 111.833V400.665C118 413.776 129.365 424.404 143.385 424.404H367.615C381.635 424.404 393 413.776 393 400.665V111.833C393 98.7219 381.635 88.0934 367.615 88.0934Z"
-                    android:fillColor="#333333"/>
+                    android:name="trace_inner_swirl"
+                    android:fillAlpha="0"
+                    android:strokeColor="#F5EDD6"
+                    android:strokeWidth="3.6"
+                    android:strokeAlpha="0"
+                    android:strokeLineCap="butt"
+                    android:strokeLineJoin="miter"
+                    android:strokeMiterLimit="4"
+                    android:trimPathStart="0"
+                    android:trimPathEnd="1"
+                    android:pathData="M71.36,157.27C64.77,157.07 57.92,157.03 51.39,157.8C85.97,97.62 143.52,43.94 236.48,22.52C236.53,28.74 235.31,35.77 232.73,43.19C228.7,54.77 221.57,66.62 212.07,76.7C193.01,96.94 165.98,108.79 135.9,100.57C131.39,99.33 126.51,100.74 123.64,104.09C120.79,107.45 120.55,112.04 123.07,115.61C130.32,125.94 144.97,133.01 163.57,133.76C153.98,142.28 144.57,147.73 135.6,151.28C121.03,157.04 106.61,158.13 92.42,157.97C87.75,157.91 83.43,157.74 79.07,157.55C76.54,157.45 73.99,157.35 71.36,157.27Z"/>
 
-                <path
-                    android:pathData="M156.077 88.0934H118V424.404H156.077V88.0934Z"
-                    android:fillColor="#1A1A1A"/>
-
-                <path
-                    android:pathData="M369.731 88.0934H348.577V424.404H369.731V88.0934Z"
-                    android:fillColor="#333333"/>
-
-                <group android:name="quill_group">
-                    <path
-                        android:pathData="M324.829 97.4676C243.055 131.253 247.663 197.27 204.281 245.381C178.559 278.648 196.795 339.034 199.867 383.045C235.187 353.359 289.895 320.191 300.26 281.193C295.653 215.176 358.231 174.228 324.829 97.4676Z"
-                        android:fillColor="#E6D3A3"/>
-
-                    <path
-                        android:pathData="M202.379 377.944L190.212 416.111"
-                        android:strokeWidth="12.0"
-                        android:fillColor="#00000000"
-                        android:strokeColor="#A88B4A"
-                        android:strokeLineCap="round"/>
-
-                    <path
-                        android:pathData="M323.771 97.4288C242.492 131.145 247.073 197.025 203.953 245.037C178.387 278.236 196.514 338.496 199.568 382.416"
-                        android:strokeWidth="12.0"
-                        android:fillColor="#00000000"
-                        android:strokeColor="#A88B4A"
-                        android:strokeLineCap="round"/>
-
-                    <path
-                        android:pathData="M325.13 98.108C358.326 174.706 292.129 224.761 300.715 281.446C290.414 320.361 236.045 353.46 200.944 383.084"
-                        android:strokeWidth="12.0"
-                        android:fillColor="#00000000"
-                        android:strokeColor="#A88B4A"
-                        android:strokeLineCap="round"/>
-                </group>
             </group>
 
         </vector>
     </aapt:attr>
 
-    <target android:name="quill_group">
+    <!-- ── ANIMATION 1 ── trace_outer_contour: draws first (100 – 550ms) ── -->
+    <target android:name="trace_outer_contour">
         <aapt:attr name="android:animation">
-            <!--
-                Full round-trip writing stroke:
-                Phase 1 (350ms) — quill strokes right
-                Phase 2 (450ms) — quill lifts back to original position
-                Total: 800ms
-            -->
-            <set android:ordering="sequentially">
+            <set android:ordering="together">
 
-                <!-- Stroke right: purely horizontal -->
                 <objectAnimator
-                    android:propertyName="translateX"
+                    android:propertyName="trimPathEnd"
                     android:valueFrom="0"
-                    android:valueTo="55"
-                    android:duration="350"
-                    android:interpolator="@android:interpolator/fast_out_slow_in" />
+                    android:valueTo="1"
+                    android:duration="1000"
+                    android:startOffset="150"
+                    android:interpolator="@android:interpolator/fast_out_slow_in"/>
 
-                <!-- Lift back: return to origin -->
                 <objectAnimator
-                    android:propertyName="translateX"
-                    android:valueFrom="55"
+                    android:propertyName="strokeAlpha"
+                    android:valueFrom="1"
                     android:valueTo="0"
-                    android:duration="450"
-                    android:interpolator="@android:interpolator/fast_out_slow_in" />
+                    android:duration="750"
+                    android:startOffset="1100"
+                    android:interpolator="@interpolator/emphasized_decelerate"/>
 
             </set>
+        </aapt:attr>
+    </target>
+
+    <!-- ── ANIMATION 2 ── trace_inner_swirl: traces at the same time as the outer contour (100 – 750ms) ── -->
+    <target android:name="trace_inner_swirl">
+        <aapt:attr name="android:animation">
+            <set android:ordering="together">
+
+                <objectAnimator
+                    android:propertyName="trimPathEnd"
+                    android:valueFrom="0"
+                    android:valueTo="1"
+                    android:duration="1000"
+                    android:startOffset="150"
+                    android:interpolator="@android:interpolator/fast_out_slow_in"/>
+
+                <objectAnimator
+                    android:propertyName="strokeAlpha"
+                    android:valueFrom="1"
+                    android:valueTo="0"
+                    android:duration="750"
+                    android:startOffset="1100"
+                    android:interpolator="@interpolator/emphasized_decelerate"/>
+
+            </set>
+        </aapt:attr>
+    </target>
+
+    <!-- ── ANIMATION 3 ── outer_feather: border fill fades in once both traces finish ── -->
+    <target android:name="outer_feather">
+        <aapt:attr name="android:animation">
+            <objectAnimator
+                android:propertyName="fillAlpha"
+                android:valueFrom="0"
+                android:valueTo="1"
+                android:duration="800"
+                android:startOffset="1100"
+                android:interpolator="@interpolator/emphasized_decelerate"/>
+        </aapt:attr>
+    </target>
+
+    <!-- ── ANIMATION 4 ── inner_vane: color fill fades in together with the border ── -->
+    <target android:name="inner_vane">
+        <aapt:attr name="android:animation">
+            <objectAnimator
+                android:propertyName="fillAlpha"
+                android:valueFrom="0"
+                android:valueTo="1"
+                android:duration="800"
+                android:startOffset="1100"
+                android:interpolator="@interpolator/emphasized_decelerate"/>
         </aapt:attr>
     </target>
 

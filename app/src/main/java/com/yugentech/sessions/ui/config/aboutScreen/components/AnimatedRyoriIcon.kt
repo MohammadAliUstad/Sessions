@@ -7,10 +7,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.viewinterop.AndroidView
 import com.yugentech.sessions.R
 
-// Mirrors AnimatedSessionsIcon exactly — plays the AVD once when isAnimating becomes true.
-// The QuillHeroSection drives isAnimating with a coroutine delay matching the AVD duration (1900ms).
+// Same as AnimatedQuillIcon, for Ryori's burger. It rests on the fully assembled burger and
+// replays the build-up when isAnimating becomes true (the AVD runs for about 1200ms).
 @Composable
-fun AnimatedQuillIcon(
+fun AnimatedRyoriIcon(
     isAnimating: Boolean,
     modifier: Modifier = Modifier
 ) {
@@ -19,12 +19,15 @@ fun AnimatedQuillIcon(
         factory = { ctx ->
             ImageView(ctx).apply {
                 scaleType = ImageView.ScaleType.FIT_CENTER
-                setImageResource(R.drawable.avd_quill)
+                setImageResource(R.drawable.avd_ryori_burger)
             }
         },
         update = { imageView ->
             if (isAnimating) {
-                (imageView.drawable as? Animatable)?.start()
+                (imageView.drawable as? Animatable)?.let {
+                    it.stop()
+                    it.start()
+                }
             }
         }
     )

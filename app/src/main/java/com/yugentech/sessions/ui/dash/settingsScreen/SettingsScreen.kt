@@ -22,6 +22,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.stringResource
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.LifecycleEventEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.yugentech.sessions.R
 import com.yugentech.sessions.notification.viewmodel.NotificationsViewModel
@@ -51,6 +53,15 @@ fun SettingsScreen(
     val showPermissionDialog by notificationsViewModel.showExactAlarmDialog.collectAsStateWithLifecycle()
 
     var showTimePickerDialog by remember { mutableStateOf(false) }
+
+    // Returning from the exact-alarm settings screen with the permission granted picks up
+    // where the user left off (opens the time picker) instead of needing another tap.
+    LifecycleEventEffect(Lifecycle.Event.ON_RESUME) {
+        if (notificationsViewModel.onReturnedFromSettings()) {
+            showTimePickerDialog = true
+        }
+    }
+
     var showLogoutDialog by remember { mutableStateOf(false) }
     var showExitDialog by remember { mutableStateOf(false) }
 
@@ -255,7 +266,7 @@ fun SettingsScreen(
     if (showPermissionDialog) {
         AlarmPermissionDialog(
             context = context,
-            onDismiss = { notificationsViewModel.dismissDialog() },
+            onDismiss = { notificationsViewModel.cancelPermissionRequest() },
             onConfirm = { notificationsViewModel.dismissDialog() }
         )
     }
