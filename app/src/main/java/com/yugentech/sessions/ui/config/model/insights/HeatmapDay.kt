@@ -4,5 +4,6 @@ import java.time.LocalDate
 
 data class HeatmapDay(
     val date: LocalDate,
-    val intensity: Int
+    val intensity: Int,
+    val focusSeconds: Long = 0L
 )

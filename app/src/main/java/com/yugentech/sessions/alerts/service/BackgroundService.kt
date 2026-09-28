@@ -1,12 +1,9 @@
 package com.yugentech.sessions.alerts.service
 
-import android.animation.Animator
-import android.animation.AnimatorListenerAdapter
-import android.animation.ValueAnimator
 import android.content.Context
 import android.os.Handler
 import android.os.Looper
-import android.view.animation.LinearInterpolator
+import android.os.SystemClock
 import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
 import androidx.media3.exoplayer.ExoPlayer
@@ -15,14 +12,16 @@ import timber.log.Timber
 import kotlin.math.cos
 import kotlin.math.sin
 
-// Manages playback of looping background sounds using two players for gapless crossfading
+// Manages playback of looping background sounds using two players for gapless crossfading.
+// Uses Handler + SystemClock instead of ValueAnimator so volume fading and crossfading
+// continue working reliably when the screen is off or the app is in the background.
 class BackgroundService(private val context: Context) {
 
     private var activePlayer: ExoPlayer? = null
     private var nextPlayer: ExoPlayer? = null
     private var currentSound = BackgroundSound.NONE
-    private var volumeAnimator: ValueAnimator? = null
-    private var crossfadeAnimator: ValueAnimator? = null
+    private var volumeFadeRunnable: Runnable? = null
+    private var crossfadeRunnable: Runnable? = null
     private var isLooping = false
     private var positionMonitor: Runnable? = null
     private var crossfadeScheduled = false
@@ -39,6 +38,7 @@ class BackgroundService(private val context: Context) {
         private const val PREVIEW_DURATION = 2000L
         private const val PREVIEW_FADE_DURATION = 500L
         private const val POSITION_CHECK_INTERVAL = 100L
+        private const val FADE_TICK_INTERVAL = 30L
         private const val FOCUS_VOLUME = 1.0f
         private const val BREAK_VOLUME = 0.1f
     }
@@ -123,26 +123,13 @@ class BackgroundService(private val context: Context) {
                     }
 
                     // Fade in
-                    volumeAnimator = ValueAnimator.ofFloat(0f, FOCUS_VOLUME).apply {
-                        duration = PREVIEW_FADE_DURATION
-                        interpolator = LinearInterpolator()
-                        addUpdateListener { activePlayer?.volume = it.animatedValue as Float }
-                        start()
-                    }
+                    fadeVolumeInternal(0f, FOCUS_VOLUME, PREVIEW_FADE_DURATION)
 
                     // Schedule fade out and cleanup
                     handler.postDelayed({
-                        volumeAnimator?.cancel()
-                        volumeAnimator =
-                            ValueAnimator.ofFloat(activePlayer?.volume ?: FOCUS_VOLUME, 0f).apply {
-                                duration = PREVIEW_FADE_DURATION
-                                interpolator = LinearInterpolator()
-                                addUpdateListener { activePlayer?.volume = it.animatedValue as Float }
-                                addListener(object : AnimatorListenerAdapter() {
-                                    override fun onAnimationEnd(animation: Animator) = releaseInternal()
-                                })
-                                start()
-                            }
+                        fadeVolumeInternal(activePlayer?.volume ?: FOCUS_VOLUME, 0f, PREVIEW_FADE_DURATION) {
+                            releaseInternal()
+                        }
                     }, PREVIEW_DURATION - PREVIEW_FADE_DURATION)
 
                 } catch (e: Exception) {
@@ -250,14 +237,16 @@ class BackgroundService(private val context: Context) {
             playWhenReady = true
         }
 
-        crossfadeAnimator?.cancel()
-        crossfadeAnimator = ValueAnimator.ofFloat(0f, 1f).apply {
-            duration = CROSSFADE_DURATION
-            interpolator = LinearInterpolator()
+        crossfadeRunnable?.let { handler.removeCallbacks(it) }
+        crossfadeRunnable = null
 
-            // Calculate equal-power gain for smooth audio transition
-            addUpdateListener { animation ->
-                val progress = animation.animatedValue as Float
+        val startTime = SystemClock.elapsedRealtime()
+
+        val runnable = object : Runnable {
+            override fun run() {
+                val elapsed = SystemClock.elapsedRealtime() - startTime
+                val progress = (elapsed.toFloat() / CROSSFADE_DURATION).coerceIn(0f, 1f)
+
                 try {
                     val fadeOutGain = cos(progress * Math.PI / 2.0).toFloat()
                     val fadeInGain = sin(progress * Math.PI / 2.0).toFloat()
@@ -267,11 +256,11 @@ class BackgroundService(private val context: Context) {
                 } catch (e: Exception) {
                     Timber.e(e, "Error during crossfade")
                 }
-            }
 
-            // Swap players when transition completes so the cycle continues
-            addListener(object : AnimatorListenerAdapter() {
-                override fun onAnimationEnd(animation: Animator) {
+                if (progress < 1f) {
+                    handler.postDelayed(this, FADE_TICK_INTERVAL)
+                } else {
+                    crossfadeRunnable = null
                     if (!isLooping) return
 
                     activePlayer?.apply {
@@ -287,22 +276,11 @@ class BackgroundService(private val context: Context) {
                     positionMonitor?.let { handler.removeCallbacks(it) }
                     startPositionMonitoring(uri)
                 }
-            })
-
-            start()
+            }
         }
-    }
 
-    // Generic helper to animate volume changes
-    private fun fadeVolume(
-        from: Float,
-        to: Float,
-        duration: Long = FADE_DURATION,
-        onEnd: (() -> Unit)? = null
-    ) {
-        handler.post {
-            fadeVolumeInternal(from, to, duration, onEnd)
-        }
+        crossfadeRunnable = runnable
+        runnable.run()
     }
 
     private fun fadeVolumeInternal(
@@ -311,34 +289,45 @@ class BackgroundService(private val context: Context) {
         duration: Long = FADE_DURATION,
         onEnd: (() -> Unit)? = null
     ) {
-        volumeAnimator?.cancel()
-        volumeAnimator?.removeAllListeners()
-        volumeAnimator?.removeAllUpdateListeners()
+        volumeFadeRunnable?.let { handler.removeCallbacks(it) }
+        volumeFadeRunnable = null
 
-        volumeAnimator = ValueAnimator.ofFloat(from, to).apply {
-            this.duration = duration
-            interpolator = LinearInterpolator()
+        if (duration <= 0L) {
+            targetVolume = to
+            try {
+                activePlayer?.volume = to
+            } catch (e: Exception) {
+                Timber.e(e, "Error setting volume directly")
+            }
+            onEnd?.invoke()
+            return
+        }
 
-            addUpdateListener { animation ->
-                val newVolume = animation.animatedValue as Float
+        val startTime = SystemClock.elapsedRealtime()
+
+        val runnable = object : Runnable {
+            override fun run() {
+                val elapsed = SystemClock.elapsedRealtime() - startTime
+                val progress = (elapsed.toFloat() / duration).coerceIn(0f, 1f)
+                val newVolume = from + (to - from) * progress
                 targetVolume = newVolume
                 try {
                     activePlayer?.volume = newVolume
                 } catch (e: Exception) {
                     Timber.e(e, "Error adjusting volume")
                 }
-            }
 
-            onEnd?.let {
-                addListener(object : AnimatorListenerAdapter() {
-                    private var cancelled = false
-                    override fun onAnimationCancel(animation: Animator) { cancelled = true }
-                    override fun onAnimationEnd(animation: Animator) { if (!cancelled) it() }
-                })
+                if (progress < 1f) {
+                    handler.postDelayed(this, FADE_TICK_INTERVAL)
+                } else {
+                    volumeFadeRunnable = null
+                    onEnd?.invoke()
+                }
             }
-
-            start()
         }
+
+        volumeFadeRunnable = runnable
+        runnable.run()
     }
 
     // Cleans up all players, animators, and handlers to prevent leaks
@@ -350,17 +339,14 @@ class BackgroundService(private val context: Context) {
         Timber.d("releaseInternal() called")
         try {
             positionMonitor?.let { handler.removeCallbacks(it) }
+            positionMonitor = null
 
-            volumeAnimator?.cancel()
-            volumeAnimator?.removeAllListeners()
-            volumeAnimator?.removeAllUpdateListeners()
+            volumeFadeRunnable?.let { handler.removeCallbacks(it) }
+            volumeFadeRunnable = null
 
-            crossfadeAnimator?.cancel()
-            crossfadeAnimator?.removeAllListeners()
-            crossfadeAnimator?.removeAllUpdateListeners()
+            crossfadeRunnable?.let { handler.removeCallbacks(it) }
+            crossfadeRunnable = null
 
-            volumeAnimator = null
-            crossfadeAnimator = null
             isLooping = false
             isStopping = false
             pendingOnComplete = null

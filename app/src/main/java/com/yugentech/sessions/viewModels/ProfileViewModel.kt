@@ -43,6 +43,7 @@ data class ProfileUiState(
     val dailyVolume: Map<Int, Int> = emptyMap(),
     val peakHour: Int? = null,
     val heatmapHistory: Map<LocalDate, Int> = emptyMap(),
+    val focusTimeByDate: Map<LocalDate, Long> = emptyMap(),
     val isLoading: Boolean = false,
     val isSaving: Boolean = false,
     val errorMessage: String? = null
@@ -99,6 +100,7 @@ class ProfileViewModel(
                 val dailyCounts = IntArray(8)
                 val hourlyCounts = IntArray(24)
                 val heatmapData = mutableMapOf<LocalDate, Int>()
+                val focusTimeData = mutableMapOf<LocalDate, Long>()
 
                 sessions.forEach { session ->
                     val cal = Calendar.getInstance().apply { timeInMillis = session.timestamp }
@@ -112,6 +114,7 @@ class ProfileViewModel(
                         .toLocalDate()
 
                     heatmapData[date] = (heatmapData[date] ?: 0) + 1
+                    focusTimeData[date] = (focusTimeData[date] ?: 0L) + session.duration
                 }
 
                 val mostActiveHourIndex = hourlyCounts.indices.maxByOrNull { hourlyCounts[it] }
@@ -129,7 +132,8 @@ class ProfileViewModel(
                         .mapValues { entry -> entry.value.sumOf { it.duration } },
                     dailyVolume = dailyCounts.mapIndexed { index, count -> index to count }.toMap(),
                     peakHour = validPeakHour,
-                    heatmapHistory = heatmapData
+                    heatmapHistory = heatmapData,
+                    focusTimeByDate = focusTimeData
                 )
             }
             .flowOn(Dispatchers.Default)
@@ -143,6 +147,7 @@ class ProfileViewModel(
                         dailyVolume = stats.dailyVolume,
                         peakHour = stats.peakHour,
                         heatmapHistory = stats.heatmapHistory,
+                        focusTimeByDate = stats.focusTimeByDate,
                         isLoading = false
                     )
                 }
@@ -158,7 +163,8 @@ class ProfileViewModel(
         val taskDistribution: Map<String, Int>,
         val dailyVolume: Map<Int, Int>,
         val peakHour: Int?,
-        val heatmapHistory: Map<LocalDate, Int>
+        val heatmapHistory: Map<LocalDate, Int>,
+        val focusTimeByDate: Map<LocalDate, Long>
     )
 
     private fun calculateStreak(sessions: List<Session>): Int {

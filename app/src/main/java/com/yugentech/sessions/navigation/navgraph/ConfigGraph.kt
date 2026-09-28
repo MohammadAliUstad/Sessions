@@ -95,7 +95,8 @@ fun NavGraphBuilder.configGraph(
             streakCount = profileUiState.streakCount,
             dailyVolume = profileUiState.dailyVolume,
             peakHour = profileUiState.peakHour,
-            heatmapHistory = profileUiState.heatmapHistory
+            heatmapHistory = profileUiState.heatmapHistory,
+            focusTimeByDate = profileUiState.focusTimeByDate
         )
     }
 
