@@ -64,6 +64,7 @@ fun InsightsScreen(
     taskDistribution: Map<String, Int>,
     dailyVolume: Map<Int, Int>,
     heatmapHistory: Map<LocalDate, Int>,
+    focusTimeByDate: Map<LocalDate, Long>,
     peakHour: Int?,
     onBack: () -> Unit
 ) {
@@ -181,7 +182,10 @@ fun InsightsScreen(
 
 
                 item {
-                    Heatmap(data = heatmapHistory)
+                    Heatmap(
+                        data = heatmapHistory,
+                        focusTimeByDate = focusTimeByDate
+                    )
                 }
 
                 item {

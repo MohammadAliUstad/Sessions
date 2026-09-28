@@ -1,6 +1,8 @@
 package com.yugentech.sessions.ui.config.insightsScreen.components.heatMap
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -18,7 +20,9 @@ import androidx.compose.ui.unit.sp
 @Composable
 fun HeatmapCell(
     intensity: Int,
-    dayOfMonth: Int? = null
+    dayOfMonth: Int? = null,
+    isSelected: Boolean = false,
+    onClick: (() -> Unit)? = null
 ) {
     val backgroundColor = when {
         intensity == -1 -> Color.Transparent
@@ -36,11 +40,27 @@ fun HeatmapCell(
         else -> MaterialTheme.colorScheme.onPrimary
     }
 
+    val shape = RoundedCornerShape(6.dp)
+
     Box(
         modifier = Modifier
             .size(24.dp)
-            .clip(RoundedCornerShape(6.dp))
-            .background(backgroundColor),
+            .clip(shape)
+            .background(backgroundColor)
+            .then(
+                if (isSelected) {
+                    Modifier.border(2.dp, MaterialTheme.colorScheme.onSurface, shape)
+                } else {
+                    Modifier
+                }
+            )
+            .then(
+                if (onClick != null && intensity != -1) {
+                    Modifier.clickable(onClick = onClick)
+                } else {
+                    Modifier
+                }
+            ),
         contentAlignment = Alignment.Center
     ) {
         if (dayOfMonth != null && intensity != -1) {

@@ -7,7 +7,8 @@ import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
 
 fun generateHeatmapData(
-    activeDates: Map<LocalDate, Int>
+    activeDates: Map<LocalDate, Int>,
+    focusTimeByDate: Map<LocalDate, Long> = emptyMap()
 ): List<HeatmapWeek> {
     val endDate = LocalDate.now()
     val startDate = endDate.minusWeeks(52).minusDays(endDate.dayOfWeek.value.toLong() - 1)
@@ -21,7 +22,7 @@ fun generateHeatmapData(
     for (i in 0..daysBetween) {
         val date = startDate.plusDays(i)
         val intensity = activeDates[date] ?: 0
-        currentWeekDays.add(HeatmapDay(date, intensity))
+        currentWeekDays.add(HeatmapDay(date, intensity, focusTimeByDate[date] ?: 0L))
 
         if (currentWeekDays.size == 7 || i == daysBetween) {
             val firstDayOfMonthLabel = currentWeekDays.firstOrNull { it.date.dayOfMonth == 1 }

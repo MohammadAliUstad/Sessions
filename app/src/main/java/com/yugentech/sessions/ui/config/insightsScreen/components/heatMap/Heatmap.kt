@@ -24,7 +24,11 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -32,19 +36,40 @@ import androidx.compose.ui.text.font.FontWeight
 import com.yugentech.sessions.theme.tokens.corners
 import com.yugentech.sessions.theme.tokens.icons
 import com.yugentech.sessions.theme.tokens.spacing
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.filter
 import java.time.LocalDate
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun Heatmap(
     data: Map<LocalDate, Int>,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    focusTimeByDate: Map<LocalDate, Long> = emptyMap()
 ) {
-    val heatmapWeeks = remember(data) { generateHeatmapData(data) }
+    val heatmapWeeks = remember(data, focusTimeByDate) {
+        generateHeatmapData(data, focusTimeByDate)
+    }
     val listState = rememberLazyListState()
+    var selectedDate by remember { mutableStateOf<LocalDate?>(null) }
 
     LaunchedEffect(Unit) {
         listState.scrollToItem(heatmapWeeks.size)
+    }
+
+    // Hide the tooltip once the heatmap is scrolled
+    LaunchedEffect(listState) {
+        snapshotFlow { listState.isScrollInProgress }
+            .filter { it }
+            .collect { selectedDate = null }
+    }
+
+    // Auto-dismiss the tooltip after a short delay
+    LaunchedEffect(selectedDate) {
+        if (selectedDate != null) {
+            delay(3_000)
+            selectedDate = null
+        }
     }
 
     Card(
@@ -152,7 +177,13 @@ fun Heatmap(
 
                             Spacer(Modifier.height(MaterialTheme.spacing.xs))
 
-                            HeatmapWeekColumn(week.days)
+                            HeatmapWeekColumn(
+                                days = week.days,
+                                selectedDate = selectedDate,
+                                onDayClick = { day ->
+                                    selectedDate = if (selectedDate == day.date) null else day.date
+                                }
+                            )
                         }
                     }
                 }
