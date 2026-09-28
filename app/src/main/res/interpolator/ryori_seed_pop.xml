@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Sesame seed pop, from the SVG keySpline "0.2 0 0.3 1". -->
+<pathInterpolator xmlns:android="http://schemas.android.com/apk/res/android"
+    android:controlX1="0.2"
+    android:controlY1="0"
+    android:controlX2="0.3"
+    android:controlY2="1" />

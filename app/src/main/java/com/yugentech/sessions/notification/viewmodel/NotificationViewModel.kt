@@ -34,7 +34,18 @@ class NotificationsViewModel(
     private val _showExactAlarmDialog = MutableStateFlow(false)
     val showExactAlarmDialog = _showExactAlarmDialog.asStateFlow()
 
+    // Set when the user is sent to system settings for the exact-alarm permission, so that
+    // coming back with it granted can finish what they were doing instead of making them
+    // tap the reminder toggle again.
+    private var awaitingExactAlarmPermission = false
+
     fun dismissDialog() {
+        _showExactAlarmDialog.value = false
+    }
+
+    // User backed out of the permission dialog without going to settings.
+    fun cancelPermissionRequest() {
+        awaitingExactAlarmPermission = false
         _showExactAlarmDialog.value = false
     }
 
@@ -43,10 +54,31 @@ class NotificationsViewModel(
         val hasPermission = notificationRepository.hasExactAlarmPermission()
         if (!hasPermission) {
             Timber.w("Exact alarm permission missing, showing dialog")
-            _showExactAlarmDialog.value = true
+            requestExactAlarmPermission()
             return false
         }
         return true
+    }
+
+    // Called when the screen resumes. Returns true if the user just came back from granting
+    // the exact-alarm permission while trying to turn reminders on, meaning the time picker
+    // should open to finish that. If reminders were already on (the alarm just couldn't be
+    // scheduled), they're rescheduled here directly instead.
+    fun onReturnedFromSettings(): Boolean {
+        if (!awaitingExactAlarmPermission || !notificationRepository.hasExactAlarmPermission()) return false
+        awaitingExactAlarmPermission = false
+
+        val config = notificationConfiguration.value
+        if (config.notificationsEnabled && config.focusRemindersEnabled) {
+            updateReminders(config.reminderTimeHour, config.reminderTimeMinute)
+            return false
+        }
+        return true
+    }
+
+    private fun requestExactAlarmPermission() {
+        awaitingExactAlarmPermission = true
+        _showExactAlarmDialog.value = true
     }
 
     // Toggles global notifications and syncs scheduled alarms accordingly.
@@ -58,8 +90,9 @@ class NotificationsViewModel(
                 cancelReminders()
                 notificationRepository.cancelSmartReminders()
             } else {
-                if (notificationConfiguration.value.focusRemindersEnabled) {
-                    updateReminders()
+                val config = notificationConfiguration.value
+                if (config.focusRemindersEnabled) {
+                    updateReminders(config.reminderTimeHour, config.reminderTimeMinute)
                 }
                 if (notificationConfiguration.value.smartRemindersEnabled) {
                     notificationRepository.scheduleSmartReminders()
@@ -75,11 +108,15 @@ class NotificationsViewModel(
             notificationDataStore.setFocusRemindersEnabled(enabled)
             if (enabled) {
                 val config = notificationConfiguration.value
-                if (config.reminderTimeHour == 8 && config.reminderTimeMinute == 0) {
-                    notificationDataStore.setFocusReminderTime(9, 0)
+                var hour = config.reminderTimeHour
+                var minute = config.reminderTimeMinute
+                if (hour == 8 && minute == 0) {
+                    hour = 9
+                    minute = 0
+                    notificationDataStore.setFocusReminderTime(hour, minute)
                 }
                 if (config.notificationsEnabled) {
-                    updateReminders()
+                    updateReminders(hour, minute)
                 }
             } else {
                 cancelReminders()
@@ -93,9 +130,11 @@ class NotificationsViewModel(
             Timber.d("User updated reminder time: $hour:$minute")
             notificationDataStore.setFocusReminderTime(hour, minute)
             notificationDataStore.setFocusRemindersEnabled(true)
-            val config = notificationConfiguration.value
-            if (config.notificationsEnabled) {
-                updateReminders()
+            // Schedule with the time just picked, not notificationConfiguration.value -- the
+            // saved time only reaches that StateFlow after DataStore emits, so reading it back
+            // here can still return the previous time.
+            if (notificationConfiguration.value.notificationsEnabled) {
+                updateReminders(hour, minute)
             }
         }
     }
@@ -134,7 +173,7 @@ class NotificationsViewModel(
         viewModelScope.launch {
             if (!notificationRepository.hasExactAlarmPermission()) {
                 Timber.w("Cannot schedule: Permission revoked")
-                _showExactAlarmDialog.value = true
+                requestExactAlarmPermission()
                 return@launch
             }
 
@@ -143,7 +182,7 @@ class NotificationsViewModel(
                 notificationRepository.scheduleReminder(message, hour, minute)
             } catch (e: SecurityException) {
                 Timber.e(e, "Permission revoked during scheduling")
-                _showExactAlarmDialog.value = true
+                requestExactAlarmPermission()
             } catch (e: Exception) {
                 Timber.e(e, "Failed to schedule reminder")
                 throw e
@@ -151,18 +190,16 @@ class NotificationsViewModel(
         }
     }
 
-    // Syncs the system alarm with the current configuration state.
-    private fun updateReminders() {
-        val config = notificationConfiguration.value
-        if (config.notificationsEnabled && config.focusRemindersEnabled) {
-            scheduleReminder(
-                message = "Focus Reminder",
-                hour = config.reminderTimeHour,
-                minute = config.reminderTimeMinute
-            )
-        } else {
-            cancelReminders()
-        }
+    // Schedules the daily focus reminder at the given time. Callers pass the time and have
+    // already checked the on/off switches themselves: re-reading them here from
+    // notificationConfiguration.value could see values from before the caller's own write
+    // (e.g. reminders still "off" right after turning them on) and cancel the alarm instead.
+    private fun updateReminders(hour: Int, minute: Int) {
+        scheduleReminder(
+            message = "Focus Reminder",
+            hour = hour,
+            minute = minute
+        )
     }
 
     fun cancelReminders() {

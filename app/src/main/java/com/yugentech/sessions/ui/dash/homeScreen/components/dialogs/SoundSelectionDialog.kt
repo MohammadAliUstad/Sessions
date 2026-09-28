@@ -20,7 +20,8 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.LibraryBooks
-import androidx.compose.material.icons.automirrored.rounded.VolumeOff
+import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.rounded.BlurOn
 import androidx.compose.material.icons.rounded.Forest
 import androidx.compose.material.icons.rounded.LocalFireDepartment
@@ -33,6 +34,8 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.SheetValue
+import androidx.compose.material3.Switch
+import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.ToggleButton
 import androidx.compose.material3.ToggleButtonDefaults
@@ -47,6 +50,7 @@ import androidx.compose.runtime.setValue
 import kotlinx.coroutines.launch
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -66,6 +70,13 @@ fun SoundSelectionSheet(
     var selectedOption by remember {
         mutableStateOf(currentSoundId ?: BackgroundSound.NONE.id)
     }
+    // Remembers the last real sound so turning sounds back on restores it instead of a blank pick.
+    var lastSound by remember {
+        mutableStateOf(
+            currentSoundId?.takeIf { it != BackgroundSound.NONE.id } ?: BackgroundSound.RAIN.id
+        )
+    }
+    val isSoundOn = selectedOption != BackgroundSound.NONE.id
     val scope = rememberCoroutineScope()
 
     val soundOptions = listOf(
@@ -76,7 +87,6 @@ fun SoundSelectionSheet(
         SoundOption("Library", BackgroundSound.LIBRARY.id, Icons.AutoMirrored.Rounded.LibraryBooks),
         SoundOption("Riverside", BackgroundSound.RIVERSIDE.id, Icons.Rounded.Water)
     )
-    val noneOption = SoundOption("None", BackgroundSound.NONE.id, Icons.AutoMirrored.Rounded.VolumeOff)
 
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
 
@@ -127,6 +137,24 @@ fun SoundSelectionSheet(
                 )
             }
 
+            SoundSwitchRow(
+                title = "Turn On Sounds",
+                subtitle = "Enable to preview and pick a sound below",
+                checked = isSoundOn,
+                onCheckedChange = { checked ->
+                    onHaptic()
+                    if (checked) {
+                        selectedOption = lastSound
+                        onPreview(lastSound)
+                    } else {
+                        selectedOption = BackgroundSound.NONE.id
+                        onPreview(null)
+                    }
+                }
+            )
+
+            // Sounds are only pickable while sounds are on; while off the grid stays visible
+            // (dimmed) so the user can still see which sound comes back when they turn it on.
             Column(
                 modifier = Modifier.fillMaxWidth(),
                 verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.s)
@@ -139,9 +167,11 @@ fun SoundSelectionSheet(
                         rowOptions.forEach { soundOption ->
                             SoundToggleCard(
                                 soundOption = soundOption,
-                                isSelected = selectedOption == soundOption.id,
+                                isSelected = lastSound == soundOption.id,
+                                enabled = isSoundOn,
                                 onClick = {
                                     selectedOption = soundOption.id
+                                    lastSound = soundOption.id
                                     onPreview(selectedOption)
                                     onHaptic()
                                 },
@@ -149,22 +179,6 @@ fun SoundSelectionSheet(
                             )
                         }
                     }
-                }
-
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.Center
-                ) {
-                    SoundToggleCard(
-                        soundOption = noneOption,
-                        isSelected = selectedOption == noneOption.id,
-                        onClick = {
-                            selectedOption = noneOption.id
-                            onPreview(null)
-                            onHaptic()
-                        },
-                        modifier = Modifier.fillMaxWidth(0.5f)
-                    )
                 }
             }
 
@@ -184,16 +198,74 @@ fun SoundSelectionSheet(
     }
 }
 
+// Plain title/subtitle + switch row (mirrors Quill's reader sound sheet), deliberately not the
+// settings-screen SettingsSwitchItem, which carries grouped-list card styling.
+@Composable
+private fun SoundSwitchRow(
+    title: String,
+    subtitle: String,
+    checked: Boolean,
+    onCheckedChange: (Boolean) -> Unit
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(12.dp))
+            .padding(horizontal = 8.dp, vertical = 8.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        Column(
+            modifier = Modifier
+                .weight(1f)
+                .padding(end = 16.dp)
+        ) {
+            Text(
+                text = title,
+                style = MaterialTheme.typography.titleMedium,
+                color = MaterialTheme.colorScheme.onSurface
+            )
+            Spacer(modifier = Modifier.height(2.dp))
+            Text(
+                text = subtitle,
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+        }
+
+        Switch(
+            checked = checked,
+            onCheckedChange = onCheckedChange,
+            colors = SwitchDefaults.colors(
+                checkedThumbColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                checkedTrackColor = MaterialTheme.colorScheme.primaryContainer,
+                uncheckedThumbColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                uncheckedTrackColor = MaterialTheme.colorScheme.surfaceVariant,
+                checkedIconColor = MaterialTheme.colorScheme.primaryContainer,
+                uncheckedIconColor = MaterialTheme.colorScheme.surfaceVariant
+            ),
+            thumbContent = {
+                Icon(
+                    imageVector = if (checked) Icons.Filled.Check else Icons.Filled.Close,
+                    contentDescription = null,
+                    modifier = Modifier.size(SwitchDefaults.IconSize)
+                )
+            }
+        )
+    }
+}
+
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 private fun SoundToggleCard(
     soundOption: SoundOption,
     isSelected: Boolean,
+    enabled: Boolean,
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val iconScale by animateFloatAsState(
-        targetValue = if (isSelected) 1.3f else 1.0f,
+        targetValue = if (isSelected && enabled) 1.3f else 1.0f,
         animationSpec = spring(
             dampingRatio = Spring.DampingRatioMediumBouncy,
             stiffness = Spring.StiffnessLow
@@ -205,6 +277,7 @@ private fun SoundToggleCard(
         checked = isSelected,
         onCheckedChange = { onClick() },
         modifier = modifier,
+        enabled = enabled,
         shapes = ToggleButtonShapes(
             shape = ToggleButtonDefaults.squareShape,
             pressedShape = ToggleButtonDefaults.pressedShape,

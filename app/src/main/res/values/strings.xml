@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Sessions</string>
-    <string name="app_description">Sessions helps you build focus, consistency, and discipline by tracking time and promoting mindful self-growth. Every session brings you closer to your best self.</string>
+    <string name="app_description">Sessions helps you build focus and discipline, one mindful session at a time. Track your time, protect your attention, and grow a little every day.</string>
     <string name="tagline">Master Time, Master Learning</string>
     <string name="branding">Made by Yugen Tech</string>
     <string name="version">Version 5.0.0</string>

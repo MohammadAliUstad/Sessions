@@ -48,8 +48,8 @@ object AboutContent {
                 }
             ),
             AboutOption(
-                title = "More Apps",
-                subtitle = "Check out our other projects",
+                title = "More from us",
+                subtitle = "Discover other apps we've built",
                 icon = Icons.Default.Apps,
                 onClick = onMoreAppsClick
             )

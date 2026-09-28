@@ -8,7 +8,7 @@ import androidx.compose.ui.viewinterop.AndroidView
 import com.yugentech.sessions.R
 
 // Mirrors AnimatedSessionsIcon exactly — plays the AVD once when isAnimating becomes true.
-// The QuillHeroSection drives isAnimating with a coroutine delay matching the AVD duration (800ms).
+// The QuillHeroSection drives isAnimating with a coroutine delay matching the AVD duration (1900ms).
 @Composable
 fun AnimatedQuillIcon(
     isAnimating: Boolean,
