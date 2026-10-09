@@ -78,6 +78,29 @@ fun WhatsNewScreen(
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
     val layoutDirection = LocalLayoutDirection.current
 
+    val v51Updates = listOf(
+        UpdateItem(
+            "Daily Focus Time in Insights",
+            "Tap any day on the Insights heatmap to see the date and the total time you spent focusing that day.",
+            Icons.AutoMirrored.Filled.ShowChart
+        ),
+        UpdateItem(
+            "New App Icon in About",
+            "The app info card on the About screen now shows the Sessions icon on its launcher background, matching how it appears on your home screen.",
+            Icons.Default.AutoAwesome
+        ),
+        UpdateItem(
+            "Updated More From Us Screen",
+            "The More from us screen has been refreshed with a new layout and animated icons for our other apps.",
+            Icons.Default.Apps
+        ),
+        UpdateItem(
+            "Background Sound Fixes",
+            "Ambient sounds now fade and crossfade reliably when the screen is off or the app is in the background. The Ambient Sounds sheet also has a new switch to turn sounds on or off, and it remembers your last sound.",
+            Icons.AutoMirrored.Filled.VolumeUp
+        )
+    )
+
     val v5Updates = listOf(
         UpdateItem(
             "Task Templates",
@@ -179,6 +202,7 @@ fun WhatsNewScreen(
         )
     )
 
+    var v5Expanded by rememberSaveable { mutableStateOf(false) }
     var v4Expanded by rememberSaveable { mutableStateOf(false) }
 
     Scaffold(
@@ -189,7 +213,7 @@ fun WhatsNewScreen(
                     Column {
                         Text("What's New")
                         Text(
-                            text = "Current Version 5.0.0",
+                            text = "Current Version 5.1.0",
                             style = MaterialTheme.typography.bodyMedium,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
@@ -227,8 +251,34 @@ fun WhatsNewScreen(
             ),
             verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.xxs)
         ) {
-            itemsIndexed(v5Updates) { index, item ->
-                UpdateCard(item, index, v5Updates.size)
+            itemsIndexed(v51Updates) { index, item ->
+                UpdateCard(item, index, v51Updates.size)
+            }
+
+            // 5.0.0 collapsible section
+            item {
+                VersionSectionHeader(
+                    version = "5.0.0",
+                    isLatest = false,
+                    expanded = v5Expanded,
+                    onClick = { v5Expanded = !v5Expanded }
+                )
+            }
+
+            item(key = "v5_collapsible_content") {
+                AnimatedVisibility(
+                    visible = v5Expanded,
+                    enter = fadeIn(tween(AppAnimations.Durations.Standard)) + expandVertically(tween(AppAnimations.Durations.Standard)),
+                    exit = fadeOut(tween(AppAnimations.Durations.Standard)) + shrinkVertically(tween(AppAnimations.Durations.Standard))
+                ) {
+                    Column(
+                        verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.xxs)
+                    ) {
+                        v5Updates.forEachIndexed { index, item ->
+                            UpdateCard(item, index, v5Updates.size)
+                        }
+                    }
+                }
             }
 
             // 4.0.0 collapsible section

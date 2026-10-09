@@ -26,7 +26,8 @@ import com.yugentech.sessions.theme.tokens.strokes
 fun ActionButton(
     text: String,
     isLoading: Boolean,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    enabled: Boolean = !isLoading
 ) {
     Button(
         onClick = onClick,
@@ -34,7 +35,7 @@ fun ActionButton(
             .fillMaxWidth()
             .height(MaterialTheme.components.buttonMedium),
         shape = RoundedCornerShape(MaterialTheme.corners.extraLarge),
-        enabled = !isLoading,
+        enabled = enabled && !isLoading,
         colors = ButtonDefaults.buttonColors(
             containerColor = MaterialTheme.colorScheme.primary,
             contentColor = MaterialTheme.colorScheme.onPrimary,
