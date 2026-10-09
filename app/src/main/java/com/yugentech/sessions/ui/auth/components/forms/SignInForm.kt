@@ -21,6 +21,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -48,6 +49,9 @@ fun SignInForm(
 ) {
     var formState by remember { mutableStateOf(SignInFormState()) }
     val scope = rememberCoroutineScope()
+    // isLoading is shared by both sign-in paths; remember which button started it so only
+    // that one shows the spinner while the other is just disabled.
+    var isGoogleSignIn by rememberSaveable { mutableStateOf(false) }
     val context = LocalContext.current
 
     LaunchedEffect(formState.email, formState.password) {
@@ -133,8 +137,10 @@ fun SignInForm(
             Column(verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.s)) {
                 ActionButton(
                     text = stringResource(R.string.sign_in),
-                    isLoading = isLoading,
+                    isLoading = isLoading && !isGoogleSignIn,
+                    enabled = !isLoading,
                     onClick = {
+                        isGoogleSignIn = false
                         val isValid = FormValidator.validateSignInForm(
                             email = formState.email,
                             password = formState.password,
@@ -155,8 +161,12 @@ fun SignInForm(
                 )
 
                 GoogleSignInButton(
-                    isLoading = isLoading,
-                    onClick = { scope.launch { onGoogleSignIn() } }
+                    isLoading = isLoading && isGoogleSignIn,
+                    enabled = !isLoading,
+                    onClick = {
+                        isGoogleSignIn = true
+                        scope.launch { onGoogleSignIn() }
+                    }
                 )
             }
         }
