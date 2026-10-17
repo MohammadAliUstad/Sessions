@@ -1,9 +1,7 @@
 package com.yugentech.sessions.viewModels
 
-import android.view.View
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.yugentech.sessions.alerts.repository.AlertsRepository
 import com.yugentech.sessions.sessions.model.Session
 import com.yugentech.sessions.user.model.UserData
 import com.yugentech.sessions.sessions.repository.SessionsRepository
@@ -52,7 +50,6 @@ data class ProfileUiState(
 class ProfileViewModel(
     private val userRepository: UserRepository,
     private val sessionsRepository: SessionsRepository,
-    private val alertsRepository: AlertsRepository,
     private val userDataStore: UserDataStore
 ) : ViewModel() {
 
@@ -205,6 +202,17 @@ class ProfileViewModel(
         return currentStreak
     }
 
+    // Used by the name and avatar sheets on the Profile tab.
+    fun updateName(name: String) {
+        val user = uiState.value.user ?: return
+        if (name != user.name) upsertUser(user.copy(name = name))
+    }
+
+    fun updateAvatar(avatarId: Int) {
+        val user = uiState.value.user ?: return
+        if (avatarId != user.avatarId) upsertUser(user.copy(avatarId = avatarId))
+    }
+
     fun upsertUser(userData: UserData) {
         viewModelScope.launch {
             try {
@@ -233,12 +241,6 @@ class ProfileViewModel(
     fun deleteAllSessions() {
         viewModelScope.launch {
             sessionsRepository.deleteAllSessions()
-        }
-    }
-
-    fun performHaptic(view: View? = null) {
-        viewModelScope.launch {
-            alertsRepository.performHaptic(view)
         }
     }
 

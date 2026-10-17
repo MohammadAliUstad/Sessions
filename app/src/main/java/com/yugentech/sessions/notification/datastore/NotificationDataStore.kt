@@ -5,128 +5,73 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.emptyPreferences
-import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import com.yugentech.sessions.notification.model.NotificationConfig
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import timber.log.Timber
 import java.util.Locale
 
-// Manages persistent storage for notification preferences and scheduled times
+/** The saved reminder settings, the same in Quill and Sessions. */
 class NotificationDataStore(
     private val dataStore: DataStore<Preferences>
 ) {
-    // Fetches the current configuration synchronously (useful for one-off checks like boot)
-    suspend fun getInitialConfig(): NotificationConfig {
-        return try {
-            val prefs = dataStore.data.first()
-            mapPreferencesToConfig(prefs)
-        } catch (e: Exception) {
-            Timber.e(e, "Failed to read initial notification config")
-            NotificationConfig()
-        }
-    }
 
-    // Exposes configuration as a stream for reactive UI updates
     val notificationConfigFlow: Flow<NotificationConfig> = dataStore.data
         .catch {
-            Timber.e(it, "Error in notification config flow")
-            // Emit default config on error to keep UI stable
+            Timber.e(it, "Error reading notification settings")
             emit(emptyPreferences())
         }
-        .map { prefs -> mapPreferencesToConfig(prefs) }
+        .map { prefs ->
+            val (hour, minute) = parseTime(prefs[REMINDER_TIME])
+            NotificationConfig(
+                notificationsEnabled = prefs[NOTIFICATIONS_ENABLED] ?: true,
+                dailyReminderEnabled = prefs[DAILY_REMINDER_ENABLED] ?: false,
+                playfulRemindersEnabled = prefs[PLAYFUL_REMINDERS_ENABLED] ?: false,
+                reminderHour = hour,
+                reminderMinute = minute
+            )
+        }
 
-    // Toggles master switch for all notifications
     suspend fun setNotificationsEnabled(enabled: Boolean) {
-        Timber.d("Setting global notifications enabled: $enabled")
-        dataStore.edit { prefs ->
-            prefs[NOTIFICATIONS_ENABLED] = enabled
-            if (!enabled) {
-                // If global notifications are off, disable specific reminders too
-                prefs[FOCUS_REMINDERS_ENABLED] = false
-                prefs[SMART_REMINDERS_ENABLED] = false
-            }
+        dataStore.edit { it[NOTIFICATIONS_ENABLED] = enabled }
+    }
+
+    suspend fun setDailyReminderEnabled(enabled: Boolean) {
+        dataStore.edit { it[DAILY_REMINDER_ENABLED] = enabled }
+    }
+
+    suspend fun setPlayfulRemindersEnabled(enabled: Boolean) {
+        dataStore.edit { it[PLAYFUL_REMINDERS_ENABLED] = enabled }
+    }
+
+    suspend fun setReminderTime(hour: Int, minute: Int) {
+        dataStore.edit {
+            it[REMINDER_TIME] = String.format(Locale.US, "%02d:%02d", hour, minute)
         }
     }
 
-    // Toggles the specific daily reminder feature
-    suspend fun setFocusRemindersEnabled(enabled: Boolean) {
-        Timber.d("Setting focus reminders enabled: $enabled")
-        dataStore.edit { prefs ->
-            prefs[FOCUS_REMINDERS_ENABLED] = enabled
+    // The time is saved as "HH:mm", as it always has been.
+    private fun parseTime(time: String?): Pair<Int, Int> {
+        if (time == null) return DEFAULT_REMINDER_HOUR to 0
+        return try {
+            val parts = time.split(":")
+            parts[0].toInt() to parts[1].toInt()
+        } catch (e: Exception) {
+            Timber.w(e, "Failed to parse reminder time: $time")
+            DEFAULT_REMINDER_HOUR to 0
         }
     }
 
-    // Toggles the smart random reminders feature
-    suspend fun setSmartRemindersEnabled(enabled: Boolean) {
-        Timber.d("Setting smart reminders enabled: $enabled")
-        dataStore.edit { prefs ->
-            prefs[SMART_REMINDERS_ENABLED] = enabled
-        }
-    }
+    private companion object {
+        // In the "notification" DataStore, under the names they've always had, so settings carry
+        // over.
+        val NOTIFICATIONS_ENABLED = booleanPreferencesKey("notifications_enabled")
+        val DAILY_REMINDER_ENABLED = booleanPreferencesKey("focus_reminders_enabled")
+        val PLAYFUL_REMINDERS_ENABLED = booleanPreferencesKey("smart_reminders_enabled")
+        val REMINDER_TIME = stringPreferencesKey("focus_reminder_time")
 
-    // Saves the specific hour and minute for the daily reminder
-    suspend fun setFocusReminderTime(hour: Int, minute: Int) {
-        Timber.d("Saving reminder time: $hour:$minute")
-        val timeString = String.format(Locale.US, "%02d:%02d", hour, minute)
-        dataStore.edit { prefs ->
-            prefs[FOCUS_REMINDER_TIME] = timeString
-        }
-    }
-
-    // Disables reminders effectively by turning off the flag
-    suspend fun clearFocusReminderTime() {
-        dataStore.edit { prefs ->
-            prefs[FOCUS_REMINDERS_ENABLED] = false
-        }
-    }
-
-    // Helper to convert raw DataStore preferences into a clean config object
-    private fun mapPreferencesToConfig(prefs: Preferences): NotificationConfig {
-        val notificationsEnabled = prefs[NOTIFICATIONS_ENABLED] ?: true
-        val focusRemindersEnabled = prefs[FOCUS_REMINDERS_ENABLED] ?: false
-        val smartRemindersEnabled = prefs[SMART_REMINDERS_ENABLED] ?: false
-        val timeString = prefs[FOCUS_REMINDER_TIME]
-
-        val (hour, minute) = if (timeString != null) {
-            val parts = timeString.split(":")
-            try {
-                Pair(parts[0].toInt(), parts[1].toInt())
-            } catch (e: Exception) {
-                Timber.w(e, "Failed to parse time string: $timeString")
-                Pair(8, 0)
-            }
-        } else {
-            Pair(8, 0)
-        }
-
-        return NotificationConfig(
-            notificationsEnabled = notificationsEnabled,
-            focusRemindersEnabled = focusRemindersEnabled,
-            smartRemindersEnabled = smartRemindersEnabled,
-            reminderTimeHour = hour,
-            reminderTimeMinute = minute
-        )
-    }
-
-    suspend fun getLastPlayfulReminderSent(): Long {
-        return dataStore.data.first()[LAST_PLAYFUL_REMINDER_SENT] ?: 0L
-    }
-
-    suspend fun setLastPlayfulReminderSent(timestamp: Long) {
-        dataStore.edit { prefs ->
-            prefs[LAST_PLAYFUL_REMINDER_SENT] = timestamp
-        }
-    }
-
-    companion object {
-        private val NOTIFICATIONS_ENABLED = booleanPreferencesKey("notifications_enabled")
-        private val FOCUS_REMINDER_TIME = stringPreferencesKey("focus_reminder_time")
-        private val FOCUS_REMINDERS_ENABLED = booleanPreferencesKey("focus_reminders_enabled")
-        private val SMART_REMINDERS_ENABLED = booleanPreferencesKey("smart_reminders_enabled")
-        private val LAST_PLAYFUL_REMINDER_SENT = longPreferencesKey("last_playful_reminder_sent")
+        const val DEFAULT_REMINDER_HOUR = 8
     }
 }

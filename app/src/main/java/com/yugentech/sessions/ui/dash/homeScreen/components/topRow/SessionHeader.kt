@@ -2,10 +2,6 @@ package com.yugentech.sessions.ui.dash.homeScreen.components.topRow
 
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.animateColorAsState
-import androidx.compose.animation.core.tween
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -52,6 +48,7 @@ fun SessionHeader(
     isAmbientEnabled: Boolean = true,
     activeBackgroundSoundId: String? = null
 ) {
+    val fadeThrough = AppAnimations.Transitions.rememberExpressiveFadeThrough()
     val backgroundSound = remember(activeBackgroundSoundId) {
         BackgroundSound.fromId(activeBackgroundSoundId)
     }
@@ -84,10 +81,7 @@ fun SessionHeader(
             ) {
                 AnimatedContent(
                     targetState = sessionTask,
-                    transitionSpec = {
-                        fadeIn(tween(AppAnimations.Durations.Standard)) togetherWith
-                                fadeOut(tween(AppAnimations.Durations.Standard))
-                    },
+                    transitionSpec = { fadeThrough() },
                     label = "sessionTaskText",
                     modifier = Modifier.weight(1f)
                 ) { task ->
@@ -130,6 +124,8 @@ fun SessionHeader(
 fun StatusBadge(
     isRunning: Boolean
 ) {
+    val fadeThrough = AppAnimations.Transitions.rememberExpressiveFadeThrough()
+
     val containerColor by animateColorAsState(
         targetValue = if (isRunning)
             MaterialTheme.colorScheme.primaryContainer
@@ -174,10 +170,7 @@ fun StatusBadge(
 
             AnimatedContent(
                 targetState = isRunning,
-                transitionSpec = {
-                    fadeIn(tween(AppAnimations.Durations.Standard)) togetherWith
-                            fadeOut(tween(AppAnimations.Durations.Standard))
-                },
+                transitionSpec = { fadeThrough() },
                 label = "statusText"
             ) { running ->
                 Text(
@@ -231,6 +224,8 @@ fun SoundBadge(
         label = "soundBadgeContent"
     )
 
+    val fadeThrough = AppAnimations.Transitions.rememberExpressiveFadeThrough()
+
     Surface(
         color = containerColor,
         shape = RoundedCornerShape(MaterialTheme.corners.medium),
@@ -248,10 +243,7 @@ fun SoundBadge(
         ) {
             AnimatedContent(
                 targetState = isMuted,
-                transitionSpec = {
-                    fadeIn(tween(AppAnimations.Durations.Standard)) togetherWith
-                            fadeOut(tween(AppAnimations.Durations.Standard))
-                },
+                transitionSpec = { fadeThrough() },
                 label = "soundIcon"
             ) { muted ->
                 Icon(
@@ -269,10 +261,7 @@ fun SoundBadge(
 
             AnimatedContent(
                 targetState = if (isMuted) "Muted" else soundName,
-                transitionSpec = {
-                    fadeIn(tween(AppAnimations.Durations.Standard)) togetherWith
-                            fadeOut(tween(AppAnimations.Durations.Standard))
-                },
+                transitionSpec = { fadeThrough() },
                 label = "soundText"
             ) { text ->
                 Text(

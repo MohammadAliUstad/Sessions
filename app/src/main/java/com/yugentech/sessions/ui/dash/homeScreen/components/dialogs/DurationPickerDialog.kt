@@ -22,6 +22,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.window.DialogProperties
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.platform.LocalHapticFeedback
 import com.yugentech.sessions.theme.tokens.spacing
 import kotlin.math.roundToInt
 
@@ -36,6 +38,8 @@ fun DurationPickerDialog(
     onConfirm: (Int) -> Unit,
     onHaptic: () -> Unit = {}
 ) {
+    val haptic = LocalHapticFeedback.current
+
     var sliderValue by remember { mutableFloatStateOf(initialValue.toFloat()) }
     val stepsCount = ((range.last - range.first) / step) - 1
 
@@ -116,7 +120,10 @@ fun DurationPickerDialog(
         },
         confirmButton = {
             Button(
-                onClick = { onConfirm(sliderValue.roundToInt()) },
+                onClick = {
+                    haptic.performHapticFeedback(HapticFeedbackType.Confirm)
+                    onConfirm(sliderValue.roundToInt())
+                },
                 colors = ButtonDefaults.buttonColors(
                     containerColor = MaterialTheme.colorScheme.primary,
                     contentColor = MaterialTheme.colorScheme.onPrimary

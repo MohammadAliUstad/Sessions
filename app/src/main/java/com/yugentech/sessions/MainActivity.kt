@@ -59,6 +59,7 @@ class MainActivity : ComponentActivity() {
 
             val themeViewModel: ThemeViewModel = koinViewModel()
             val themeConfiguration by themeViewModel.themeConfiguration.collectAsStateWithLifecycle()
+            val hapticsEnabled by themeViewModel.hapticsEnabled.collectAsStateWithLifecycle()
 
             val darkTheme = when (themeConfiguration.themeMode) {
                 ThemeMode.LIGHT -> false
@@ -80,7 +81,8 @@ class MainActivity : ComponentActivity() {
             )
 
             SessionsTheme(
-                themeConfiguration = themeConfiguration
+                themeConfiguration = themeConfiguration,
+                hapticsEnabled = hapticsEnabled
             ) {
                 Surface(
                     modifier = Modifier.fillMaxSize(),

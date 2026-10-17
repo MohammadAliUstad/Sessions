@@ -25,6 +25,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
+import com.yugentech.sessions.theme.tokens.dimensions.AppAnimations
 import com.yugentech.sessions.theme.tokens.icons
 import com.yugentech.sessions.theme.tokens.spacing
 
@@ -35,6 +36,8 @@ fun SectionHeader(
     trailingText: String? = null,
     onDelete: (() -> Unit)? = null
 ) {
+    val fadeThrough = AppAnimations.Transitions.rememberExpressiveFadeThrough()
+
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
@@ -61,7 +64,7 @@ fun SectionHeader(
                             slideOutVertically { height -> -height } + fadeOut())
                         .using(SizeTransform(clip = false))
                 } else {
-                    fadeIn() togetherWith fadeOut()
+                    fadeThrough()
                 }
             },
             label = "title_animation",
@@ -80,9 +83,7 @@ fun SectionHeader(
         if (trailingText != null) {
             AnimatedContent(
                 targetState = trailingText,
-                transitionSpec = {
-                    fadeIn() togetherWith fadeOut()
-                },
+                transitionSpec = { fadeThrough() },
                 label = "trailing_text_animation"
             ) { targetTrailing ->
                 Text(

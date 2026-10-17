@@ -16,7 +16,9 @@ import com.yugentech.sessions.di.module.templateModule
 import com.yugentech.sessions.di.module.timerModule
 import com.yugentech.sessions.di.module.userModule
 import com.yugentech.sessions.di.module.viewModelModule
+import com.yugentech.sessions.notification.reminders.ReminderManager
 import com.yugentech.sessions.utils.ReleaseTree
+import org.koin.android.ext.android.get
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
 import org.koin.core.context.startKoin
@@ -58,5 +60,8 @@ class SessionsApp : Application(), Configuration.Provider {
                 templateModule,
             )
         }
+
+        // Books the reminders from the saved settings (the hourly nudge job and the daily alarm).
+        get<ReminderManager>().onAppStart()
     }
 }

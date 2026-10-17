@@ -10,7 +10,6 @@ import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
-import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
 import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.clickable
@@ -65,6 +64,9 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.platform.LocalHapticFeedback
+import com.yugentech.sessions.theme.tokens.dimensions.AppAnimations
 import com.yugentech.sessions.theme.tokens.icons
 import com.yugentech.sessions.theme.tokens.spacing
 import kotlin.math.roundToInt
@@ -80,6 +82,8 @@ fun SetsSettingsSheet(
     onDismiss: () -> Unit,
     onHaptic: () -> Unit
 ) {
+    val haptic = LocalHapticFeedback.current
+
     var sets by remember { mutableIntStateOf(currentSets) }
     var longBreak by remember { mutableFloatStateOf(currentLongBreak.toFloat()) }
     var setsPerLongBreak by remember {
@@ -190,7 +194,7 @@ fun SetsSettingsSheet(
                     Switch(
                         checked = longBreakEnabled,
                         onCheckedChange = {
-                            onHaptic()
+                            haptic.performHapticFeedback(if (it) HapticFeedbackType.ToggleOn else HapticFeedbackType.ToggleOff)
                             longBreakEnabled = it
                         },
                         colors = SwitchDefaults.colors(
@@ -246,7 +250,7 @@ fun SetsSettingsSheet(
                     .fillMaxWidth()
                     .height(56.dp),
                 onClick = {
-                    onHaptic()
+                    haptic.performHapticFeedback(HapticFeedbackType.Confirm)
                     onSave(sets, longBreak.roundToInt(), setsPerLongBreak, longBreakEnabled)
                     scope.launch { sheetState.hide() }
                 }
@@ -264,6 +268,7 @@ private fun LongBreakPatternControl(
     onValueChange: (Int) -> Unit,
     onHaptic: () -> Unit
 ) {
+    val fadeThrough = AppAnimations.Transitions.rememberExpressiveFadeThrough()
     val maxValue = (sets - 1).coerceAtLeast(1)
     val smSize = MaterialTheme.spacing.sm
     val xsSmallSize = MaterialTheme.spacing.xsSmall
@@ -311,9 +316,7 @@ private fun LongBreakPatternControl(
 
         AnimatedContent(
             targetState = sets,
-            transitionSpec = {
-                fadeIn(tween(durationMillis = 220)) togetherWith fadeOut(tween(durationMillis = 160))
-            },
+            transitionSpec = { fadeThrough() },
             label = "stripSetsAnimation"
         ) { targetSets ->
             Row(

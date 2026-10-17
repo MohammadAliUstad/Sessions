@@ -10,7 +10,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import com.yugentech.sessions.auth.state.AuthState
 import com.yugentech.sessions.navigation.screen.AppScreen
-import com.yugentech.sessions.notification.viewmodel.NotificationsViewModel
+import com.yugentech.sessions.notification.viewmodel.NotificationViewModel
 import com.yugentech.sessions.timer.viewmodel.TimerViewModel
 import com.yugentech.sessions.ui.dash.mainScreen.MainScreen
 import com.yugentech.sessions.ui.auth.onboardingScreen.OnboardingScreen
@@ -47,7 +47,7 @@ fun NavGraphBuilder.dashGraph(
         val currentUserId = authState.userId
 
         val homeViewModel: HomeViewModel = koinViewModel()
-        val notificationsViewModel: NotificationsViewModel = koinViewModel()
+        val notificationViewModel: NotificationViewModel = koinViewModel()
         val profileViewModel: ProfileViewModel = koinViewModel()
         val timerViewModel: TimerViewModel = koinViewModel()
         val alertsViewModel: AlertsViewModel = koinViewModel()
@@ -59,7 +59,7 @@ fun NavGraphBuilder.dashGraph(
                     Timber.i("User requested Sign Out")
                     timerViewModel.onLeave()
                     timerViewModel.updateSessionTask("")
-                    notificationsViewModel.cancelReminders()
+                    notificationViewModel.cancelReminders()
                     authViewModel.signOut()
                 },
                 onExit = {
@@ -67,16 +67,11 @@ fun NavGraphBuilder.dashGraph(
                     timerViewModel.onLeave()
                     (context as? Activity)?.finish()
                 },
-                onEditProfile = {
-                    navController.navigate(AppScreen.EditProfile.route) {
-                        launchSingleTop = true
-                    }
-                },
                 homeViewModel = homeViewModel,
                 profileViewModel = profileViewModel,
                 timerViewModel = timerViewModel,
                 alertsViewModel = alertsViewModel,
-                notificationsViewModel = notificationsViewModel,
+                notificationViewModel = notificationViewModel,
                 onAbout = {
                     navController.navigate(AppScreen.About.route) {
                         launchSingleTop = true
@@ -84,6 +79,11 @@ fun NavGraphBuilder.dashGraph(
                 },
                 onWhatsNew = {
                     navController.navigate(AppScreen.WhatsNew.route) {
+                        launchSingleTop = true
+                    }
+                },
+                onMoreApps = {
+                    navController.navigate(AppScreen.MoreApps.route) {
                         launchSingleTop = true
                     }
                 },

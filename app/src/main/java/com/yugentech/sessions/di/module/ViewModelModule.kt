@@ -4,7 +4,7 @@ import com.yugentech.sessions.viewModels.HomeViewModel
 import com.yugentech.sessions.auth.viewmodel.AuthViewModel
 import com.yugentech.sessions.viewModels.ProfileViewModel
 import com.yugentech.sessions.alerts.viewmodel.AlertsViewModel
-import com.yugentech.sessions.notification.viewmodel.NotificationsViewModel
+import com.yugentech.sessions.notification.viewmodel.NotificationViewModel
 import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
 import timber.log.Timber
@@ -18,7 +18,8 @@ val viewModelModule = module {
         HomeViewModel(
             sessionsRepository = get(),
             userRepository = get(),
-            userDataStore = get()
+            userDataStore = get(),
+            templateRepository = get()
         )
     }
 
@@ -28,7 +29,6 @@ val viewModelModule = module {
         ProfileViewModel(
             userRepository = get(),
             sessionsRepository = get(),
-            alertsRepository = get(),
             userDataStore = get()
         )
     }
@@ -40,7 +40,8 @@ val viewModelModule = module {
             authRepository = get(),
             userRepository = get(),
             syncDataStore = get(),
-            userDataStore = get()
+            userDataStore = get(),
+            templateRepository = get()
         )
     }
 
@@ -54,8 +55,8 @@ val viewModelModule = module {
 
     // ViewModel for the notification settings screen
     viewModel {
-        NotificationsViewModel(
-            notificationRepository = get(),
+        NotificationViewModel(
+            reminders = get(),
             notificationDataStore = get()
         )
     }

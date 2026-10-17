@@ -1,5 +1,15 @@
 package com.yugentech.sessions.ui.config.insightsScreen.components.heatMap
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.MutableTransitionState
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.scaleOut
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -9,6 +19,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.TransformOrigin
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.IntOffset
@@ -28,13 +39,32 @@ import java.time.format.DateTimeFormatter
 /**
  * Floating card shown above a tapped heatmap cell. Must be placed inside the cell's
  * layout so the popup anchors to it.
+ *
+ * Always composed with the cell: [visible] animates it in (fading and growing up from its bottom
+ * edge, toward the cell) and out again, and the popup leaves only once it has finished hiding.
  */
 @Composable
-fun HeatmapDayTooltip(day: HeatmapDay) {
+fun HeatmapDayTooltip(day: HeatmapDay, visible: Boolean, instantDismissals: Int = 0) {
     val gap = with(LocalDensity.current) { 6.dp.roundToPx() }
     val positionProvider = remember(gap) { AboveAnchorPositionProvider(gap) }
+    // A fresh, hidden state after each instant dismissal (a scroll, leaving the screen): the chip
+    // goes at once instead of animating out, and the next tap still animates it in.
+    val visibility = remember(instantDismissals) { MutableTransitionState(false) }
+    visibility.targetState = visible
+
+    // The popup stays while the card is on screen or still animating out.
+    if (!visibility.currentState && !visibility.targetState) return
 
     Popup(popupPositionProvider = positionProvider) {
+        AnimatedVisibility(
+            visibleState = visibility,
+            enter = fadeIn(tween(160)) +
+                scaleIn(tween(200, easing = FastOutSlowInEasing), initialScale = 0.85f, transformOrigin = TransformOrigin(0.5f, 1f)) +
+                slideInVertically(tween(200, easing = FastOutSlowInEasing)) { it / 6 },
+            exit = fadeOut(tween(120)) +
+                scaleOut(tween(150), targetScale = 0.9f, transformOrigin = TransformOrigin(0.5f, 1f)) +
+                slideOutVertically(tween(150)) { it / 8 }
+        ) {
         Surface(
             shape = RoundedCornerShape(MaterialTheme.corners.medium),
             color = MaterialTheme.colorScheme.inverseSurface,
@@ -57,6 +87,7 @@ fun HeatmapDayTooltip(day: HeatmapDay) {
                     fontWeight = FontWeight.Bold
                 )
             }
+        }
         }
     }
 }

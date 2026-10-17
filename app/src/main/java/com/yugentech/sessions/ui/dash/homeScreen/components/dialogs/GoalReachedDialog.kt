@@ -30,6 +30,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.window.DialogProperties
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.platform.LocalHapticFeedback
 import com.yugentech.sessions.theme.tokens.components
 import com.yugentech.sessions.theme.tokens.corners
 import com.yugentech.sessions.theme.tokens.spacing
@@ -42,6 +44,8 @@ import kotlin.time.Duration.Companion.milliseconds
 fun GoalReachedDialog(
     onDismiss: () -> Unit
 ) {
+    val haptic = LocalHapticFeedback.current
+
     var isAnimating by remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
@@ -112,7 +116,10 @@ fun GoalReachedDialog(
                 Spacer(modifier = Modifier.height(MaterialTheme.spacing.s))
 
                 Button(
-                    onClick = onDismiss,
+                    onClick = {
+                        haptic.performHapticFeedback(HapticFeedbackType.Confirm)
+                        onDismiss()
+                    },
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(MaterialTheme.components.buttonLarge),

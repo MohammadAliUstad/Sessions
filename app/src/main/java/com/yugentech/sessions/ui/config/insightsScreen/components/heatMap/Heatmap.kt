@@ -25,6 +25,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -32,7 +33,11 @@ import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.layout.positionInWindow
 import androidx.compose.ui.text.font.FontWeight
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.LifecycleEventEffect
 import com.yugentech.sessions.theme.tokens.corners
 import com.yugentech.sessions.theme.tokens.icons
 import com.yugentech.sessions.theme.tokens.spacing
@@ -53,16 +58,34 @@ fun Heatmap(
     val listState = rememberLazyListState()
     var selectedDate by remember { mutableStateOf<LocalDate?>(null) }
 
+    // Scrolling (the heatmap itself or the whole page) and leaving the screen remove the time chip
+    // at once. It's a popup, so if it faded out it would hang in place while the content moved
+    // away under it. Each such dismissal bumps this, which resets the chip without animating;
+    // tapping the day again or the timeout still fade it out.
+    var instantDismissals by remember { mutableIntStateOf(0) }
+    val dismissNow = {
+        if (selectedDate != null) {
+            instantDismissals++
+            selectedDate = null
+        }
+    }
+
     LaunchedEffect(Unit) {
         listState.scrollToItem(heatmapWeeks.size)
     }
 
-    // Hide the tooltip once the heatmap is scrolled
+    // The heatmap scrolled sideways.
     LaunchedEffect(listState) {
         snapshotFlow { listState.isScrollInProgress }
             .filter { it }
-            .collect { selectedDate = null }
+            .collect { dismissNow() }
     }
+
+    // Leaving the screen: the screen pauses as soon as the back navigation starts.
+    LifecycleEventEffect(Lifecycle.Event.ON_PAUSE) { dismissNow() }
+
+    // The page scrolled (or its top bar collapsed): the card moved on screen.
+    val lastCardY = remember { floatArrayOf(Float.NaN) }
 
     // Auto-dismiss the tooltip after a short delay
     LaunchedEffect(selectedDate) {
@@ -73,7 +96,13 @@ fun Heatmap(
     }
 
     Card(
-        modifier = modifier.fillMaxWidth(),
+        modifier = modifier
+            .fillMaxWidth()
+            .onGloballyPositioned { coordinates ->
+                val y = coordinates.positionInWindow().y
+                if (!lastCardY[0].isNaN() && y != lastCardY[0]) dismissNow()
+                lastCardY[0] = y
+            },
         shape = RoundedCornerShape(MaterialTheme.corners.large),
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surfaceContainerHigh
@@ -180,6 +209,7 @@ fun Heatmap(
                             HeatmapWeekColumn(
                                 days = week.days,
                                 selectedDate = selectedDate,
+                                instantDismissals = instantDismissals,
                                 onDayClick = { day ->
                                     selectedDate = if (selectedDate == day.date) null else day.date
                                 }

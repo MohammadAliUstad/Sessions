@@ -25,8 +25,10 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.Login
 import androidx.compose.material.icons.automirrored.filled.ShowChart
 import androidx.compose.material.icons.automirrored.filled.VolumeUp
+import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Apps
 import androidx.compose.material.icons.filled.AutoAwesome
 import androidx.compose.material.icons.filled.Bookmark
@@ -39,6 +41,7 @@ import androidx.compose.material.icons.filled.History
 import androidx.compose.material.icons.filled.NotificationsActive
 import androidx.compose.material.icons.filled.SmartDisplay
 import androidx.compose.material.icons.filled.SwipeLeft
+import androidx.compose.material.icons.filled.Sync
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.filled.Tune
 import androidx.compose.material3.Card
@@ -80,8 +83,33 @@ fun WhatsNewScreen(
 
     val v51Updates = listOf(
         UpdateItem(
+            "Templates Sync to Your Account",
+            "Your task templates are now saved to your account. Reinstall the app or sign in on another phone and they come right back.",
+            Icons.Default.Sync
+        ),
+        UpdateItem(
+            "Redesigned Sign In & Sign Up",
+            "Cleaner sign in and sign up screens with simpler fields, a smoother password toggle, and Google sign in at the bottom.",
+            Icons.AutoMirrored.Filled.Login
+        ),
+        UpdateItem(
+            "A New Profile Card",
+            "Your profile card is more compact, with a bigger avatar. Tap the avatar to pick a new one from a sheet, or the pencil to change your name, right from the Profile tab.",
+            Icons.Default.AccountCircle
+        ),
+        UpdateItem(
+            "Refreshed Onboarding",
+            "The welcome screens have a new look, with smoother animations as you swipe through them.",
+            Icons.Default.Celebration
+        ),
+        UpdateItem(
+            "Gentler Reminders",
+            "Your daily focus reminder now shows when it rings, like \"Every evening at 7:00 PM\". Smart Reminders are now Playful Reminders: quieter, never more than one a day, with a few kind words if you've been away for a while.",
+            Icons.Default.NotificationsActive
+        ),
+        UpdateItem(
             "Daily Focus Time in Insights",
-            "Tap any day on the Insights heatmap to see the date and the total time you spent focusing that day.",
+            "Tap any day on the Insights heatmap to see the date and the total time you spent focusing that day. The tooltip now animates in and closes as soon as you scroll.",
             Icons.AutoMirrored.Filled.ShowChart
         ),
         UpdateItem(
@@ -90,8 +118,8 @@ fun WhatsNewScreen(
             Icons.Default.AutoAwesome
         ),
         UpdateItem(
-            "Updated More From Us Screen",
-            "The More from us screen has been refreshed with a new layout and animated icons for our other apps.",
+            "More From Us in About",
+            "A new More from us row in the About section shows our other apps, Quill, Hajime and Ryori, in a quick sheet with animated icons and a link to each on the Play Store. The full More from us screen has a refreshed layout too.",
             Icons.Default.Apps
         ),
         UpdateItem(

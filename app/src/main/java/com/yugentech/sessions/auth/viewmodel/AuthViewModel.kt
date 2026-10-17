@@ -9,6 +9,7 @@ import com.yugentech.sessions.auth.repository.AuthRepository
 import com.yugentech.sessions.auth.result.AuthResult
 import com.yugentech.sessions.auth.state.AuthState
 import com.yugentech.sessions.sessions.datastore.SyncDataStore
+import com.yugentech.sessions.templates.repository.TemplateRepository
 import com.yugentech.sessions.ui.auth.state.ForgotPasswordState
 import com.yugentech.sessions.user.datastore.UserDataStore
 import com.yugentech.sessions.user.model.UserData
@@ -29,7 +30,8 @@ class AuthViewModel(
     private val authRepository: AuthRepository,
     private val userRepository: UserRepository,
     private val syncDataStore: SyncDataStore,
-    private val userDataStore: UserDataStore
+    private val userDataStore: UserDataStore,
+    private val templateRepository: TemplateRepository
 ) : ViewModel() {
 
     private val _authState = MutableStateFlow(AuthState(isInitializing = true))
@@ -158,6 +160,9 @@ class AuthViewModel(
         Timber.i("User requested sign out")
         _authState.update { it.copy(isLoading = true) }
         viewModelScope.launch {
+            // The templates table isn't per account, so empty it before the next account signs
+            // in (the cloud copy stays and comes back at this account's next sign-in).
+            templateRepository.clearLocal()
             authRepository.signOut()
             syncDataStore.clearSyncFlags()
         }

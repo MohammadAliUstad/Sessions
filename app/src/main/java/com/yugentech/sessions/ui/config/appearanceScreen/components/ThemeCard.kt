@@ -24,6 +24,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import com.yugentech.sessions.R
@@ -37,9 +39,14 @@ fun ThemeCard(
     isSelected: Boolean,
     onClick: () -> Unit
 ) {
+    val haptic = LocalHapticFeedback.current
+
     ToggleButton(
         checked = isSelected,
-        onCheckedChange = { onClick() },
+        onCheckedChange = {
+            haptic.performHapticFeedback(HapticFeedbackType.GestureEnd)
+            onClick()
+        },
         modifier = Modifier.fillMaxWidth(),
         shapes = ToggleButtonShapes(
             shape = ToggleButtonDefaults.squareShape,

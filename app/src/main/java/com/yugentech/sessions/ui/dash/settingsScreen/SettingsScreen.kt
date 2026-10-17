@@ -17,22 +17,25 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.platform.LocalHapticFeedback
 import com.yugentech.sessions.R
-import com.yugentech.sessions.notification.viewmodel.NotificationsViewModel
+import com.yugentech.sessions.notification.viewmodel.NotificationViewModel
 import com.yugentech.sessions.theme.tokens.spacing
 import com.yugentech.sessions.ui.dash.homeScreen.components.ExitConfirmationDialog
 import com.yugentech.sessions.ui.dash.homeScreen.components.LogoutConfirmationDialog
 import com.yugentech.sessions.ui.dash.mainScreen.components.SectionHeader
 import com.yugentech.sessions.alerts.viewmodel.AlertsViewModel
 import com.yugentech.sessions.theme.tokens.components
+import com.yugentech.sessions.ui.config.aboutScreen.MoreFromUsSheet
 import com.yugentech.sessions.ui.dash.settingsScreen.components.AlarmPermissionDialog
 import com.yugentech.sessions.ui.dash.settingsScreen.components.SettingsListItem
 import com.yugentech.sessions.ui.dash.settingsScreen.components.SettingsSwitchItem
@@ -41,31 +44,33 @@ import com.yugentech.sessions.ui.dash.settingsScreen.components.TimePickerDialog
 @Composable
 fun SettingsScreen(
     alertsViewModel: AlertsViewModel,
-    notificationsViewModel: NotificationsViewModel,
+    notificationViewModel: NotificationViewModel,
     onSignOut: () -> Unit,
     onExit: () -> Unit,
     onAbout: () -> Unit,
     onWhatsNew: () -> Unit,
+    onMoreApps: () -> Unit,
     onAppearance: () -> Unit
 ) {
     val alertsConfiguration by alertsViewModel.alertConfigurations.collectAsState()
-    val notificationConfiguration by notificationsViewModel.notificationConfiguration.collectAsState()
-    val showPermissionDialog by notificationsViewModel.showExactAlarmDialog.collectAsStateWithLifecycle()
+    val notificationConfig by notificationViewModel.notificationConfig.collectAsState()
+    val showPermissionDialog by notificationViewModel.showExactAlarmDialog.collectAsStateWithLifecycle()
 
     var showTimePickerDialog by remember { mutableStateOf(false) }
 
     // Returning from the exact-alarm settings screen with the permission granted picks up
     // where the user left off (opens the time picker) instead of needing another tap.
     LifecycleEventEffect(Lifecycle.Event.ON_RESUME) {
-        if (notificationsViewModel.onReturnedFromSettings()) {
+        if (notificationViewModel.onReturnedFromSettings()) {
             showTimePickerDialog = true
         }
     }
 
     var showLogoutDialog by remember { mutableStateOf(false) }
     var showExitDialog by remember { mutableStateOf(false) }
+    var showMoreApps by rememberSaveable { mutableStateOf(false) }
 
-    val view = LocalView.current
+    val haptic = LocalHapticFeedback.current
     val context = LocalContext.current
 
     LazyColumn(
@@ -87,35 +92,35 @@ fun SettingsScreen(
             SettingsSwitchItem(
                 title = "Enable Notifications",
                 subtitle = "Allow Sessions to send you notifications",
-                checked = notificationConfiguration.notificationsEnabled,
+                checked = notificationConfig.notificationsEnabled,
                 index = 0,
                 totalCount = 3,
                 onCheckedChange = { enabled ->
-                    notificationsViewModel.setNotificationsEnabled(enabled)
-                    alertsViewModel.performHaptic(view)
+                    notificationViewModel.setNotificationsEnabled(enabled)
+                    haptic.performHapticFeedback(if (enabled) HapticFeedbackType.ToggleOn else HapticFeedbackType.ToggleOff)
                 }
             )
         }
         item {
             SettingsSwitchItem(
-                title = "Focus Reminders",
-                subtitle = notificationsViewModel.formatReminderTime(),
-                checked = notificationConfiguration.focusRemindersEnabled,
-                enabled = notificationConfiguration.notificationsEnabled,
+                title = "Daily Focus Reminder",
+                subtitle = notificationViewModel.formatReminderTime(),
+                checked = notificationConfig.dailyReminderEnabled,
+                enabled = notificationConfig.notificationsEnabled,
                 index = 1,
                 totalCount = 3,
                 onCheckedChange = { isChecked ->
                     if (isChecked) {
-                        if (notificationsViewModel.canEnableReminders()) {
+                        if (notificationViewModel.canEnableReminders()) {
                             showTimePickerDialog = true
                         }
                     } else {
-                        notificationsViewModel.setFocusRemindersEnabled(false)
-                        alertsViewModel.performHaptic(view)
+                        notificationViewModel.setDailyReminderEnabled(false)
+                        haptic.performHapticFeedback(HapticFeedbackType.ToggleOff)
                     }
                 },
                 onClick = {
-                    if (notificationConfiguration.notificationsEnabled && notificationsViewModel.canEnableReminders()) {
+                    if (notificationConfig.notificationsEnabled && notificationViewModel.canEnableReminders()) {
                         showTimePickerDialog = true
                     }
                 }
@@ -123,15 +128,15 @@ fun SettingsScreen(
         }
         item {
             SettingsSwitchItem(
-                title = "Smart Reminders",
-                subtitle = "Playful nudges to help you stay consistent",
-                checked = notificationConfiguration.smartRemindersEnabled,
-                enabled = notificationConfiguration.notificationsEnabled,
+                title = "Playful Reminders",
+                subtitle = "Friendly nudges now and then",
+                checked = notificationConfig.playfulRemindersEnabled,
+                enabled = notificationConfig.notificationsEnabled,
                 index = 2,
                 totalCount = 3,
                 onCheckedChange = { enabled ->
-                    notificationsViewModel.setSmartRemindersEnabled(enabled)
-                    alertsViewModel.performHaptic(view)
+                    notificationViewModel.setPlayfulRemindersEnabled(enabled)
+                    haptic.performHapticFeedback(if (enabled) HapticFeedbackType.ToggleOn else HapticFeedbackType.ToggleOff)
                 }
             )
         }
@@ -151,7 +156,9 @@ fun SettingsScreen(
                 totalCount = 2,
                 onCheckedChange = {
                     alertsViewModel.setSoundEnabled(!alertsConfiguration.soundEnabled)
-                    alertsViewModel.performHaptic(view)
+                    haptic.performHapticFeedback(
+                        if (!alertsConfiguration.soundEnabled) HapticFeedbackType.ToggleOn else HapticFeedbackType.ToggleOff
+                    )
                 }
             )
         }
@@ -164,7 +171,9 @@ fun SettingsScreen(
                 totalCount = 2,
                 onCheckedChange = {
                     alertsViewModel.setHapticsEnabled(!alertsConfiguration.hapticsEnabled)
-                    alertsViewModel.performHaptic(view)
+                    haptic.performHapticFeedback(
+                        if (!alertsConfiguration.hapticsEnabled) HapticFeedbackType.ToggleOn else HapticFeedbackType.ToggleOff
+                    )
                 }
             )
         }
@@ -196,7 +205,7 @@ fun SettingsScreen(
                 title = "About Sessions",
                 subtitle = stringResource(R.string.version),
                 index = 0,
-                totalCount = 2,
+                totalCount = 3,
                 onClick = onAbout
             )
         }
@@ -205,8 +214,17 @@ fun SettingsScreen(
                 title = "What's New",
                 subtitle = "See the latest changes",
                 index = 1,
-                totalCount = 2,
+                totalCount = 3,
                 onClick = onWhatsNew
+            )
+        }
+        item {
+            SettingsListItem(
+                title = "More from us",
+                subtitle = "Explore our other apps",
+                index = 2,
+                totalCount = 3,
+                onClick = { showMoreApps = true }
             )
         }
 
@@ -238,11 +256,10 @@ fun SettingsScreen(
 
     if (showTimePickerDialog) {
         TimePickerDialog(
-            initialHour = notificationConfiguration.reminderTimeHour,
-            initialMinute = notificationConfiguration.reminderTimeMinute,
+            initialHour = notificationConfig.reminderHour,
+            initialMinute = notificationConfig.reminderMinute,
             onTimeSelected = { hour, minute ->
-                notificationsViewModel.setReminderTime(hour, minute)
-                alertsViewModel.performHaptic(view)
+                notificationViewModel.setReminderTime(hour, minute)
                 showTimePickerDialog = false
             },
             onDismiss = { showTimePickerDialog = false }
@@ -256,6 +273,13 @@ fun SettingsScreen(
         )
     }
 
+    if (showMoreApps) {
+        MoreFromUsSheet(
+            onDismiss = { showMoreApps = false },
+            onSeeAll = onMoreApps
+        )
+    }
+
     if (showExitDialog) {
         ExitConfirmationDialog(
             onConfirm = onExit,
@@ -266,8 +290,8 @@ fun SettingsScreen(
     if (showPermissionDialog) {
         AlarmPermissionDialog(
             context = context,
-            onDismiss = { notificationsViewModel.cancelPermissionRequest() },
-            onConfirm = { notificationsViewModel.dismissDialog() }
+            onDismiss = { notificationViewModel.cancelPermissionRequest() },
+            onConfirm = { notificationViewModel.dismissPermissionDialog() }
         )
     }
 }

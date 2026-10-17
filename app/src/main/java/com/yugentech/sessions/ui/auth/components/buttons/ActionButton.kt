@@ -1,10 +1,6 @@
 package com.yugentech.sessions.ui.auth.components.buttons
 
 import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.core.tween
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
@@ -29,6 +25,8 @@ fun ActionButton(
     onClick: () -> Unit,
     enabled: Boolean = !isLoading
 ) {
+    val fadeThrough = AppAnimations.Transitions.rememberExpressiveFadeThrough()
+
     Button(
         onClick = onClick,
         modifier = Modifier
@@ -45,13 +43,7 @@ fun ActionButton(
     ) {
         AnimatedContent(
             targetState = isLoading,
-            transitionSpec = {
-                fadeIn(
-                    tween(AppAnimations.Durations.Standard)
-                ) togetherWith fadeOut(
-                    tween(AppAnimations.Durations.Standard)
-                )
-            },
+            transitionSpec = { fadeThrough() },
             label = "loading"
         ) { loading ->
             if (loading) {

@@ -2,6 +2,7 @@ package com.yugentech.sessions.theme.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.yugentech.sessions.alerts.repository.AlertsRepository
 import com.yugentech.sessions.theme.AppFont
 import com.yugentech.sessions.theme.config.ColorTheme
 import com.yugentech.sessions.theme.config.ThemeConfiguration
@@ -16,8 +17,18 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
 class ThemeViewModel(
-    private val repository: ThemeRepository
+    private val repository: ThemeRepository,
+    alertsRepository: AlertsRepository
 ) : ViewModel() {
+
+    // The "Haptic Feedback" switch in Settings; SessionsTheme gates all UI haptics on it.
+    val hapticsEnabled: StateFlow<Boolean> = alertsRepository.alertConfiguration
+        .map { it.hapticsEnabled }
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5000),
+            initialValue = alertsRepository.alertConfiguration.value.hapticsEnabled
+        )
 
     // Internal mutable state for the current theme configuration
     private val _themeConfiguration = MutableStateFlow(

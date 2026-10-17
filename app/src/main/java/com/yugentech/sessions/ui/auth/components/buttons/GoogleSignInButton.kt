@@ -1,10 +1,6 @@
 package com.yugentech.sessions.ui.auth.components.buttons
 
 import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.core.tween
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -22,6 +18,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -41,6 +38,8 @@ fun GoogleSignInButton(
     onClick: () -> Unit,
     enabled: Boolean = !isLoading
 ) {
+    val fadeThrough = AppAnimations.Transitions.rememberExpressiveFadeThrough()
+
     Surface(
         onClick = onClick,
         enabled = enabled && !isLoading,
@@ -54,13 +53,7 @@ fun GoogleSignInButton(
         Box(contentAlignment = Alignment.Center) {
             AnimatedContent(
                 targetState = isLoading,
-                transitionSpec = {
-                    fadeIn(
-                        tween(AppAnimations.Durations.Standard)
-                    ) togetherWith fadeOut(
-                        tween(AppAnimations.Durations.Standard)
-                    )
-                },
+                transitionSpec = { fadeThrough() },
                 label = "googleLoading"
             ) { loading ->
                 if (loading) {
@@ -77,7 +70,8 @@ fun GoogleSignInButton(
                         Icon(
                             painter = painterResource(R.drawable.ic_google_icon),
                             contentDescription = null,
-                            tint = MaterialTheme.colorScheme.onSurface,
+                            // Google's own four colours, untinted.
+                            tint = Color.Unspecified,
                             modifier = Modifier.size(MaterialTheme.icons.mediumSmall)
                         )
 

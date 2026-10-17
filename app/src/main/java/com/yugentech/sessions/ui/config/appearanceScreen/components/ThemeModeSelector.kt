@@ -24,6 +24,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.yugentech.sessions.R
@@ -40,6 +42,7 @@ fun ThemeModeSelector(
     themeViewModel: ThemeViewModel = koinViewModel()
 ) {
     val themeConfig by themeViewModel.themeConfiguration.collectAsStateWithLifecycle()
+    val haptic = LocalHapticFeedback.current
 
     Column(modifier = modifier.fillMaxWidth()) {
         SectionHeader(
@@ -81,6 +84,7 @@ fun ThemeModeSelector(
                     index = index,
                     totalCount = modes.size,
                     onClick = {
+                        haptic.performHapticFeedback(HapticFeedbackType.GestureEnd)
                         val newConfig = themeConfig.copy(themeMode = themeMode)
                         themeViewModel.updateTheme(newConfig)
                     }

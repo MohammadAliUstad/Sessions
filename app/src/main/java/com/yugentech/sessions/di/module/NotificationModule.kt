@@ -5,7 +5,8 @@ import com.yugentech.sessions.notification.datastore.NotificationDataStore
 import com.yugentech.sessions.notification.active.ActiveNotificationManager
 import com.yugentech.sessions.notification.repository.NotificationRepository
 import com.yugentech.sessions.notification.repository.NotificationRepositoryImpl
-import com.yugentech.sessions.notification.scheduled.ScheduledNotificationManager
+import com.yugentech.sessions.notification.reminders.NotificationScheduler
+import com.yugentech.sessions.notification.reminders.ReminderManager
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
@@ -36,19 +37,28 @@ val notificationModule = module {
         )
     }
 
-    // Manages scheduling and cancelling of future alarm reminders
+    // Books the daily reminder and the nudges as alarms
     single {
-        ScheduledNotificationManager(
+        NotificationScheduler(
             context = androidContext()
         )
     }
 
-    // Repository that coordinates both active timer notifications and scheduled reminders
+    // The reminders, set up the same way as in Quill. SessionsApp calls onAppStart() at every
+    // start, which books them from the saved settings.
+    single {
+        ReminderManager(
+            context = androidContext(),
+            scheduler = get(),
+            notificationDataStore = get(),
+            sessionsRepository = get()
+        )
+    }
+
+    // Repository for the active timer notification
     single<NotificationRepository> {
         NotificationRepositoryImpl(
-            context = androidContext(),
-            activeNotificationManager = get(),
-            scheduledNotificationManager = get()
+            activeNotificationManager = get()
         )
     }
 
