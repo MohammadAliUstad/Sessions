@@ -39,18 +39,17 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.platform.LocalHapticFeedback
 import com.yugentech.sessions.navigation.screen.BottomBarScreen
 import com.yugentech.sessions.theme.tokens.icons
 import com.yugentech.sessions.theme.tokens.spacing
 import com.yugentech.sessions.viewModels.ProfileViewModel
 import com.yugentech.sessions.viewModels.SessionSortOption
-import com.yugentech.sessions.alerts.viewmodel.AlertsViewModel
-import org.koin.androidx.compose.koinViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -59,12 +58,11 @@ fun TopAppBar(
     onLogout: () -> Unit,
     onSettings: () -> Unit = {},
     profileViewModel: ProfileViewModel? = null,
-    alertsViewModel: AlertsViewModel = koinViewModel(),
     onDeleteAllSessions: (() -> Unit)? = null,
     scrollBehavior: TopAppBarScrollBehavior? = null
 ) {
     var showSortMenu by remember { mutableStateOf(false) }
-    val view = LocalView.current
+    val haptic = LocalHapticFeedback.current
 
     val idleMessage = rememberSaveable {
         listOf(
@@ -118,7 +116,7 @@ fun TopAppBar(
                 if (onDeleteAllSessions != null && uiState.sessions.isNotEmpty()) {
                     IconButton(onClick = {
                         onDeleteAllSessions()
-                        alertsViewModel.performHaptic(view)
+                        haptic.performHapticFeedback(HapticFeedbackType.GestureEnd)
                     }) {
                         Icon(
                             imageVector = Icons.Rounded.FolderDelete,
@@ -130,7 +128,7 @@ fun TopAppBar(
 
                 IconButton(onClick = { 
                     showSortMenu = true 
-                    alertsViewModel.performHaptic(view)
+                    haptic.performHapticFeedback(HapticFeedbackType.GestureEnd)
                 }) {
                     Icon(
                         imageVector = Icons.AutoMirrored.Filled.Sort,
@@ -159,7 +157,7 @@ fun TopAppBar(
                             },
                             onClick = {
                                 profileViewModel.updateSortOption(option)
-                                alertsViewModel.performHaptic(view)
+                                haptic.performHapticFeedback(HapticFeedbackType.GestureEnd)
                                 showSortMenu = false
                             },
                             trailingIcon = {

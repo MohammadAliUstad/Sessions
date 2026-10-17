@@ -37,10 +37,8 @@ class NotificationService(
 
     companion object {
         const val ACTIVE_CHANNEL_ID = "active_session_channel"
-        const val REMINDER_CHANNEL_ID = "reminder_channel"
 
         const val ACTIVE_NOTIFICATION_ID = 1001
-        const val REMINDER_NOTIFICATION_ID = 1002
 
         private const val RC_OPEN_APP = 0
         private const val RC_PAUSE_RESUME = 1
@@ -54,8 +52,8 @@ class NotificationService(
 
     fun createNotificationChannels() {
         Timber.d("Creating notification channels")
+        // The reminders' channels are made by ReminderReceiver, as in Quill.
         notificationManager.createNotificationChannel(buildActiveChannel())
-        notificationManager.createNotificationChannel(buildReminderChannel())
     }
 
     private fun buildActiveChannel(): NotificationChannel =
@@ -67,15 +65,6 @@ class NotificationService(
             description = "Shows when a study session is active"
             setSound(null, null)
             enableVibration(false)
-        }
-
-    private fun buildReminderChannel(): NotificationChannel =
-        NotificationChannel(
-            REMINDER_CHANNEL_ID,
-            "Reminder",
-            NotificationManager.IMPORTANCE_HIGH
-        ).apply {
-            description = "Reminds you to start or resume a study session"
         }
 
     // endregion
@@ -109,7 +98,6 @@ class NotificationService(
 
         when (notification.type) {
             NotificationType.ACTIVE -> applyActiveStyle(builder, notification)
-            NotificationType.SCHEDULED -> applyScheduledStyle(builder, notification)
         }
 
         return builder.build()
@@ -121,7 +109,6 @@ class NotificationService(
 
     private fun baseBuilder(notification: Notification): NotificationCompat.Builder {
         val channelId = when (notification.type) {
-            NotificationType.SCHEDULED -> REMINDER_CHANNEL_ID
             NotificationType.ACTIVE -> ACTIVE_CHANNEL_ID
         }
 
@@ -162,13 +149,6 @@ class NotificationService(
         } else {
             attachBasicProgress(builder, notification, timerState)
         }
-    }
-
-    private fun applyScheduledStyle(builder: NotificationCompat.Builder, notification: Notification) {
-        builder
-            .setContentText(notification.message)
-            .setPriority(NotificationCompat.PRIORITY_HIGH)
-            .setDefaults(NotificationCompat.DEFAULT_ALL)
     }
 
     // endregion

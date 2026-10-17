@@ -27,7 +27,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.yugentech.sessions.alerts.viewmodel.AlertsViewModel
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.platform.LocalHapticFeedback
 import com.yugentech.sessions.timer.viewmodel.TimerViewModel
 import com.yugentech.sessions.ui.dash.homeScreen.components.FinishConfirmationDialog
 import com.yugentech.sessions.ui.dash.homeScreen.components.bottomRow.SessionControlBar
@@ -54,7 +55,6 @@ fun HomeScreen(
     homeViewModel: HomeViewModel,
     timerViewModel: TimerViewModel,
     userId: String,
-    alertsViewModel: AlertsViewModel = koinViewModel(),
     templateViewModel: TemplateViewModel = koinViewModel()
 ) {
     val timerState by timerViewModel.timerState.collectAsStateWithLifecycle()
@@ -69,6 +69,7 @@ fun HomeScreen(
     val isSessionActive = !timerState.isIdle
 
     val view = LocalView.current
+    val haptic = LocalHapticFeedback.current
     val context = view.context
     val scrollState = rememberScrollState()
     var activeDialog by remember { mutableStateOf(ActiveDialog.None) }
@@ -104,11 +105,11 @@ fun HomeScreen(
                         sessionTask = config.sessionTask,
                         onTaskClick = {
                             activeDialog = ActiveDialog.TaskSelection
-                            alertsViewModel.performHaptic(view)
+                            haptic.performHapticFeedback(HapticFeedbackType.GestureEnd)
                         },
                         onSoundBadgeClick = {
                             timerViewModel.toggleAmbientSound()
-                            alertsViewModel.performHaptic(view)
+                            haptic.performHapticFeedback(HapticFeedbackType.GestureEnd)
                         },
                         isAmbientEnabled = config.isAmbientEnabled,
                         activeBackgroundSoundId = config.activeBackgroundSoundId
@@ -141,11 +142,11 @@ fun HomeScreen(
                                 shortBreakDurationMinutes = config.shortBreakDuration,
                                 onFocusClick = {
                                     activeDialog = ActiveDialog.Focus
-                                    alertsViewModel.performHaptic(view)
+                                    haptic.performHapticFeedback(HapticFeedbackType.GestureEnd)
                                 },
                                 onShortBreakClick = {
                                     activeDialog = ActiveDialog.ShortBreak
-                                    alertsViewModel.performHaptic(view)
+                                    haptic.performHapticFeedback(HapticFeedbackType.GestureEnd)
                                 }
                             )
                         }
@@ -163,11 +164,11 @@ fun HomeScreen(
                         },
                         onSoundClick = {
                             activeDialog = ActiveDialog.Sound
-                            alertsViewModel.performHaptic(view)
+                            haptic.performHapticFeedback(HapticFeedbackType.GestureEnd)
                         },
                         onSetsClick = {
                             activeDialog = ActiveDialog.SetsSettings
-                            alertsViewModel.performHaptic(view)
+                            haptic.performHapticFeedback(HapticFeedbackType.GestureEnd)
                         },
                         onStopDiscard = {
                             timerViewModel.stopAndDiscardSession(view)
@@ -196,10 +197,9 @@ fun HomeScreen(
                                 onDismiss = closeDialog,
                                 onConfirm = { newMins ->
                                     timerViewModel.updateFocusDuration(newMins)
-                                    alertsViewModel.performHaptic(view)
                                     closeDialog()
                                 },
-                                onHaptic = { alertsViewModel.performHaptic(view) }
+                                onHaptic = { haptic.performHapticFeedback(HapticFeedbackType.GestureEnd) }
                             )
                         }
 
@@ -213,10 +213,9 @@ fun HomeScreen(
                                 onDismiss = closeDialog,
                                 onConfirm = { newMins ->
                                     timerViewModel.updateShortBreakDuration(newMins)
-                                    alertsViewModel.performHaptic(view)
                                     closeDialog()
                                 },
-                                onHaptic = { alertsViewModel.performHaptic(view) }
+                                onHaptic = { haptic.performHapticFeedback(HapticFeedbackType.GestureEnd) }
                             )
                         }
 
@@ -233,7 +232,7 @@ fun HomeScreen(
                                     closeDialog()
                                 },
                                 onDismiss = closeDialog,
-                                onHaptic = { alertsViewModel.performHaptic(view) }
+                                onHaptic = { haptic.performHapticFeedback(HapticFeedbackType.GestureEnd) }
                             )
                         }
 
@@ -270,7 +269,7 @@ fun HomeScreen(
                                     templateViewModel.deleteTemplate(id)
                                 },
                                 onDismiss = closeDialog,
-                                onHaptic = { alertsViewModel.performHaptic(view) }
+                                onHaptic = { haptic.performHapticFeedback(HapticFeedbackType.GestureEnd) }
                             )
                         }
 
@@ -289,7 +288,7 @@ fun HomeScreen(
                                 onPreview = { previewId ->
                                     timerViewModel.playPreview(previewId)
                                 },
-                                onHaptic = { alertsViewModel.performHaptic(view) }
+                                onHaptic = { haptic.performHapticFeedback(HapticFeedbackType.GestureEnd) }
                             )
                         }
 

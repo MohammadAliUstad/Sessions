@@ -6,6 +6,7 @@ import androidx.compose.material3.MotionScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.remember
+import androidx.compose.ui.platform.LocalHapticFeedback
 import com.yugentech.sessions.theme.builder.getColorScheme
 import com.yugentech.sessions.theme.builder.getFontFamily
 import com.yugentech.sessions.theme.builder.getTypography
@@ -17,6 +18,7 @@ import com.yugentech.sessions.theme.tokens.TokensCompact
 @Composable
 fun SessionsTheme(
     themeConfiguration: ThemeConfiguration,
+    hapticsEnabled: Boolean = true,
     content: @Composable () -> Unit
 ) {
     // Generate the color scheme based on user settings (Dark/Light, Dynamic, etc.)
@@ -30,8 +32,11 @@ fun SessionsTheme(
     // Load the standard design tokens (spacing, sizing, etc.)
     val tokens = TokensCompact
 
-    // Provide the tokens and theme data to the entire UI tree
-    CompositionLocalProvider(LocalDesignTokens provides tokens) {
+    // Provide the tokens, haptics and theme data to the entire UI tree
+    CompositionLocalProvider(
+        LocalDesignTokens provides tokens,
+        LocalHapticFeedback provides rememberGatedHaptics(hapticsEnabled)
+    ) {
         MaterialTheme(
             colorScheme = colorScheme,
             typography = currentTypography,

@@ -32,6 +32,7 @@
             android:exported="true"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Sessions.SplashScreen"
+            android:windowSoftInputMode="adjustResize"
             tools:ignore="DiscouragedApi,LockedOrientationActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -51,7 +52,11 @@
         </service>
 
         <receiver
-            android:name=".notification.scheduled.ScheduledReceiver"
+            android:name=".notification.reminders.ReminderReceiver"
+            android:enabled="true"
+            android:exported="false" />
+        <receiver
+            android:name=".notification.reminders.BootReceiver"
             android:enabled="true"
             android:exported="false">
             <intent-filter>

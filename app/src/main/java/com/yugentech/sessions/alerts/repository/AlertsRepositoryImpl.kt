@@ -127,17 +127,6 @@ class AlertsRepositoryImpl(
         backgroundSoundService.playPreview(sound)
     }
 
-    // Executes haptic feedback if the user has it enabled
-    override fun performHaptic(view: View?) {
-        if (alertConfiguration.value.hapticsEnabled) {
-            try {
-                hapticService.performHaptic(view)
-            } catch (e: Exception) {
-                Timber.e(e, "Failed to perform haptic feedback")
-            }
-        }
-    }
-
     // Updates sound preference via the preferences manager
     override suspend fun setSoundEnabled(enabled: Boolean) {
         alertsDataStore.setSoundEnabled(enabled)

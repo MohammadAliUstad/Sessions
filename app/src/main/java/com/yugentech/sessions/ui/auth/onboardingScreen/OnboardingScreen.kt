@@ -1,5 +1,6 @@
 package com.yugentech.sessions.ui.auth.onboardingScreen
 
+import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
@@ -35,21 +36,29 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.platform.LocalHapticFeedback
 import com.yugentech.sessions.theme.tokens.components
 import com.yugentech.sessions.theme.tokens.dimensions.AppAnimations
 import com.yugentech.sessions.theme.tokens.icons
 import com.yugentech.sessions.theme.tokens.spacing
 import com.yugentech.sessions.ui.auth.onboardingScreen.components.OnboardingPage
+import com.yugentech.sessions.ui.auth.onboardingScreen.components.onboardingPages
 import kotlinx.coroutines.launch
 
+// Quill's onboarding, line for line, with Sessions' pages (components/OnboardingPages.kt).
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun OnboardingScreen(
     onFinish: () -> Unit
 ) {
-    val pagerState = rememberPagerState(pageCount = { 3 })
+    // Respects the user's haptics setting (SessionsTheme gates LocalHapticFeedback).
+    val haptic = LocalHapticFeedback.current
+    val pagerState = rememberPagerState(pageCount = { onboardingPages.size })
+    val lastPage = onboardingPages.lastIndex
     val scope = rememberCoroutineScope()
     val spacing = MaterialTheme.spacing
+    val fadeThrough = AppAnimations.Transitions.rememberExpressiveFadeThrough()
 
     Scaffold(
         containerColor = MaterialTheme.colorScheme.surface,
@@ -61,14 +70,17 @@ fun OnboardingScreen(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                val showSkip = pagerState.currentPage < 2
+                val showSkip = pagerState.currentPage < lastPage
                 AnimatedVisibility(
                     visible = showSkip,
                     enter = fadeIn(),
                     exit = fadeOut()
                 ) {
                     TextButton(
-                        onClick = onFinish,
+                        onClick = {
+                            haptic.performHapticFeedback(HapticFeedbackType.GestureEnd)
+                            onFinish()
+                        },
                         shape = MaterialTheme.shapes.extraLarge
                     ) {
                         Text("Skip", style = MaterialTheme.typography.labelLarge)
@@ -79,8 +91,9 @@ fun OnboardingScreen(
 
                 Button(
                     onClick = {
+                        haptic.performHapticFeedback(HapticFeedbackType.GestureEnd)
                         scope.launch {
-                            if (pagerState.currentPage < 2) {
+                            if (pagerState.currentPage < lastPage) {
                                 pagerState.animateScrollToPage(pagerState.currentPage + 1)
                             } else {
                                 onFinish()
@@ -90,19 +103,29 @@ fun OnboardingScreen(
                     shape = MaterialTheme.shapes.extraLarge,
                     contentPadding = PaddingValues(horizontal = spacing.l, vertical = spacing.sm)
                 ) {
-                    Text(
-                        text = if (pagerState.currentPage < 2) "Next" else "Get Started",
-                        style = MaterialTheme.typography.labelLarge
-                    )
-                    Spacer(Modifier.width(spacing.s))
-                    Icon(
-                        imageVector = if (pagerState.currentPage < 2)
-                            Icons.AutoMirrored.Filled.ArrowForward
-                        else
-                            Icons.Default.Check,
-                        contentDescription = null,
-                        modifier = Modifier.size(MaterialTheme.icons.smallMedium)
-                    )
+                    // Fades through between "Next" and "Get Started"; AnimatedContent's default
+                    // size transform also smoothly resizes the button to fit the longer label.
+                    AnimatedContent(
+                        targetState = pagerState.currentPage == lastPage,
+                        transitionSpec = { fadeThrough() },
+                        label = "OnboardingButtonLabel"
+                    ) { isLastPage ->
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Text(
+                                text = if (isLastPage) "Get Started" else "Next",
+                                style = MaterialTheme.typography.labelLarge
+                            )
+                            Spacer(Modifier.width(spacing.s))
+                            Icon(
+                                imageVector = if (isLastPage)
+                                    Icons.Default.Check
+                                else
+                                    Icons.AutoMirrored.Filled.ArrowForward,
+                                contentDescription = null,
+                                modifier = Modifier.size(MaterialTheme.icons.smallMedium)
+                            )
+                        }
+                    }
                 }
             }
         }
@@ -112,7 +135,7 @@ fun OnboardingScreen(
                 .fillMaxSize()
                 .padding(innerPadding)
         ) {
-            val targetProgress = (pagerState.currentPage + 1) / 3f
+            val targetProgress = (pagerState.currentPage + 1) / onboardingPages.size.toFloat()
 
             val animatedProgress by animateFloatAsState(
                 targetValue = targetProgress,
@@ -138,7 +161,7 @@ fun OnboardingScreen(
                 modifier = Modifier.weight(1f)
             ) { page ->
                 OnboardingPage(
-                    page = page,
+                    content = onboardingPages[page],
                     isVisible = (pagerState.currentPage == page)
                 )
             }

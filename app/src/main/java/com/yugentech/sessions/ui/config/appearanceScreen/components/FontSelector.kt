@@ -16,6 +16,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.text.font.FontWeight
 import com.yugentech.sessions.theme.AppFont
 import com.yugentech.sessions.theme.builder.getFontFamily
@@ -30,6 +32,7 @@ fun FontSelector(
     viewModel: ThemeViewModel
 ) {
     val currentFont by viewModel.currentFont.collectAsState()
+    val haptic = LocalHapticFeedback.current
 
     Column(modifier = modifier.fillMaxWidth()) {
         SectionHeader(
@@ -44,7 +47,10 @@ fun FontSelector(
             items(AppFont.entries) { font ->
                 FilterChip(
                     selected = currentFont == font,
-                    onClick = { viewModel.setFont(font) },
+                    onClick = {
+                        haptic.performHapticFeedback(HapticFeedbackType.GestureEnd)
+                        viewModel.setFont(font)
+                    },
                     label = {
                         Text(
                             text = font.displayName,

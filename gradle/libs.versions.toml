@@ -28,7 +28,9 @@ foundation = "1.11.3"
 
 # Material Design
 googleMaterial = "1.14.0"
-material3 = "1.5.0-alpha22"
+# The last Material3 alpha built on Compose 1.11 (alpha19+ need Compose 1.12); keeps the expressive
+# components (ButtonGroup, ToggleButton, MotionScheme, wavy indicators) on stable Compose 1.11.3.
+material3 = "1.5.0-alpha18"
 material3WindowSizeClass = "1.4.0"
 
 # Navigation
@@ -85,7 +87,9 @@ androidx-lifecycle-viewmodel-compose = { module = "androidx.lifecycle:lifecycle-
 androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activityCompose" }
 
 # Compose BOM and UI
-androidx-compose-bom = { group = "androidx.compose", name = "compose-bom-alpha", version.ref = "composeBom" }
+# Stable BOM (Compose 1.11.3), as Hajime runs on: the alpha BOM brought Compose 1.12.0-beta01, whose
+# text input closed and reopened the keyboard whenever focus moved between text fields.
+androidx-compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "composeBom" }
 androidx-media3-exoplayer = { module = "androidx.media3:media3-exoplayer", version.ref = "media3Exoplayer" }
 androidx-ui = { group = "androidx.compose.ui", name = "ui" }
 androidx-ui-graphics = { group = "androidx.compose.ui", name = "ui-graphics" }

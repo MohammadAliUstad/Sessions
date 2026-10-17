@@ -1,10 +1,10 @@
 package com.yugentech.sessions.notification.model
 
-// Data class modeling user preferences for notifications and reminder times
+/** The reminder settings, the same in Quill and Sessions. */
 data class NotificationConfig(
     val notificationsEnabled: Boolean = true,
-    val focusRemindersEnabled: Boolean = false,
-    val smartRemindersEnabled: Boolean = false,
-    val reminderTimeHour: Int = 8,
-    val reminderTimeMinute: Int = 0
+    val dailyReminderEnabled: Boolean = false,
+    val playfulRemindersEnabled: Boolean = false,
+    val reminderHour: Int = 20,
+    val reminderMinute: Int = 0
 )

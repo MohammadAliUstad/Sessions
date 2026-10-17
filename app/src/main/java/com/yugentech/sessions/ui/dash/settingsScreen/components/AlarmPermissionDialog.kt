@@ -22,6 +22,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.window.DialogProperties
 import androidx.core.net.toUri
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.platform.LocalHapticFeedback
 import com.yugentech.sessions.theme.tokens.corners
 import com.yugentech.sessions.theme.tokens.spacing
 
@@ -31,6 +33,8 @@ fun AlarmPermissionDialog(
     onDismiss: () -> Unit,
     onConfirm: () -> Unit
 ) {
+    val haptic = LocalHapticFeedback.current
+
     AlertDialog(
         onDismissRequest = onDismiss,
         properties = DialogProperties(usePlatformDefaultWidth = false),
@@ -70,6 +74,7 @@ fun AlarmPermissionDialog(
         confirmButton = {
             Button(
                 onClick = {
+                    haptic.performHapticFeedback(HapticFeedbackType.Confirm)
                     onConfirm()
 
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {

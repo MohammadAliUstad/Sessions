@@ -36,6 +36,8 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.platform.LocalHapticFeedback
 import com.yugentech.sessions.theme.tokens.components
 import com.yugentech.sessions.theme.tokens.corners
 import com.yugentech.sessions.theme.tokens.icons
@@ -150,8 +152,13 @@ private fun PaymentOptionButton(
     icon: ImageVector,
     onClick: () -> Unit
 ) {
+    val haptic = LocalHapticFeedback.current
+
     FilledTonalButton(
-        onClick = onClick,
+        onClick = {
+            haptic.performHapticFeedback(HapticFeedbackType.Confirm)
+            onClick()
+        },
         modifier = Modifier
             .fillMaxWidth()
             .height(MaterialTheme.components.buttonLarge),

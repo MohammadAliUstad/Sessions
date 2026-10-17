@@ -16,12 +16,10 @@ import com.yugentech.sessions.ui.config.aboutScreen.MoreAppsScreen
 import com.yugentech.sessions.ui.config.whatsNewScreen.WhatsNewScreen
 import com.yugentech.sessions.ui.config.appearanceScreen.AppearanceScreen
 import com.yugentech.sessions.ui.config.attributionsScreen.AttributionsScreen
-import com.yugentech.sessions.ui.config.editProfileScreen.EditProfileScreen
 import com.yugentech.sessions.ui.config.insightsScreen.InsightsScreen
 import com.yugentech.sessions.ui.dash.util.formatTime
 import com.yugentech.sessions.viewModels.ProfileViewModel
 import org.koin.androidx.compose.koinViewModel
-import timber.log.Timber
 
 fun NavGraphBuilder.configGraph(
     navController: NavHostController,
@@ -98,24 +96,5 @@ fun NavGraphBuilder.configGraph(
             heatmapHistory = profileUiState.heatmapHistory,
             focusTimeByDate = profileUiState.focusTimeByDate
         )
-    }
-
-    // Defines the edit profile screen
-    composable(AppScreen.EditProfile.route) {
-        Timber.v("Composing EditProfile Screen")
-        val authState by authViewModel.authState.collectAsStateWithLifecycle()
-        val currentUserId = authState.userId
-        val profileViewModel: ProfileViewModel = koinViewModel()
-
-        if (currentUserId != null) {
-            EditProfileScreen(
-                profileViewModel = profileViewModel,
-                userId = currentUserId,
-                onNavigateBack = { navController.popBackStack() }
-            )
-        } else {
-            Timber.w("Navigated to EditProfile without valid User ID")
-            LaunchedEffect(Unit) { navController.popBackStack() }
-        }
     }
 }

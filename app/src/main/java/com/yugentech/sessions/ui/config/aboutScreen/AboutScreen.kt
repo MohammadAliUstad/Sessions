@@ -42,6 +42,8 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.core.net.toUri
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.platform.LocalHapticFeedback
 import com.yugentech.sessions.theme.tokens.spacing
 import com.yugentech.sessions.ui.config.aboutScreen.components.AppInfoCard
 import com.yugentech.sessions.ui.config.aboutScreen.components.DonationDialog
@@ -52,8 +54,6 @@ import com.yugentech.sessions.ui.dash.mainScreen.components.ToastMessage
 import com.yugentech.sessions.ui.dash.settingsScreen.components.SettingsListItem
 import com.yugentech.sessions.utils.AppConstants
 import com.yugentech.sessions.utils.BillingManager
-import com.yugentech.sessions.alerts.viewmodel.AlertsViewModel
-import org.koin.androidx.compose.koinViewModel
 import org.koin.compose.koinInject
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -62,13 +62,12 @@ fun AboutScreen(
     onNavigateBack: () -> Unit,
     onNavigateToLicenses: () -> Unit,
     onNavigateToMoreApps: () -> Unit,
-    billingManager: BillingManager = koinInject(),
-    alertsViewModel: AlertsViewModel = koinViewModel()
+    billingManager: BillingManager = koinInject()
 ) {
     val context = LocalContext.current
     val activity = context as? Activity
     val layoutDirection = LocalLayoutDirection.current
-    val view = androidx.compose.ui.platform.LocalView.current
+    val haptic = LocalHapticFeedback.current
 
     var toastMessage by remember { mutableStateOf<String?>(null) }
     var showDonationDialog by remember { mutableStateOf(false) }
@@ -84,7 +83,7 @@ fun AboutScreen(
         billingManager.purchaseEvent.collect { message ->
             if (message == "Thank you for your support!") {
                 showThankYouDialog = true
-                alertsViewModel.performHaptic(view)
+                haptic.performHapticFeedback(HapticFeedbackType.GestureEnd)
             } else {
                 toastMessage = message
             }
@@ -233,7 +232,6 @@ fun AboutScreen(
             ThankYouDialog(
                 onDismiss = {
                     showThankYouDialog = false
-                    alertsViewModel.performHaptic(view)
                 }
             )
         }

@@ -31,6 +31,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.DialogProperties
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.platform.LocalHapticFeedback
 import com.yugentech.sessions.theme.tokens.components
 import com.yugentech.sessions.theme.tokens.corners
 import com.yugentech.sessions.theme.tokens.spacing
@@ -41,6 +43,8 @@ fun ReviewReminderDialog(
     onDismiss: () -> Unit,
     onReviewClick: () -> Unit
 ) {
+    val haptic = LocalHapticFeedback.current
+
     BasicAlertDialog(
         onDismissRequest = onDismiss,
         properties = DialogProperties(usePlatformDefaultWidth = false),
@@ -91,7 +95,10 @@ fun ReviewReminderDialog(
                     verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.s)
                 ) {
                     Button(
-                        onClick = onReviewClick,
+                        onClick = {
+                            haptic.performHapticFeedback(HapticFeedbackType.Confirm)
+                            onReviewClick()
+                        },
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(MaterialTheme.components.buttonLarge),

@@ -6,11 +6,15 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.platform.LocalHapticFeedback
 
 @Composable
 fun ForgotPasswordSuccessDialog(
     onDismiss: () -> Unit
 ) {
+    val haptic = LocalHapticFeedback.current
+
     AlertDialog(
         onDismissRequest = onDismiss,
         title = { Text("Check your email") },
@@ -19,7 +23,10 @@ fun ForgotPasswordSuccessDialog(
         },
         confirmButton = {
             Button(
-                onClick = onDismiss,
+                onClick = {
+                    haptic.performHapticFeedback(HapticFeedbackType.Confirm)
+                    onDismiss()
+                },
                 colors = ButtonDefaults.buttonColors(
                     containerColor = MaterialTheme.colorScheme.primary,
                     contentColor = MaterialTheme.colorScheme.onPrimary

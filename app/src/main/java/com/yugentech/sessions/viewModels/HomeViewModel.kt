@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.yugentech.sessions.sessions.model.Session
 import com.yugentech.sessions.sessions.repository.SessionsRepository
+import com.yugentech.sessions.templates.repository.TemplateRepository
 import com.yugentech.sessions.user.datastore.UserDataStore
 import com.yugentech.sessions.user.repository.UserRepository
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -26,7 +27,8 @@ data class HomeDataState(
 class HomeViewModel(
     private val sessionsRepository: SessionsRepository,
     private val userRepository: UserRepository,
-    private val userDataStore: UserDataStore
+    private val userDataStore: UserDataStore,
+    private val templateRepository: TemplateRepository
 ) : ViewModel() {
 
     private val _dataState = MutableStateFlow(HomeDataState())
@@ -44,6 +46,9 @@ class HomeViewModel(
 
             syncPendingSessions(userId)
         }
+        // Templates: restore the user's from the cloud (a fresh install) and upload any this
+        // device has that the cloud doesn't.
+        viewModelScope.launch { templateRepository.syncTemplates() }
     }
 
     fun triggerReviewPrompt() {

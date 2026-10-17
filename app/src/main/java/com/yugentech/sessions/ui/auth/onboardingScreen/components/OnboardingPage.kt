@@ -1,13 +1,12 @@
 package com.yugentech.sessions.ui.auth.onboardingScreen.components
 
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.MutableTransitionState
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.scaleIn
 import androidx.compose.animation.scaleOut
-import androidx.compose.animation.slideInVertically
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -20,99 +19,54 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.TrendingUp
-import androidx.compose.material.icons.filled.BarChart
-import androidx.compose.material.icons.filled.CalendarToday
-import androidx.compose.material.icons.filled.DarkMode
-import androidx.compose.material.icons.filled.MusicNote
-import androidx.compose.material.icons.filled.NotificationsActive
-import androidx.compose.material.icons.filled.Palette
-import androidx.compose.material.icons.filled.Repeat
-import androidx.compose.material.icons.filled.Settings
-import androidx.compose.material.icons.filled.Timer
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import com.yugentech.sessions.R
 import com.yugentech.sessions.theme.tokens.components
 import com.yugentech.sessions.theme.tokens.dimensions.AppAnimations
 import com.yugentech.sessions.theme.tokens.icons
 import com.yugentech.sessions.theme.tokens.spacing
-import com.yugentech.sessions.ui.auth.components.WavyBackground
 import kotlinx.coroutines.delay
 
 @Composable
-fun OnboardingPage(page: Int, isVisible: Boolean) {
+fun OnboardingPage(content: PageContent, isVisible: Boolean) {
     val spacing = MaterialTheme.spacing
     val icons = MaterialTheme.icons
     val components = MaterialTheme.components
-    val scrollState = rememberScrollState()
 
-    val (title, description, highlights, imageRes) = when (page) {
-        0 -> PageContent(
-            title = "Enter Your\nOrbit",
-            description = "In a noisy world, focus is your superpower. Block distractions with proven Pomodoro techniques, work in timed sessions, your way.",
-            highlights = listOf(
-                FeatureHighlight(Icons.Default.Settings, "Customizable sessions"),
-                FeatureHighlight(Icons.Default.Timer, "Set your own focus & break times"),
-                FeatureHighlight(Icons.Default.Repeat, "Multiple sets for deep work")
-            ),
-            imageRes = R.drawable.chaotic_good
-        )
+    val (title, description, highlights, imageRes) = content
 
-        1 -> PageContent(
-            title = "Find Your\nFlow",
-            description = "Create your perfect focus environment with complete control over your sessions and ambience.",
-            highlights = listOf(
-                FeatureHighlight(Icons.Default.MusicNote, "6 ambient sounds for focus"),
-                FeatureHighlight(Icons.Default.Palette, "8 beautiful color themes"),
-                FeatureHighlight(Icons.Default.DarkMode, "Light, dark & AMOLED modes")
-            ),
-            imageRes = R.drawable.growth
-        )
-
-        else -> PageContent(
-            title = "Watch It\nGrow",
-            description = "Every focused minute counts. Track your sessions, build consistency, and stay on top of your goals with smart reminders.",
-            highlights = listOf(
-                FeatureHighlight(Icons.Default.NotificationsActive, "Intelligent smart reminders"),
-                FeatureHighlight(Icons.AutoMirrored.Filled.TrendingUp, "Track your focus progress"),
-                FeatureHighlight(Icons.Default.BarChart, "Visualize your weekly rhythm")
-            ),
-            imageRes = R.drawable.jumping
-        )
-    }
-
-    val titleState = remember { MutableTransitionState(false) }
-    val textState = remember { MutableTransitionState(false) }
-    val highlightsState = remember { MutableTransitionState(false) }
+    var titleShown by remember { mutableStateOf(false) }
+    var textShown by remember { mutableStateOf(false) }
+    var highlightsShown by remember { mutableStateOf(false) }
     val imageState = remember { MutableTransitionState(false) }
 
     LaunchedEffect(isVisible) {
         if (isVisible) {
-            titleState.targetState = true
+            titleShown = true
             delay(AppAnimations.Durations.Rapid.toLong())
-            textState.targetState = true
+            textShown = true
             delay(AppAnimations.Durations.Fast.toLong())
             imageState.targetState = true
             delay(AppAnimations.Durations.Base.toLong())
-            highlightsState.targetState = true
+            highlightsShown = true
         } else {
-            titleState.targetState = false
-            textState.targetState = false
-            highlightsState.targetState = false
+            titleShown = false
+            textShown = false
+            highlightsShown = false
             imageState.targetState = false
         }
     }
@@ -126,12 +80,7 @@ fun OnboardingPage(page: Int, isVisible: Boolean) {
     ) {
         Spacer(modifier = Modifier.height(spacing.l))
 
-        AnimatedVisibility(
-            visibleState = titleState,
-            enter = fadeIn(tween(AppAnimations.Durations.Complex)) +
-                    slideInVertically(tween(AppAnimations.Durations.Complex)) { AppAnimations.Durations.Micro },
-            exit = fadeOut()
-        ) {
+        Reveal(visible = titleShown) {
             Text(
                 text = title,
                 style = MaterialTheme.typography.displayMedium.copy(
@@ -144,12 +93,7 @@ fun OnboardingPage(page: Int, isVisible: Boolean) {
 
         Spacer(modifier = Modifier.height(spacing.sm))
 
-        AnimatedVisibility(
-            visibleState = textState,
-            enter = fadeIn(tween(AppAnimations.Durations.Complex)) +
-                    slideInVertically(tween(AppAnimations.Durations.Complex)) { AppAnimations.Durations.Micro },
-            exit = fadeOut()
-        ) {
+        Reveal(visible = textShown) {
             Text(
                 text = description,
                 style = MaterialTheme.typography.bodyLarge,
@@ -202,11 +146,7 @@ fun OnboardingPage(page: Int, isVisible: Boolean) {
 
         Spacer(modifier = Modifier.height(spacing.l))
 
-        AnimatedVisibility(
-            visibleState = highlightsState,
-            enter = fadeIn(tween(AppAnimations.Durations.Complex)) + slideInVertically(tween(AppAnimations.Durations.Complex)) { AppAnimations.Durations.Micro },
-            exit = fadeOut()
-        ) {
+        Reveal(visible = highlightsShown) {
             Column(
                 modifier = Modifier.fillMaxWidth(),
                 verticalArrangement = Arrangement.spacedBy(spacing.s)
@@ -237,5 +177,30 @@ fun OnboardingPage(page: Int, isVisible: Boolean) {
         }
 
         Spacer(modifier = Modifier.height(spacing.xl))
+    }
+}
+
+/**
+ * Fades [content] in while it rises by [AppAnimations.Durations.Micro] px, as the old
+ * AnimatedVisibility did, but keeps its space in the layout even while hidden. AnimatedVisibility
+ * took no space until shown, so each block popping in shrank the image's box (weight(1f)) and
+ * snapped the image, part-way through its scale-in, to a new position and, on short screens, a
+ * smaller size.
+ */
+@Composable
+private fun Reveal(visible: Boolean, content: @Composable () -> Unit) {
+    val progress by animateFloatAsState(
+        targetValue = if (visible) 1f else 0f,
+        animationSpec = if (visible) tween(AppAnimations.Durations.Complex) else tween(AppAnimations.Durations.Fast),
+        label = "OnboardingReveal"
+    )
+    Box(
+        modifier = Modifier.graphicsLayer {
+            alpha = progress
+            // Rises only on the way in; on the way out it just fades, as before.
+            translationY = if (visible) (1f - progress) * AppAnimations.Durations.Micro else 0f
+        }
+    ) {
+        content()
     }
 }

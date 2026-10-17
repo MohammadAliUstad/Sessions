@@ -3,10 +3,6 @@ package com.yugentech.sessions.ui.dash.homeScreen.components.dialogs
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateDpAsState
-import androidx.compose.animation.core.tween
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -68,8 +64,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.platform.LocalHapticFeedback
 import com.yugentech.sessions.templates.model.Template
 import com.yugentech.sessions.theme.tokens.corners
+import com.yugentech.sessions.theme.tokens.dimensions.AppAnimations
 import com.yugentech.sessions.theme.tokens.spacing
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -90,6 +89,9 @@ fun TaskSelectionSheet(
     onDismiss: () -> Unit,
     onHaptic: () -> Unit
 ) {
+    val haptic = LocalHapticFeedback.current
+    val fadeThrough = AppAnimations.Transitions.rememberExpressiveFadeThrough()
+
     var taskName by remember { mutableStateOf(currentTask) }
     val focusManager = LocalFocusManager.current
     var templateToDelete by remember { mutableStateOf<Template?>(null) }
@@ -190,7 +192,7 @@ fun TaskSelectionSheet(
             confirmButton = {
                 Button(
                     onClick = {
-                        onHaptic()
+                        haptic.performHapticFeedback(HapticFeedbackType.Confirm)
                         onDeleteTemplate(target.id)
                         templateToDelete = null
                     },
@@ -331,7 +333,7 @@ fun TaskSelectionSheet(
                                 disabledContentColor = setTaskContentColor
                             ),
                             onClick = {
-                                onHaptic()
+                                haptic.performHapticFeedback(HapticFeedbackType.Confirm)
                                 scope.launch {
                                     sheetState.hide()
                                     onSetTask(taskName.trim())
@@ -446,7 +448,7 @@ fun TaskSelectionSheet(
                             disabledContentColor = saveContentColor
                         ),
                         onClick = {
-                            onHaptic()
+                            haptic.performHapticFeedback(HapticFeedbackType.Confirm)
                             if (isExistingTemplate && !isConfigChanged) {
                                 scope.launch {
                                     sheetState.hide()
@@ -463,9 +465,7 @@ fun TaskSelectionSheet(
                                 isExistingTemplate && !isConfigChanged -> "Close"
                                 else -> "Save as Template"
                             },
-                            transitionSpec = {
-                                fadeIn(tween(200)) togetherWith fadeOut(tween(200))
-                            },
+                            transitionSpec = { fadeThrough() },
                             label = "saveButtonLabel"
                         ) { label ->
                             Text(text = label)

@@ -32,11 +32,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.zIndex
 import androidx.core.content.ContextCompat
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.platform.LocalHapticFeedback
 import com.yugentech.sessions.navigation.screen.BottomBarScreen
-import com.yugentech.sessions.notification.viewmodel.NotificationsViewModel
+import com.yugentech.sessions.notification.viewmodel.NotificationViewModel
 import com.yugentech.sessions.timer.viewmodel.TimerViewModel
 import com.yugentech.sessions.theme.tokens.corners
 import com.yugentech.sessions.ui.dash.homeScreen.components.ExitConfirmationDialog
@@ -63,17 +64,17 @@ fun MainScreen(
     timerViewModel: TimerViewModel,
     profileViewModel: ProfileViewModel,
     alertsViewModel: AlertsViewModel = koinViewModel(),
-    notificationsViewModel: NotificationsViewModel = koinViewModel(),
+    notificationViewModel: NotificationViewModel = koinViewModel(),
     onSignOut: () -> Unit,
     onExit: () -> Unit,
-    onEditProfile: () -> Unit,
     onViewInsights: () -> Unit,
     onAbout: () -> Unit,
     onWhatsNew: () -> Unit,
+    onMoreApps: () -> Unit,
     onAppearance: () -> Unit
 ) {
     val context = LocalContext.current
-    val view = LocalView.current
+    val haptic = LocalHapticFeedback.current
     val scope = rememberCoroutineScope()
 
     var toastMessage by remember { mutableStateOf<String?>(null) }
@@ -151,7 +152,7 @@ fun MainScreen(
                 Button(
                     onClick = {
                         profileViewModel.deleteAllSessions()
-                        alertsViewModel.performHaptic(view)
+                        haptic.performHapticFeedback(HapticFeedbackType.Confirm)
                         showDeleteAllDialog = false
                     },
                     colors = ButtonDefaults.buttonColors(
@@ -219,18 +220,18 @@ fun MainScreen(
 
                 BottomBarScreen.Profile -> ProfileScreen(
                     userId = userId,
-                    onEditProfile = onEditProfile,
                     onViewInsights = onViewInsights,
                     profileViewModel = profileViewModel
                 )
 
                 BottomBarScreen.Settings -> SettingsScreen(
                     alertsViewModel = alertsViewModel,
-                    notificationsViewModel = notificationsViewModel,
+                    notificationViewModel = notificationViewModel,
                     onSignOut = onSignOut,
                     onExit = onExit,
                     onAbout = onAbout,
                     onWhatsNew = onWhatsNew,
+                    onMoreApps = onMoreApps,
                     onAppearance = onAppearance
                 )
             }

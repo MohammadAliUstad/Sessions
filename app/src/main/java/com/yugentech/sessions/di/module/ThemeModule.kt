@@ -30,7 +30,8 @@ val themeModule = module {
     viewModel {
         Timber.v("Initializing ThemeViewModel")
         ThemeViewModel(
-            repository = get()
+            repository = get(),
+            alertsRepository = get()
         )
     }
 }

@@ -54,6 +54,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.platform.LocalHapticFeedback
 import com.yugentech.sessions.alerts.model.BackgroundSound
 import com.yugentech.sessions.theme.tokens.spacing
 import com.yugentech.sessions.ui.dash.util.models.SoundOption
@@ -67,6 +69,8 @@ fun SoundSelectionSheet(
     onPreview: (String?) -> Unit,
     onHaptic: () -> Unit
 ) {
+    val haptic = LocalHapticFeedback.current
+
     var selectedOption by remember {
         mutableStateOf(currentSoundId ?: BackgroundSound.NONE.id)
     }
@@ -142,7 +146,7 @@ fun SoundSelectionSheet(
                 subtitle = "Enable to preview and pick a sound below",
                 checked = isSoundOn,
                 onCheckedChange = { checked ->
-                    onHaptic()
+                    haptic.performHapticFeedback(if (checked) HapticFeedbackType.ToggleOn else HapticFeedbackType.ToggleOff)
                     if (checked) {
                         selectedOption = lastSound
                         onPreview(lastSound)
@@ -187,7 +191,7 @@ fun SoundSelectionSheet(
                     .fillMaxWidth()
                     .height(56.dp),
                 onClick = {
-                    onHaptic()
+                    haptic.performHapticFeedback(HapticFeedbackType.Confirm)
                     onConfirm(selectedOption)
                     scope.launch { sheetState.hide() }
                 }

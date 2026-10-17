@@ -59,6 +59,8 @@ fun SessionProgressCard(
     isTimerRunning: Boolean,
     onSkipToNext: () -> Unit
 ) {
+    val fadeThrough = AppAnimations.Transitions.rememberExpressiveFadeThrough()
+
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -151,9 +153,8 @@ fun SessionProgressCard(
                         targetState = state.isLongBreakActive to state.progressDisplay,
                         transitionSpec = {
                             if (targetState.first != initialState.first) {
-                                // Transition between Focus/Break modes (Fade)
-                                fadeIn(tween(AppAnimations.Durations.Standard)) togetherWith
-                                        fadeOut(tween(AppAnimations.Durations.Fast))
+                                // Transition between Focus/Break modes (fade through)
+                                fadeThrough()
                             } else {
                                 // Transition between numbers (Vertical Slide)
                                 (slideInVertically { it } + fadeIn(tween(AppAnimations.Durations.Standard)))
@@ -223,10 +224,7 @@ fun SessionProgressCard(
 
                 AnimatedContent(
                     targetState = state.mainMessage to state.subMessage,
-                    transitionSpec = {
-                        fadeIn(tween(AppAnimations.Durations.Standard)) togetherWith
-                                fadeOut(tween(AppAnimations.Durations.Fast))
-                    },
+                    transitionSpec = { fadeThrough() },
                     label = "taglineAnimation"
                 ) { (main, sub) ->
                     Column(horizontalAlignment = Alignment.End) {

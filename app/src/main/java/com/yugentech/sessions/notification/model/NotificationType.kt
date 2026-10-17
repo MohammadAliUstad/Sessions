@@ -1,7 +1,6 @@
 package com.yugentech.sessions.notification.model
 
-// Distinguishes between active timer updates and scheduled future reminders
+// The kinds of notification NotificationService builds. Reminders are posted by ReminderReceiver.
 enum class NotificationType {
-    ACTIVE,
-    SCHEDULED
+    ACTIVE
 }

@@ -19,9 +19,6 @@ interface AlertsRepository {
     // Play a preview of a specific sound file
     fun playPreview(soundId: String?)
 
-    // Trigger a single haptic feedback vibration
-    fun performHaptic(view: View? = null)
-
     // Update settings for sounds and haptics
     suspend fun setSoundEnabled(enabled: Boolean)
     suspend fun setHapticsEnabled(enabled: Boolean)

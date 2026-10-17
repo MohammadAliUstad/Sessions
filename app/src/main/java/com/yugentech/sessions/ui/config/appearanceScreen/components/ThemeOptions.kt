@@ -47,22 +47,22 @@ fun themeOptions(
     ),
 
     ThemeOption(
-        colorTheme = ColorTheme.HARVEST,
-        displayName = "Harvest",
-        primaryColor = AppColorSchemes.HarvestLightColorScheme.primary,
-        gradientColors = listOf(
-            AppColorSchemes.HarvestLightColorScheme.primary,
-            AppColorSchemes.HarvestLightColorScheme.primaryContainer
-        )
-    ),
-
-    ThemeOption(
         colorTheme = ColorTheme.GROVE,
         displayName = "Grove",
         primaryColor = AppColorSchemes.GroveLightColorScheme.primary,
         gradientColors = listOf(
             AppColorSchemes.GroveLightColorScheme.primary,
             AppColorSchemes.GroveLightColorScheme.primaryContainer
+        )
+    ),
+
+    ThemeOption(
+        colorTheme = ColorTheme.HARVEST,
+        displayName = "Harvest",
+        primaryColor = AppColorSchemes.HarvestLightColorScheme.primary,
+        gradientColors = listOf(
+            AppColorSchemes.HarvestLightColorScheme.primary,
+            AppColorSchemes.HarvestLightColorScheme.primaryContainer
         )
     ),
 

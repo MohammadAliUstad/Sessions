@@ -33,21 +33,25 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalLayoutDirection
-import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.platform.LocalHapticFeedback
 import com.yugentech.sessions.user.model.UserData
 import com.yugentech.sessions.theme.tokens.corners
 import com.yugentech.sessions.theme.tokens.spacing
 import com.yugentech.sessions.ui.dash.mainScreen.components.SectionHeader
+import com.yugentech.sessions.ui.dash.profileScreen.components.AvatarPickerSheet
+import com.yugentech.sessions.ui.dash.profileScreen.components.EditNameSheet
 import com.yugentech.sessions.ui.dash.profileScreen.components.EmptySessionsCard
 import com.yugentech.sessions.ui.dash.profileScreen.components.ProfileCard
 import com.yugentech.sessions.ui.dash.profileScreen.components.SessionHistoryItem
@@ -58,8 +62,6 @@ import com.yugentech.sessions.ui.dash.util.weeklyHeader
 import com.yugentech.sessions.utils.AppConstants.EMPTY
 import com.yugentech.sessions.viewModels.ProfileViewModel
 import com.yugentech.sessions.viewModels.SessionSortOption
-import com.yugentech.sessions.alerts.viewmodel.AlertsViewModel
-import org.koin.androidx.compose.koinViewModel
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
@@ -67,11 +69,13 @@ fun ProfileScreen(
     userId: String,
     modifier: Modifier = Modifier,
     profileViewModel: ProfileViewModel,
-    alertsViewModel: AlertsViewModel = koinViewModel(),
-    onEditProfile: () -> Unit = {},
     onViewInsights: () -> Unit = {}
 ) {
     val profileUiState by profileViewModel.uiState.collectAsStateWithLifecycle()
+
+    // The name and avatar are edited in sheets right here (there's no Edit Profile screen).
+    var showNameSheet by rememberSaveable { mutableStateOf(false) }
+    var showAvatarSheet by rememberSaveable { mutableStateOf(false) }
 
     var showDeleteDialog by remember { mutableStateOf(false) }
     var sessionToDeleteId by remember { mutableStateOf<String?>(null) }
@@ -82,7 +86,7 @@ fun ProfileScreen(
 
     val layoutDirection = LocalLayoutDirection.current
     val navBarPadding = WindowInsets.navigationBars.asPaddingValues()
-    val view = LocalView.current
+    val haptic = LocalHapticFeedback.current
 
     LaunchedEffect(userId) {
         profileViewModel.loadProfile(userId)
@@ -115,7 +119,8 @@ fun ProfileScreen(
 
             ProfileCard(
                 userData = profileUiState.user ?: UserData(name = EMPTY),
-                onEditProfile = onEditProfile,
+                onEditName = { showNameSheet = true },
+                onEditAvatar = { showAvatarSheet = true },
                 onViewInsights = onViewInsights,
                 streakCount = profileUiState.streakCount
             )
@@ -149,7 +154,8 @@ fun ProfileScreen(
             item(key = "profile_card") {
                 ProfileCard(
                     userData = profileUiState.user ?: UserData(name = EMPTY),
-                    onEditProfile = onEditProfile,
+                    onEditName = { showNameSheet = true },
+                    onEditAvatar = { showAvatarSheet = true },
                     onViewInsights = onViewInsights,
                     streakCount = profileUiState.streakCount
                 )
@@ -168,7 +174,7 @@ fun ProfileScreen(
                             groupDeleteTitle = dateHeader
                             sessionsToGroupDelete = sessionsInGroup.map { it.sessionId }
                             showGroupDeleteDialog = true
-                            alertsViewModel.performHaptic(view)
+                            haptic.performHapticFeedback(HapticFeedbackType.GestureEnd)
                         }
                     )
                 }
@@ -183,7 +189,7 @@ fun ProfileScreen(
                             index = index,
                             totalCount = sessionsInGroup.size,
                             onDelete = {
-                                alertsViewModel.performHaptic(view)
+                                haptic.performHapticFeedback(HapticFeedbackType.GestureEnd)
                                 sessionToDeleteId = session.sessionId
                                 showDeleteDialog = true
                             }
@@ -192,6 +198,27 @@ fun ProfileScreen(
                 }
             }
         }
+    }
+
+    // --- Sheets ---
+    val user = profileUiState.user
+    if (showNameSheet && user != null) {
+        EditNameSheet(
+            currentName = user.name.orEmpty(),
+            onSave = { name ->
+                profileViewModel.updateName(name)
+                showNameSheet = false
+            },
+            onDismiss = { showNameSheet = false }
+        )
+    }
+
+    if (showAvatarSheet && user != null) {
+        AvatarPickerSheet(
+            selectedAvatarId = user.avatarId ?: 0,
+            onAvatarSelected = profileViewModel::updateAvatar,
+            onDismiss = { showAvatarSheet = false }
+        )
     }
 
     // --- Dialogs ---
@@ -244,7 +271,7 @@ fun ProfileScreen(
                 Button(
                     onClick = {
                         profileViewModel.deleteSessions(sessionsToGroupDelete)
-                        alertsViewModel.performHaptic(view)
+                        haptic.performHapticFeedback(HapticFeedbackType.Confirm)
                         showGroupDeleteDialog = false
                         sessionsToGroupDelete = emptyList()
                     },
@@ -290,7 +317,7 @@ fun ProfileScreen(
                 Button(
                     onClick = {
                         profileViewModel.deleteSession(userId, sessionToDeleteId!!)
-                        alertsViewModel.performHaptic(view)
+                        haptic.performHapticFeedback(HapticFeedbackType.Confirm)
                         showDeleteDialog = false
                         sessionToDeleteId = null
                     },

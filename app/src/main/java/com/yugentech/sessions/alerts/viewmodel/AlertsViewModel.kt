@@ -1,6 +1,5 @@
 package com.yugentech.sessions.alerts.viewmodel
 
-import android.view.View
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.yugentech.sessions.alerts.model.AlertsConfiguration
@@ -27,9 +26,5 @@ class AlertsViewModel(
         viewModelScope.launch {
             alertsRepository.setHapticsEnabled(enabled)
         }
-    }
-
-    fun performHaptic(view: View? = null) {
-        alertsRepository.performHaptic(view)
     }
 }
