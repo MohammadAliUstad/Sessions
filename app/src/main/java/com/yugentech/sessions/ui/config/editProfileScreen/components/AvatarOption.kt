@@ -26,7 +26,7 @@ import com.yugentech.sessions.theme.tokens.strokes
 // Size of each avatar in the avatar sheet's grid, three to a row.
 internal val AvatarOptionSize = 112.dp
 
-// No outline on unselected avatars and no scale animation: only the selected one gets a thick
+// No outline on unselected avatars and no scale animation: only the selected one gets a slim
 // primary ring.
 @Composable
 fun AvatarOption(
@@ -48,7 +48,7 @@ fun AvatarOption(
                 .then(
                     if (isSelected) {
                         Modifier.border(
-                            width = MaterialTheme.strokes.thick,
+                            width = MaterialTheme.strokes.medium,
                             color = MaterialTheme.colorScheme.primary,
                             shape = CircleShape
                         )

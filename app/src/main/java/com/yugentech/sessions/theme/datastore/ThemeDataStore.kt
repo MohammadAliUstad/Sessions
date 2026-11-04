@@ -7,6 +7,8 @@ import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.emptyPreferences
 import androidx.datastore.preferences.core.stringPreferencesKey
 import com.yugentech.sessions.theme.AppFont
+import com.yugentech.sessions.theme.config.CardAnimationStyle
+import com.yugentech.sessions.theme.config.CardStyle
 import com.yugentech.sessions.theme.config.ColorTheme
 import com.yugentech.sessions.theme.config.ThemeConfiguration
 import com.yugentech.sessions.theme.config.ThemeMode
@@ -43,13 +45,25 @@ class ThemeDataStore(
             } catch (e: IllegalArgumentException) {
                 ColorTheme.SESSIONS
             }
+            val cardStyle = try {
+                CardStyle.valueOf(prefs[CARD_STYLE_KEY] ?: CardStyle.FILLED.name)
+            } catch (e: IllegalArgumentException) {
+                CardStyle.FILLED
+            }
+            val cardAnimationStyle = try {
+                CardAnimationStyle.valueOf(prefs[CARD_ANIMATION_STYLE_KEY] ?: CardAnimationStyle.NONE.name)
+            } catch (e: IllegalArgumentException) {
+                CardAnimationStyle.NONE
+            }
 
             ThemeConfiguration(
                 themeMode = themeMode,
                 colorTheme = colorTheme,
                 useDynamicColors = prefs[USE_DYNAMIC_COLORS_KEY] ?: false,
                 isAmoledMode = prefs[IS_AMOLED_MODE_KEY] ?: false,
-                appFont = appFont
+                appFont = appFont,
+                cardStyle = cardStyle,
+                cardAnimationStyle = cardAnimationStyle
             )
         }
 
@@ -62,6 +76,8 @@ class ThemeDataStore(
             prefs[USE_DYNAMIC_COLORS_KEY] = config.useDynamicColors
             prefs[IS_AMOLED_MODE_KEY] = config.isAmoledMode
             prefs[APP_FONT_KEY] = config.appFont.name
+            prefs[CARD_STYLE_KEY] = config.cardStyle.name
+            prefs[CARD_ANIMATION_STYLE_KEY] = config.cardAnimationStyle.name
         }
     }
 
@@ -77,5 +93,7 @@ class ThemeDataStore(
         private val USE_DYNAMIC_COLORS_KEY = booleanPreferencesKey("use_dynamic_colors")
         private val IS_AMOLED_MODE_KEY = booleanPreferencesKey("is_amoled_mode")
         private val APP_FONT_KEY = stringPreferencesKey("app_font")
+        private val CARD_STYLE_KEY = stringPreferencesKey("card_style")
+        private val CARD_ANIMATION_STYLE_KEY = stringPreferencesKey("card_animation_style")
     }
 }

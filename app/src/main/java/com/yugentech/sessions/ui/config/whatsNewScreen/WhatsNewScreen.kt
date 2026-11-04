@@ -241,7 +241,7 @@ fun WhatsNewScreen(
                     Column {
                         Text("What's New")
                         Text(
-                            text = "Current Version 5.1.0",
+                            text = "Current Version 5.5.0",
                             style = MaterialTheme.typography.bodyMedium,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )

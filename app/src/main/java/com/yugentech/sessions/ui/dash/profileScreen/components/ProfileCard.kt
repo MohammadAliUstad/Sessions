@@ -277,7 +277,7 @@ fun ProfileCard(
                     Text(
                         text = "Insights",
                         style = MaterialTheme.typography.labelLarge,
-                        fontWeight = FontWeight.SemiBold
+                        fontWeight = FontWeight.Bold
                     )
                 }
 

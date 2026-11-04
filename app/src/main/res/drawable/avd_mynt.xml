@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Mynt's wallet, "Payday": it pops up with a squash, the bills jump out and tuck back in,
+     then the gold clasp flips like a coin and clicks shut. 1260ms in all; it rests on the finished icon. -->
+<animated-vector
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt">
+    <aapt:attr name="android:drawable">
+        <vector
+            android:width="108dp"
+            android:height="108dp"
+            android:viewportWidth="512"
+            android:viewportHeight="512">
+            <group
+                android:scaleX="0.36666667"
+                android:scaleY="0.36666667"
+                android:translateX="162.13333"
+                android:translateY="162.13333">
+                <group
+                    android:name="wallet"
+                    android:pivotX="257"
+                    android:pivotY="500">
+                    <group
+                        android:name="bills"
+                        android:pivotX="262"
+                        android:pivotY="154">
+                        <path
+                            android:pathData="M366.76,12.03v43.61H170.98c-20.06,0 -36.34,16.28 -36.34,36.34v5.87h-5.63c-23.7,0 -42.91,-19.22 -42.91,-42.91c0,-11.85 4.8,-22.56 12.56,-30.33s18.5,-12.58 30.34,-12.58C129.02,12.03 366.76,12.03 366.76,12.03z"
+                            android:fillColor="#C6D884"/>
+                        <path
+                            android:pathData="M413.18,55.64v42.2h-46.42H134.65V91.98c0,-20.06 16.28,-36.34 36.34,-36.34h195.78H413.18z"
+                            android:fillColor="#C6D884"/>
+                        <path
+                            android:pathData="M86.11,54.94c0,23.69 19.2,42.91 42.91,42.91h5.63h232.11h46.42h21.1h25.32v146.27H86.11V68.3V54.94z"
+                            android:fillColor="#DDEBA6"/>
+                    </group>
+                    <path
+                        android:pathData="M503.92,176.48v301.33c0,12.35 -10.02,22.37 -22.37,22.37H53.05c-1.18,0 -2.35,-0.04 -3.52,-0.14c-10.44,-0.85 -19.83,-5.44 -26.83,-12.44c-7.76,-7.76 -12.56,-18.49 -12.56,-30.33V111.21c0,0.24 0,0.46 0.01,0.7c0.35,22.18 17.56,40.29 39.38,42.06c1.17,0.1 2.34,0.14 3.52,0.14h428.5C493.9,154.12 503.92,164.13 503.92,176.48z"
+                        android:fillColor="#6E8A2E"/>
+                    <path
+                        android:pathData="M49.54,111.91v388.12c-10.44,-0.85 -19.83,-5.44 -26.83,-12.44c-7.76,-7.76 -12.56,-18.49 -12.56,-30.33V111.91H49.54z"
+                        android:fillColor="#56701F"/>
+                    <path
+                        android:pathData="M86.11,68.3v85.81H72.05H53.05c-23.7,0 -42.91,-19.22 -42.91,-42.91c0,-11.85 4.8,-22.56 12.56,-30.33s18.5,-12.58 30.34,-12.58h33.06V68.3z"
+                        android:fillColor="#56701F"/>
+                    <group
+                        android:name="clasp"
+                        android:pivotX="401.23"
+                        android:pivotY="320.11">
+                        <path
+                            android:pathData="M401.23,320.11m-47.83,0a47.83,47.83 0,1 1,95.66 0a47.83,47.83 0,1 1,-95.66 0"
+                            android:fillColor="#FFB800"/>
+                        <path
+                            android:pathData="M380.74,320.11c0,-21.66 14.41,-39.95 34.16,-45.84c-4.33,-1.29 -8.92,-1.99 -13.67,-1.99c-26.42,0 -47.83,21.42 -47.83,47.83s21.42,47.83 47.83,47.83c4.75,0 9.34,-0.7 13.67,-1.99C395.14,360.07 380.74,341.77 380.74,320.11z"
+                            android:fillColor="#F2A400"/>
+                    </group>
+                </group>
+            </group>
+        </vector>
+    </aapt:attr>
+
+    <!-- Pops up from its base, then squashes and springs back -->
+    <target android:name="wallet">
+        <aapt:attr name="android:animation">
+            <set android:ordering="together">
+                <objectAnimator
+                    android:propertyName="scaleX"
+                    android:valueFrom="0"
+                    android:valueTo="1"
+                    android:valueType="floatType"
+                    android:duration="500"
+                    android:interpolator="@android:interpolator/overshoot"/>
+                <objectAnimator
+                    android:propertyName="scaleX"
+                    android:valueFrom="1"
+                    android:valueTo="1.06"
+                    android:valueType="floatType"
+                    android:duration="120"
+                    android:startOffset="520"
+                    android:interpolator="@android:interpolator/fast_out_slow_in"/>
+                <objectAnimator
+                    android:propertyName="scaleX"
+                    android:valueFrom="1.06"
+                    android:valueTo="1"
+                    android:valueType="floatType"
+                    android:duration="180"
+                    android:startOffset="640"
+                    android:interpolator="@android:interpolator/overshoot"/>
+                <objectAnimator
+                    android:propertyName="scaleY"
+                    android:valueFrom="0"
+                    android:valueTo="1"
+                    android:valueType="floatType"
+                    android:duration="500"
+                    android:interpolator="@android:interpolator/overshoot"/>
+                <objectAnimator
+                    android:propertyName="scaleY"
+                    android:valueFrom="1"
+                    android:valueTo="0.9"
+                    android:valueType="floatType"
+                    android:duration="120"
+                    android:startOffset="520"
+                    android:interpolator="@android:interpolator/fast_out_slow_in"/>
+                <objectAnimator
+                    android:propertyName="scaleY"
+                    android:valueFrom="0.9"
+                    android:valueTo="1"
+                    android:valueType="floatType"
+                    android:duration="180"
+                    android:startOffset="640"
+                    android:interpolator="@android:interpolator/overshoot"/>
+            </set>
+        </aapt:attr>
+    </target>
+
+    <!-- Jump out of the top with a wobble and tuck back in -->
+    <target android:name="bills">
+        <aapt:attr name="android:animation">
+            <set android:ordering="together">
+                <objectAnimator
+                    android:propertyName="translateY"
+                    android:valueFrom="0"
+                    android:valueTo="-70"
+                    android:valueType="floatType"
+                    android:duration="200"
+                    android:startOffset="560"
+                    android:interpolator="@android:interpolator/decelerate_cubic"/>
+                <objectAnimator
+                    android:propertyName="translateY"
+                    android:valueFrom="-70"
+                    android:valueTo="0"
+                    android:valueType="floatType"
+                    android:duration="240"
+                    android:startOffset="760"
+                    android:interpolator="@android:interpolator/overshoot"/>
+                <objectAnimator
+                    android:propertyName="rotation"
+                    android:valueFrom="0"
+                    android:valueTo="-6"
+                    android:valueType="floatType"
+                    android:duration="120"
+                    android:startOffset="600"
+                    android:interpolator="@android:interpolator/fast_out_slow_in"/>
+                <objectAnimator
+                    android:propertyName="rotation"
+                    android:valueFrom="-6"
+                    android:valueTo="4"
+                    android:valueType="floatType"
+                    android:duration="140"
+                    android:startOffset="720"
+                    android:interpolator="@android:interpolator/fast_out_slow_in"/>
+                <objectAnimator
+                    android:propertyName="rotation"
+                    android:valueFrom="4"
+                    android:valueTo="0"
+                    android:valueType="floatType"
+                    android:duration="120"
+                    android:startOffset="860"
+                    android:interpolator="@android:interpolator/fast_out_slow_in"/>
+            </set>
+        </aapt:attr>
+    </target>
+
+    <!-- Flips edge-on like a coin and clicks back in with a little pop -->
+    <target android:name="clasp">
+        <aapt:attr name="android:animation">
+            <set android:ordering="together">
+                <objectAnimator
+                    android:propertyName="scaleX"
+                    android:valueFrom="1"
+                    android:valueTo="0"
+                    android:valueType="floatType"
+                    android:duration="90"
+                    android:startOffset="900"
+                    android:interpolator="@android:interpolator/accelerate_cubic"/>
+                <objectAnimator
+                    android:propertyName="scaleX"
+                    android:valueFrom="0"
+                    android:valueTo="1.18"
+                    android:valueType="floatType"
+                    android:duration="160"
+                    android:startOffset="990"
+                    android:interpolator="@android:interpolator/decelerate_cubic"/>
+                <objectAnimator
+                    android:propertyName="scaleX"
+                    android:valueFrom="1.18"
+                    android:valueTo="1"
+                    android:valueType="floatType"
+                    android:duration="110"
+                    android:startOffset="1150"
+                    android:interpolator="@android:interpolator/fast_out_slow_in"/>
+                <objectAnimator
+                    android:propertyName="scaleY"
+                    android:valueFrom="1"
+                    android:valueTo="1.18"
+                    android:valueType="floatType"
+                    android:duration="160"
+                    android:startOffset="990"
+                    android:interpolator="@android:interpolator/decelerate_cubic"/>
+                <objectAnimator
+                    android:propertyName="scaleY"
+                    android:valueFrom="1.18"
+                    android:valueTo="1"
+                    android:valueType="floatType"
+                    android:duration="110"
+                    android:startOffset="1150"
+                    android:interpolator="@android:interpolator/fast_out_slow_in"/>
+            </set>
+        </aapt:attr>
+    </target>
+</animated-vector>
