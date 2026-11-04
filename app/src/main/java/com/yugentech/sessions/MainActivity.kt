@@ -19,6 +19,7 @@ import androidx.navigation.compose.rememberNavController
 import com.yugentech.sessions.auth.viewmodel.AuthViewModel
 import com.yugentech.sessions.navigation.host.AppNavHost
 import com.yugentech.sessions.theme.SessionsTheme
+import com.yugentech.sessions.theme.ThemeRevealHost
 import com.yugentech.sessions.theme.config.ThemeMode
 import com.yugentech.sessions.theme.viewmodel.ThemeViewModel
 import kotlinx.coroutines.delay
@@ -84,20 +85,23 @@ class MainActivity : ComponentActivity() {
                 themeConfiguration = themeConfiguration,
                 hapticsEnabled = hapticsEnabled
             ) {
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
-                ) {
-                    if (showOnboarding != null && !authState.isInitializing) {
-                        AppNavHost(
-                            navController = navController,
-                            webClientId = getString(R.string.web_client_id),
-                            authViewModel = authViewModel,
-                            showOnboarding = showOnboarding!!,
-                            onOnboardingComplete = {
-                                authViewModel.completeOnboarding()
-                            }
-                        )
+                // Outermost, so a light/dark wipe covers the whole screen.
+                ThemeRevealHost {
+                    Surface(
+                        modifier = Modifier.fillMaxSize(),
+                        color = MaterialTheme.colorScheme.background
+                    ) {
+                        if (showOnboarding != null && !authState.isInitializing) {
+                            AppNavHost(
+                                navController = navController,
+                                webClientId = getString(R.string.web_client_id),
+                                authViewModel = authViewModel,
+                                showOnboarding = showOnboarding!!,
+                                onOnboardingComplete = {
+                                    authViewModel.completeOnboarding()
+                                }
+                            )
+                        }
                     }
                 }
             }

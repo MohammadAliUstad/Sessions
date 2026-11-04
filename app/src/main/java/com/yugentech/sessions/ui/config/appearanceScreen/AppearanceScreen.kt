@@ -30,7 +30,10 @@ import androidx.compose.ui.platform.LocalLayoutDirection
 import com.yugentech.sessions.theme.tokens.spacing
 import com.yugentech.sessions.theme.viewmodel.ThemeViewModel
 import com.yugentech.sessions.ui.config.appearanceScreen.components.AmoledThemeSelector
+import com.yugentech.sessions.ui.config.appearanceScreen.components.CardAnimationSelector
+import com.yugentech.sessions.ui.config.appearanceScreen.components.CardStyleSelector
 import com.yugentech.sessions.ui.config.appearanceScreen.components.FontSelector
+import com.yugentech.sessions.ui.config.appearanceScreen.components.SessionCardPreview
 import com.yugentech.sessions.ui.config.appearanceScreen.components.ThemeColorSelector
 import com.yugentech.sessions.ui.config.appearanceScreen.components.ThemeModeSelector
 
@@ -91,9 +94,17 @@ fun AppearanceScreen(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             item { ThemeModeSelector(themeViewModel = themeViewModel) }
-            item { AmoledThemeSelector(viewModel = themeViewModel) }
+            item {
+                AmoledThemeSelector(
+                    viewModel = themeViewModel,
+                    modifier = Modifier.padding(top = MaterialTheme.spacing.s)
+                )
+            }
             item { FontSelector(viewModel = themeViewModel) }
             item { ThemeColorSelector(viewModel = themeViewModel) }
+            item { SessionCardPreview(viewModel = themeViewModel) }
+            item { CardStyleSelector(viewModel = themeViewModel) }
+            item { CardAnimationSelector(viewModel = themeViewModel) }
         }
     }
 }

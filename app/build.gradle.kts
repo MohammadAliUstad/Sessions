@@ -1,3 +1,4 @@
+import com.google.firebase.crashlytics.buildtools.gradle.CrashlyticsExtension
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import java.io.FileInputStream
 import java.util.Properties
@@ -27,8 +28,8 @@ android {
         applicationId = "com.yugentech.sessions"
         minSdk = 26
         targetSdk = 37
-        versionCode = 25
-        versionName = "5.1.0"
+        versionCode = 26
+        versionName = "5.5.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
         val webClientId = localProperties.getProperty("WEB_CLIENT_ID") ?: ""
@@ -49,7 +50,7 @@ android {
             isMinifyEnabled = true
             isShrinkResources = true
 
-            configure<com.google.firebase.crashlytics.buildtools.gradle.CrashlyticsExtension> {
+            configure<CrashlyticsExtension> {
                 mappingFileUploadEnabled = true
             }
 

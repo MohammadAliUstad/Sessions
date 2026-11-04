@@ -29,6 +29,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
+import com.yugentech.sessions.timer.state.TimerMode
 import com.yugentech.sessions.timer.viewmodel.TimerViewModel
 import com.yugentech.sessions.ui.dash.homeScreen.components.FinishConfirmationDialog
 import com.yugentech.sessions.ui.dash.homeScreen.components.bottomRow.SessionControlBar
@@ -39,8 +40,10 @@ import com.yugentech.sessions.ui.dash.homeScreen.components.dialogs.SetsSettings
 import com.yugentech.sessions.ui.dash.homeScreen.components.dialogs.SoundSelectionSheet
 import com.yugentech.sessions.ui.dash.homeScreen.components.dialogs.TaskSelectionSheet
 import com.yugentech.sessions.templates.viewmodel.TemplateViewModel
+import com.yugentech.sessions.theme.viewmodel.ThemeViewModel
 import com.yugentech.sessions.ui.dash.homeScreen.components.durationSelection.SessionConfigCard
 import com.yugentech.sessions.ui.dash.homeScreen.components.durationSelection.SessionProgressCard
+import com.yugentech.sessions.ui.dash.homeScreen.components.hero.SessionPulse
 import com.yugentech.sessions.ui.dash.homeScreen.components.middle.TimerDisplay
 import com.yugentech.sessions.ui.dash.homeScreen.components.topRow.SessionHeader
 import com.yugentech.sessions.ui.dash.util.models.ActiveDialog
@@ -55,8 +58,10 @@ fun HomeScreen(
     homeViewModel: HomeViewModel,
     timerViewModel: TimerViewModel,
     userId: String,
-    templateViewModel: TemplateViewModel = koinViewModel()
+    templateViewModel: TemplateViewModel = koinViewModel(),
+    themeViewModel: ThemeViewModel = koinViewModel()
 ) {
+    val themeConfig by themeViewModel.themeConfiguration.collectAsStateWithLifecycle()
     val timerState by timerViewModel.timerState.collectAsStateWithLifecycle()
     val dashboardState by timerViewModel.dashboardState.collectAsStateWithLifecycle()
     val templates by templateViewModel.templates.collectAsStateWithLifecycle()
@@ -134,7 +139,19 @@ fun HomeScreen(
                                 isTimerRunning = timerState.isTimerRunning,
                                 onSkipToNext = {
                                     timerViewModel.skipToNextMode(view)
-                                }
+                                },
+                                cardStyle = themeConfig.cardStyle,
+                                animationStyle = themeConfig.cardAnimationStyle,
+                                // How far this block is, for the card's effect to follow
+                                pulse = SessionPulse(
+                                    progress = if (timerState.totalTime > 0) {
+                                        (1f - timerState.currentTime.toFloat() / timerState.totalTime).coerceIn(0f, 1f)
+                                    } else {
+                                        0f
+                                    },
+                                    running = timerState.isTimerRunning,
+                                    onBreak = timerState.currentMode != TimerMode.Focus
+                                )
                             )
                         } else {
                             SessionConfigCard(

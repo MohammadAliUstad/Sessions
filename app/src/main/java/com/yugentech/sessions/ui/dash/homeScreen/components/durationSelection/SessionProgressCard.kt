@@ -28,8 +28,6 @@ import androidx.compose.material.icons.filled.SkipNext
 import androidx.compose.material.icons.outlined.Flag
 import androidx.compose.material.icons.outlined.Timer
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.Icon
@@ -42,11 +40,20 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.Dp
+import com.yugentech.sessions.theme.config.CardAnimationStyle
+import com.yugentech.sessions.theme.config.CardStyle
 import com.yugentech.sessions.theme.tokens.components
 import com.yugentech.sessions.theme.tokens.corners
 import com.yugentech.sessions.theme.tokens.dimensions.AppAnimations
 import com.yugentech.sessions.theme.tokens.icons
 import com.yugentech.sessions.theme.tokens.spacing
+import com.yugentech.sessions.ui.dash.homeScreen.components.hero.HeroCardBackground
+import com.yugentech.sessions.ui.dash.homeScreen.components.hero.SessionPulse
+import com.yugentech.sessions.ui.dash.homeScreen.components.hero.heroBrush
+import com.yugentech.sessions.ui.dash.homeScreen.components.hero.heroPalette
+import com.yugentech.sessions.ui.dash.homeScreen.components.hero.heroSurface
+import com.yugentech.sessions.ui.dash.homeScreen.components.hero.rememberEffectTime
 import com.yugentech.sessions.ui.dash.state.ItemStatus
 import com.yugentech.sessions.ui.dash.state.SessionDashboardState
 import com.yugentech.sessions.ui.dash.state.SessionVisualItem
@@ -57,254 +64,272 @@ fun SessionProgressCard(
     state: SessionDashboardState,
     targetSets: Int,
     isTimerRunning: Boolean,
-    onSkipToNext: () -> Unit
+    onSkipToNext: () -> Unit,
+    cardStyle: CardStyle = CardStyle.FILLED,
+    animationStyle: CardAnimationStyle = CardAnimationStyle.NONE,
+    pulse: SessionPulse = SessionPulse(),
+    // Home's own side margin; the Appearance preview sits in a list that has its own
+    horizontalPadding: Dp = MaterialTheme.spacing.m
 ) {
     val fadeThrough = AppAnimations.Transitions.rememberExpressiveFadeThrough()
+    val palette = heroPalette(cardStyle)
+    val scheme = MaterialTheme.colorScheme
+    // The effect's own time, which only moves while the timer runs
+    val time = if (animationStyle != CardAnimationStyle.NONE) rememberEffectTime(pulse.running) else null
 
-    Card(
+    Box(
         modifier = Modifier
             .fillMaxWidth()
             .height(MaterialTheme.components.imageSizeLarge)
-            .padding(horizontal = MaterialTheme.spacing.m),
-        shape = RoundedCornerShape(MaterialTheme.corners.large),
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.secondaryContainer
-        )
+            .padding(horizontal = horizontalPadding)
+            .heroSurface(cardStyle, heroBrush(), RoundedCornerShape(MaterialTheme.corners.large))
     ) {
-        Column(
-            modifier = Modifier
-                .fillMaxHeight()
-                .padding(MaterialTheme.spacing.m),
-            verticalArrangement = Arrangement.SpaceBetween
-        ) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier.weight(1f)
-                ) {
-                    Icon(
-                        imageVector = Icons.Outlined.Flag,
-                        contentDescription = null,
-                        modifier = Modifier.size(MaterialTheme.icons.medium),
-                        tint = MaterialTheme.colorScheme.onSecondaryContainer.copy(alpha = 0.9f)
-                    )
+        HeroCardBackground(
+            style = animationStyle,
+            time = time,
+            pulse = pulse,
+            ink = palette.ink,
+            shade = palette.shade,
+            modifier = Modifier.matchParentSize()
+        )
 
-                    Spacer(modifier = Modifier.width(MaterialTheme.spacing.xsSmall))
-
-                    Text(
-                        text = if (state.isLongBreakActive) "Long Break Reached" else "Session Goal",
-                        style = MaterialTheme.typography.labelLarge,
-                        fontWeight = FontWeight.SemiBold,
-                        color = MaterialTheme.colorScheme.onSecondaryContainer.copy(alpha = 0.9f)
-                    )
-                }
-
-                if (state.showLongBreakBadge) {
-                    Surface(
-                        color = MaterialTheme.colorScheme.onSecondaryContainer.copy(alpha = 0.12f),
-                        shape = RoundedCornerShape(MaterialTheme.corners.smallMedium)
-                    ) {
-                        Row(
-                            modifier = Modifier.padding(
-                                horizontal = MaterialTheme.spacing.sm,
-                                vertical = MaterialTheme.spacing.xs
-                            ),
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Icon(
-                                imageVector = Icons.Outlined.Timer,
-                                contentDescription = null,
-                                modifier = Modifier.size(MaterialTheme.icons.small),
-                                tint = MaterialTheme.colorScheme.onSecondaryContainer.copy(alpha = 0.8f)
-                            )
-
-                            Spacer(modifier = Modifier.width(MaterialTheme.spacing.xxs))
-
-                            Text(
-                                text = state.badgeText,
-                                style = MaterialTheme.typography.labelSmall,
-                                fontWeight = FontWeight.Bold,
-                                color = MaterialTheme.colorScheme.onSecondaryContainer.copy(alpha = 0.8f),
-                                maxLines = 1
-                            )
-                        }
-                    }
-                } else {
-                    Spacer(modifier = Modifier.weight(1f))
-                }
-            }
-
-            Row(
+        // Every piece of the card reads onSecondaryContainer, so swapping it here recolours them all.
+        MaterialTheme(colorScheme = scheme.copy(onSecondaryContainer = palette.content)) {
+            Column(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .animateContentSize(),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween
+                    .fillMaxHeight()
+                    .padding(MaterialTheme.spacing.m),
+                verticalArrangement = Arrangement.SpaceBetween
             ) {
                 Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.s)
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
-                    AnimatedContent(
-                        targetState = state.isLongBreakActive to state.progressDisplay,
-                        transitionSpec = {
-                            if (targetState.first != initialState.first) {
-                                // Transition between Focus/Break modes (fade through)
-                                fadeThrough()
-                            } else {
-                                // Transition between numbers (Vertical Slide)
-                                (slideInVertically { it } + fadeIn(tween(AppAnimations.Durations.Standard)))
-                                    .togetherWith(slideOutVertically { -it } + fadeOut(tween(AppAnimations.Durations.Fast)))
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier.weight(1f)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Outlined.Flag,
+                            contentDescription = null,
+                            modifier = Modifier.size(MaterialTheme.icons.medium),
+                            tint = MaterialTheme.colorScheme.onSecondaryContainer.copy(alpha = 0.9f)
+                        )
+
+                        Spacer(modifier = Modifier.width(MaterialTheme.spacing.xsSmall))
+
+                        Text(
+                            text = if (state.isLongBreakActive) "Long Break Reached" else "Session Goal",
+                            style = MaterialTheme.typography.labelLarge,
+                            fontWeight = FontWeight.SemiBold,
+                            color = MaterialTheme.colorScheme.onSecondaryContainer.copy(alpha = 0.9f)
+                        )
+                    }
+
+                    if (state.showLongBreakBadge) {
+                        Surface(
+                            color = MaterialTheme.colorScheme.onSecondaryContainer.copy(alpha = 0.12f),
+                            shape = RoundedCornerShape(MaterialTheme.corners.smallMedium)
+                        ) {
+                            Row(
+                                modifier = Modifier.padding(
+                                    horizontal = MaterialTheme.spacing.sm,
+                                    vertical = MaterialTheme.spacing.xs
+                                ),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Outlined.Timer,
+                                    contentDescription = null,
+                                    modifier = Modifier.size(MaterialTheme.icons.small),
+                                    tint = MaterialTheme.colorScheme.onSecondaryContainer.copy(alpha = 0.8f)
+                                )
+
+                                Spacer(modifier = Modifier.width(MaterialTheme.spacing.xxs))
+
+                                Text(
+                                    text = state.badgeText,
+                                    style = MaterialTheme.typography.labelSmall,
+                                    fontWeight = FontWeight.Bold,
+                                    color = MaterialTheme.colorScheme.onSecondaryContainer.copy(alpha = 0.8f),
+                                    maxLines = 1
+                                )
                             }
-                        },
-                        label = "progressAnimation"
-                    ) { (isLongBreak, progress) ->
-                        if (isLongBreak) {
-                            Text(
-                                text = progress,
-                                style = MaterialTheme.typography.displaySmall.copy(fontWeight = FontWeight.Bold),
-                                color = MaterialTheme.colorScheme.onSecondaryContainer
-                            )
-                        } else {
-                            Row(verticalAlignment = Alignment.CenterVertically) {
+                        }
+                    } else {
+                        Spacer(modifier = Modifier.weight(1f))
+                    }
+                }
+
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .animateContentSize(),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.s)
+                    ) {
+                        AnimatedContent(
+                            targetState = state.isLongBreakActive to state.progressDisplay,
+                            transitionSpec = {
+                                if (targetState.first != initialState.first) {
+                                    // Transition between Focus/Break modes (fade through)
+                                    fadeThrough()
+                                } else {
+                                    // Transition between numbers (Vertical Slide)
+                                    (slideInVertically { it } + fadeIn(tween(AppAnimations.Durations.Standard)))
+                                        .togetherWith(slideOutVertically { -it } + fadeOut(tween(AppAnimations.Durations.Fast)))
+                                }
+                            },
+                            label = "progressAnimation"
+                        ) { (isLongBreak, progress) ->
+                            if (isLongBreak) {
                                 Text(
                                     text = progress,
-                                    style = MaterialTheme.typography.displaySmall,
-                                    fontWeight = FontWeight.Bold,
+                                    style = MaterialTheme.typography.displaySmall.copy(fontWeight = FontWeight.Bold),
                                     color = MaterialTheme.colorScheme.onSecondaryContainer
                                 )
-                                Text(
-                                    text = "/$targetSets",
-                                    style = MaterialTheme.typography.headlineSmall,
-                                    color = MaterialTheme.colorScheme.onSecondaryContainer.copy(
-                                        alpha = 0.5f
+                            } else {
+                                Row(verticalAlignment = Alignment.CenterVertically) {
+                                    Text(
+                                        text = progress,
+                                        style = MaterialTheme.typography.displaySmall,
+                                        fontWeight = FontWeight.Bold,
+                                        color = MaterialTheme.colorScheme.onSecondaryContainer
+                                    )
+                                    Text(
+                                        text = "/$targetSets",
+                                        style = MaterialTheme.typography.headlineSmall,
+                                        color = MaterialTheme.colorScheme.onSecondaryContainer.copy(
+                                            alpha = 0.5f
+                                        ),
+                                        modifier = Modifier.padding(start = MaterialTheme.spacing.xxs)
+                                    )
+                                }
+                            }
+                        }
+
+                        if (targetSets > 1) {
+                            FilledTonalButton(
+                                onClick = onSkipToNext,
+                                enabled = isTimerRunning,
+                                colors = ButtonDefaults.filledTonalButtonColors(
+                                    containerColor = MaterialTheme.colorScheme.onSecondaryContainer.copy(
+                                        alpha = 0.15f
                                     ),
-                                    modifier = Modifier.padding(start = MaterialTheme.spacing.xxs)
+                                    contentColor = MaterialTheme.colorScheme.onSecondaryContainer,
+                                    disabledContainerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
+                                    disabledContentColor = MaterialTheme.colorScheme.onSurfaceVariant
+                                ),
+                                contentPadding = PaddingValues(
+                                    horizontal = MaterialTheme.spacing.sm,
+                                    vertical = MaterialTheme.spacing.xs
+                                ),
+                                modifier = Modifier.height(MaterialTheme.components.buttonSmall)
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.SkipNext,
+                                    contentDescription = null,
+                                    modifier = Modifier.size(MaterialTheme.icons.smallMedium)
+                                )
+                                Spacer(modifier = Modifier.width(MaterialTheme.spacing.xxs))
+                                Text(
+                                    text = "Skip",
+                                    style = MaterialTheme.typography.labelMedium,
+                                    fontWeight = FontWeight.SemiBold
                                 )
                             }
                         }
                     }
 
-                    if (targetSets > 1) {
-                        FilledTonalButton(
-                            onClick = onSkipToNext,
-                            enabled = isTimerRunning,
-                            colors = ButtonDefaults.filledTonalButtonColors(
-                                containerColor = MaterialTheme.colorScheme.onSecondaryContainer.copy(
-                                    alpha = 0.15f
-                                ),
-                                contentColor = MaterialTheme.colorScheme.onSecondaryContainer,
-                                disabledContainerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
-                                disabledContentColor = MaterialTheme.colorScheme.onSurfaceVariant
-                            ),
-                            contentPadding = PaddingValues(
-                                horizontal = MaterialTheme.spacing.sm,
-                                vertical = MaterialTheme.spacing.xs
-                            ),
-                            modifier = Modifier.height(MaterialTheme.components.buttonSmall)
-                        ) {
-                            Icon(
-                                imageVector = Icons.Default.SkipNext,
-                                contentDescription = null,
-                                modifier = Modifier.size(MaterialTheme.icons.smallMedium)
-                            )
-                            Spacer(modifier = Modifier.width(MaterialTheme.spacing.xxs))
+                    AnimatedContent(
+                        targetState = state.mainMessage to state.subMessage,
+                        transitionSpec = { fadeThrough() },
+                        label = "taglineAnimation"
+                    ) { (main, sub) ->
+                        Column(horizontalAlignment = Alignment.End) {
                             Text(
-                                text = "Skip",
-                                style = MaterialTheme.typography.labelMedium,
-                                fontWeight = FontWeight.SemiBold
+                                text = main,
+                                style = MaterialTheme.typography.titleMedium,
+                                fontWeight = FontWeight.SemiBold,
+                                color = MaterialTheme.colorScheme.onSecondaryContainer,
+                                textAlign = TextAlign.End
+                            )
+                            Text(
+                                text = sub,
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.onSecondaryContainer.copy(alpha = 0.6f),
+                                textAlign = TextAlign.End
                             )
                         }
                     }
                 }
 
-                AnimatedContent(
-                    targetState = state.mainMessage to state.subMessage,
-                    transitionSpec = { fadeThrough() },
-                    label = "taglineAnimation"
-                ) { (main, sub) ->
-                    Column(horizontalAlignment = Alignment.End) {
-                        Text(
-                            text = main,
-                            style = MaterialTheme.typography.titleMedium,
-                            fontWeight = FontWeight.SemiBold,
-                            color = MaterialTheme.colorScheme.onSecondaryContainer,
-                            textAlign = TextAlign.End
-                        )
-                        Text(
-                            text = sub,
-                            style = MaterialTheme.typography.bodySmall,
-                            color = MaterialTheme.colorScheme.onSecondaryContainer.copy(alpha = 0.6f),
-                            textAlign = TextAlign.End
-                        )
-                    }
-                }
-            }
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.xs)
+                ) {
+                    state.visualSchedule.forEach { item ->
+                        val (completedColor, activeColor, upcomingColor) = when (item) {
+                            is SessionVisualItem.FocusBlock -> Triple(
+                                MaterialTheme.colorScheme.primary,
+                                MaterialTheme.colorScheme.onSecondaryContainer,
+                                MaterialTheme.colorScheme.onSecondaryContainer.copy(alpha = 0.1f)
+                            )
 
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.xs)
-            ) {
-                state.visualSchedule.forEach { item ->
-                    val (completedColor, activeColor, upcomingColor) = when (item) {
-                        is SessionVisualItem.FocusBlock -> Triple(
-                            MaterialTheme.colorScheme.primary,
-                            MaterialTheme.colorScheme.onSecondaryContainer,
-                            MaterialTheme.colorScheme.onSecondaryContainer.copy(alpha = 0.1f)
-                        )
+                            is SessionVisualItem.ShortBreak -> Triple(
+                                MaterialTheme.colorScheme.tertiary,
+                                MaterialTheme.colorScheme.tertiary,
+                                MaterialTheme.colorScheme.tertiary.copy(alpha = 0.3f)
+                            )
 
-                        is SessionVisualItem.ShortBreak -> Triple(
-                            MaterialTheme.colorScheme.tertiary,
-                            MaterialTheme.colorScheme.tertiary,
-                            MaterialTheme.colorScheme.tertiary.copy(alpha = 0.3f)
-                        )
-
-                        is SessionVisualItem.LongBreak -> Triple(
-                            MaterialTheme.colorScheme.error,
-                            MaterialTheme.colorScheme.error,
-                            MaterialTheme.colorScheme.error.copy(alpha = 0.3f)
-                        )
-                    }
-
-                    val color = when (item.status) {
-                        ItemStatus.Completed -> completedColor
-                        ItemStatus.Current -> activeColor
-                        ItemStatus.Upcoming -> upcomingColor
-                    }
-
-                    when (item) {
-                        is SessionVisualItem.FocusBlock -> {
-                            Box(
-                                modifier = Modifier
-                                    .weight(1f)
-                                    .height(MaterialTheme.spacing.xsSmall)
-                                    .clip(CircleShape)
-                                    .background(color)
+                            is SessionVisualItem.LongBreak -> Triple(
+                                MaterialTheme.colorScheme.error,
+                                MaterialTheme.colorScheme.error,
+                                MaterialTheme.colorScheme.error.copy(alpha = 0.3f)
                             )
                         }
 
-                        is SessionVisualItem.ShortBreak -> {
-                            Box(
-                                modifier = Modifier
-                                    .size(MaterialTheme.spacing.xsSmall)
-                                    .clip(CircleShape)
-                                    .background(color)
-                            )
+                        val color = when (item.status) {
+                            ItemStatus.Completed -> completedColor
+                            ItemStatus.Current -> activeColor
+                            ItemStatus.Upcoming -> upcomingColor
                         }
 
-                        is SessionVisualItem.LongBreak -> {
-                            Box(
-                                modifier = Modifier
-                                    .width(MaterialTheme.spacing.sm)
-                                    .height(MaterialTheme.spacing.sm)
-                                    .clip(CircleShape)
-                                    .background(color)
-                            )
+                        when (item) {
+                            is SessionVisualItem.FocusBlock -> {
+                                Box(
+                                    modifier = Modifier
+                                        .weight(1f)
+                                        .height(MaterialTheme.spacing.xsSmall)
+                                        .clip(CircleShape)
+                                        .background(color)
+                                )
+                            }
+
+                            is SessionVisualItem.ShortBreak -> {
+                                Box(
+                                    modifier = Modifier
+                                        .size(MaterialTheme.spacing.xsSmall)
+                                        .clip(CircleShape)
+                                        .background(color)
+                                )
+                            }
+
+                            is SessionVisualItem.LongBreak -> {
+                                Box(
+                                    modifier = Modifier
+                                        .width(MaterialTheme.spacing.sm)
+                                        .height(MaterialTheme.spacing.sm)
+                                        .clip(CircleShape)
+                                        .background(color)
+                                )
+                            }
                         }
                     }
                 }

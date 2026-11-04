@@ -8,5 +8,7 @@ data class ThemeConfiguration(
     val colorTheme: ColorTheme = ColorTheme.SESSIONS,
     val useDynamicColors: Boolean = true,
     val isAmoledMode: Boolean = false,
-    val appFont: AppFont = AppFont.Google
+    val appFont: AppFont = AppFont.Google,
+    val cardStyle: CardStyle = CardStyle.FILLED,
+    val cardAnimationStyle: CardAnimationStyle = CardAnimationStyle.NONE
 )

@@ -25,20 +25,26 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material.icons.automirrored.filled.OpenInNew
+import androidx.compose.material.icons.automirrored.outlined.CallSplit
+import androidx.compose.material.icons.outlined.AccountBalanceWallet
 import androidx.compose.material.icons.outlined.AutoAwesome
 import androidx.compose.material.icons.outlined.AutoStories
 import androidx.compose.material.icons.outlined.Checklist
 import androidx.compose.material.icons.outlined.CloudOff
 import androidx.compose.material.icons.outlined.Eco
+import androidx.compose.material.icons.outlined.EditNote
+import androidx.compose.material.icons.outlined.Handshake
 import androidx.compose.material.icons.outlined.History
 import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.Image
 import androidx.compose.material.icons.outlined.Insights
+import androidx.compose.material.icons.outlined.KeyboardVoice
 import androidx.compose.material.icons.outlined.Kitchen
 import androidx.compose.material.icons.outlined.LocalBar
 import androidx.compose.material.icons.outlined.LocalLibrary
 import androidx.compose.material.icons.outlined.LunchDining
 import androidx.compose.material.icons.outlined.Psychology
+import androidx.compose.material.icons.outlined.QueryStats
 import androidx.compose.material.icons.outlined.RecordVoiceOver
 import androidx.compose.material.icons.outlined.School
 import androidx.compose.material.icons.outlined.Timer
@@ -82,9 +88,10 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.net.toUri
+import com.yugentech.sessions.ui.config.aboutScreen.components.AnimatedHajimeIcon
+import com.yugentech.sessions.ui.config.aboutScreen.components.AnimatedMyntIcon
 import com.yugentech.sessions.ui.config.aboutScreen.components.AnimatedQuillIcon
 import com.yugentech.sessions.ui.config.aboutScreen.components.AnimatedRyoriIcon
-import com.yugentech.sessions.ui.config.aboutScreen.components.AnimatedHajimeIcon
 import kotlin.time.Duration.Companion.milliseconds
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -147,6 +154,18 @@ fun MoreAppsScreen(
 
             item { SectionDivider() }
 
+            // --- Mynt ---
+            item { MyntHeroSection() }
+
+            item {
+                Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
+                    SectionLabel("Key Features")
+                    MyntCapabilitiesCarousel()
+                }
+            }
+
+            item { SectionDivider() }
+
             // --- Hajime ---
             item { HajimeHeroSection() }
 
@@ -183,13 +202,13 @@ private fun IntroText() {
         verticalArrangement = Arrangement.spacedBy(4.dp)
     ) {
         Text(
-            text = "Three more apps, made with the same care",
+            text = "Four more apps, made with the same care",
             style = MaterialTheme.typography.headlineSmall,
             fontWeight = FontWeight.Bold,
             color = MaterialTheme.colorScheme.onSurface
         )
         Text(
-            text = "If you enjoy focusing with Sessions, you might like reading with Quill, learning Japanese with Hajime and cooking with Ryori.",
+            text = "If you enjoy focusing with Sessions, you might like reading with Quill, keeping track of your money with Mynt, learning Japanese with Hajime and cooking with Ryori.",
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant
         )
@@ -319,8 +338,8 @@ private fun RyoriHeroSection() {
 @Composable
 private fun RyoriCapabilitiesCarousel() {
     CapabilitiesCarousel(
-        // Third carousel on the screen: secondary, tertiary, primary.
-        colorOffset = 1,
+        // Fourth carousel on the screen: back to primary, secondary, tertiary.
+        colorOffset = 0,
         items = listOf(
             CapabilityItem(
                 icon = Icons.Outlined.Home,
@@ -362,6 +381,73 @@ private fun RyoriCapabilitiesCarousel() {
     )
 }
 
+// ============================== Mynt ==============================
+
+@Composable
+private fun MyntHeroSection() {
+    AppHeroSection(
+        name = "Mynt",
+        tagline = "Your Voice Money Assistant",
+        iconBackground = MyntIconBackground,
+        animationMillis = 1300,
+        onDownloadClick = null
+    ) { isAnimating ->
+        // Drawn larger than the tile, as Mynt itself does, so the wallet fills it and the tile
+        // clips the safe-zone margin.
+        AnimatedMyntIcon(
+            isAnimating = isAnimating,
+            modifier = Modifier.requiredSize(132.dp)
+        )
+    }
+}
+
+// Mynt's own key features, from its Meet Mynt screen.
+@Composable
+private fun MyntCapabilitiesCarousel() {
+    CapabilitiesCarousel(
+        // Second carousel on the screen: secondary, tertiary, primary.
+        colorOffset = 1,
+        items = listOf(
+            CapabilityItem(
+                icon = Icons.Outlined.KeyboardVoice,
+                title = "Just Say It",
+                description = "Tell Mynt what you spent the way you'd tell a friend. Several things in one sentence become separate entries.",
+                slot = 0
+            ),
+            CapabilityItem(
+                icon = Icons.Outlined.Handshake,
+                title = "Lend & Borrow",
+                description = "Say who you lent to or borrowed from, and when they paid you back. Mynt keeps every balance straight.",
+                slot = 1
+            ),
+            CapabilityItem(
+                icon = Icons.AutoMirrored.Outlined.CallSplit,
+                title = "Split Bills",
+                description = "Split a dinner or a trip between friends just by saying who was there and what it cost.",
+                slot = 2
+            ),
+            CapabilityItem(
+                icon = Icons.Outlined.QueryStats,
+                title = "Ask About Your Money",
+                description = "Ask how much you spent on food this month, or who still owes you, and get an answer straight away.",
+                slot = 0
+            ),
+            CapabilityItem(
+                icon = Icons.Outlined.EditNote,
+                title = "Check Before Saving",
+                description = "Everything Mynt understood is shown first, so you can fix an amount or a category before it's saved.",
+                slot = 1
+            ),
+            CapabilityItem(
+                icon = Icons.Outlined.RecordVoiceOver,
+                title = "Talks Back",
+                description = "When something's missing, Mynt asks you, and can read its questions aloud so you can answer hands-free.",
+                slot = 2
+            )
+        )
+    )
+}
+
 // ============================== Hajime ==============================
 
 @Composable
@@ -383,7 +469,7 @@ private fun HajimeHeroSection() {
 @Composable
 private fun HajimeCapabilitiesCarousel() {
     CapabilitiesCarousel(
-        // Second carousel on the screen: tertiary, primary, secondary.
+        // Third carousel on the screen: tertiary, primary, secondary.
         colorOffset = 2,
         items = listOf(
             CapabilityItem(
@@ -635,18 +721,19 @@ private fun ClosingCard() {
             Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                 OverviewIcon(icon = Icons.Outlined.Timer, contentDescription = "Sessions")
                 OverviewIcon(icon = Icons.Outlined.AutoStories, contentDescription = "Quill")
+                OverviewIcon(icon = Icons.Outlined.AccountBalanceWallet, contentDescription = "Mynt")
                 OverviewIcon(icon = Icons.Outlined.Translate, contentDescription = "Hajime")
                 OverviewIcon(icon = Icons.Outlined.LunchDining, contentDescription = "Ryori")
             }
             Text(
-                text = "Focus. Read. Learn. Cook.",
+                text = "Focus. Read. Track. Learn. Cook.",
                 style = MaterialTheme.typography.headlineSmall,
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.onPrimaryContainer,
                 textAlign = TextAlign.Center
             )
             Text(
-                text = "Sessions, Quill, Hajime and Ryori are made by YugenTech: small, thoughtful apps built to make everyday moments a little calmer.",
+                text = "Sessions, Quill, Mynt, Hajime and Ryori are made by YugenTech: small, thoughtful apps built to make everyday moments a little calmer.",
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.8f),
                 textAlign = TextAlign.Center,
@@ -702,6 +789,9 @@ fun MoreFromUsSheet(onDismiss: () -> Unit, onSeeAll: () -> Unit) {
         SheetEntry("Quill", "Read Deeper. Think Further.", "com.yugentech.quill", QuillIconBackground, 1900) {
             AnimatedQuillIcon(isAnimating = it, modifier = Modifier.requiredSize(41.dp))
         },
+        SheetEntry("Mynt", "Your Voice Money Assistant", null, MyntIconBackground, 1300) {
+            AnimatedMyntIcon(isAnimating = it, modifier = Modifier.requiredSize(84.dp))
+        },
         SheetEntry("Hajime", "Learn to Read Japanese", null, HajimeIconBackground, 1660) {
             AnimatedHajimeIcon(isAnimating = it, modifier = Modifier.requiredSize(100.dp))
         },
@@ -751,7 +841,7 @@ fun MoreFromUsSheet(onDismiss: () -> Unit, onSeeAll: () -> Unit) {
                 color = MaterialTheme.colorScheme.onSurface
             )
             Text(
-                text = "Three more apps, made with the same care.",
+                text = "Four more apps, made with the same care.",
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier.padding(top = 4.dp)
@@ -879,6 +969,7 @@ private fun openPlayStore(context: Context, packageName: String) {
 
 // Launcher background colours, so each icon sits on the same tile as on the home screen.
 private val QuillIconBackground = Color(0xFF576421)
+private val MyntIconBackground = Color(0xFFFBF6E4)
 private val RyoriIconBackground = Color(0xFFFFFBEB)
 private val HajimeIconBackground = Color(0xFFF5F0E8)
 

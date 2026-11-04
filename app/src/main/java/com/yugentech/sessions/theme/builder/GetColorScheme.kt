@@ -30,7 +30,7 @@ fun getColorScheme(
         ColorTheme.DYNAMIC -> {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
                 val context = LocalContext.current
-                if (isDarkMode) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
+                if (isDarkMode) dynamicDarkColorScheme(context).dimTertiaryContainer() else dynamicLightColorScheme(context)
             } else {
                 if (isDarkMode) AppColorSchemes.SessionsDarkColorScheme else AppColorSchemes.SessionsLightColorScheme
             }
@@ -68,6 +68,25 @@ fun getColorScheme(
         baseScheme
     }
 }
+
+/**
+ * Dynamic's dark tertiary container glares among the other containers, so it's toned down a
+ * little. It stays a light pastel, so its text is a deep shade of the same colour, which reads
+ * clearly on it (around 6:1).
+ */
+fun ColorScheme.dimTertiaryContainer(): ColorScheme {
+    val container = lerp(tertiaryContainer, Color.Black, TERTIARY_CONTAINER_DIMMING)
+    return copy(
+        tertiaryContainer = container,
+        onTertiaryContainer = lerp(container, Color.Black, ON_TERTIARY_CONTAINER_DARKENING)
+    )
+}
+
+/** How far Dynamic's dark tertiary container is pulled toward black. */
+private const val TERTIARY_CONTAINER_DIMMING = 0.2f
+
+/** How far the container colour is pulled toward black to make the text on it. */
+private const val ON_TERTIARY_CONTAINER_DARKENING = 0.6f
 
 fun ColorScheme.deepenSurfaces(fraction: Float): ColorScheme {
     return this.copy(
