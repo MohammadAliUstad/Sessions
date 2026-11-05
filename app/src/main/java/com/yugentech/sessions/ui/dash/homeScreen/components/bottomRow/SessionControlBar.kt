@@ -36,6 +36,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import com.airbnb.lottie.LottieProperty
 import com.airbnb.lottie.compose.LottieAnimation
@@ -59,7 +60,13 @@ fun SessionControlBar(
     onSetsClick: () -> Unit,
     onStopDiscard: () -> Unit,
     onStopSave: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    // The play button while the timer runs; Classic uses tertiary, other layouts can pass their own
+    playingContainerColor: Color = MaterialTheme.colorScheme.tertiaryContainer,
+    playingContentColor: Color = MaterialTheme.colorScheme.onTertiaryContainer,
+    // Side buttons on a plain surface tone, with Discard and Finish told apart by their icon
+    // colour rather than a solid fill; Classic keeps its filled ones
+    quietSideButtons: Boolean = false
 ) {
     val interactionSources = remember { List(3) { MutableInteractionSource() } }
 
@@ -83,7 +90,7 @@ fun SessionControlBar(
                         onClick = {
                             if (isSessionActive) onStopDiscard() else onSoundClick()
                         },
-                        colors = getLeftButtonColors(isSessionActive),
+                        colors = getLeftButtonColors(isSessionActive, quietSideButtons),
                         shapes = IconButtonDefaults.shapes(),
                         interactionSource = interactionSources[0],
                         modifier = Modifier
@@ -132,8 +139,8 @@ fun SessionControlBar(
                         colors = IconButtonDefaults.filledIconToggleButtonColors(
                             containerColor = MaterialTheme.colorScheme.primary,
                             contentColor = MaterialTheme.colorScheme.onPrimary,
-                            checkedContainerColor = MaterialTheme.colorScheme.tertiaryContainer,
-                            checkedContentColor = MaterialTheme.colorScheme.onTertiaryContainer
+                            checkedContainerColor = playingContainerColor,
+                            checkedContentColor = playingContentColor
                         ),
                         shapes = IconToggleButtonShapes(
                             shape = CircleShape,
@@ -177,7 +184,7 @@ fun SessionControlBar(
                         onClick = {
                             if (isSessionActive) onStopSave() else onSetsClick()
                         },
-                        colors = getRightButtonColors(isSessionActive),
+                        colors = getRightButtonColors(isSessionActive, quietSideButtons),
                         shapes = IconButtonDefaults.shapes(),
                         interactionSource = interactionSources[2],
                         modifier = Modifier
@@ -222,26 +229,43 @@ fun SessionControlBar(
 }
 
 @Composable
-private fun getLeftButtonColors(isSessionActive: Boolean) =
-    if (isSessionActive) {
-        IconButtonDefaults.filledTonalIconButtonColors(
-            containerColor = MaterialTheme.colorScheme.errorContainer,
-            contentColor = MaterialTheme.colorScheme.onErrorContainer
-        )
-    } else {
-        IconButtonDefaults.filledTonalIconButtonColors()
-    }
+private fun getLeftButtonColors(isSessionActive: Boolean, quiet: Boolean) = when {
+    // Quiet (Refined): a neutral filled tone, a step brighter during a session so Discard still reads
+    quiet -> IconButtonDefaults.filledTonalIconButtonColors(
+        containerColor = MaterialTheme.colorScheme.surfaceContainerHighest,
+        contentColor = if (isSessionActive) MaterialTheme.colorScheme.onSurface else MaterialTheme.colorScheme.onSurfaceVariant
+    )
+
+    // During a session the three buttons take the three roles: Discard secondary, Pause
+    // tertiary, Finish primary. No error red
+    isSessionActive -> IconButtonDefaults.filledTonalIconButtonColors(
+        containerColor = MaterialTheme.colorScheme.secondaryContainer,
+        contentColor = MaterialTheme.colorScheme.onSecondaryContainer
+    )
+
+    else -> IconButtonDefaults.filledTonalIconButtonColors()
+}
 
 @Composable
-private fun getRightButtonColors(isSessionActive: Boolean) =
-    if (isSessionActive) {
-        IconButtonDefaults.filledTonalIconButtonColors(
-            containerColor = MaterialTheme.colorScheme.primaryContainer,
-            contentColor = MaterialTheme.colorScheme.onPrimaryContainer
-        )
-    } else {
-        IconButtonDefaults.filledTonalIconButtonColors()
-    }
+private fun getRightButtonColors(isSessionActive: Boolean, quiet: Boolean) = when {
+    // Quiet (Refined): neutral before a session; during one, Finish takes the primary container
+    quiet && isSessionActive -> IconButtonDefaults.filledTonalIconButtonColors(
+        containerColor = MaterialTheme.colorScheme.primaryContainer,
+        contentColor = MaterialTheme.colorScheme.onPrimaryContainer
+    )
+
+    quiet -> IconButtonDefaults.filledTonalIconButtonColors(
+        containerColor = MaterialTheme.colorScheme.surfaceContainerHighest,
+        contentColor = MaterialTheme.colorScheme.onSurfaceVariant
+    )
+
+    isSessionActive -> IconButtonDefaults.filledTonalIconButtonColors(
+        containerColor = MaterialTheme.colorScheme.primaryContainer,
+        contentColor = MaterialTheme.colorScheme.onPrimaryContainer
+    )
+
+    else -> IconButtonDefaults.filledTonalIconButtonColors()
+}
 
 @Composable
 private fun AnimatedPlayPauseIcon(

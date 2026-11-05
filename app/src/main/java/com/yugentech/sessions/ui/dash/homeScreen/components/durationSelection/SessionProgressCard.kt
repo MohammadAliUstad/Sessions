@@ -1,6 +1,13 @@
 package com.yugentech.sessions.ui.dash.homeScreen.components.durationSelection
 
 import androidx.compose.animation.AnimatedContent
+import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.geometry.CornerRadius
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.runtime.getValue
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
@@ -274,7 +281,7 @@ fun SessionProgressCard(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.xs)
                 ) {
-                    state.visualSchedule.forEach { item ->
+                    state.visualSchedule.forEachIndexed { index, item ->
                         val (completedColor, activeColor, upcomingColor) = when (item) {
                             is SessionVisualItem.FocusBlock -> Triple(
                                 MaterialTheme.colorScheme.primary,
@@ -295,42 +302,50 @@ fun SessionProgressCard(
                             )
                         }
 
-                        val color = when (item.status) {
-                            ItemStatus.Completed -> completedColor
-                            ItemStatus.Current -> activeColor
-                            ItemStatus.Upcoming -> upcomingColor
+                        // The mark eases into the current or waiting colour, and a finished one
+                        // fills with its completed colour from the left (or the centre, for dots)
+                        // rather than snapping, so a skip reads as one finishing and the next starting
+                        val base by animateColorAsState(
+                            targetValue = if (item.status == ItemStatus.Current) activeColor else upcomingColor,
+                            animationSpec = tween(500),
+                            label = "scheduleBase$index"
+                        )
+                        val done by animateFloatAsState(
+                            targetValue = if (item.status == ItemStatus.Completed) 1f else 0f,
+                            animationSpec = tween(650, easing = FastOutSlowInEasing),
+                            label = "scheduleDone$index"
+                        )
+
+                        val markModifier = when (item) {
+                            is SessionVisualItem.FocusBlock -> Modifier
+                                .weight(1f)
+                                .height(MaterialTheme.spacing.xsSmall)
+
+                            is SessionVisualItem.ShortBreak -> Modifier.size(MaterialTheme.spacing.xsSmall)
+
+                            is SessionVisualItem.LongBreak -> Modifier
+                                .width(MaterialTheme.spacing.sm)
+                                .height(MaterialTheme.spacing.sm)
                         }
 
-                        when (item) {
-                            is SessionVisualItem.FocusBlock -> {
-                                Box(
-                                    modifier = Modifier
-                                        .weight(1f)
-                                        .height(MaterialTheme.spacing.xsSmall)
-                                        .clip(CircleShape)
-                                        .background(color)
-                                )
-                            }
-
-                            is SessionVisualItem.ShortBreak -> {
-                                Box(
-                                    modifier = Modifier
-                                        .size(MaterialTheme.spacing.xsSmall)
-                                        .clip(CircleShape)
-                                        .background(color)
-                                )
-                            }
-
-                            is SessionVisualItem.LongBreak -> {
-                                Box(
-                                    modifier = Modifier
-                                        .width(MaterialTheme.spacing.sm)
-                                        .height(MaterialTheme.spacing.sm)
-                                        .clip(CircleShape)
-                                        .background(color)
-                                )
-                            }
-                        }
+                        Box(
+                            modifier = markModifier
+                                .clip(CircleShape)
+                                .background(base)
+                                .drawBehind {
+                                    if (done <= 0f) return@drawBehind
+                                    if (size.width > size.height * 1.5f) {
+                                        drawRoundRect(
+                                            color = completedColor,
+                                            size = Size((size.width * done).coerceAtLeast(size.height), size.height),
+                                            cornerRadius = CornerRadius(size.height / 2f),
+                                            alpha = (done * 6f).coerceAtMost(1f)
+                                        )
+                                    } else {
+                                        drawCircle(completedColor, radius = size.minDimension / 2f * done)
+                                    }
+                                }
+                        )
                     }
                 }
             }

@@ -27,4 +27,11 @@ class AlertsViewModel(
             alertsRepository.setHapticsEnabled(enabled)
         }
     }
+
+    fun setKeepScreenOn(enabled: Boolean) {
+        Timber.d("User toggled keep screen on: $enabled")
+        viewModelScope.launch {
+            alertsRepository.setKeepScreenOn(enabled)
+        }
+    }
 }

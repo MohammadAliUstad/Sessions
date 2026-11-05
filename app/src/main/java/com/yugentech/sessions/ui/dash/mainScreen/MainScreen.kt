@@ -6,10 +6,10 @@ import android.os.Build
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.pager.HorizontalPager
-import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
@@ -21,21 +21,24 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.saveable.rememberSaveableStateHolder
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.zIndex
 import androidx.core.content.ContextCompat
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.yugentech.sessions.navigation.screen.BottomBarScreen
 import com.yugentech.sessions.notification.viewmodel.NotificationViewModel
 import com.yugentech.sessions.timer.viewmodel.TimerViewModel
@@ -46,12 +49,13 @@ import com.yugentech.sessions.viewModels.ProfileViewModel
 import com.yugentech.sessions.alerts.viewmodel.AlertsViewModel
 import com.yugentech.sessions.ui.dash.homeScreen.HomeScreen
 import com.yugentech.sessions.ui.dash.mainScreen.components.BottomNavBar
+import com.yugentech.sessions.ui.dash.mainScreen.components.LocalTopBarInset
 import com.yugentech.sessions.ui.dash.mainScreen.components.ToastMessage
 import com.yugentech.sessions.ui.dash.mainScreen.components.TopAppBar
 import com.yugentech.sessions.ui.dash.profileScreen.ProfileScreen
 import com.yugentech.sessions.ui.dash.settingsScreen.SettingsScreen
+import com.yugentech.sessions.ui.dash.util.rememberNavTransitions
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 
 private val bottomNavItems = listOf(BottomBarScreen.Profile, BottomBarScreen.Home, BottomBarScreen.Settings)
@@ -71,11 +75,23 @@ fun MainScreen(
     onAbout: () -> Unit,
     onWhatsNew: () -> Unit,
     onMoreApps: () -> Unit,
-    onAppearance: () -> Unit
+    onAppearance: () -> Unit,
+    onHomeCustomization: () -> Unit = {}
 ) {
     val context = LocalContext.current
+    val view = LocalView.current
     val haptic = LocalHapticFeedback.current
-    val scope = rememberCoroutineScope()
+
+    val timerState by timerViewModel.timerState.collectAsStateWithLifecycle()
+    val alertsConfiguration by alertsViewModel.alertConfigurations.collectAsStateWithLifecycle()
+    val shouldKeepScreenOn = alertsConfiguration.keepScreenOn && !timerState.isIdle
+
+    DisposableEffect(view, shouldKeepScreenOn) {
+        view.keepScreenOn = shouldKeepScreenOn
+        onDispose {
+            view.keepScreenOn = false
+        }
+    }
 
     var toastMessage by remember { mutableStateOf<String?>(null) }
     var hasCheckedPermission by rememberSaveable { mutableStateOf(false) }
@@ -106,22 +122,17 @@ fun MainScreen(
         }
     }
 
-    val homeIndex = bottomNavItems.indexOf(BottomBarScreen.Home)
-
-    val pagerState = rememberPagerState(
-        initialPage = homeIndex,
-        pageCount = { bottomNavItems.size }
-    )
-
-    val currentScreen by remember {
-        derivedStateOf { bottomNavItems[pagerState.targetPage] }
-    }
+    var currentScreen by rememberSaveable(
+        stateSaver = androidx.compose.runtime.saveable.Saver(
+            save = { it.route },
+            restore = { BottomBarScreen.fromRoute(it) }
+        )
+    ) { mutableStateOf<BottomBarScreen>(BottomBarScreen.Home) }
+    val saveableStateHolder = rememberSaveableStateHolder()
 
     BackHandler(enabled = true) {
-        if (pagerState.currentPage != homeIndex) {
-            scope.launch {
-                pagerState.animateScrollToPage(homeIndex)
-            }
+        if (currentScreen != BottomBarScreen.Home) {
+            currentScreen = BottomBarScreen.Home
         } else {
             showExitDialog = true
         }
@@ -182,9 +193,7 @@ fun MainScreen(
                 currentScreen = currentScreen,
                 onLogout = {},
                 onSettings = {
-                    scope.launch {
-                        pagerState.animateScrollToPage(bottomNavItems.indexOf(BottomBarScreen.Settings))
-                    }
+                    currentScreen = BottomBarScreen.Settings
                 },
                 profileViewModel = profileViewModel,
                 onDeleteAllSessions = { showDeleteAllDialog = true },
@@ -196,44 +205,57 @@ fun MainScreen(
                 items = bottomNavItems,
                 currentScreen = currentScreen,
                 onSelected = { screen ->
-                    scope.launch {
-                        pagerState.animateScrollToPage(bottomNavItems.indexOf(screen))
-                    }
+                    currentScreen = screen
                 }
             )
         }
     ) { innerPadding ->
-        HorizontalPager(
-            state = pagerState,
-            modifier = Modifier
-                .padding(innerPadding)
-                .fillMaxSize(),
-            beyondViewportPageCount = 1,
-            userScrollEnabled = false
-        ) { page ->
-            when (bottomNavItems[page]) {
-                BottomBarScreen.Home -> HomeScreen(
-                    userId = userId,
-                    timerViewModel = timerViewModel,
-                    homeViewModel = homeViewModel
-                )
+        val transitions = rememberNavTransitions()
+        // The pages run up under the transparent top bar, so their backgrounds and glows reach the
+        // top of the screen; each starts its content the bar's height down
+        CompositionLocalProvider(LocalTopBarInset provides innerPadding.calculateTopPadding()) {
+            Box(
+                modifier = Modifier
+                    .padding(bottom = innerPadding.calculateBottomPadding())
+                    .fillMaxSize()
+            ) {
+                AnimatedContent(
+                    targetState = currentScreen,
+                    transitionSpec = {
+                        val navigatingRight =
+                            bottomNavItems.indexOf(targetState) > bottomNavItems.indexOf(initialState)
+                        transitions.tabSwitch(forward = navigatingRight)
+                    },
+                    label = "TabSwitch"
+                ) { screen ->
+                    saveableStateHolder.SaveableStateProvider(screen.route) {
+                        when (screen) {
+                            BottomBarScreen.Home -> HomeScreen(
+                                userId = userId,
+                                timerViewModel = timerViewModel,
+                                homeViewModel = homeViewModel
+                            )
 
-                BottomBarScreen.Profile -> ProfileScreen(
-                    userId = userId,
-                    onViewInsights = onViewInsights,
-                    profileViewModel = profileViewModel
-                )
+                            BottomBarScreen.Profile -> ProfileScreen(
+                                userId = userId,
+                                onViewInsights = onViewInsights,
+                                profileViewModel = profileViewModel
+                            )
 
-                BottomBarScreen.Settings -> SettingsScreen(
-                    alertsViewModel = alertsViewModel,
-                    notificationViewModel = notificationViewModel,
-                    onSignOut = onSignOut,
-                    onExit = onExit,
-                    onAbout = onAbout,
-                    onWhatsNew = onWhatsNew,
-                    onMoreApps = onMoreApps,
-                    onAppearance = onAppearance
-                )
+                            BottomBarScreen.Settings -> SettingsScreen(
+                                alertsViewModel = alertsViewModel,
+                                notificationViewModel = notificationViewModel,
+                                onSignOut = onSignOut,
+                                onExit = onExit,
+                                onAbout = onAbout,
+                                onWhatsNew = onWhatsNew,
+                                onMoreApps = onMoreApps,
+                                onAppearance = onAppearance,
+                                onHomeCustomization = onHomeCustomization
+                            )
+                        }
+                    }
+                }
             }
         }
 

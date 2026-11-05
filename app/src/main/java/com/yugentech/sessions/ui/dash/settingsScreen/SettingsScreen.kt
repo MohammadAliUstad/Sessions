@@ -1,5 +1,6 @@
 package com.yugentech.sessions.ui.dash.settingsScreen
 
+import com.yugentech.sessions.ui.dash.mainScreen.components.topBarInset
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
@@ -50,7 +51,8 @@ fun SettingsScreen(
     onAbout: () -> Unit,
     onWhatsNew: () -> Unit,
     onMoreApps: () -> Unit,
-    onAppearance: () -> Unit
+    onAppearance: () -> Unit,
+    onHomeCustomization: () -> Unit = {}
 ) {
     val alertsConfiguration by alertsViewModel.alertConfigurations.collectAsState()
     val notificationConfig by notificationViewModel.notificationConfig.collectAsState()
@@ -77,6 +79,7 @@ fun SettingsScreen(
         modifier = Modifier.fillMaxSize(),
         contentPadding = PaddingValues(
             start = MaterialTheme.spacing.m,
+            top = topBarInset,
             end = MaterialTheme.spacing.m,
             bottom = MaterialTheme.spacing.s
         ),
@@ -189,8 +192,32 @@ fun SettingsScreen(
                 title = "Theme & Colors",
                 subtitle = "Customize your app's look and feel",
                 index = 0,
-                totalCount = 1,
+                totalCount = 3,
                 onClick = onAppearance
+            )
+        }
+        item {
+            SettingsListItem(
+                title = "Home & Cards",
+                subtitle = "Customize your home layout and session card",
+                index = 1,
+                totalCount = 3,
+                onClick = onHomeCustomization
+            )
+        }
+        item {
+            SettingsSwitchItem(
+                title = "Keep Screen On",
+                subtitle = "Prevent screen from sleeping during active sessions",
+                checked = alertsConfiguration.keepScreenOn,
+                index = 2,
+                totalCount = 3,
+                onCheckedChange = { enabled ->
+                    alertsViewModel.setKeepScreenOn(enabled)
+                    haptic.performHapticFeedback(
+                        if (enabled) HapticFeedbackType.ToggleOn else HapticFeedbackType.ToggleOff
+                    )
+                }
             )
         }
 

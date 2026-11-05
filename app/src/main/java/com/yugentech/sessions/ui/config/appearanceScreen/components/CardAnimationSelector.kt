@@ -1,7 +1,5 @@
 package com.yugentech.sessions.ui.config.appearanceScreen.components
 
-import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -10,20 +8,15 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AutoAwesome
-import androidx.compose.material.icons.filled.Check
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.text.font.FontWeight
@@ -38,6 +31,7 @@ import com.yugentech.sessions.ui.dash.homeScreen.components.hero.heroPalette
 import com.yugentech.sessions.ui.dash.homeScreen.components.hero.heroSurface
 import com.yugentech.sessions.ui.dash.homeScreen.components.hero.rememberEffectTime
 import com.yugentech.sessions.ui.dash.mainScreen.components.SectionHeader
+import com.yugentech.sessions.ui.dash.mainScreen.components.pressClickable
 import org.koin.androidx.compose.koinViewModel
 
 // Live previews of each session card animation, painted in the chosen card style; tap one to use it
@@ -74,18 +68,17 @@ fun CardAnimationSelector(
                             modifier = Modifier
                                 .weight(1f)
                                 .height(88.dp)
-                                .clip(shape)
-                                .clickable {
+                                .pressClickable(shape = shape, pressedScale = 0.95f) {
                                     if (!isSelected) {
                                         haptic.performHapticFeedback(HapticFeedbackType.GestureEnd)
                                         viewModel.updateTheme(themeConfig.copy(cardAnimationStyle = style))
                                     }
                                 }
                                 .heroSurface(cardStyle, brush, shape)
-                                .border(
-                                    width = if (isSelected) 3.dp else 0.dp,
-                                    color = if (isSelected) MaterialTheme.colorScheme.onSurface else Color.Transparent,
-                                    shape = shape
+                                .selectionOutline(
+                                    isSelected = isSelected,
+                                    shape = shape,
+                                    unselectedWidth = 0.dp
                                 )
                         ) {
                             HeroCardBackground(
@@ -104,17 +97,12 @@ fun CardAnimationSelector(
                                     .align(Alignment.BottomStart)
                                     .padding(12.dp)
                             )
-                            if (isSelected) {
-                                Icon(
-                                    imageVector = Icons.Default.Check,
-                                    contentDescription = "Selected",
-                                    tint = palette.content,
-                                    modifier = Modifier
-                                        .align(Alignment.TopEnd)
-                                        .padding(8.dp)
-                                        .size(18.dp)
-                                )
-                            }
+                            SelectionTick(
+                                isSelected = isSelected,
+                                modifier = Modifier
+                                    .align(Alignment.TopEnd)
+                                    .padding(8.dp)
+                            )
                         }
                     }
                     if (rowStyles.size == 1) Spacer(modifier = Modifier.weight(1f))

@@ -28,8 +28,8 @@ android {
         applicationId = "com.yugentech.sessions"
         minSdk = 26
         targetSdk = 37
-        versionCode = 26
-        versionName = "5.5.0"
+        versionCode = 27
+        versionName = "6.0.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
         val webClientId = localProperties.getProperty("WEB_CLIENT_ID") ?: ""

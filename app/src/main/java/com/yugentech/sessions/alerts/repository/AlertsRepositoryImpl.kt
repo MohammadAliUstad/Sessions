@@ -137,6 +137,11 @@ class AlertsRepositoryImpl(
         alertsDataStore.setHapticsEnabled(enabled)
     }
 
+    // Updates keep screen on preference via the preferences manager
+    override suspend fun setKeepScreenOn(enabled: Boolean) {
+        alertsDataStore.setKeepScreenOn(enabled)
+    }
+
     // Plays the active background sound if one is selected
     private fun startBackgroundSound() {
         val currentState = timerRepository.timerState.value

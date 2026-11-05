@@ -32,8 +32,17 @@ import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Apps
 import androidx.compose.material.icons.filled.AutoAwesome
 import androidx.compose.material.icons.filled.Bookmark
+import androidx.compose.material.icons.filled.Animation
 import androidx.compose.material.icons.filled.Celebration
 import androidx.compose.material.icons.filled.CheckCircle
+import androidx.compose.material.icons.filled.Contrast
+import androidx.compose.material.icons.filled.Gradient
+import androidx.compose.material.icons.filled.Palette
+import androidx.compose.material.icons.filled.SpaceDashboard
+import androidx.compose.material.icons.filled.Timeline
+import androidx.compose.material.icons.filled.Timer
+import androidx.compose.material.icons.filled.TouchApp
+import androidx.compose.material.icons.filled.VerticalAlignTop
 import androidx.compose.material.icons.filled.EmojiEvents
 import androidx.compose.material.icons.filled.ExpandMore
 import androidx.compose.material.icons.filled.Flag
@@ -80,6 +89,59 @@ fun WhatsNewScreen(
 ) {
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
     val layoutDirection = LocalLayoutDirection.current
+
+    val v6Updates = listOf(
+        UpdateItem(
+            "Choose Your Home Layout",
+            "Pick how your Home screen looks from Appearance: Classic, the original layout; Refined, a calmer take with the date above your task; or Studio, an all-new design.",
+            Icons.Default.SpaceDashboard
+        ),
+        UpdateItem(
+            "Meet Studio",
+            "A watch-style dial whose ticks fill as you focus, with a dot riding the rim. Before you start, three tiles show your plan and when you'd be done. During a session, a card shows each block on a timeline, and a floating dock holds every control.",
+            Icons.Default.Timer
+        ),
+        UpdateItem(
+            "A Living Glow",
+            "Refined and Studio have a soft, moving glow across the top of the screen in your theme's colours. It follows your session, leaning towards focus or break colours and flowing faster and brighter while the timer runs.",
+            Icons.Default.Gradient
+        ),
+        UpdateItem(
+            "Aurora & Mesh Card Animations",
+            "Two new animations for your session card: Aurora, soft light drifting over the card, and Mesh gradient, your theme's colours blending as they move. Like the others, they move only while the timer runs.",
+            Icons.Default.Animation
+        ),
+        UpdateItem(
+            "Smoother Session Timeline",
+            "The blocks on your session card now fill smoothly as you focus. Skipping or finishing a block sweeps it full while the next one grows in, instead of jumping.",
+            Icons.Default.Timeline
+        ),
+        UpdateItem(
+            "New Colour Theme Cards",
+            "Each colour theme now shows a palette disc of its key colours and a strip of swatches, in a more compact card. Choosing one gives the disc a little spin.",
+            Icons.Default.Palette
+        ),
+        UpdateItem(
+            "Smoother Theme Changes",
+            "Switching between light and dark now opens in a circle from the button you tap, and changing your colour theme or AMOLED black fades gently across the whole screen.",
+            Icons.Default.Contrast
+        ),
+        UpdateItem(
+            "Polished Appearance Screen",
+            "Selection outlines, font chips and every option in Appearance now fade smoothly when you choose them.",
+            Icons.Default.CheckCircle
+        ),
+        UpdateItem(
+            "See-Through Top Bar",
+            "The top bar on Home, Profile and Settings is now transparent, softly fading in only when content scrolls beneath it.",
+            Icons.Default.VerticalAlignTop
+        ),
+        UpdateItem(
+            "Calmer Controls",
+            "The session buttons now use your theme's own colours, with no bright red Discard button.",
+            Icons.Default.TouchApp
+        )
+    )
 
     val v51Updates = listOf(
         UpdateItem(
@@ -230,6 +292,7 @@ fun WhatsNewScreen(
         )
     )
 
+    var v55Expanded by rememberSaveable { mutableStateOf(false) }
     var v5Expanded by rememberSaveable { mutableStateOf(false) }
     var v4Expanded by rememberSaveable { mutableStateOf(false) }
 
@@ -241,7 +304,7 @@ fun WhatsNewScreen(
                     Column {
                         Text("What's New")
                         Text(
-                            text = "Current Version 5.5.0",
+                            text = "Current Version 6.0.0",
                             style = MaterialTheme.typography.bodyMedium,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
@@ -279,8 +342,34 @@ fun WhatsNewScreen(
             ),
             verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.xxs)
         ) {
-            itemsIndexed(v51Updates) { index, item ->
-                UpdateCard(item, index, v51Updates.size)
+            itemsIndexed(v6Updates) { index, item ->
+                UpdateCard(item, index, v6Updates.size)
+            }
+
+            // 5.5.0 collapsible section
+            item {
+                VersionSectionHeader(
+                    version = "5.5.0",
+                    isLatest = false,
+                    expanded = v55Expanded,
+                    onClick = { v55Expanded = !v55Expanded }
+                )
+            }
+
+            item(key = "v55_collapsible_content") {
+                AnimatedVisibility(
+                    visible = v55Expanded,
+                    enter = fadeIn(tween(AppAnimations.Durations.Standard)) + expandVertically(tween(AppAnimations.Durations.Standard)),
+                    exit = fadeOut(tween(AppAnimations.Durations.Standard)) + shrinkVertically(tween(AppAnimations.Durations.Standard))
+                ) {
+                    Column(
+                        verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.xxs)
+                    ) {
+                        v51Updates.forEachIndexed { index, item ->
+                            UpdateCard(item, index, v51Updates.size)
+                        }
+                    }
+                }
             }
 
             // 5.0.0 collapsible section

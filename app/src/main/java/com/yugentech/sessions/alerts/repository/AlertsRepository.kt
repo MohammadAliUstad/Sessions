@@ -19,7 +19,8 @@ interface AlertsRepository {
     // Play a preview of a specific sound file
     fun playPreview(soundId: String?)
 
-    // Update settings for sounds and haptics
+    // Update settings for sounds, haptics, and screen behavior
     suspend fun setSoundEnabled(enabled: Boolean)
     suspend fun setHapticsEnabled(enabled: Boolean)
+    suspend fun setKeepScreenOn(enabled: Boolean)
 }

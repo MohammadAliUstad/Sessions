@@ -1,5 +1,6 @@
 package com.yugentech.sessions.ui.dash.profileScreen
 
+import com.yugentech.sessions.ui.dash.mainScreen.components.topBarInset
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -108,6 +109,7 @@ fun ProfileScreen(
                 .fillMaxSize()
                 .padding(
                     start = MaterialTheme.spacing.m,
+                    top = topBarInset,
                     end = MaterialTheme.spacing.m,
                     bottom = MaterialTheme.spacing.s
                 )
@@ -139,6 +141,7 @@ fun ProfileScreen(
             modifier = modifier.fillMaxSize(),
             contentPadding = PaddingValues(
                 start = MaterialTheme.spacing.m,
+                top = topBarInset,
                 end = MaterialTheme.spacing.m,
                 bottom = MaterialTheme.spacing.s
             ),

@@ -1,9 +1,6 @@
 package com.yugentech.sessions.ui.config.appearanceScreen.components
 
-import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -24,7 +21,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.text.font.FontWeight
@@ -36,6 +32,7 @@ import com.yugentech.sessions.ui.dash.homeScreen.components.hero.heroBrush
 import com.yugentech.sessions.ui.dash.homeScreen.components.hero.heroPalette
 import com.yugentech.sessions.ui.dash.homeScreen.components.hero.heroSurface
 import com.yugentech.sessions.ui.dash.mainScreen.components.SectionHeader
+import com.yugentech.sessions.ui.dash.mainScreen.components.pressClickable
 import org.koin.androidx.compose.koinViewModel
 
 // Filled, Outlined and Glass, each shown as a small card painted that way
@@ -59,21 +56,20 @@ fun CardStyleSelector(
                 val isSelected = style == themeConfig.cardStyle
                 val palette = heroPalette(style)
                 val outer = RoundedCornerShape(20.dp)
-                val borderColor by animateColorAsState(
-                    if (isSelected) MaterialTheme.colorScheme.primary else Color.Transparent,
-                    label = "styleBorder"
-                )
                 Column(
                     modifier = Modifier
                         .weight(1f)
-                        .clip(outer)
-                        .clickable {
+                        .pressClickable(shape = outer, pressedScale = 0.95f) {
                             if (!isSelected) {
                                 haptic.performHapticFeedback(HapticFeedbackType.GestureEnd)
                                 viewModel.updateTheme(themeConfig.copy(cardStyle = style))
                             }
                         }
-                        .border(2.5.dp, borderColor, outer)
+                        .selectionOutline(
+                            isSelected = isSelected,
+                            shape = outer,
+                            unselectedWidth = 0.dp
+                        )
                         .padding(6.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
@@ -101,6 +97,10 @@ fun CardStyleSelector(
                                     .background(palette.content.copy(alpha = 0.9f))
                             )
                         }
+                        SelectionTick(
+                            isSelected = isSelected,
+                            modifier = Modifier.align(Alignment.TopEnd)
+                        )
                     }
                     Spacer(Modifier.height(6.dp))
                     Text(

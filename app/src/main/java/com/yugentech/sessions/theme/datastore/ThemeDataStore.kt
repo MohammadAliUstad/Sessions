@@ -10,6 +10,7 @@ import com.yugentech.sessions.theme.AppFont
 import com.yugentech.sessions.theme.config.CardAnimationStyle
 import com.yugentech.sessions.theme.config.CardStyle
 import com.yugentech.sessions.theme.config.ColorTheme
+import com.yugentech.sessions.theme.config.HomeLayout
 import com.yugentech.sessions.theme.config.ThemeConfiguration
 import com.yugentech.sessions.theme.config.ThemeMode
 import kotlinx.coroutines.flow.Flow
@@ -55,6 +56,11 @@ class ThemeDataStore(
             } catch (e: IllegalArgumentException) {
                 CardAnimationStyle.NONE
             }
+            val homeLayout = try {
+                HomeLayout.valueOf(prefs[HOME_LAYOUT_KEY] ?: HomeLayout.CLASSIC.name)
+            } catch (e: IllegalArgumentException) {
+                HomeLayout.CLASSIC
+            }
 
             ThemeConfiguration(
                 themeMode = themeMode,
@@ -63,7 +69,8 @@ class ThemeDataStore(
                 isAmoledMode = prefs[IS_AMOLED_MODE_KEY] ?: false,
                 appFont = appFont,
                 cardStyle = cardStyle,
-                cardAnimationStyle = cardAnimationStyle
+                cardAnimationStyle = cardAnimationStyle,
+                homeLayout = homeLayout
             )
         }
 
@@ -78,6 +85,7 @@ class ThemeDataStore(
             prefs[APP_FONT_KEY] = config.appFont.name
             prefs[CARD_STYLE_KEY] = config.cardStyle.name
             prefs[CARD_ANIMATION_STYLE_KEY] = config.cardAnimationStyle.name
+            prefs[HOME_LAYOUT_KEY] = config.homeLayout.name
         }
     }
 
@@ -95,5 +103,6 @@ class ThemeDataStore(
         private val APP_FONT_KEY = stringPreferencesKey("app_font")
         private val CARD_STYLE_KEY = stringPreferencesKey("card_style")
         private val CARD_ANIMATION_STYLE_KEY = stringPreferencesKey("card_animation_style")
+        private val HOME_LAYOUT_KEY = stringPreferencesKey("home_layout")
     }
 }
