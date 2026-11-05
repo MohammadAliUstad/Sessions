@@ -1,16 +1,16 @@
 package com.yugentech.sessions.ui.dash.homeScreen
 
+import com.yugentech.sessions.ui.dash.mainScreen.components.topBarInset
 import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
-import androidx.compose.animation.AnimatedContent
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
@@ -22,17 +22,13 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalView
-import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
-import com.yugentech.sessions.timer.state.TimerMode
 import com.yugentech.sessions.timer.viewmodel.TimerViewModel
 import com.yugentech.sessions.ui.dash.homeScreen.components.FinishConfirmationDialog
-import com.yugentech.sessions.ui.dash.homeScreen.components.bottomRow.SessionControlBar
 import com.yugentech.sessions.ui.dash.homeScreen.components.dialogs.DurationPickerDialog
 import com.yugentech.sessions.ui.dash.homeScreen.components.dialogs.GoalReachedDialog
 import com.yugentech.sessions.ui.dash.homeScreen.components.dialogs.ReviewReminderDialog
@@ -41,11 +37,13 @@ import com.yugentech.sessions.ui.dash.homeScreen.components.dialogs.SoundSelecti
 import com.yugentech.sessions.ui.dash.homeScreen.components.dialogs.TaskSelectionSheet
 import com.yugentech.sessions.templates.viewmodel.TemplateViewModel
 import com.yugentech.sessions.theme.viewmodel.ThemeViewModel
-import com.yugentech.sessions.ui.dash.homeScreen.components.durationSelection.SessionConfigCard
-import com.yugentech.sessions.ui.dash.homeScreen.components.durationSelection.SessionProgressCard
-import com.yugentech.sessions.ui.dash.homeScreen.components.hero.SessionPulse
-import com.yugentech.sessions.ui.dash.homeScreen.components.middle.TimerDisplay
-import com.yugentech.sessions.ui.dash.homeScreen.components.topRow.SessionHeader
+import com.yugentech.sessions.theme.config.HomeLayout
+import com.yugentech.sessions.ui.dash.homeScreen.layouts.ClassicHome
+import com.yugentech.sessions.ui.dash.homeScreen.layouts.refined.RefinedHome
+import com.yugentech.sessions.ui.dash.homeScreen.layouts.shared.AliveGradient
+import com.yugentech.sessions.ui.dash.homeScreen.layouts.shared.HomeActions
+import com.yugentech.sessions.ui.dash.homeScreen.layouts.shared.HomeUi
+import com.yugentech.sessions.ui.dash.homeScreen.layouts.studio.StudioHome
 import com.yugentech.sessions.ui.dash.util.models.ActiveDialog
 import com.yugentech.sessions.utils.AppConstants
 import com.yugentech.sessions.viewModels.HomeViewModel
@@ -90,110 +88,55 @@ fun HomeScreen(
         BoxWithConstraints(
             modifier = Modifier.fillMaxSize()
         ) {
-            val screenHeight = maxHeight
+            val inset = topBarInset
+            val screenHeight = maxHeight - inset
+
+            // The newer layouts get a living glow across the top, up under the bar; Classic stays as it was
+            if (themeConfig.homeLayout != HomeLayout.CLASSIC) {
+                AliveGradient(
+                    mode = timerState.currentMode,
+                    running = timerState.isTimerRunning,
+                    sessionActive = !timerState.isIdle,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(maxHeight * 0.45f)
+                )
+            }
 
             Column(
                 modifier = Modifier
                     .fillMaxSize()
                     .verticalScroll(scrollState)
+                    .padding(top = inset)
             ) {
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .heightIn(min = screenHeight - 1.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.SpaceEvenly
-                ) {
-                    SessionHeader(
-                        isRunning = timerState.isTimerRunning,
-                        isSessionActive = isSessionActive,
-                        sessionTask = config.sessionTask,
-                        onTaskClick = {
-                            activeDialog = ActiveDialog.TaskSelection
-                            haptic.performHapticFeedback(HapticFeedbackType.GestureEnd)
-                        },
-                        onSoundBadgeClick = {
-                            timerViewModel.toggleAmbientSound()
-                            haptic.performHapticFeedback(HapticFeedbackType.GestureEnd)
-                        },
-                        isAmbientEnabled = config.isAmbientEnabled,
-                        activeBackgroundSoundId = config.activeBackgroundSoundId
-                    )
+                val ui = HomeUi(
+                    timer = timerState,
+                    dashboard = dashboardState,
+                    errorMessage = errorMessage,
+                    cardStyle = themeConfig.cardStyle,
+                    cardAnimationStyle = themeConfig.cardAnimationStyle
+                )
+                val gesture = { haptic.performHapticFeedback(HapticFeedbackType.GestureEnd) }
+                val actions = HomeActions(
+                    onTaskClick = { activeDialog = ActiveDialog.TaskSelection; gesture() },
+                    onToggleAmbient = { timerViewModel.toggleAmbientSound(); gesture() },
+                    onFocusClick = { activeDialog = ActiveDialog.Focus; gesture() },
+                    onShortBreakClick = { activeDialog = ActiveDialog.ShortBreak; gesture() },
+                    onSoundClick = { activeDialog = ActiveDialog.Sound; gesture() },
+                    onSetsClick = { activeDialog = ActiveDialog.SetsSettings; gesture() },
+                    onStartStop = {
+                        if (timerState.isTimerRunning) timerViewModel.stopTimer(view) else timerViewModel.startTimer(view)
+                    },
+                    onDiscard = { timerViewModel.stopAndDiscardSession(view) },
+                    onFinish = { timerViewModel.stopAndSaveSession(view) },
+                    onSkip = { timerViewModel.skipToNextMode(view) }
+                )
 
-                    TimerDisplay(
-                        displayTime = timerState.currentTime.toInt(),
-                        selectedDuration = timerState.totalTime.toInt(),
-                        isStudying = timerState.isTimerRunning,
-                        currentMode = timerState.currentMode,
-                        idleLabel = errorMessage ?: "Press the play button\nto start."
-                    )
-
-                    AnimatedContent(
-                        targetState = isSessionActive,
-                        label = "dashboard_swap"
-                    ) { showProgress ->
-                        if (showProgress) {
-                            SessionProgressCard(
-                                state = dashboardState,
-                                targetSets = config.targetSets,
-                                isTimerRunning = timerState.isTimerRunning,
-                                onSkipToNext = {
-                                    timerViewModel.skipToNextMode(view)
-                                },
-                                cardStyle = themeConfig.cardStyle,
-                                animationStyle = themeConfig.cardAnimationStyle,
-                                // How far this block is, for the card's effect to follow
-                                pulse = SessionPulse(
-                                    progress = if (timerState.totalTime > 0) {
-                                        (1f - timerState.currentTime.toFloat() / timerState.totalTime).coerceIn(0f, 1f)
-                                    } else {
-                                        0f
-                                    },
-                                    running = timerState.isTimerRunning,
-                                    onBreak = timerState.currentMode != TimerMode.Focus
-                                )
-                            )
-                        } else {
-                            SessionConfigCard(
-                                focusDurationMinutes = config.focusDuration,
-                                shortBreakDurationMinutes = config.shortBreakDuration,
-                                onFocusClick = {
-                                    activeDialog = ActiveDialog.Focus
-                                    haptic.performHapticFeedback(HapticFeedbackType.GestureEnd)
-                                },
-                                onShortBreakClick = {
-                                    activeDialog = ActiveDialog.ShortBreak
-                                    haptic.performHapticFeedback(HapticFeedbackType.GestureEnd)
-                                }
-                            )
-                        }
-                    }
-
-                    SessionControlBar(
-                        isStudying = timerState.isTimerRunning,
-                        isSessionActive = isSessionActive,
-                        onStartStop = {
-                            if (timerState.isTimerRunning) {
-                                timerViewModel.stopTimer(view)
-                            } else {
-                                timerViewModel.startTimer(view)
-                            }
-                        },
-                        onSoundClick = {
-                            activeDialog = ActiveDialog.Sound
-                            haptic.performHapticFeedback(HapticFeedbackType.GestureEnd)
-                        },
-                        onSetsClick = {
-                            activeDialog = ActiveDialog.SetsSettings
-                            haptic.performHapticFeedback(HapticFeedbackType.GestureEnd)
-                        },
-                        onStopDiscard = {
-                            timerViewModel.stopAndDiscardSession(view)
-                        },
-                        onStopSave = {
-                            timerViewModel.stopAndSaveSession(view)
-                        }
-                    )
+                // The chosen design; every one draws the same session and opens the same sheets
+                when (themeConfig.homeLayout) {
+                    HomeLayout.CLASSIC -> ClassicHome(ui, actions, screenHeight)
+                    HomeLayout.REFINED -> RefinedHome(ui, actions, screenHeight)
+                    HomeLayout.STUDIO -> StudioHome(ui, actions, screenHeight)
                 }
 
                 if (activeDialog != ActiveDialog.None) {

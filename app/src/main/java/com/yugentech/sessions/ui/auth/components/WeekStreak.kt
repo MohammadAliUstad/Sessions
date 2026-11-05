@@ -58,15 +58,11 @@ fun WeekStreak(modifier: Modifier = Modifier) {
     val accent = colors.primary
     val ink = colors.onBackground
 
-    // Fixed height, matching the sign-in dial, so the text below never moves
+    // Only as tall as the bars and day letters, with no empty space above them
     Column(
-        modifier = modifier
-            .height(AuthHeaderHeight)
-            .width(248.dp),
+        modifier = modifier.width(248.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Spacer(Modifier.weight(1f))
-
         // The week: each day a bar rising from the baseline, the tallest in full colour
         Row(
             modifier = Modifier

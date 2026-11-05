@@ -15,6 +15,7 @@ import com.yugentech.sessions.ui.config.aboutScreen.AboutScreen
 import com.yugentech.sessions.ui.config.aboutScreen.MoreAppsScreen
 import com.yugentech.sessions.ui.config.whatsNewScreen.WhatsNewScreen
 import com.yugentech.sessions.ui.config.appearanceScreen.AppearanceScreen
+import com.yugentech.sessions.ui.config.appearanceScreen.HomeCustomizationScreen
 import com.yugentech.sessions.ui.config.attributionsScreen.AttributionsScreen
 import com.yugentech.sessions.ui.config.insightsScreen.InsightsScreen
 import com.yugentech.sessions.ui.dash.util.formatTime
@@ -30,6 +31,15 @@ fun NavGraphBuilder.configGraph(
     composable(AppScreen.Appearance.route) {
         val themeViewModel: ThemeViewModel = koinViewModel()
         AppearanceScreen(
+            onNavigateBack = { navController.popBackStack() },
+            themeViewModel = themeViewModel
+        )
+    }
+
+    // Defines the home layout and card customization screen
+    composable(AppScreen.HomeCustomization.route) {
+        val themeViewModel: ThemeViewModel = koinViewModel()
+        HomeCustomizationScreen(
             onNavigateBack = { navController.popBackStack() },
             themeViewModel = themeViewModel
         )

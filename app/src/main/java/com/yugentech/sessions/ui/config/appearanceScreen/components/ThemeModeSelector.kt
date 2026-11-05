@@ -1,10 +1,9 @@
 package com.yugentech.sessions.ui.config.appearanceScreen.components
 
-import androidx.compose.animation.animateColorAsState
-import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -27,11 +26,10 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
@@ -42,8 +40,6 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.clipRect
 import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
-import androidx.compose.ui.layout.boundsInRoot
-import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -51,16 +47,16 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.yugentech.sessions.R
 import com.yugentech.sessions.theme.LocalThemeReveal
+import com.yugentech.sessions.theme.SLOW_FADE_MS
 import com.yugentech.sessions.theme.builder.getColorScheme
 import com.yugentech.sessions.theme.config.ThemeMode
 import com.yugentech.sessions.theme.viewmodel.ThemeViewModel
 import com.yugentech.sessions.ui.dash.mainScreen.components.SectionHeader
-import com.yugentech.sessions.ui.dash.mainScreen.components.pressClickable
 import org.koin.androidx.compose.koinViewModel
 
 /**
  * Light, Dark and System as three tiny phones drawn in the colours each would give, System split
- * down the middle.
+ * down the middle. Choosing one fades the whole screen to the new mode, as colour themes do.
  */
 @Composable
 fun ThemeModeSelector(
@@ -71,7 +67,6 @@ fun ThemeModeSelector(
     val themeConfig by themeViewModel.themeConfiguration.collectAsStateWithLifecycle()
     val light = getColorScheme(themeConfig.copy(themeMode = ThemeMode.LIGHT))
     val dark = getColorScheme(themeConfig.copy(themeMode = ThemeMode.DARK))
-    // Light and dark wipe in from the tapped tile; nothing else changes that much at once.
     val reveal = LocalThemeReveal.current
 
     Column(modifier = modifier.fillMaxWidth()) {
@@ -83,13 +78,7 @@ fun ThemeModeSelector(
         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
             ThemeMode.entries.forEach { mode ->
                 val selected = themeConfig.themeMode == mode
-                var center by remember { mutableStateOf(Offset.Zero) }
                 val shape = RoundedCornerShape(20.dp)
-                val borderColor by animateColorAsState(
-                    if (selected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.outlineVariant,
-                    label = "modeBorder"
-                )
-                val borderWidth by animateDpAsState(if (selected) 2.5.dp else 1.dp, label = "modeBorderWidth")
                 val (icon, label) = when (mode) {
                     ThemeMode.LIGHT -> Icons.Default.LightMode to stringResource(R.string.light)
                     ThemeMode.DARK -> Icons.Default.DarkMode to stringResource(R.string.dark)
@@ -99,16 +88,25 @@ fun ThemeModeSelector(
                 Column(
                     modifier = Modifier
                         .weight(1f)
-                        .onGloballyPositioned { center = it.boundsInRoot().center }
-                        .pressClickable(shape = shape, pressedScale = 0.95f) {
+                        .clip(shape)
+                        // No ripple and no press scale: the screen's fade is the only feedback
+                        .clickable(
+                            interactionSource = remember { MutableInteractionSource() },
+                            indication = null
+                        ) {
                             if (!selected) {
                                 haptic.performHapticFeedback(HapticFeedbackType.GestureEnd)
+                                // A simple fade from the old colours to the new, across the whole screen
                                 val apply = { themeViewModel.updateTheme(themeConfig.copy(themeMode = mode)) }
-                                reveal?.reveal(center, apply) ?: apply()
+                                reveal?.fade(apply, SLOW_FADE_MS) ?: apply()
                             }
                         }
                         .background(MaterialTheme.colorScheme.surfaceContainer)
-                        .border(borderWidth, borderColor, shape)
+                        .selectionOutline(
+                            isSelected = selected,
+                            shape = shape,
+                            unselectedColor = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f)
+                        )
                         .padding(10.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {

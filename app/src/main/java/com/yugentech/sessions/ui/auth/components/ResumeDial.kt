@@ -46,7 +46,7 @@ import kotlin.math.PI
 import kotlin.math.cos
 import kotlin.math.sin
 
-/** How tall both auth headers are, so the text under them never moves as they animate. */
+/** How big the sign-in dial is. */
 internal val AuthHeaderHeight = 176.dp
 
 /** One focus block, in seconds: what the dial counts down. */

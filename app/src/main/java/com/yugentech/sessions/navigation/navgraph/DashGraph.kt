@@ -88,6 +88,11 @@ fun NavGraphBuilder.dashGraph(
                         launchSingleTop = true
                     }
                 },
+                onHomeCustomization = {
+                    navController.navigate(AppScreen.HomeCustomization.route) {
+                        launchSingleTop = true
+                    }
+                },
                 onViewInsights = {
                     navController.navigate(AppScreen.Insights.route) {
                         launchSingleTop = true

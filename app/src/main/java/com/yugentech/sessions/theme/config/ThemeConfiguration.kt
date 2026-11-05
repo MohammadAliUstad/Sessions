@@ -10,5 +10,6 @@ data class ThemeConfiguration(
     val isAmoledMode: Boolean = false,
     val appFont: AppFont = AppFont.Google,
     val cardStyle: CardStyle = CardStyle.FILLED,
-    val cardAnimationStyle: CardAnimationStyle = CardAnimationStyle.NONE
+    val cardAnimationStyle: CardAnimationStyle = CardAnimationStyle.NONE,
+    val homeLayout: HomeLayout = HomeLayout.CLASSIC
 )

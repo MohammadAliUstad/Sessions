@@ -1,0 +1,213 @@
+package com.yugentech.sessions.ui.dash.homeScreen.layouts.refined
+
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.scaleOut
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.rounded.VolumeOff
+import androidx.compose.material.icons.automirrored.rounded.VolumeUp
+import androidx.compose.material.icons.rounded.Edit
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
+import com.yugentech.sessions.alerts.model.BackgroundSound
+import com.yugentech.sessions.theme.tokens.corners
+import com.yugentech.sessions.theme.tokens.dimensions.AppAnimations
+import com.yugentech.sessions.theme.tokens.icons
+import com.yugentech.sessions.theme.tokens.spacing
+import com.yugentech.sessions.timer.state.TimerMode
+import com.yugentech.sessions.ui.dash.mainScreen.components.pressClickable
+import androidx.compose.ui.unit.sp
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
+
+/**
+ * The top of Home: the task as the heading (tap to change it while nothing is running), and the background sound in a pill on the
+ * right (tap to mute or unmute).
+ */
+@Composable
+fun RefinedHeader(
+    isRunning: Boolean,
+    isSessionActive: Boolean,
+    sessionTask: String,
+    onTaskClick: () -> Unit,
+    onSoundBadgeClick: () -> Unit,
+    mode: TimerMode = TimerMode.Focus,
+    isAmbientEnabled: Boolean = true,
+    activeBackgroundSoundId: String? = null
+) {
+    val fadeThrough = AppAnimations.Transitions.rememberExpressiveFadeThrough()
+    val backgroundSound = remember(activeBackgroundSoundId) {
+        BackgroundSound.fromId(activeBackgroundSoundId)
+    }
+    val today = remember { SimpleDateFormat("EEEE · d MMMM", Locale.getDefault()).format(Date()).uppercase() }
+
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = MaterialTheme.spacing.m, vertical = MaterialTheme.spacing.s),
+        horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.sm),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Column(
+            modifier = Modifier
+                .weight(1f)
+                .pressClickable(
+                    shape = RoundedCornerShape(MaterialTheme.corners.medium),
+                    enabled = !isSessionActive,
+                    onClickLabel = "Change task",
+                    onClick = onTaskClick
+                )
+                .padding(horizontal = MaterialTheme.spacing.xs, vertical = MaterialTheme.spacing.xs)
+        ) {
+            // Today's date as a quiet overline, as Studio has it
+            Text(
+                text = today,
+                style = MaterialTheme.typography.labelMedium,
+                letterSpacing = 1.6.sp,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                maxLines = 1
+            )
+            Spacer(Modifier.height(MaterialTheme.spacing.xxs))
+
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                AnimatedContent(
+                    targetState = sessionTask,
+                    transitionSpec = { fadeThrough() },
+                    label = "sessionTaskText",
+                    modifier = Modifier.weight(1f, fill = false)
+                ) { task ->
+                    Text(
+                        text = task.ifEmpty { "Name this session" },
+                        style = MaterialTheme.typography.headlineSmall,
+                        fontWeight = if (task.isEmpty()) FontWeight.Normal else FontWeight.SemiBold,
+                        color = if (task.isEmpty()) {
+                            MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f)
+                        } else {
+                            MaterialTheme.colorScheme.onSurface
+                        },
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                }
+
+                AnimatedVisibility(
+                    visible = !isSessionActive,
+                    enter = fadeIn() + scaleIn(initialScale = 0.6f),
+                    exit = fadeOut() + scaleOut(targetScale = 0.6f)
+                ) {
+                    Icon(
+                        imageVector = Icons.Rounded.Edit,
+                        contentDescription = null,
+                        modifier = Modifier
+                            .padding(start = MaterialTheme.spacing.s)
+                            .size(MaterialTheme.icons.small),
+                        tint = MaterialTheme.colorScheme.primary
+                    )
+                }
+            }
+        }
+
+        SoundPill(
+            backgroundSound = backgroundSound,
+            isEnabled = isAmbientEnabled,
+            isRunning = isRunning,
+            onClick = onSoundBadgeClick
+        )
+    }
+}
+
+/** The background sound by name, muted or not; hidden behind a quiet "No sound" when none is chosen. */
+@Composable
+private fun SoundPill(
+    backgroundSound: BackgroundSound,
+    isEnabled: Boolean,
+    isRunning: Boolean,
+    onClick: () -> Unit
+) {
+    val soundName = when (backgroundSound) {
+        BackgroundSound.NONE -> "No sound"
+        BackgroundSound.RAIN -> "Rain"
+        BackgroundSound.BROWN_NOISE -> "Brown noise"
+        BackgroundSound.FIREPLACE -> "Fireplace"
+        BackgroundSound.LIBRARY -> "Library"
+        BackgroundSound.RIVERSIDE -> "Riverside"
+        BackgroundSound.FOREST -> "Forest"
+    }
+    val isNone = backgroundSound == BackgroundSound.NONE
+    val isMuted = !isEnabled && !isNone
+    val playing = isRunning && !isMuted && !isNone
+
+    val container by animateColorAsState(
+        when {
+            playing -> MaterialTheme.colorScheme.secondaryContainer
+            else -> MaterialTheme.colorScheme.surfaceContainerHigh
+        },
+        label = "soundPillContainer"
+    )
+    val content by animateColorAsState(
+        when {
+            playing -> MaterialTheme.colorScheme.onSecondaryContainer
+            isMuted || isNone -> MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f)
+            else -> MaterialTheme.colorScheme.onSurfaceVariant
+        },
+        label = "soundPillContent"
+    )
+    val fadeThrough = AppAnimations.Transitions.rememberExpressiveFadeThrough()
+
+    Row(
+        modifier = Modifier
+            .pressClickable(
+                shape = CircleShape,
+                enabled = !isNone,
+                onClickLabel = if (isMuted) "Unmute sound" else "Mute sound",
+                onClick = onClick
+            )
+            .background(container, CircleShape)
+            .padding(horizontal = MaterialTheme.spacing.sm, vertical = MaterialTheme.spacing.s),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        AnimatedContent(targetState = isMuted || isNone, transitionSpec = { fadeThrough() }, label = "soundIcon") { off ->
+            Icon(
+                imageVector = if (off) Icons.AutoMirrored.Rounded.VolumeOff else Icons.AutoMirrored.Rounded.VolumeUp,
+                contentDescription = null,
+                modifier = Modifier.size(MaterialTheme.icons.small),
+                tint = content
+            )
+        }
+        Spacer(Modifier.width(MaterialTheme.spacing.xs))
+        AnimatedContent(targetState = if (isMuted) "Muted" else soundName, transitionSpec = { fadeThrough() }, label = "soundText") { text ->
+            Text(
+                text = text,
+                style = MaterialTheme.typography.labelLarge,
+                fontWeight = FontWeight.Medium,
+                color = content,
+                maxLines = 1
+            )
+        }
+    }
+}

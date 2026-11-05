@@ -24,7 +24,8 @@ class AlertsDataStore(
         .map { preferences ->
             AlertsConfiguration(
                 soundEnabled = preferences[SOUND_ENABLED] ?: true,
-                hapticsEnabled = preferences[HAPTICS_ENABLED] ?: true
+                hapticsEnabled = preferences[HAPTICS_ENABLED] ?: true,
+                keepScreenOn = preferences[KEEP_SCREEN_ON] ?: false
             )
         }
 
@@ -40,8 +41,15 @@ class AlertsDataStore(
         dataStore.edit { it[HAPTICS_ENABLED] = enabled }
     }
 
+    // Saves the user's keep screen on preference setting
+    suspend fun setKeepScreenOn(enabled: Boolean) {
+        Timber.d("Updating keep screen on preference: $enabled")
+        dataStore.edit { it[KEEP_SCREEN_ON] = enabled }
+    }
+
     companion object {
         private val SOUND_ENABLED = booleanPreferencesKey("sound_enabled")
         private val HAPTICS_ENABLED = booleanPreferencesKey("haptics_enabled")
+        private val KEEP_SCREEN_ON = booleanPreferencesKey("keep_screen_on")
     }
 }

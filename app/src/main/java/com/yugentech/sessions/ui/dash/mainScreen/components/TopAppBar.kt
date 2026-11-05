@@ -1,7 +1,11 @@
 package com.yugentech.sessions.ui.dash.mainScreen.components
 
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.height
@@ -39,6 +43,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -80,6 +86,20 @@ fun TopAppBar(
         BottomBarScreen.Settings -> "Settings" to Icons.Default.Settings
     }
 
+    // Transparent at rest so the page shows through; once content scrolls under it, a soft scrim
+    // fades in from the top, as Quill's Library does
+    val surface = MaterialTheme.colorScheme.surface
+    val scrolledUnder = (scrollBehavior?.state?.overlappedFraction ?: 0f) > 0.01f
+    val scrimAlpha by animateFloatAsState(if (scrolledUnder) 1f else 0f, tween(300), label = "topBarScrim")
+
+    Box(modifier = Modifier.fillMaxWidth()) {
+        Box(
+            modifier = Modifier
+                .matchParentSize()
+                .graphicsLayer { alpha = scrimAlpha }
+                .background(rememberSmoothScrimBrush(surface))
+        )
+
     TopAppBar(
         title = {
             Row(
@@ -104,8 +124,8 @@ fun TopAppBar(
         },
         windowInsets = WindowInsets.statusBars,
         colors = TopAppBarDefaults.topAppBarColors(
-            containerColor = MaterialTheme.colorScheme.surface,
-            scrolledContainerColor = MaterialTheme.colorScheme.surfaceContainer,
+            containerColor = Color.Transparent,
+            scrolledContainerColor = Color.Transparent,
             titleContentColor = MaterialTheme.colorScheme.onSurface,
             actionIconContentColor = MaterialTheme.colorScheme.onSurface
         ),
@@ -184,4 +204,5 @@ fun TopAppBar(
         },
         scrollBehavior = scrollBehavior
     )
+    }
 }

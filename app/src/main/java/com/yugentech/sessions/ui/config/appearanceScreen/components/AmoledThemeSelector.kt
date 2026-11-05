@@ -42,6 +42,8 @@ import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.yugentech.sessions.theme.viewmodel.ThemeViewModel
+import com.yugentech.sessions.theme.LocalThemeReveal
+import com.yugentech.sessions.theme.SLOW_FADE_MS
 import com.yugentech.sessions.theme.config.ThemeMode
 import com.yugentech.sessions.theme.tokens.corners
 import com.yugentech.sessions.theme.tokens.spacing
@@ -99,9 +101,13 @@ fun AmoledThemeSelector(
     }
     val contentAlpha by animateFloatAsState(if (isDarkThemeActive) 1f else 0.5f, label = "amoledEnabled")
 
+    val reveal = LocalThemeReveal.current
+
     fun toggle(on: Boolean) {
         haptic.performHapticFeedback(if (on) HapticFeedbackType.ToggleOn else HapticFeedbackType.ToggleOff)
-        viewModel.updateTheme(themeConfig.copy(isAmoledMode = on))
+        // A simple fade from the old look to the new, across the whole screen
+        val apply = { viewModel.updateTheme(themeConfig.copy(isAmoledMode = on)) }
+        reveal?.fade(apply, SLOW_FADE_MS) ?: apply()
     }
 
     Box(
