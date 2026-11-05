@@ -1,37 +1,26 @@
 package com.yugentech.sessions.ui.auth.signUpScreen
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.yugentech.sessions.auth.viewmodel.AuthViewModel
-import com.yugentech.sessions.theme.tokens.components
 import com.yugentech.sessions.theme.tokens.spacing
-import com.yugentech.sessions.ui.auth.components.AnimatedAlarmIcon
 import com.yugentech.sessions.ui.auth.components.AuthScaffold
 import com.yugentech.sessions.ui.auth.components.AuthSwitchLink
+import com.yugentech.sessions.ui.auth.components.WeekStreak
 import com.yugentech.sessions.ui.auth.components.forms.SignUpForm
 import com.yugentech.sessions.ui.dash.mainScreen.components.ToastMessage
-import kotlinx.coroutines.delay
 
-/** Start your productivity journey, under the ringing alarm: laid out as Hajime's sign-up. */
+/** A new focus habit, under a week of focus building up into a streak. */
 @Composable
 fun SignUpScreen(
     authViewModel: AuthViewModel,
@@ -40,32 +29,12 @@ fun SignUpScreen(
     onNavigateToSignIn: () -> Unit
 ) {
     val authState by authViewModel.authState.collectAsStateWithLifecycle()
-    var isIconActivated by remember { mutableStateOf(false) }
-
-    LaunchedEffect(Unit) {
-        delay(500) // Small delay to ensure view is ready
-        isIconActivated = true
-    }
 
     AuthScaffold(
-        title = "Sessions",
-        subtitle = "Start your productivity journey",
-        icon = {
-            Box(
-                modifier = Modifier
-                    .size(120.dp)
-                    .clip(CircleShape)
-                    .background(
-                        color = MaterialTheme.colorScheme.surfaceContainerHigh
-                    ),
-                contentAlignment = Alignment.Center
-            ) {
-                AnimatedAlarmIcon(
-                    isActivated = isIconActivated,
-                    modifier = Modifier.size(MaterialTheme.components.imageSizeSmall)
-                )
-            }
-        },
+        header = { WeekStreak() },
+        formTitle = "Sign up",
+        title = "Build a focus habit",
+        subtitle = "A calm timer, gentle nudges, and a record of every minute you focus.",
         overlay = {
             Box(modifier = Modifier.fillMaxSize()) {
                 ToastMessage(
