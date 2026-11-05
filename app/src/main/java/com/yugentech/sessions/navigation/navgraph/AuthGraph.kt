@@ -9,10 +9,6 @@ import com.yugentech.sessions.auth.state.AuthState
 import com.yugentech.sessions.navigation.screen.AppScreen
 import com.yugentech.sessions.ui.auth.signInScreen.SignInScreen
 import com.yugentech.sessions.ui.auth.signUpScreen.SignUpScreen
-import com.yugentech.sessions.ui.dash.util.defaultEnterTransition
-import com.yugentech.sessions.ui.dash.util.defaultExitTransition
-import com.yugentech.sessions.ui.dash.util.defaultPopEnterTransition
-import com.yugentech.sessions.ui.dash.util.defaultPopExitTransition
 import com.yugentech.sessions.auth.viewmodel.AuthViewModel
 import timber.log.Timber
 
@@ -25,11 +21,7 @@ fun NavGraphBuilder.authGraph(
 ) {
     // Defines the sign-in screen
     composable(
-        route = AppScreen.SignIn.route,
-        enterTransition = { defaultEnterTransition() },
-        exitTransition = { defaultExitTransition() },
-        popEnterTransition = { defaultPopEnterTransition() },
-        popExitTransition = { defaultPopExitTransition() }
+        route = AppScreen.SignIn.route
     ) {
         Timber.v("Composing SignIn Screen")
         BackHandler { (context as? Activity)?.finish() }
@@ -55,11 +47,7 @@ fun NavGraphBuilder.authGraph(
 
     // Defines the sign-up screen
     composable(
-        route = AppScreen.SignUp.route,
-        enterTransition = { defaultEnterTransition() },
-        exitTransition = { defaultExitTransition() },
-        popEnterTransition = { defaultPopEnterTransition() },
-        popExitTransition = { defaultPopExitTransition() }
+        route = AppScreen.SignUp.route
     ) {
         Timber.v("Composing SignUp Screen")
         SignUpScreen(

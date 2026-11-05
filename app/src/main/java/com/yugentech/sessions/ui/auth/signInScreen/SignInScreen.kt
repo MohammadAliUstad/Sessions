@@ -4,28 +4,25 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.zIndex
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.yugentech.sessions.R
 import com.yugentech.sessions.auth.viewmodel.AuthViewModel
 import com.yugentech.sessions.theme.tokens.spacing
 import com.yugentech.sessions.ui.auth.components.AuthScaffold
 import com.yugentech.sessions.ui.auth.components.AuthSwitchLink
-import com.yugentech.sessions.ui.auth.components.IconCarousel
+import com.yugentech.sessions.ui.auth.components.ResumeDial
 import com.yugentech.sessions.ui.auth.components.dialog.ForgotPasswordSuccessDialog
 import com.yugentech.sessions.ui.auth.components.forms.SignInForm
 import com.yugentech.sessions.ui.auth.state.ForgotPasswordState
 import com.yugentech.sessions.ui.dash.mainScreen.components.ToastMessage
 
-/** Welcome back, under the icon carousel: laid out as Hajime's sign-in. */
+/** Welcome back, under a focus dial still counting down where you left it. */
 @Composable
 fun SignInScreen(
     authViewModel: AuthViewModel,
@@ -38,13 +35,10 @@ fun SignInScreen(
     val forgotPasswordState by authViewModel.forgotPasswordState.collectAsStateWithLifecycle()
 
     AuthScaffold(
-        title = stringResource(R.string.welcome_back),
-        subtitle = stringResource(R.string.sign_in_message),
-        icon = {
-            IconCarousel(
-                modifier = Modifier.padding(vertical = MaterialTheme.spacing.s)
-            )
-        },
+        header = { ResumeDial() },
+        formTitle = "Sign in",
+        title = "Pick up your focus",
+        subtitle = "Your sessions, streaks and templates are right where you left them.",
         overlay = {
             Box(modifier = Modifier.fillMaxSize()) {
                 ToastMessage(

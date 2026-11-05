@@ -14,8 +14,6 @@ import com.yugentech.sessions.notification.viewmodel.NotificationViewModel
 import com.yugentech.sessions.timer.viewmodel.TimerViewModel
 import com.yugentech.sessions.ui.dash.mainScreen.MainScreen
 import com.yugentech.sessions.ui.auth.onboardingScreen.OnboardingScreen
-import com.yugentech.sessions.ui.dash.util.defaultExitTransition
-import com.yugentech.sessions.ui.dash.util.defaultPopExitTransition
 import com.yugentech.sessions.viewModels.HomeViewModel
 import com.yugentech.sessions.auth.viewmodel.AuthViewModel
 import com.yugentech.sessions.viewModels.ProfileViewModel
@@ -32,9 +30,7 @@ fun NavGraphBuilder.dashGraph(
 ) {
     // Defines the onboarding screen
     composable(
-        route = AppScreen.Onboarding.route,
-        exitTransition = { defaultExitTransition() },
-        popExitTransition = { defaultPopExitTransition() }
+        route = AppScreen.Onboarding.route
     ) {
         OnboardingScreen(onFinish = onOnboardingComplete)
         BackHandler { (context as? Activity)?.finish() }
