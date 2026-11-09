@@ -42,14 +42,13 @@ import java.time.format.DateTimeFormatter
  *
  * Always composed with the cell: [visible] animates it in (fading and growing up from its bottom
  * edge, toward the cell) and out again, and the popup leaves only once it has finished hiding.
+ * The popup follows its cell while it moves, so it can animate out during a scroll too.
  */
 @Composable
-fun HeatmapDayTooltip(day: HeatmapDay, visible: Boolean, instantDismissals: Int = 0) {
+fun HeatmapDayTooltip(day: HeatmapDay, visible: Boolean) {
     val gap = with(LocalDensity.current) { 6.dp.roundToPx() }
     val positionProvider = remember(gap) { AboveAnchorPositionProvider(gap) }
-    // A fresh, hidden state after each instant dismissal (a scroll, leaving the screen): the chip
-    // goes at once instead of animating out, and the next tap still animates it in.
-    val visibility = remember(instantDismissals) { MutableTransitionState(false) }
+    val visibility = remember { MutableTransitionState(false) }
     visibility.targetState = visible
 
     // The popup stays while the card is on screen or still animating out.
@@ -68,8 +67,7 @@ fun HeatmapDayTooltip(day: HeatmapDay, visible: Boolean, instantDismissals: Int 
         Surface(
             shape = RoundedCornerShape(MaterialTheme.corners.medium),
             color = MaterialTheme.colorScheme.inverseSurface,
-            contentColor = MaterialTheme.colorScheme.inverseOnSurface,
-            shadowElevation = 4.dp
+            contentColor = MaterialTheme.colorScheme.inverseOnSurface
         ) {
             Column(
                 modifier = Modifier.padding(

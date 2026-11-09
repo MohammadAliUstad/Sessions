@@ -1,6 +1,5 @@
 package com.yugentech.sessions.ui.dash.homeScreen
 
-import com.yugentech.sessions.ui.dash.mainScreen.components.topBarInset
 import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
@@ -23,10 +22,14 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalView
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
+import androidx.compose.ui.platform.LocalView
+import androidx.core.net.toUri
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.yugentech.sessions.templates.viewmodel.TemplateViewModel
+import com.yugentech.sessions.theme.config.HomeLayout
+import com.yugentech.sessions.theme.viewmodel.ThemeViewModel
 import com.yugentech.sessions.timer.viewmodel.TimerViewModel
 import com.yugentech.sessions.ui.dash.homeScreen.components.FinishConfirmationDialog
 import com.yugentech.sessions.ui.dash.homeScreen.components.dialogs.DurationPickerDialog
@@ -35,20 +38,18 @@ import com.yugentech.sessions.ui.dash.homeScreen.components.dialogs.ReviewRemind
 import com.yugentech.sessions.ui.dash.homeScreen.components.dialogs.SetsSettingsSheet
 import com.yugentech.sessions.ui.dash.homeScreen.components.dialogs.SoundSelectionSheet
 import com.yugentech.sessions.ui.dash.homeScreen.components.dialogs.TaskSelectionSheet
-import com.yugentech.sessions.templates.viewmodel.TemplateViewModel
-import com.yugentech.sessions.theme.viewmodel.ThemeViewModel
-import com.yugentech.sessions.theme.config.HomeLayout
 import com.yugentech.sessions.ui.dash.homeScreen.layouts.ClassicHome
 import com.yugentech.sessions.ui.dash.homeScreen.layouts.refined.RefinedHome
 import com.yugentech.sessions.ui.dash.homeScreen.layouts.shared.AliveGradient
 import com.yugentech.sessions.ui.dash.homeScreen.layouts.shared.HomeActions
 import com.yugentech.sessions.ui.dash.homeScreen.layouts.shared.HomeUi
 import com.yugentech.sessions.ui.dash.homeScreen.layouts.studio.StudioHome
+import com.yugentech.sessions.ui.dash.mainScreen.components.bottomBarInset
+import com.yugentech.sessions.ui.dash.mainScreen.components.topBarInset
 import com.yugentech.sessions.ui.dash.util.models.ActiveDialog
 import com.yugentech.sessions.utils.AppConstants
 import com.yugentech.sessions.viewModels.HomeViewModel
 import org.koin.androidx.compose.koinViewModel
-import androidx.core.net.toUri
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
@@ -89,10 +90,12 @@ fun HomeScreen(
             modifier = Modifier.fillMaxSize()
         ) {
             val inset = topBarInset
-            val screenHeight = maxHeight - inset
+            val bottomInset = bottomBarInset
+            // The space between the top bar and the floating nav dock
+            val screenHeight = maxHeight - inset - bottomInset
 
             // The newer layouts get a living glow across the top, up under the bar; Classic stays as it was
-            if (themeConfig.homeLayout != HomeLayout.CLASSIC) {
+            if (themeConfig.homeLayout != HomeLayout.CLASSIC && themeConfig.showHomeGradient) {
                 AliveGradient(
                     mode = timerState.currentMode,
                     running = timerState.isTimerRunning,
@@ -107,7 +110,7 @@ fun HomeScreen(
                 modifier = Modifier
                     .fillMaxSize()
                     .verticalScroll(scrollState)
-                    .padding(top = inset)
+                    .padding(top = inset, bottom = bottomInset)
             ) {
                 val ui = HomeUi(
                     timer = timerState,

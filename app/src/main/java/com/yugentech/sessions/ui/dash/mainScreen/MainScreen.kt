@@ -7,8 +7,11 @@ import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.AnimatedContent
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.AlertDialog
@@ -30,31 +33,36 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.saveable.rememberSaveableStateHolder
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.platform.LocalView
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import androidx.core.content.ContextCompat
-import androidx.compose.ui.hapticfeedback.HapticFeedbackType
-import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.yugentech.sessions.alerts.viewmodel.AlertsViewModel
+import com.yugentech.sessions.announcements.ui.AnnouncementHost
 import com.yugentech.sessions.navigation.screen.BottomBarScreen
 import com.yugentech.sessions.notification.viewmodel.NotificationViewModel
-import com.yugentech.sessions.timer.viewmodel.TimerViewModel
 import com.yugentech.sessions.theme.tokens.corners
-import com.yugentech.sessions.ui.dash.homeScreen.components.ExitConfirmationDialog
-import com.yugentech.sessions.viewModels.HomeViewModel
-import com.yugentech.sessions.viewModels.ProfileViewModel
-import com.yugentech.sessions.alerts.viewmodel.AlertsViewModel
+import com.yugentech.sessions.timer.viewmodel.TimerViewModel
 import com.yugentech.sessions.ui.dash.homeScreen.HomeScreen
+import com.yugentech.sessions.ui.dash.homeScreen.components.ExitConfirmationDialog
 import com.yugentech.sessions.ui.dash.mainScreen.components.BottomNavBar
+import com.yugentech.sessions.ui.dash.mainScreen.components.LocalBottomBarInset
 import com.yugentech.sessions.ui.dash.mainScreen.components.LocalTopBarInset
 import com.yugentech.sessions.ui.dash.mainScreen.components.ToastMessage
 import com.yugentech.sessions.ui.dash.mainScreen.components.TopAppBar
+import com.yugentech.sessions.ui.dash.mainScreen.components.smoothBottomScrimBrush
 import com.yugentech.sessions.ui.dash.profileScreen.ProfileScreen
 import com.yugentech.sessions.ui.dash.settingsScreen.SettingsScreen
 import com.yugentech.sessions.ui.dash.util.rememberNavTransitions
+import com.yugentech.sessions.viewModels.HomeViewModel
+import com.yugentech.sessions.viewModels.ProfileViewModel
 import kotlinx.coroutines.delay
 import org.koin.androidx.compose.koinViewModel
 
@@ -76,7 +84,9 @@ fun MainScreen(
     onWhatsNew: () -> Unit,
     onMoreApps: () -> Unit,
     onAppearance: () -> Unit,
-    onHomeCustomization: () -> Unit = {}
+    onHomeCustomization: () -> Unit = {},
+    onReplayOnboarding: () -> Unit = {},
+    onNavigateRoute: (String) -> Unit = {}
 ) {
     val context = LocalContext.current
     val view = LocalView.current
@@ -213,12 +223,14 @@ fun MainScreen(
         val transitions = rememberNavTransitions()
         // The pages run up under the transparent top bar, so their backgrounds and glows reach the
         // top of the screen; each starts its content the bar's height down
-        CompositionLocalProvider(LocalTopBarInset provides innerPadding.calculateTopPadding()) {
-            Box(
-                modifier = Modifier
-                    .padding(bottom = innerPadding.calculateBottomPadding())
-                    .fillMaxSize()
-            ) {
+        // As on Hajime, the pages also run down under the floating nav dock, ending their content
+        // just above it, so the dock floats over the page instead of sitting on a band of its own
+        val bottomInset = innerPadding.calculateBottomPadding()
+        CompositionLocalProvider(
+            LocalTopBarInset provides innerPadding.calculateTopPadding(),
+            LocalBottomBarInset provides bottomInset + DockContentGap
+        ) {
+            Box(modifier = Modifier.fillMaxSize()) {
                 AnimatedContent(
                     targetState = currentScreen,
                     transitionSpec = {
@@ -251,11 +263,22 @@ fun MainScreen(
                                 onWhatsNew = onWhatsNew,
                                 onMoreApps = onMoreApps,
                                 onAppearance = onAppearance,
-                                onHomeCustomization = onHomeCustomization
+                                onHomeCustomization = onHomeCustomization,
+                                onReplayOnboarding = onReplayOnboarding
                             )
                         }
                     }
                 }
+
+                // A soft fade into the background along the bottom, under the dock, so the page
+                // dissolves away behind it instead of being cut off at a hard edge
+                Box(
+                    modifier = Modifier
+                        .align(Alignment.BottomCenter)
+                        .fillMaxWidth()
+                        .height(bottomInset + BottomFadeExtra)
+                        .background(smoothBottomScrimBrush(MaterialTheme.colorScheme.background, bottomAlpha = 0.95f))
+                )
             }
         }
 
@@ -267,5 +290,18 @@ fun MainScreen(
                     .zIndex(3f)
             )
         }
+
+        // Centralized update announcements & dialogs (shown once per release, when timer is idle)
+        AnnouncementHost(
+            isTimerIdle = timerState.isIdle,
+            onOpenWhatsNew = onWhatsNew,
+            onNavigateRoute = onNavigateRoute
+        )
     }
 }
+
+/** Space left between the end of a page's content and the top of the nav dock. */
+private val DockContentGap = 8.dp
+
+/** How far the bottom fade reaches above the dock. */
+private val BottomFadeExtra = 24.dp

@@ -1,5 +1,8 @@
 package com.yugentech.sessions.ui.dash.settingsScreen.components
 
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.padding
@@ -15,9 +18,12 @@ import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.graphics.vector.ImageVector
 import com.yugentech.sessions.theme.tokens.spacing
 import com.yugentech.sessions.ui.dash.mainScreen.components.itemShape
 
@@ -27,12 +33,18 @@ fun SettingsSwitchItem(
     subtitle: String? = null,
     checked: Boolean,
     enabled: Boolean = true,
+    checkedIcon: ImageVector? = null,
     index: Int,
     totalCount: Int,
     onCheckedChange: (Boolean) -> Unit,
     onClick: (() -> Unit)? = null
 ) {
     val shape = itemShape(index, totalCount)
+    val contentAlpha by animateFloatAsState(
+        targetValue = if (enabled) 1f else 0.45f,
+        animationSpec = tween(durationMillis = 400, easing = FastOutSlowInEasing),
+        label = "settingsSwitchContentAlpha"
+    )
 
     ListItem(
         headlineContent = {
@@ -69,29 +81,28 @@ fun SettingsSwitchItem(
                     uncheckedThumbColor = MaterialTheme.colorScheme.onSurfaceVariant,
                     uncheckedTrackColor = MaterialTheme.colorScheme.surfaceVariant,
                     checkedIconColor = MaterialTheme.colorScheme.primaryContainer,
-                    uncheckedIconColor = MaterialTheme.colorScheme.surfaceVariant
+                    uncheckedIconColor = MaterialTheme.colorScheme.surfaceVariant,
+                    disabledCheckedThumbColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                    disabledCheckedTrackColor = MaterialTheme.colorScheme.primaryContainer,
+                    disabledUncheckedThumbColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                    disabledUncheckedTrackColor = MaterialTheme.colorScheme.surfaceVariant,
+                    disabledCheckedIconColor = MaterialTheme.colorScheme.primaryContainer,
+                    disabledUncheckedIconColor = MaterialTheme.colorScheme.surfaceVariant
                 ),
                 thumbContent = {
-                    if (checked) {
-                        Icon(
-                            imageVector = Icons.Filled.Check,
-                            contentDescription = null,
-                            modifier = Modifier.size(SwitchDefaults.IconSize)
-                        )
-                    } else {
-                        Icon(
-                            imageVector = Icons.Filled.Close,
-                            contentDescription = null,
-                            modifier = Modifier.size(SwitchDefaults.IconSize)
-                        )
-                    }
+                    Icon(
+                        imageVector = if (checked) checkedIcon ?: Icons.Filled.Check else Icons.Filled.Close,
+                        contentDescription = null,
+                        modifier = Modifier.size(SwitchDefaults.IconSize)
+                    )
                 }
             )
         },
         modifier = Modifier
             .clip(shape)
             .background(MaterialTheme.colorScheme.surfaceContainer)
-            .then(if (onClick != null) Modifier.clickable(onClick = onClick) else Modifier),
+            .graphicsLayer { alpha = contentAlpha }
+            .then(if ((onClick != null) && enabled) Modifier.clickable(onClick = onClick) else Modifier),
         colors = ListItemDefaults.colors(
             containerColor = Color.Transparent
         )

@@ -161,17 +161,23 @@ fun heroBrush(): Brush {
  * edge for outlined ones, and for glass a thin wash of the gradient with a sheen and a lit edge.
  */
 @Composable
-fun Modifier.heroSurface(style: CardStyle, brush: Brush, shape: Shape): Modifier {
+fun Modifier.heroSurface(
+    style: CardStyle,
+    brush: Brush,
+    shape: Shape,
+    drawBorder: Boolean = true
+): Modifier {
     val scheme = MaterialTheme.colorScheme
     return when (style) {
         CardStyle.FILLED -> clip(shape).background(brush)
-        CardStyle.OUTLINED -> clip(shape)
-            .background(scheme.surfaceContainerLow)
-            .border(1.5.dp, scheme.primary.copy(alpha = 0.45f), shape)
+        CardStyle.OUTLINED -> {
+            val base = clip(shape).background(scheme.surfaceContainerLow)
+            if (drawBorder) base.border(1.5.dp, scheme.primary.copy(alpha = 0.45f), shape) else base
+        }
         CardStyle.GLASS -> {
             val isDark = scheme.background.luminance() < 0.5f
             val edge = if (isDark) Color.White else scheme.primary
-            clip(shape)
+            val base = clip(shape)
                 .background(scheme.surfaceContainer)
                 .background(brush, alpha = if (isDark) 0.30f else 0.22f)
                 // Sheen: light falling across the top-left corner, behind the text
@@ -184,13 +190,17 @@ fun Modifier.heroSurface(style: CardStyle, brush: Brush, shape: Shape): Modifier
                         )
                     )
                 }
-                .border(
+            if (drawBorder) {
+                base.border(
                     width = 1.dp,
                     brush = Brush.linearGradient(
                         listOf(edge.copy(alpha = 0.55f), edge.copy(alpha = 0.06f), edge.copy(alpha = 0.25f))
                     ),
                     shape = shape
                 )
+            } else {
+                base
+            }
         }
     }
 }

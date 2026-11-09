@@ -1,21 +1,17 @@
 package com.yugentech.sessions.ui.dash.homeScreen.components.durationSelection
 
 import androidx.compose.animation.AnimatedContent
-import androidx.compose.ui.geometry.Size
-import androidx.compose.ui.geometry.CornerRadius
-import androidx.compose.ui.draw.drawBehind
-import androidx.compose.runtime.getValue
-import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.animateContentSize
+import androidx.compose.ui.graphics.Color
+import androidx.compose.animation.core.spring
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.animation.togetherWith
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -28,7 +24,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.SkipNext
@@ -42,9 +37,9 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
@@ -61,9 +56,7 @@ import com.yugentech.sessions.ui.dash.homeScreen.components.hero.heroBrush
 import com.yugentech.sessions.ui.dash.homeScreen.components.hero.heroPalette
 import com.yugentech.sessions.ui.dash.homeScreen.components.hero.heroSurface
 import com.yugentech.sessions.ui.dash.homeScreen.components.hero.rememberEffectTime
-import com.yugentech.sessions.ui.dash.state.ItemStatus
 import com.yugentech.sessions.ui.dash.state.SessionDashboardState
-import com.yugentech.sessions.ui.dash.state.SessionVisualItem
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
@@ -75,6 +68,8 @@ fun SessionProgressCard(
     cardStyle: CardStyle = CardStyle.FILLED,
     animationStyle: CardAnimationStyle = CardAnimationStyle.NONE,
     pulse: SessionPulse = SessionPulse(),
+    // How far the current block has run (0..1); fills the current focus bar
+    blockProgress: Float = pulse.progress,
     // Home's own side margin; the Appearance preview sits in a list that has its own
     horizontalPadding: Dp = MaterialTheme.spacing.m
 ) {
@@ -221,16 +216,35 @@ fun SessionProgressCard(
                         }
 
                         if (targetSets > 1) {
+                            // Eases between its running and paused colours, like the sound badge,
+                            // instead of snapping when the session is paused or resumed. The running
+                            // tint is translucent, so the container blends premultiplied: a plain colour
+                            // animation raises the alpha before the hue moves and flashes the light tint.
+                            val pausedFraction by animateFloatAsState(
+                                targetValue = if (isTimerRunning) 0f else 1f,
+                                animationSpec = spring(),
+                                label = "skipContainer"
+                            )
+                            val skipContainer = premultipliedLerp(
+                                MaterialTheme.colorScheme.onSecondaryContainer.copy(alpha = 0.15f),
+                                MaterialTheme.colorScheme.surfaceContainerHigh,
+                                pausedFraction
+                            )
+                            val skipContent by animateColorAsState(
+                                targetValue = if (isTimerRunning)
+                                    MaterialTheme.colorScheme.onSecondaryContainer
+                                else
+                                    MaterialTheme.colorScheme.onSurfaceVariant,
+                                label = "skipContent"
+                            )
                             FilledTonalButton(
                                 onClick = onSkipToNext,
                                 enabled = isTimerRunning,
                                 colors = ButtonDefaults.filledTonalButtonColors(
-                                    containerColor = MaterialTheme.colorScheme.onSecondaryContainer.copy(
-                                        alpha = 0.15f
-                                    ),
-                                    contentColor = MaterialTheme.colorScheme.onSecondaryContainer,
-                                    disabledContainerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
-                                    disabledContentColor = MaterialTheme.colorScheme.onSurfaceVariant
+                                    containerColor = skipContainer,
+                                    contentColor = skipContent,
+                                    disabledContainerColor = skipContainer,
+                                    disabledContentColor = skipContent
                                 ),
                                 contentPadding = PaddingValues(
                                     horizontal = MaterialTheme.spacing.sm,
@@ -276,79 +290,30 @@ fun SessionProgressCard(
                     }
                 }
 
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.xs)
-                ) {
-                    state.visualSchedule.forEachIndexed { index, item ->
-                        val (completedColor, activeColor, upcomingColor) = when (item) {
-                            is SessionVisualItem.FocusBlock -> Triple(
-                                MaterialTheme.colorScheme.primary,
-                                MaterialTheme.colorScheme.onSecondaryContainer,
-                                MaterialTheme.colorScheme.onSecondaryContainer.copy(alpha = 0.1f)
-                            )
-
-                            is SessionVisualItem.ShortBreak -> Triple(
-                                MaterialTheme.colorScheme.tertiary,
-                                MaterialTheme.colorScheme.tertiary,
-                                MaterialTheme.colorScheme.tertiary.copy(alpha = 0.3f)
-                            )
-
-                            is SessionVisualItem.LongBreak -> Triple(
-                                MaterialTheme.colorScheme.error,
-                                MaterialTheme.colorScheme.error,
-                                MaterialTheme.colorScheme.error.copy(alpha = 0.3f)
-                            )
-                        }
-
-                        // The mark eases into the current or waiting colour, and a finished one
-                        // fills with its completed colour from the left (or the centre, for dots)
-                        // rather than snapping, so a skip reads as one finishing and the next starting
-                        val base by animateColorAsState(
-                            targetValue = if (item.status == ItemStatus.Current) activeColor else upcomingColor,
-                            animationSpec = tween(500),
-                            label = "scheduleBase$index"
-                        )
-                        val done by animateFloatAsState(
-                            targetValue = if (item.status == ItemStatus.Completed) 1f else 0f,
-                            animationSpec = tween(650, easing = FastOutSlowInEasing),
-                            label = "scheduleDone$index"
-                        )
-
-                        val markModifier = when (item) {
-                            is SessionVisualItem.FocusBlock -> Modifier
-                                .weight(1f)
-                                .height(MaterialTheme.spacing.xsSmall)
-
-                            is SessionVisualItem.ShortBreak -> Modifier.size(MaterialTheme.spacing.xsSmall)
-
-                            is SessionVisualItem.LongBreak -> Modifier
-                                .width(MaterialTheme.spacing.sm)
-                                .height(MaterialTheme.spacing.sm)
-                        }
-
-                        Box(
-                            modifier = markModifier
-                                .clip(CircleShape)
-                                .background(base)
-                                .drawBehind {
-                                    if (done <= 0f) return@drawBehind
-                                    if (size.width > size.height * 1.5f) {
-                                        drawRoundRect(
-                                            color = completedColor,
-                                            size = Size((size.width * done).coerceAtLeast(size.height), size.height),
-                                            cornerRadius = CornerRadius(size.height / 2f),
-                                            alpha = (done * 6f).coerceAtMost(1f)
-                                        )
-                                    } else {
-                                        drawCircle(completedColor, radius = size.minDimension / 2f * done)
-                                    }
-                                }
-                        )
-                    }
-                }
+                SessionTimeline(
+                    items = state.visualSchedule,
+                    progress = blockProgress,
+                    ink = palette.content
+                )
             }
         }
     }
+}
+
+/**
+ * Blends [from] to [to] by [fraction] in premultiplied alpha, so a translucent colour fading into an
+ * opaque one cross-fades evenly instead of flashing its own hue at full strength midway.
+ */
+private fun premultipliedLerp(from: Color, to: Color, fraction: Float): Color {
+    val t = fraction.coerceIn(0f, 1f)
+    val alpha = from.alpha + (to.alpha - from.alpha) * t
+    if (alpha <= 0f) return Color.Transparent
+    fun channel(a: Float, b: Float) =
+        ((a * from.alpha) + ((b * to.alpha) - (a * from.alpha)) * t) / alpha
+    return Color(
+        red = channel(from.red, to.red).coerceIn(0f, 1f),
+        green = channel(from.green, to.green).coerceIn(0f, 1f),
+        blue = channel(from.blue, to.blue).coerceIn(0f, 1f),
+        alpha = alpha
+    )
 }

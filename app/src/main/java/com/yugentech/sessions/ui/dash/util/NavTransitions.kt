@@ -30,7 +30,8 @@ import com.yugentech.sessions.navigation.screen.AppScreen
  * x axis while the old one fades out quickly and the new one fades in after it.
  * Fade through, for switching section (sign-in, onboarding, the app): no movement, the old
  * section fades out and the new one fades in while scaling up from 92%.
- * Shared axis Y, for sign-in / sign-up <-> onboarding: the content moves 30 dp vertically.
+ * Shared axis Y, for onboarding -> sign-in / sign-up (the next step of one journey, over the
+ * same background) and back: the content moves 30 dp up into sign-in, down out of it.
  */
 
 private const val DURATION_MS = 300
@@ -73,27 +74,32 @@ class NavTransitions(private val slideDistancePx: Int) {
 
     fun enter(scope: AnimatedContentTransitionScope<NavBackStackEntry>): EnterTransition =
         scope.authOnboardingDirection()?.let { sharedAxisYIn(it) }
-            ?: if (scope.switchesSection()) fadeThroughIn(scope.duration()) else sharedAxisIn(forward = true, scope.duration())
+            ?: if (scope.switchesSection() && !scope.replayHop()) fadeThroughIn(scope.duration())
+            else sharedAxisIn(forward = true, scope.duration())
 
     fun exit(scope: AnimatedContentTransitionScope<NavBackStackEntry>): ExitTransition =
         scope.authOnboardingDirection()?.let { sharedAxisYOut(it) }
-            ?: if (scope.switchesSection()) fadeThroughOut(scope.duration()) else sharedAxisOut(forward = true, scope.duration())
+            ?: if (scope.switchesSection() && !scope.replayHop()) fadeThroughOut(scope.duration())
+            else sharedAxisOut(forward = true, scope.duration())
 
     fun popEnter(scope: AnimatedContentTransitionScope<NavBackStackEntry>): EnterTransition =
         scope.authOnboardingDirection()?.let { sharedAxisYIn(it) }
-            ?: if (scope.switchesSection()) fadeThroughIn(scope.duration()) else sharedAxisIn(forward = false, scope.duration())
+            ?: if (scope.switchesSection() && !scope.replayHop()) fadeThroughIn(scope.duration())
+            // Finishing the replay moves on to Settings, so it reads forward rather than back
+            else sharedAxisIn(forward = scope.replayHop(), scope.duration())
 
     fun popExit(scope: AnimatedContentTransitionScope<NavBackStackEntry>): ExitTransition =
         scope.authOnboardingDirection()?.let { sharedAxisYOut(it) }
-            ?: if (scope.switchesSection()) fadeThroughOut(scope.duration()) else sharedAxisOut(forward = false, scope.duration())
+            ?: if (scope.switchesSection() && !scope.replayHop()) fadeThroughOut(scope.duration())
+            else sharedAxisOut(forward = scope.replayHop(), scope.duration())
 
-    /** [direction] 1: up into onboarding, from below. -1: back down to sign-in, from above. */
+    /** [direction] 1: up into sign-in, from below. -1: back down to onboarding, from above. */
     private fun sharedAxisYIn(direction: Int): EnterTransition =
         slideInVertically(tween(AUTH_ONBOARDING_MS, easing = EmphasizedEasing)) {
             direction * slideDistancePx
         } + fadeIn(fadeInSpec(AUTH_ONBOARDING_MS))
 
-    /** [direction] 1: up and away into onboarding. -1: down and away back to sign-in. */
+    /** [direction] 1: up and away into sign-in. -1: down and away back to onboarding. */
     private fun sharedAxisYOut(direction: Int): ExitTransition =
         slideOutVertically(tween(AUTH_ONBOARDING_MS, easing = EmphasizedEasing)) {
             -direction * slideDistancePx
@@ -142,21 +148,36 @@ private fun AnimatedContentTransitionScope<NavBackStackEntry>.duration(): Int {
     val from = section(initialState)
     val to = section(targetState)
     return when {
+        replayHop() -> DURATION_MS
         from == Section.AUTH && to == Section.AUTH -> AUTH_DURATION_MS
         from == Section.ONBOARDING && to == Section.APP -> ONBOARDING_DONE_MS
         else -> DURATION_MS
     }
 }
 
-/** 1 from the auth screens into onboarding, -1 back out to them, null for any other move. */
+/**
+ * 1 from onboarding on to the auth screens (Sessions' next step, so it moves up, as Amatyaa's
+ * auth -> onboarding does), -1 back from them to onboarding, null for any other move.
+ */
 private fun AnimatedContentTransitionScope<NavBackStackEntry>.authOnboardingDirection(): Int? {
     val from = section(initialState)
     val to = section(targetState)
     return when {
-        from == Section.AUTH && to == Section.ONBOARDING -> 1
-        from == Section.ONBOARDING && to == Section.AUTH -> -1
+        from == Section.ONBOARDING && to == Section.AUTH -> 1
+        from == Section.AUTH && to == Section.ONBOARDING -> -1
         else -> null
     }
+}
+
+/**
+ * Opening the onboarding replay from Settings, or going back from it to the app. It moves like any
+ * other screen, with the standard shared axis X at 300 ms (forward both ways), rather than the
+ * section fade through and its zoom that first-run onboarding uses on its way into the app.
+ */
+private fun AnimatedContentTransitionScope<NavBackStackEntry>.replayHop(): Boolean {
+    val replay = AppScreen.OnboardingReplay.route
+    return (initialState.destination.route == replay && section(targetState) == Section.APP) ||
+        (targetState.destination.route == replay && section(initialState) == Section.APP)
 }
 
 /** Sign-in, onboarding and the app are separate sections; moving between them fades through. */
@@ -167,6 +188,6 @@ private enum class Section { AUTH, ONBOARDING, APP }
 
 private fun section(entry: NavBackStackEntry): Section = when (entry.destination.route) {
     AppScreen.SignIn.route, AppScreen.SignUp.route -> Section.AUTH
-    AppScreen.Onboarding.route -> Section.ONBOARDING
+    AppScreen.Onboarding.route, AppScreen.OnboardingReplay.route -> Section.ONBOARDING
     else -> Section.APP
 }

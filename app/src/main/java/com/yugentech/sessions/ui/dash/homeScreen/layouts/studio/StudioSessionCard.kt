@@ -31,18 +31,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.drawBehind
-import androidx.compose.ui.geometry.CornerRadius
-import androidx.compose.ui.geometry.Size
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.drawscope.DrawScope
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.yugentech.sessions.theme.config.CardAnimationStyle
 import com.yugentech.sessions.theme.config.CardStyle
+import com.yugentech.sessions.ui.dash.homeScreen.components.durationSelection.SessionTimeline
 import com.yugentech.sessions.ui.dash.homeScreen.components.hero.HeroCardBackground
 import com.yugentech.sessions.ui.dash.homeScreen.components.hero.SessionPulse
 import com.yugentech.sessions.ui.dash.homeScreen.components.hero.heroBrush
@@ -50,9 +46,7 @@ import com.yugentech.sessions.ui.dash.homeScreen.components.hero.heroPalette
 import com.yugentech.sessions.ui.dash.homeScreen.components.hero.heroSurface
 import com.yugentech.sessions.ui.dash.homeScreen.components.hero.rememberEffectTime
 import com.yugentech.sessions.ui.dash.mainScreen.components.pressClickable
-import com.yugentech.sessions.ui.dash.state.ItemStatus
 import com.yugentech.sessions.ui.dash.state.SessionDashboardState
-import com.yugentech.sessions.ui.dash.state.SessionVisualItem
 
 private val CardShape = RoundedCornerShape(28.dp)
 
@@ -112,10 +106,22 @@ fun StudioSessionCard(
                     color = palette.content.copy(alpha = 0.75f),
                     modifier = Modifier.weight(1f)
                 )
-                AnimatedVisibility(visible = targetSets > 1 && isRunning, enter = fadeIn(), exit = fadeOut()) {
+                // Stays in place while paused, just dimmed and inactive, as in the other layouts
+                val skipAlpha by animateFloatAsState(
+                    targetValue = if (isRunning) 1f else 0.4f,
+                    animationSpec = tween(250, easing = FastOutSlowInEasing),
+                    label = "studioSkipAlpha"
+                )
+                AnimatedVisibility(visible = targetSets > 1, enter = fadeIn(), exit = fadeOut()) {
                     Row(
                         modifier = Modifier
-                            .pressClickable(shape = CircleShape, onClickLabel = "Skip to next", onClick = onSkip)
+                            .pressClickable(
+                                shape = CircleShape,
+                                enabled = isRunning,
+                                onClickLabel = "Skip to next",
+                                onClick = onSkip
+                            )
+                            .graphicsLayer { alpha = skipAlpha }
                             .background(palette.content.copy(alpha = 0.12f), CircleShape)
                             .padding(horizontal = 12.dp, vertical = 6.dp),
                         verticalAlignment = Alignment.CenterVertically
@@ -163,74 +169,7 @@ fun StudioSessionCard(
                 }
             }
 
-            Timeline(state.visualSchedule, blockProgress, palette.content)
+            SessionTimeline(state.visualSchedule, blockProgress, palette.content)
         }
     }
 }
-
-/**
- * Every block in the session in order: focus blocks as bars, short breaks as dots and long
- * breaks as wider pills. Done ones are solid, the current one fills as it runs, the rest wait faintly.
- */
-@Composable
-private fun Timeline(items: List<SessionVisualItem>, progress: Float, ink: Color) {
-    val scheme = MaterialTheme.colorScheme
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(6.dp)
-    ) {
-        items.forEachIndexed { index, item ->
-            val color = when (item) {
-                is SessionVisualItem.FocusBlock -> scheme.primary
-                is SessionVisualItem.ShortBreak -> scheme.tertiary
-                is SessionVisualItem.LongBreak -> scheme.secondary
-            }
-            // Each block keeps its own fill, so finishing one (or skipping it) sweeps it full
-            // while the next grows from empty, instead of the whole row jumping at once
-            val target = when (item.status) {
-                ItemStatus.Completed -> 1f
-                ItemStatus.Current -> progress
-                ItemStatus.Upcoming -> 0f
-            }
-            val fill by animateFloatAsState(
-                targetValue = target,
-                animationSpec = tween(durationMillis = 650, easing = FastOutSlowInEasing),
-                label = "timelineFill$index"
-            )
-            val sizeModifier = when (item) {
-                is SessionVisualItem.FocusBlock -> Modifier.weight(1f).height(8.dp)
-                is SessionVisualItem.ShortBreak -> Modifier.size(8.dp)
-                is SessionVisualItem.LongBreak -> Modifier.width(20.dp).height(8.dp)
-            }
-            val solid = lerpTo(color, ink)
-            Box(
-                modifier = sizeModifier
-                    .clip(CircleShape)
-                    .background(ink.copy(alpha = 0.14f))
-                    .drawBehind { drawFill(fill, solid) }
-            )
-        }
-    }
-}
-
-/**
- * [fill] (0..1) of a timeline mark in [color]: bars fill from the left; marks too short to read
- * as a sweep (the break dots) grow from their centre instead.
- */
-private fun DrawScope.drawFill(fill: Float, color: Color) {
-    if (fill <= 0f) return
-    if (size.width > size.height * 1.5f) {
-        drawRoundRect(
-            color = color,
-            size = Size((size.width * fill).coerceAtLeast(size.height), size.height),
-            cornerRadius = CornerRadius(size.height / 2f),
-            alpha = (fill * 6f).coerceAtMost(1f)
-        )
-    } else {
-        drawCircle(color = color, radius = size.minDimension / 2f * fill)
-    }
-}
-
-/** The block's own colour, nudged towards the card's text colour so it always reads on the card. */
-private fun lerpTo(color: Color, ink: Color): Color = androidx.compose.ui.graphics.lerp(color, ink, 0.15f)

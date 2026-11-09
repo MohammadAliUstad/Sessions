@@ -42,9 +42,6 @@ fun AvatarOption(
         AvatarImage(
             avatarId = avatar.id,
             modifier = Modifier
-                .clip(CircleShape)
-                .clickable(onClick = onSelect)
-                .background(MaterialTheme.colorScheme.secondaryContainer)
                 .then(
                     if (isSelected) {
                         Modifier.border(
@@ -55,7 +52,10 @@ fun AvatarOption(
                     } else {
                         Modifier
                     }
-                ),
+                )
+                .clip(CircleShape)
+                .clickable(onClick = onSelect)
+                .background(MaterialTheme.colorScheme.secondaryContainer),
             size = AvatarOptionSize,
             imageSize = 134.dp,
             imageOffsetY = 6.dp

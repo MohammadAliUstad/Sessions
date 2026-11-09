@@ -18,7 +18,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.VolumeOff
 import androidx.compose.material.icons.automirrored.rounded.VolumeUp
@@ -34,11 +33,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import com.yugentech.sessions.alerts.model.BackgroundSound
-import com.yugentech.sessions.theme.tokens.corners
 import com.yugentech.sessions.theme.tokens.dimensions.AppAnimations
 import com.yugentech.sessions.theme.tokens.icons
 import com.yugentech.sessions.theme.tokens.spacing
 import com.yugentech.sessions.timer.state.TimerMode
+import com.yugentech.sessions.ui.dash.homeScreen.layouts.shared.TaskTapInset
+import com.yugentech.sessions.ui.dash.homeScreen.layouts.shared.taskTapArea
 import com.yugentech.sessions.ui.dash.mainScreen.components.pressClickable
 import androidx.compose.ui.unit.sp
 import java.text.SimpleDateFormat
@@ -69,20 +69,21 @@ fun RefinedHeader(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = MaterialTheme.spacing.m, vertical = MaterialTheme.spacing.s),
+            // Starts short of the usual margin by the tap area's own inset, so the text still lines
+            // up with the content below while the ripple gets room around it
+            .padding(
+                start = MaterialTheme.spacing.m - TaskTapInset,
+                end = MaterialTheme.spacing.m,
+                top = MaterialTheme.spacing.s,
+                bottom = MaterialTheme.spacing.s
+            ),
         horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.sm),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Column(
             modifier = Modifier
                 .weight(1f)
-                .pressClickable(
-                    shape = RoundedCornerShape(MaterialTheme.corners.medium),
-                    enabled = !isSessionActive,
-                    onClickLabel = "Change task",
-                    onClick = onTaskClick
-                )
-                .padding(horizontal = MaterialTheme.spacing.xs, vertical = MaterialTheme.spacing.xs)
+                .taskTapArea(enabled = !isSessionActive, onClick = onTaskClick)
         ) {
             // Today's date as a quiet overline, as Studio has it
             Text(
@@ -143,11 +144,12 @@ fun RefinedHeader(
 
 /** The background sound by name, muted or not; hidden behind a quiet "No sound" when none is chosen. */
 @Composable
-private fun SoundPill(
+internal fun SoundPill(
     backgroundSound: BackgroundSound,
     isEnabled: Boolean,
     isRunning: Boolean,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
     val soundName = when (backgroundSound) {
         BackgroundSound.NONE -> "No sound"
@@ -180,7 +182,7 @@ private fun SoundPill(
     val fadeThrough = AppAnimations.Transitions.rememberExpressiveFadeThrough()
 
     Row(
-        modifier = Modifier
+        modifier = modifier
             .pressClickable(
                 shape = CircleShape,
                 enabled = !isNone,

@@ -1,6 +1,8 @@
 package com.yugentech.sessions.ui.config.appearanceScreen.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -18,6 +20,9 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -32,7 +37,6 @@ import com.yugentech.sessions.ui.dash.homeScreen.components.hero.heroBrush
 import com.yugentech.sessions.ui.dash.homeScreen.components.hero.heroPalette
 import com.yugentech.sessions.ui.dash.homeScreen.components.hero.heroSurface
 import com.yugentech.sessions.ui.dash.mainScreen.components.SectionHeader
-import com.yugentech.sessions.ui.dash.mainScreen.components.pressClickable
 import org.koin.androidx.compose.koinViewModel
 
 // Filled, Outlined and Glass, each shown as a small card painted that way
@@ -44,6 +48,8 @@ fun CardStyleSelector(
     val themeConfig by viewModel.themeConfiguration.collectAsStateWithLifecycle()
     val haptic = LocalHapticFeedback.current
     val brush = heroBrush()
+    // Moves on the tap itself, not when the saved setting comes back, so the outline starts at once
+    var chosen by remember(themeConfig.cardStyle) { mutableStateOf(themeConfig.cardStyle) }
 
     Column(modifier = modifier.fillMaxWidth()) {
         SectionHeader(
@@ -53,22 +59,28 @@ fun CardStyleSelector(
 
         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
             CardStyle.entries.forEach { style ->
-                val isSelected = style == themeConfig.cardStyle
+                val isSelected = style == chosen
                 val palette = heroPalette(style)
                 val outer = RoundedCornerShape(20.dp)
                 Column(
                     modifier = Modifier
                         .weight(1f)
-                        .pressClickable(shape = outer, pressedScale = 0.95f) {
+                        .clip(outer)
+                        // No ripple and no press scale: the outline is the only feedback
+                        .clickable(
+                            interactionSource = remember { MutableInteractionSource() },
+                            indication = null
+                        ) {
                             if (!isSelected) {
                                 haptic.performHapticFeedback(HapticFeedbackType.GestureEnd)
+                                chosen = style
                                 viewModel.updateTheme(themeConfig.copy(cardStyle = style))
                             }
                         }
-                        .selectionOutline(
+                        .crossfadeSelectionOutline(
                             isSelected = isSelected,
                             shape = outer,
-                            unselectedWidth = 0.dp
+                            unselectedColor = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f)
                         )
                         .padding(6.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
@@ -97,8 +109,13 @@ fun CardStyleSelector(
                                     .background(palette.content.copy(alpha = 0.9f))
                             )
                         }
+
                         SelectionTick(
                             isSelected = isSelected,
+                            size = 20.dp,
+                            iconSize = 13.dp,
+                            containerColor = MaterialTheme.colorScheme.primary,
+                            contentColor = MaterialTheme.colorScheme.onPrimary,
                             modifier = Modifier.align(Alignment.TopEnd)
                         )
                     }
@@ -106,7 +123,11 @@ fun CardStyleSelector(
                     Text(
                         text = style.label,
                         style = MaterialTheme.typography.labelLarge.copy(fontWeight = FontWeight.SemiBold),
-                        color = if (isSelected) MaterialTheme.colorScheme.onSurface else MaterialTheme.colorScheme.onSurfaceVariant
+                        color = animateSelectionColor(
+                            isSelected,
+                            selected = MaterialTheme.colorScheme.onSurface,
+                            unselected = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
                     )
                 }
             }

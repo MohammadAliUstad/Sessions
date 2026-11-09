@@ -1,5 +1,7 @@
 package com.yugentech.sessions.ui.config.appearanceScreen.components
 
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -15,8 +17,12 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.text.font.FontWeight
@@ -31,7 +37,6 @@ import com.yugentech.sessions.ui.dash.homeScreen.components.hero.heroPalette
 import com.yugentech.sessions.ui.dash.homeScreen.components.hero.heroSurface
 import com.yugentech.sessions.ui.dash.homeScreen.components.hero.rememberEffectTime
 import com.yugentech.sessions.ui.dash.mainScreen.components.SectionHeader
-import com.yugentech.sessions.ui.dash.mainScreen.components.pressClickable
 import org.koin.androidx.compose.koinViewModel
 
 // Live previews of each session card animation, painted in the chosen card style; tap one to use it
@@ -48,6 +53,8 @@ fun CardAnimationSelector(
     // The previews play as if a focus block were well under way and running
     val time = rememberEffectTime(running = true)
     val preview = SessionPulse(progress = 0.6f, running = true)
+    // Moves on the tap itself, not when the saved setting comes back, so the outline starts at once
+    var chosen by remember(themeConfig.cardAnimationStyle) { mutableStateOf(themeConfig.cardAnimationStyle) }
 
     Column(modifier = modifier.fillMaxWidth()) {
         SectionHeader(
@@ -62,23 +69,29 @@ fun CardAnimationSelector(
                     horizontalArrangement = Arrangement.spacedBy(10.dp)
                 ) {
                     rowStyles.forEach { style ->
-                        val isSelected = style == themeConfig.cardAnimationStyle
+                        val isSelected = style == chosen
                         val shape = RoundedCornerShape(18.dp)
                         Box(
                             modifier = Modifier
                                 .weight(1f)
                                 .height(88.dp)
-                                .pressClickable(shape = shape, pressedScale = 0.95f) {
+                                .clip(shape)
+                                // No ripple and no press scale: the outline is the only feedback
+                                .clickable(
+                                    interactionSource = remember { MutableInteractionSource() },
+                                    indication = null
+                                ) {
                                     if (!isSelected) {
                                         haptic.performHapticFeedback(HapticFeedbackType.GestureEnd)
+                                        chosen = style
                                         viewModel.updateTheme(themeConfig.copy(cardAnimationStyle = style))
                                     }
                                 }
-                                .heroSurface(cardStyle, brush, shape)
-                                .selectionOutline(
+                                .heroSurface(cardStyle, brush, shape, drawBorder = false)
+                                .crossfadeSelectionOutline(
                                     isSelected = isSelected,
                                     shape = shape,
-                                    unselectedWidth = 0.dp
+                                    unselectedColor = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f)
                                 )
                         ) {
                             HeroCardBackground(
@@ -96,12 +109,6 @@ fun CardAnimationSelector(
                                 modifier = Modifier
                                     .align(Alignment.BottomStart)
                                     .padding(12.dp)
-                            )
-                            SelectionTick(
-                                isSelected = isSelected,
-                                modifier = Modifier
-                                    .align(Alignment.TopEnd)
-                                    .padding(8.dp)
                             )
                         }
                     }

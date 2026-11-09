@@ -13,6 +13,17 @@ import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.scaleOut
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.spring
+import androidx.compose.foundation.background
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Check
+import androidx.compose.material3.Icon
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.unit.dp
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.animation.togetherWith
@@ -41,18 +52,24 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.sp
 import com.yugentech.sessions.theme.tokens.components
 import com.yugentech.sessions.theme.tokens.spacing
 import com.yugentech.sessions.timer.state.TimerMode
 import com.yugentech.sessions.ui.dash.homeScreen.layouts.shared.modeColor
+import com.yugentech.sessions.ui.dash.homeScreen.layouts.shared.modeOnColor
 import java.util.Date
 
 /**
  * The timer as the centre of Home: a wavy ring in the current mode's colour with a soft glow
  * behind it that breathes while the clock runs. Inside, the mode, the time (each digit rolls as
  * it changes) and a quiet line under it: when this block will end, that it's paused, or how to
- * start. Before a session it shows the full block length, ready to go.
+ * start. Before a session it shows the full block length, ready to go. The onboarding's demo
+ * tunes the rest: its own start hint, no end time and plain digits (its clock runs as a
+ * timelapse), a smaller size and a lighter track, and a ring that follows the time directly.
+ * [isComplete] swaps the time for a check and [completeTitle] once a block has run out.
  */
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
@@ -63,7 +80,17 @@ fun RefinedTimer(
     currentMode: TimerMode,
     modifier: Modifier = Modifier,
     isSessionActive: Boolean = isStudying,
-    errorMessage: String? = null
+    errorMessage: String? = null,
+    idleHint: String = "Tap play to begin",
+    showEndTime: Boolean = true,
+    dialSize: Dp = MaterialTheme.components.timerSize,
+    timeFontSize: TextUnit = 64.sp,
+    trackColor: Color = MaterialTheme.colorScheme.surfaceContainerHighest,
+    rollingDigits: Boolean = true,
+    animateProgress: Boolean = true,
+    isComplete: Boolean = false,
+    completeTitle: String = "Session complete",
+    completeBody: String? = null
 ) {
     val accent = modeColor(currentMode)
     val targetProgress = if (selectedDuration > 0) {
@@ -71,13 +98,16 @@ fun RefinedTimer(
     } else {
         0f
     }
-    val progress by animateFloatAsState(
+    val animatedProgress by animateFloatAsState(
         targetValue = targetProgress,
         animationSpec = tween(durationMillis = 600, easing = FastOutSlowInEasing),
         label = "timerProgress"
     )
+    // A clock that ticks every frame (the onboarding's timelapse) would leave the eased ring
+    // trailing far behind the time, so it can follow the time directly instead
+    val progress = if (animateProgress) animatedProgress else targetProgress
     // The glow rises while the clock runs and settles when it stops
-    val glowLevel by animateFloatAsState(if (isStudying) 1f else 0f, tween(900), label = "timerGlow")
+    val glowLevel by animateFloatAsState(if (isStudying || isComplete) 1f else 0f, tween(900), label = "timerGlow")
     val breath = if (isStudying) {
         rememberInfiniteTransition(label = "timerBreath").animateFloat(
             initialValue = 0f,
@@ -92,7 +122,7 @@ fun RefinedTimer(
     Box(
         modifier = modifier
             .padding(MaterialTheme.spacing.m)
-            .size(MaterialTheme.components.timerSize)
+            .size(dialSize)
             .aspectRatio(1f),
         contentAlignment = Alignment.Center
     ) {
@@ -110,9 +140,57 @@ fun RefinedTimer(
             progress = { progress },
             modifier = Modifier.fillMaxSize(),
             color = accent,
-            trackColor = MaterialTheme.colorScheme.surfaceContainerHighest
+            trackColor = trackColor
         )
 
+        // The block's end: the time gives way to a check that pops in, and a short line
+        AnimatedContent(
+            targetState = isComplete,
+            transitionSpec = {
+                (fadeIn(tween(300)) + scaleIn(spring(dampingRatio = 0.55f, stiffness = Spring.StiffnessMediumLow), initialScale = 0.8f))
+                    .togetherWith(fadeOut(tween(150)) + scaleOut(tween(150), targetScale = 0.9f))
+            },
+            contentAlignment = Alignment.Center,
+            label = "timerComplete"
+        ) { complete ->
+        if (complete) {
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center,
+                modifier = Modifier.padding(horizontal = MaterialTheme.spacing.xl)
+            ) {
+                Box(
+                    contentAlignment = Alignment.Center,
+                    modifier = Modifier
+                        .size(52.dp)
+                        .clip(CircleShape)
+                        .background(accent)
+                ) {
+                    Icon(
+                        imageVector = Icons.Rounded.Check,
+                        contentDescription = null,
+                        tint = modeOnColor(currentMode),
+                        modifier = Modifier.size(30.dp)
+                    )
+                }
+                Spacer(Modifier.height(MaterialTheme.spacing.sm))
+                Text(
+                    text = completeTitle,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.SemiBold,
+                    textAlign = TextAlign.Center,
+                    color = MaterialTheme.colorScheme.onSurface
+                )
+                if (completeBody != null) {
+                    Text(
+                        text = completeBody,
+                        style = MaterialTheme.typography.bodyMedium,
+                        textAlign = TextAlign.Center,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
+            }
+        } else {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center,
@@ -122,24 +200,32 @@ fun RefinedTimer(
 
             Spacer(Modifier.height(MaterialTheme.spacing.xs))
 
-            RollingTime(
-                seconds = displayTime,
-                style = MaterialTheme.typography.displayLarge.copy(
-                    fontWeight = FontWeight.Normal,
-                    fontFeatureSettings = "tnum",
-                    fontSize = 64.sp,
-                    lineHeight = 68.sp
-                ),
-                color = MaterialTheme.colorScheme.onSurface
+            val timeStyle = MaterialTheme.typography.displayLarge.copy(
+                fontWeight = FontWeight.Normal,
+                fontFeatureSettings = "tnum",
+                fontSize = timeFontSize,
+                lineHeight = timeFontSize * 1.0625f
             )
+            if (rollingDigits) {
+                RollingTime(seconds = displayTime, style = timeStyle, color = MaterialTheme.colorScheme.onSurface)
+            } else {
+                // Plain digits, as the Classic layout's timer shows them
+                Text(
+                    text = "%02d:%02d".format(displayTime / 60, displayTime % 60),
+                    style = timeStyle,
+                    textAlign = TextAlign.Center,
+                    color = MaterialTheme.colorScheme.onSurface
+                )
+            }
 
             Spacer(Modifier.height(MaterialTheme.spacing.xs))
 
             val hint = when {
                 errorMessage != null -> errorMessage
-                isStudying -> "Ends at ${endTime(displayTime)}"
+                isStudying && showEndTime -> "Ends at ${endTime(displayTime)}"
+                isStudying -> "Focusing"
                 isSessionActive -> "Paused"
-                else -> "Tap play to begin"
+                else -> idleHint
             }
             AnimatedContent(
                 targetState = hint,
@@ -157,6 +243,8 @@ fun RefinedTimer(
                     }
                 )
             }
+        }
+        }
         }
     }
 }

@@ -35,8 +35,8 @@ import androidx.compose.material.icons.outlined.HourglassEmpty
 import androidx.compose.material.icons.outlined.Timer
 import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material.icons.rounded.Remove
-import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Timer
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilledTonalIconButton
@@ -207,7 +207,7 @@ fun SetsSettingsSheet(
                         ),
                         thumbContent = {
                             Icon(
-                                imageVector = if (longBreakEnabled) Icons.Filled.Check else Icons.Filled.Close,
+                                imageVector = if (longBreakEnabled) Icons.Filled.Timer else Icons.Filled.Close,
                                 contentDescription = null,
                                 modifier = Modifier.size(SwitchDefaults.IconSize)
                             )

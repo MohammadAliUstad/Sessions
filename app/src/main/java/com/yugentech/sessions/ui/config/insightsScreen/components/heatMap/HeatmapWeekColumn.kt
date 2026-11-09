@@ -12,7 +12,6 @@ import java.time.LocalDate
 fun HeatmapWeekColumn(
     days: List<HeatmapDay>,
     selectedDate: LocalDate? = null,
-    instantDismissals: Int = 0,
     onDayClick: (HeatmapDay) -> Unit = {}
 ) {
     Column(
@@ -33,7 +32,7 @@ fun HeatmapWeekColumn(
                     )
 
                     // Always here, so it can animate out when the day is deselected.
-                    HeatmapDayTooltip(day = day, visible = isSelected, instantDismissals = instantDismissals)
+                    HeatmapDayTooltip(day = day, visible = isSelected)
                 }
             } else {
                 HeatmapCell(intensity = -1)

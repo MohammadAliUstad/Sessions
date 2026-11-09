@@ -1,10 +1,10 @@
 package com.yugentech.sessions.ui.config.appearanceScreen.components
 
-import androidx.compose.animation.animateColorAsState
-import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -21,8 +21,12 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
@@ -41,11 +45,10 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.yugentech.sessions.theme.config.HomeLayout
 import com.yugentech.sessions.theme.viewmodel.ThemeViewModel
 import com.yugentech.sessions.ui.dash.mainScreen.components.SectionHeader
-import com.yugentech.sessions.ui.dash.mainScreen.components.pressClickable
-import org.koin.androidx.compose.koinViewModel
 import kotlin.math.PI
 import kotlin.math.cos
 import kotlin.math.sin
+import org.koin.androidx.compose.koinViewModel
 
 /** Classic, Refined and Studio as three small sketches of Home in the current colours; tap one to use it. */
 @Composable
@@ -56,25 +59,37 @@ fun HomeLayoutSelector(
     val themeConfig by viewModel.themeConfiguration.collectAsStateWithLifecycle()
     val haptic = LocalHapticFeedback.current
     val scheme = MaterialTheme.colorScheme
+    // Moves on the tap itself, not when the saved setting comes back, so the outline starts at once
+    var chosen by remember(themeConfig.homeLayout) { mutableStateOf(themeConfig.homeLayout) }
 
     Column(modifier = modifier.fillMaxWidth()) {
         SectionHeader(icon = Icons.Default.SpaceDashboard, title = "Home Layout")
 
         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
             HomeLayout.entries.forEach { layout ->
-                val selected = layout == themeConfig.homeLayout
+                val selected = layout == chosen
                 val shape = RoundedCornerShape(20.dp)
                 Column(
                     modifier = Modifier
                         .weight(1f)
-                        .pressClickable(shape = shape, pressedScale = 0.95f) {
+                        .clip(shape)
+                        // No ripple and no press scale: the outline is the only feedback
+                        .clickable(
+                            interactionSource = remember { MutableInteractionSource() },
+                            indication = null
+                        ) {
                             if (!selected) {
                                 haptic.performHapticFeedback(HapticFeedbackType.GestureEnd)
+                                chosen = layout
                                 viewModel.updateTheme(themeConfig.copy(homeLayout = layout))
                             }
                         }
                         .background(scheme.surfaceContainer)
-                        .selectionOutline(isSelected = selected, shape = shape)
+                        .crossfadeSelectionOutline(
+                            isSelected = selected,
+                            shape = shape,
+                            unselectedColor = scheme.outlineVariant.copy(alpha = 0.5f)
+                        )
                         .padding(10.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
@@ -91,7 +106,7 @@ fun HomeLayoutSelector(
                         text = layout.label,
                         style = MaterialTheme.typography.labelLarge,
                         fontWeight = FontWeight.SemiBold,
-                        color = if (selected) scheme.onSurface else scheme.onSurfaceVariant,
+                        color = animateSelectionColor(selected, scheme.onSurface, scheme.onSurfaceVariant),
                         maxLines = 1
                     )
                     // Always two lines tall, wrapped or not, so the three tiles stay the same height

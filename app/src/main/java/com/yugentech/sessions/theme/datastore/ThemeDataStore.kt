@@ -70,7 +70,8 @@ class ThemeDataStore(
                 appFont = appFont,
                 cardStyle = cardStyle,
                 cardAnimationStyle = cardAnimationStyle,
-                homeLayout = homeLayout
+                homeLayout = homeLayout,
+                showHomeGradient = prefs[SHOW_HOME_GRADIENT_KEY] ?: true
             )
         }
 
@@ -86,6 +87,7 @@ class ThemeDataStore(
             prefs[CARD_STYLE_KEY] = config.cardStyle.name
             prefs[CARD_ANIMATION_STYLE_KEY] = config.cardAnimationStyle.name
             prefs[HOME_LAYOUT_KEY] = config.homeLayout.name
+            prefs[SHOW_HOME_GRADIENT_KEY] = config.showHomeGradient
         }
     }
 
@@ -104,5 +106,6 @@ class ThemeDataStore(
         private val CARD_STYLE_KEY = stringPreferencesKey("card_style")
         private val CARD_ANIMATION_STYLE_KEY = stringPreferencesKey("card_animation_style")
         private val HOME_LAYOUT_KEY = stringPreferencesKey("home_layout")
+        private val SHOW_HOME_GRADIENT_KEY = booleanPreferencesKey("show_home_gradient")
     }
 }

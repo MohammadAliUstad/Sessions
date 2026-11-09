@@ -31,6 +31,7 @@ import com.yugentech.sessions.theme.tokens.spacing
 import com.yugentech.sessions.theme.viewmodel.ThemeViewModel
 import com.yugentech.sessions.ui.config.appearanceScreen.components.CardAnimationSelector
 import com.yugentech.sessions.ui.config.appearanceScreen.components.CardStyleSelector
+import com.yugentech.sessions.ui.config.appearanceScreen.components.HomeGradientSelector
 import com.yugentech.sessions.ui.config.appearanceScreen.components.HomeLayoutSelector
 import com.yugentech.sessions.ui.config.appearanceScreen.components.SessionCardPreview
 
@@ -91,6 +92,12 @@ fun HomeCustomizationScreen(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             item { HomeLayoutSelector(viewModel = themeViewModel) }
+            item {
+                HomeGradientSelector(
+                    viewModel = themeViewModel,
+                    modifier = Modifier.padding(top = MaterialTheme.spacing.s)
+                )
+            }
             item { SessionCardPreview(viewModel = themeViewModel) }
             item { CardStyleSelector(viewModel = themeViewModel) }
             item { CardAnimationSelector(viewModel = themeViewModel) }

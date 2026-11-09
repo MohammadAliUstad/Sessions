@@ -4,6 +4,9 @@ import com.yugentech.sessions.theme.datastore.ThemeDataStore
 import com.yugentech.sessions.theme.viewmodel.ThemeViewModel
 import com.yugentech.sessions.theme.repository.ThemeRepository
 import com.yugentech.sessions.theme.repository.ThemeRepositoryImpl
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
 import org.koin.core.module.dsl.viewModel
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
@@ -22,7 +25,8 @@ val themeModule = module {
     // Repository acting as a source of truth for the app's current theme
     single<ThemeRepository> {
         ThemeRepositoryImpl(
-            dataStore = get()
+            dataStore = get(),
+            externalScope = CoroutineScope(Dispatchers.IO + SupervisorJob())
         )
     }
 

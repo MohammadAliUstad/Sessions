@@ -24,6 +24,16 @@ fun smoothScrimBrush(color: Color, topAlpha: Float = 0.9f): Brush =
         }
     )
 
+/** The same smooth fade flipped: clear at the top, [color] at [bottomAlpha] along the bottom. */
+fun smoothBottomScrimBrush(color: Color, bottomAlpha: Float = 0.9f): Brush =
+    Brush.verticalGradient(
+        colorStops = Array(SCRIM_STEPS + 1) { i ->
+            val t = i / SCRIM_STEPS.toFloat()
+            val eased = t * t * (3f - 2f * t)
+            t to color.copy(alpha = bottomAlpha * eased)
+        }
+    )
+
 @Composable
 fun rememberSmoothScrimBrush(color: Color, topAlpha: Float = 0.9f): Brush =
     remember(color, topAlpha) { smoothScrimBrush(color, topAlpha) }
@@ -37,3 +47,13 @@ val LocalTopBarInset = compositionLocalOf { 0.dp }
 /** Shorthand for [LocalTopBarInset] in places that just need the number. */
 val topBarInset: Dp
     @Composable get() = LocalTopBarInset.current
+
+/**
+ * How much of the bottom the floating nav dock covers (the dock, the gap above it and the system
+ * navigation bar). The main pages run down under it and end their content this far up.
+ */
+val LocalBottomBarInset = compositionLocalOf { 0.dp }
+
+/** Shorthand for [LocalBottomBarInset] in places that just need the number. */
+val bottomBarInset: Dp
+    @Composable get() = LocalBottomBarInset.current

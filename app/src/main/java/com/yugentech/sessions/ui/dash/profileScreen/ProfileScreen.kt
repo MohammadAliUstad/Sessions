@@ -1,5 +1,6 @@
 package com.yugentech.sessions.ui.dash.profileScreen
 
+import com.yugentech.sessions.ui.dash.mainScreen.components.bottomBarInset
 import com.yugentech.sessions.ui.dash.mainScreen.components.topBarInset
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -111,7 +112,7 @@ fun ProfileScreen(
                     start = MaterialTheme.spacing.m,
                     top = topBarInset,
                     end = MaterialTheme.spacing.m,
-                    bottom = MaterialTheme.spacing.s
+                    bottom = bottomBarInset
                 )
         ) {
             SectionHeader(
@@ -143,7 +144,7 @@ fun ProfileScreen(
                 start = MaterialTheme.spacing.m,
                 top = topBarInset,
                 end = MaterialTheme.spacing.m,
-                bottom = MaterialTheme.spacing.s
+                bottom = bottomBarInset
             ),
             verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.xxs)
         ) {

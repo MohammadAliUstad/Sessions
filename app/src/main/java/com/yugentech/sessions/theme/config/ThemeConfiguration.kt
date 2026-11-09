@@ -11,5 +11,6 @@ data class ThemeConfiguration(
     val appFont: AppFont = AppFont.Google,
     val cardStyle: CardStyle = CardStyle.FILLED,
     val cardAnimationStyle: CardAnimationStyle = CardAnimationStyle.NONE,
-    val homeLayout: HomeLayout = HomeLayout.CLASSIC
+    val homeLayout: HomeLayout = HomeLayout.CLASSIC,
+    val showHomeGradient: Boolean = true
 )

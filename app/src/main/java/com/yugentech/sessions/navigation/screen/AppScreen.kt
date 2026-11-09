@@ -3,6 +3,8 @@ package com.yugentech.sessions.navigation.screen
 // Defines all available navigation routes in the application
 sealed class AppScreen(val route: String) {
     data object Onboarding : AppScreen("onboarding")
+    // The same onboarding, opened again from Settings: finishing it just goes back
+    data object OnboardingReplay : AppScreen("onboarding_replay")
     data object Insights : AppScreen("insights")
     data object Appearance : AppScreen("appearance")
     data object HomeCustomization : AppScreen("home_customization")

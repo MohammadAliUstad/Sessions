@@ -36,6 +36,14 @@ fun NavGraphBuilder.dashGraph(
         BackHandler { (context as? Activity)?.finish() }
     }
 
+    // The onboarding again, from Settings: finishing, skipping or backing out returns there
+    composable(route = AppScreen.OnboardingReplay.route) {
+        OnboardingScreen(
+            onFinish = { navController.popBackStack() },
+            finishLabel = "Done"
+        )
+    }
+
     // Defines the main dashboard screen
     composable(AppScreen.Main.route) {
         Timber.v("Composing Main Screen")
@@ -93,8 +101,18 @@ fun NavGraphBuilder.dashGraph(
                         launchSingleTop = true
                     }
                 },
+                onReplayOnboarding = {
+                    navController.navigate(AppScreen.OnboardingReplay.route) {
+                        launchSingleTop = true
+                    }
+                },
                 onViewInsights = {
                     navController.navigate(AppScreen.Insights.route) {
+                        launchSingleTop = true
+                    }
+                },
+                onNavigateRoute = { route ->
+                    navController.navigate(route) {
                         launchSingleTop = true
                     }
                 }

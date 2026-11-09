@@ -1,5 +1,6 @@
 package com.yugentech.sessions.ui.dash.settingsScreen
 
+import com.yugentech.sessions.ui.dash.mainScreen.components.bottomBarInset
 import com.yugentech.sessions.ui.dash.mainScreen.components.topBarInset
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
@@ -8,10 +9,14 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ExitToApp
 import androidx.compose.material.icons.automirrored.filled.VolumeUp
+import androidx.compose.material.icons.filled.Alarm
+import androidx.compose.material.icons.filled.AutoAwesome
 import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.LightMode
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Palette
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.Vibration
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -52,7 +57,8 @@ fun SettingsScreen(
     onWhatsNew: () -> Unit,
     onMoreApps: () -> Unit,
     onAppearance: () -> Unit,
-    onHomeCustomization: () -> Unit = {}
+    onHomeCustomization: () -> Unit = {},
+    onReplayOnboarding: () -> Unit = {}
 ) {
     val alertsConfiguration by alertsViewModel.alertConfigurations.collectAsState()
     val notificationConfig by notificationViewModel.notificationConfig.collectAsState()
@@ -81,7 +87,7 @@ fun SettingsScreen(
             start = MaterialTheme.spacing.m,
             top = topBarInset,
             end = MaterialTheme.spacing.m,
-            bottom = MaterialTheme.spacing.s
+            bottom = bottomBarInset
         ),
         verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.xxs)
     ) {
@@ -96,6 +102,7 @@ fun SettingsScreen(
                 title = "Enable Notifications",
                 subtitle = "Allow Sessions to send you notifications",
                 checked = notificationConfig.notificationsEnabled,
+                checkedIcon = Icons.Default.Notifications,
                 index = 0,
                 totalCount = 3,
                 onCheckedChange = { enabled ->
@@ -110,6 +117,7 @@ fun SettingsScreen(
                 subtitle = notificationViewModel.formatReminderTime(),
                 checked = notificationConfig.dailyReminderEnabled,
                 enabled = notificationConfig.notificationsEnabled,
+                checkedIcon = Icons.Default.Alarm,
                 index = 1,
                 totalCount = 3,
                 onCheckedChange = { isChecked ->
@@ -135,6 +143,7 @@ fun SettingsScreen(
                 subtitle = "Friendly nudges now and then",
                 checked = notificationConfig.playfulRemindersEnabled,
                 enabled = notificationConfig.notificationsEnabled,
+                checkedIcon = Icons.Default.AutoAwesome,
                 index = 2,
                 totalCount = 3,
                 onCheckedChange = { enabled ->
@@ -155,6 +164,7 @@ fun SettingsScreen(
                 title = "Sound Effects",
                 subtitle = "Play sounds for timer events",
                 checked = alertsConfiguration.soundEnabled,
+                checkedIcon = Icons.AutoMirrored.Filled.VolumeUp,
                 index = 0,
                 totalCount = 2,
                 onCheckedChange = {
@@ -170,6 +180,7 @@ fun SettingsScreen(
                 title = "Haptic Feedback",
                 subtitle = "Feel vibrations throughout the app",
                 checked = alertsConfiguration.hapticsEnabled,
+                checkedIcon = Icons.Default.Vibration,
                 index = 1,
                 totalCount = 2,
                 onCheckedChange = {
@@ -210,6 +221,7 @@ fun SettingsScreen(
                 title = "Keep Screen On",
                 subtitle = "Prevent screen from sleeping during active sessions",
                 checked = alertsConfiguration.keepScreenOn,
+                checkedIcon = Icons.Default.LightMode,
                 index = 2,
                 totalCount = 3,
                 onCheckedChange = { enabled ->
@@ -232,7 +244,7 @@ fun SettingsScreen(
                 title = "About Sessions",
                 subtitle = stringResource(R.string.version),
                 index = 0,
-                totalCount = 3,
+                totalCount = 4,
                 onClick = onAbout
             )
         }
@@ -241,16 +253,25 @@ fun SettingsScreen(
                 title = "What's New",
                 subtitle = "See the latest changes",
                 index = 1,
-                totalCount = 3,
+                totalCount = 4,
                 onClick = onWhatsNew
+            )
+        }
+        item {
+            SettingsListItem(
+                title = "Replay Onboarding",
+                subtitle = "Take the tour of Sessions again",
+                index = 2,
+                totalCount = 4,
+                onClick = onReplayOnboarding
             )
         }
         item {
             SettingsListItem(
                 title = "More from us",
                 subtitle = "Explore our other apps",
-                index = 2,
-                totalCount = 3,
+                index = 3,
+                totalCount = 4,
                 onClick = { showMoreApps = true }
             )
         }

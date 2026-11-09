@@ -58,6 +58,7 @@ fun RefinedHome(ui: HomeUi, actions: HomeActions, screenHeight: Dp) {
                 SessionProgressCard(
                     state = ui.dashboard,
                     targetSets = config.targetSets,
+                    blockProgress = ui.blockProgress,
                     isTimerRunning = ui.isRunning,
                     onSkipToNext = actions.onSkip,
                     cardStyle = ui.cardStyle,

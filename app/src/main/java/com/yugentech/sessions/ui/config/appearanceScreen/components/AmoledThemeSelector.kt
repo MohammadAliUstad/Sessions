@@ -21,6 +21,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.DarkMode
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -42,8 +43,6 @@ import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.yugentech.sessions.theme.viewmodel.ThemeViewModel
-import com.yugentech.sessions.theme.LocalThemeReveal
-import com.yugentech.sessions.theme.SLOW_FADE_MS
 import com.yugentech.sessions.theme.config.ThemeMode
 import com.yugentech.sessions.theme.tokens.corners
 import com.yugentech.sessions.theme.tokens.spacing
@@ -101,13 +100,9 @@ fun AmoledThemeSelector(
     }
     val contentAlpha by animateFloatAsState(if (isDarkThemeActive) 1f else 0.5f, label = "amoledEnabled")
 
-    val reveal = LocalThemeReveal.current
-
     fun toggle(on: Boolean) {
         haptic.performHapticFeedback(if (on) HapticFeedbackType.ToggleOn else HapticFeedbackType.ToggleOff)
-        // A simple fade from the old look to the new, across the whole screen
-        val apply = { viewModel.updateTheme(themeConfig.copy(isAmoledMode = on)) }
-        reveal?.fade(apply, SLOW_FADE_MS) ?: apply()
+        viewModel.updateTheme(themeConfig.copy(isAmoledMode = on))
     }
 
     Box(
@@ -160,15 +155,21 @@ fun AmoledThemeSelector(
                 checked = themeConfig.isAmoledMode,
                 enabled = isDarkThemeActive,
                 onCheckedChange = ::toggle,
-                thumbContent = if (themeConfig.isAmoledMode) {
-                    {
-                        Icon(
-                            imageVector = Icons.Default.DarkMode,
-                            contentDescription = null,
-                            modifier = Modifier.size(SwitchDefaults.IconSize)
-                        )
-                    }
-                } else null
+                colors = SwitchDefaults.colors(
+                    checkedThumbColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                    checkedTrackColor = MaterialTheme.colorScheme.primaryContainer,
+                    uncheckedThumbColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                    uncheckedTrackColor = MaterialTheme.colorScheme.surfaceVariant,
+                    checkedIconColor = MaterialTheme.colorScheme.primaryContainer,
+                    uncheckedIconColor = MaterialTheme.colorScheme.surfaceVariant
+                ),
+                thumbContent = {
+                    Icon(
+                        imageVector = if (themeConfig.isAmoledMode) Icons.Default.DarkMode else Icons.Filled.Close,
+                        contentDescription = null,
+                        modifier = Modifier.size(SwitchDefaults.IconSize)
+                    )
+                }
             )
         }
     }

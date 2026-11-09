@@ -55,36 +55,23 @@ class TimerViewModel(
             timerRepository.timerEffects.collect { effect ->
                 Timber.d("Received Timer Effect: $effect")
                 when (effect) {
-                    is TimerEffect.FocusCompleted -> handleFocusCompleted(effect.durationSeconds)
+                    is TimerEffect.FocusCompleted -> handleFocusCompleted()
                     is TimerEffect.BreakCompleted -> handleBreakCompleted()
-                    is TimerEffect.EndGoalReached -> handleEndGoalReached(effect.durationSeconds)
+                    is TimerEffect.EndGoalReached -> handleEndGoalReached()
                 }
             }
         }
     }
 
-    private fun handleFocusCompleted(durationSeconds: Int) {
+    private fun handleFocusCompleted() {
+        // A block that ends early by skipping is too short to be saved (the repository drops it),
+        // but that is not announced: the "too short" message belongs to Finish only.
         Timber.d("Handling FocusCompleted.")
-        if (durationSeconds < 60) {
-            _errorMessage.value = "Session too short to be saved"
-            viewModelScope.launch {
-                delay(2000)
-                _errorMessage.value = null
-            }
-        }
     }
 
-    private fun handleEndGoalReached(durationSeconds: Int) {
+    private fun handleEndGoalReached() {
         Timber.d("Handling EndGoalReached.")
         _showGoalReachedDialog.value = true
-
-        if (durationSeconds < 60) {
-            _errorMessage.value = "Session too short to be saved"
-            viewModelScope.launch {
-                delay(2000)
-                _errorMessage.value = null
-            }
-        }
     }
 
     private fun handleBreakCompleted() {

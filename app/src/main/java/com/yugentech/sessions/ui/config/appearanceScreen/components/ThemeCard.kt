@@ -1,8 +1,13 @@
 package com.yugentech.sessions.ui.config.appearanceScreen.components
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.spring
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.scaleOut
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -18,12 +23,19 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Check
 import androidx.compose.material3.ColorScheme
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -41,11 +53,11 @@ import androidx.compose.ui.unit.dp
 import com.yugentech.sessions.theme.tokens.corners
 
 /**
- * A colour theme as a tile in its own theme's surface colours: a round palette disc in the top
- * corner split into the theme's three key colours (primary across the top, secondary and
- * tertiary below, as Android's own wallpaper colour picker shows them), then the name and a
- * strip of swatches along the bottom. Choosing one spins its disc a quarter turn and drops a
- * check into its centre.
+ * A colour theme as a tile in its own theme's surface colours: a round palette disc split into
+ * the theme's three key colours (primary across the top, secondary and tertiary below, as
+ * Android's own wallpaper colour picker shows them) beside the name, then a strip of swatches
+ * along the bottom. Choosing one spins its disc a quarter turn and shows a check in its
+ * top-right corner.
  */
 @Composable
 fun ThemeCard(
@@ -59,18 +71,21 @@ fun ThemeCard(
     val shape = RoundedCornerShape(MaterialTheme.corners.large)
     // A quarter turn each time it's chosen, settling on a soft spring
     val spin = remember { Animatable(0f) }
+    var wasSelected by remember { mutableStateOf(isSelected) }
     LaunchedEffect(isSelected) {
-        if (isSelected) {
+        val becameSelected = isSelected && !wasSelected
+        wasSelected = isSelected
+        if (becameSelected) {
             spin.snapTo(-90f)
             spin.animateTo(0f, spring(dampingRatio = 0.55f, stiffness = Spring.StiffnessLow))
-        } else if (spin.value != 0f) {
+        } else if (!isSelected && spin.value != 0f) {
             // Switched away mid-turn: this effect cancelled the spin wherever it was, so finish
             // settling it upright instead of leaving the disc tilted
             spin.animateTo(0f, spring(dampingRatio = 1f, stiffness = Spring.StiffnessMediumLow))
         }
     }
 
-    Column(
+    Box(
         modifier = modifier
             .clip(shape)
             // No ripple and no press scale: the screen's fade is the only feedback
@@ -84,16 +99,15 @@ fun ThemeCard(
                 }
             }
             .background(scheme.surfaceContainer)
-            .selectionOutline(
+            .crossfadeSelectionOutline(
                 isSelected = isSelected,
                 shape = shape,
                 unselectedColor = scheme.outlineVariant.copy(alpha = 0.5f)
             )
-            .padding(12.dp)
     ) {
-        // The palette disc with the name beside it, so the tile stays short
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            Box(contentAlignment = Alignment.Center, modifier = Modifier.size(DiscSize)) {
+        Column(modifier = Modifier.padding(12.dp)) {
+            // The palette disc with the name beside it, so the tile stays short
+            Row(verticalAlignment = Alignment.CenterVertically) {
                 Canvas(
                     modifier = Modifier
                         .size(DiscSize)
@@ -101,54 +115,98 @@ fun ThemeCard(
                 ) {
                     drawPaletteDisc(scheme.primary, scheme.secondary, scheme.tertiary, cut = scheme.surfaceContainer)
                 }
-                // The check, in a small primary-container dot at the centre
-                SelectionTick(
-                    isSelected = isSelected,
-                    size = 22.dp,
-                    iconSize = 14.dp,
-                    containerColor = scheme.primaryContainer,
-                    contentColor = scheme.onPrimaryContainer
-                )
-            }
 
-            Spacer(Modifier.width(10.dp))
+                Spacer(Modifier.width(10.dp))
 
-            Text(
-                text = name,
-                style = MaterialTheme.typography.titleSmall,
-                fontWeight = FontWeight.SemiBold,
-                color = scheme.onSurface,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis
-            )
-        }
-
-        Spacer(Modifier.height(10.dp))
-        // A strip of the theme's other colours along the bottom: its containers and its surface tone
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(8.dp)
-                .clip(CircleShape)
-        ) {
-            // Each container is pulled part way toward its key colour, so the strip reads lively
-            // instead of muddy, most of all in dark mode where the containers are deep tones
-            listOf(
-                lerp(scheme.primaryContainer, scheme.primary, SwatchLift),
-                lerp(scheme.secondaryContainer, scheme.secondary, SwatchLift),
-                lerp(scheme.tertiaryContainer, scheme.tertiary, SwatchLift),
-                lerp(scheme.surfaceVariant, scheme.outline, SwatchLift)
-            ).forEach { swatch ->
-                Box(
+                Text(
+                    text = name,
+                    style = MaterialTheme.typography.titleSmall,
+                    fontWeight = FontWeight.SemiBold,
+                    color = scheme.onSurface,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    // Kept clear of the corner check, so a long name ellipsizes before reaching it
                     modifier = Modifier
                         .weight(1f)
-                        .height(8.dp)
-                        .background(swatch)
+                        .padding(end = 20.dp)
                 )
             }
+
+            Spacer(Modifier.height(10.dp))
+            // A strip of the theme's other colours along the bottom: its containers and its surface tone
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(8.dp)
+                    .clip(CircleShape)
+            ) {
+                // Each container is pulled part way toward its key colour, so the strip reads lively
+                // instead of muddy, most of all in dark mode where the containers are deep tones
+                listOf(
+                    lerp(scheme.primaryContainer, scheme.primary, SwatchLift),
+                    lerp(scheme.secondaryContainer, scheme.secondary, SwatchLift),
+                    lerp(scheme.tertiaryContainer, scheme.tertiary, SwatchLift),
+                    lerp(scheme.surfaceVariant, scheme.outline, SwatchLift)
+                ).forEach { swatch ->
+                    Box(
+                        modifier = Modifier
+                            .weight(1f)
+                            .height(8.dp)
+                            .background(swatch)
+                    )
+                }
+            }
+        }
+
+        ThemeCheck(
+            isSelected = isSelected,
+            containerColor = scheme.primary,
+            contentColor = scheme.onPrimary,
+            modifier = Modifier
+                .align(Alignment.TopEnd)
+                .padding(8.dp)
+        )
+    }
+}
+
+/**
+ * The corner check, on Material 3 Expressive's standard motion: it pops in on the fast spatial
+ * spring with a quick fade, and leaves on the fast effects spec with no bounce.
+ */
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
+@Composable
+private fun ThemeCheck(
+    isSelected: Boolean,
+    containerColor: Color,
+    contentColor: Color,
+    modifier: Modifier = Modifier
+) {
+    val motion = MaterialTheme.motionScheme
+    AnimatedVisibility(
+        visible = isSelected,
+        enter = scaleIn(motion.fastSpatialSpec()) + fadeIn(motion.fastEffectsSpec()),
+        exit = scaleOut(motion.fastEffectsSpec()) + fadeOut(motion.fastEffectsSpec()),
+        modifier = modifier
+    ) {
+        Box(
+            contentAlignment = Alignment.Center,
+            modifier = Modifier
+                .size(20.dp)
+                .clip(CircleShape)
+                .background(containerColor)
+        ) {
+            Icon(
+                imageVector = Icons.Rounded.Check,
+                contentDescription = "Selected",
+                tint = contentColor,
+                modifier = Modifier.size(13.dp)
+            )
         }
     }
 }
+
+/** How long the screen fades across when a colour theme is chosen. */
+const val COLOR_THEME_FADE_MS = 250
 
 /** How far each swatch in the strip is pulled toward its key colour. */
 private const val SwatchLift = 0.35f

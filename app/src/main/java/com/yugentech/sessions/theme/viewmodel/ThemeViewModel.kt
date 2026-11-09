@@ -4,9 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.yugentech.sessions.alerts.repository.AlertsRepository
 import com.yugentech.sessions.theme.AppFont
-import com.yugentech.sessions.theme.config.ColorTheme
 import com.yugentech.sessions.theme.config.ThemeConfiguration
-import com.yugentech.sessions.theme.config.ThemeMode
 import com.yugentech.sessions.theme.repository.ThemeRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -30,15 +28,8 @@ class ThemeViewModel(
             initialValue = alertsRepository.alertConfiguration.value.hapticsEnabled
         )
 
-    // Internal mutable state for the current theme configuration
-    private val _themeConfiguration = MutableStateFlow(
-        ThemeConfiguration(
-            ThemeMode.LIGHT, ColorTheme.DYNAMIC,
-            useDynamicColors = true,
-            isAmoledMode = false,
-            appFont = AppFont.Google
-        )
-    )
+    // Internal mutable state initialized with the repository's current configuration
+    private val _themeConfiguration = MutableStateFlow(repository.themeConfiguration.value)
 
     // Public read-only stream of theme configuration
     val themeConfiguration: StateFlow<ThemeConfiguration> = _themeConfiguration.asStateFlow()
@@ -48,8 +39,8 @@ class ThemeViewModel(
         .map { it.appFont }
         .stateIn(
             scope = viewModelScope,
-            started = SharingStarted.Companion.WhileSubscribed(5000),
-            initialValue = AppFont.Google
+            started = SharingStarted.Eagerly,
+            initialValue = _themeConfiguration.value.appFont
         )
 
     init {

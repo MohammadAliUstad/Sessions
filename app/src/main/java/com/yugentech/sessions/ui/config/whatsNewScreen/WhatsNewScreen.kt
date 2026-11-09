@@ -39,11 +39,9 @@ import androidx.compose.material.icons.filled.Contrast
 import androidx.compose.material.icons.filled.Gradient
 import androidx.compose.material.icons.filled.Palette
 import androidx.compose.material.icons.filled.SpaceDashboard
-import androidx.compose.material.icons.filled.Timeline
 import androidx.compose.material.icons.filled.Timer
-import androidx.compose.material.icons.filled.TouchApp
-import androidx.compose.material.icons.filled.VerticalAlignTop
 import androidx.compose.material.icons.filled.EmojiEvents
+import androidx.compose.material.icons.filled.Explore
 import androidx.compose.material.icons.filled.ExpandMore
 import androidx.compose.material.icons.filled.Flag
 import androidx.compose.material.icons.filled.History
@@ -92,8 +90,28 @@ fun WhatsNewScreen(
 
     val v6Updates = listOf(
         UpdateItem(
+            "Home Gradient Toggle",
+            "You can now turn the living colour-wash gradient at the top of the home screen on or off from Home & Cards in Settings. Applies to Refined and Studio layouts; the toggle card previews the glow right on itself.",
+            Icons.Default.Gradient
+        ),
+        UpdateItem(
+            "Animated Studio Sound Button",
+            "The sound button in Studio now breathes gently while your ambient sound plays, pulsing in and out to show it's active. The icon also fades through when you mute or unmute, rather than snapping.",
+            Icons.AutoMirrored.Filled.VolumeUp
+        ),
+        UpdateItem(
+            "Unique Settings Toggle Icons",
+            "Each toggle in Settings now carries its own icon: a bell for notifications, an alarm for your daily reminder, a spark for playful reminders, a wave for sound effects, a vibration for haptics, and a sun for keeping the screen on.",
+            Icons.Default.Tune
+        ),
+        UpdateItem(
+            "Avatar Ring Fix",
+            "The selection ring on avatar items now wraps around the outside of each avatar as intended, instead of drawing over the edges of the image.",
+            Icons.Default.AccountCircle
+        ),
+        UpdateItem(
             "Choose Your Home Layout",
-            "Pick how your Home screen looks from Appearance: Classic, the original layout; Refined, a calmer take with the date above your task; or Studio, an all-new design.",
+            "Pick how your Home screen looks from the new Home & Cards screen in Settings: Classic, the original layout; Refined, a calmer take with the date above your task; or Studio, an all-new design.",
             Icons.Default.SpaceDashboard
         ),
         UpdateItem(
@@ -107,14 +125,19 @@ fun WhatsNewScreen(
             Icons.Default.Gradient
         ),
         UpdateItem(
+            "A Floating Navigation Bar",
+            "The bottom bar is now a floating pill. Each tab is just its icon, and the one you're on opens into a capsule with its name, while your pages run softly underneath it.",
+            Icons.Default.Explore
+        ),
+        UpdateItem(
             "Aurora & Mesh Card Animations",
             "Two new animations for your session card: Aurora, soft light drifting over the card, and Mesh gradient, your theme's colours blending as they move. Like the others, they move only while the timer runs.",
             Icons.Default.Animation
         ),
         UpdateItem(
-            "Smoother Session Timeline",
-            "The blocks on your session card now fill smoothly as you focus. Skipping or finishing a block sweeps it full while the next one grows in, instead of jumping.",
-            Icons.Default.Timeline
+            "A New Welcome",
+            "Sign in and sign up now sit on a slowly drifting glow, each with its own little animation: a focus dial still counting down where you left off, or a week of focus building up bar by bar.",
+            Icons.AutoMirrored.Filled.Login
         ),
         UpdateItem(
             "New Colour Theme Cards",
@@ -123,23 +146,8 @@ fun WhatsNewScreen(
         ),
         UpdateItem(
             "Smoother Theme Changes",
-            "Switching between light and dark now opens in a circle from the button you tap, and changing your colour theme or AMOLED black fades gently across the whole screen.",
+            "Changing your colour theme, switching between light and dark, or turning on AMOLED black now fades gently across the whole screen.",
             Icons.Default.Contrast
-        ),
-        UpdateItem(
-            "Polished Appearance Screen",
-            "Selection outlines, font chips and every option in Appearance now fade smoothly when you choose them.",
-            Icons.Default.CheckCircle
-        ),
-        UpdateItem(
-            "See-Through Top Bar",
-            "The top bar on Home, Profile and Settings is now transparent, softly fading in only when content scrolls beneath it.",
-            Icons.Default.VerticalAlignTop
-        ),
-        UpdateItem(
-            "Calmer Controls",
-            "The session buttons now use your theme's own colours, with no bright red Discard button.",
-            Icons.Default.TouchApp
         )
     )
 

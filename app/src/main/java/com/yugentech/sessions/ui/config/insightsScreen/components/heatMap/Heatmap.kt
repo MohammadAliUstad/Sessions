@@ -25,7 +25,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -58,17 +57,9 @@ fun Heatmap(
     val listState = rememberLazyListState()
     var selectedDate by remember { mutableStateOf<LocalDate?>(null) }
 
-    // Scrolling (the heatmap itself or the whole page) and leaving the screen remove the time chip
-    // at once. It's a popup, so if it faded out it would hang in place while the content moved
-    // away under it. Each such dismissal bumps this, which resets the chip without animating;
-    // tapping the day again or the timeout still fade it out.
-    var instantDismissals by remember { mutableIntStateOf(0) }
-    val dismissNow = {
-        if (selectedDate != null) {
-            instantDismissals++
-            selectedDate = null
-        }
-    }
+    // Scrolling (the heatmap itself or the whole page) and leaving the screen dismiss the time chip.
+    // It animates out like any other dismissal; the popup follows its cell while it fades.
+    val dismiss = { selectedDate = null }
 
     LaunchedEffect(Unit) {
         listState.scrollToItem(heatmapWeeks.size)
@@ -78,11 +69,11 @@ fun Heatmap(
     LaunchedEffect(listState) {
         snapshotFlow { listState.isScrollInProgress }
             .filter { it }
-            .collect { dismissNow() }
+            .collect { dismiss() }
     }
 
     // Leaving the screen: the screen pauses as soon as the back navigation starts.
-    LifecycleEventEffect(Lifecycle.Event.ON_PAUSE) { dismissNow() }
+    LifecycleEventEffect(Lifecycle.Event.ON_PAUSE) { dismiss() }
 
     // The page scrolled (or its top bar collapsed): the card moved on screen.
     val lastCardY = remember { floatArrayOf(Float.NaN) }
@@ -100,7 +91,7 @@ fun Heatmap(
             .fillMaxWidth()
             .onGloballyPositioned { coordinates ->
                 val y = coordinates.positionInWindow().y
-                if (!lastCardY[0].isNaN() && y != lastCardY[0]) dismissNow()
+                if (!lastCardY[0].isNaN() && y != lastCardY[0]) dismiss()
                 lastCardY[0] = y
             },
         shape = RoundedCornerShape(MaterialTheme.corners.large),
@@ -209,7 +200,6 @@ fun Heatmap(
                             HeatmapWeekColumn(
                                 days = week.days,
                                 selectedDate = selectedDate,
-                                instantDismissals = instantDismissals,
                                 onDayClick = { day ->
                                     selectedDate = if (selectedDate == day.date) null else day.date
                                 }

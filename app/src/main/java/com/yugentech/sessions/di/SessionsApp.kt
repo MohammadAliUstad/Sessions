@@ -5,6 +5,7 @@ import androidx.work.Configuration
 import com.yugentech.sessions.BuildConfig
 import com.google.firebase.FirebaseApp
 import com.yugentech.sessions.di.module.alertsModule
+import com.yugentech.sessions.di.module.announcementModule
 import com.yugentech.sessions.di.module.authModule
 import com.yugentech.sessions.di.module.firebaseModule
 import com.yugentech.sessions.di.module.dataStoreModule
@@ -58,6 +59,7 @@ class SessionsApp : Application(), Configuration.Provider {
                 timerModule,
                 notificationModule,
                 templateModule,
+                announcementModule,
             )
         }
 

@@ -2,15 +2,12 @@ package com.yugentech.sessions.ui.dash.homeScreen.layouts.studio
 
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.animateColorAsState
-import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.scaleIn
 import androidx.compose.animation.scaleOut
 import androidx.compose.animation.togetherWith
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
@@ -19,14 +16,9 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.rounded.VolumeOff
-import androidx.compose.material.icons.automirrored.rounded.VolumeUp
 import androidx.compose.material.icons.rounded.Edit
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -48,10 +40,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.min
 import androidx.compose.ui.unit.sp
 import com.yugentech.sessions.alerts.model.BackgroundSound
+import com.yugentech.sessions.ui.dash.homeScreen.layouts.refined.SoundPill
 import com.yugentech.sessions.ui.dash.homeScreen.layouts.shared.HomeActions
 import com.yugentech.sessions.ui.dash.homeScreen.layouts.shared.HomeUi
+import com.yugentech.sessions.ui.dash.homeScreen.layouts.shared.TaskTapInset
 import com.yugentech.sessions.ui.dash.homeScreen.layouts.shared.modeColor
-import com.yugentech.sessions.ui.dash.mainScreen.components.pressClickable
+import com.yugentech.sessions.ui.dash.homeScreen.layouts.shared.taskTapArea
 import com.yugentech.sessions.ui.dash.mainScreen.components.topBarInset
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -80,7 +74,9 @@ fun StudioHome(ui: HomeUi, actions: HomeActions, screenHeight: Dp) {
             modifier = Modifier
                 .fillMaxWidth()
                 .heightIn(min = screenHeight - 1.dp)
-                .padding(horizontal = 20.dp, vertical = 12.dp),
+                // The side margin is on each child instead, so the header's tap area can reach
+                // past it, exactly as Refined's does
+                .padding(vertical = 12.dp),
             verticalArrangement = Arrangement.SpaceBetween,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
@@ -118,6 +114,7 @@ fun StudioHome(ui: HomeUi, actions: HomeActions, screenHeight: Dp) {
                 },
                 label = "studioMiddle",
                 modifier = Modifier
+                    .padding(horizontal = ScreenMargin)
                     .fillMaxWidth()
                     .height(StudioCardHeight)
             ) { active ->
@@ -152,14 +149,15 @@ fun StudioHome(ui: HomeUi, actions: HomeActions, screenHeight: Dp) {
                 onSound = actions.onSoundClick,
                 onSets = actions.onSetsClick,
                 onDiscard = actions.onDiscard,
-                onFinish = actions.onFinish
+                onFinish = actions.onFinish,
+                modifier = Modifier.padding(horizontal = ScreenMargin)
             )
         }
     }
 }
 
-/** Room between the header text and its tap area's rounded edge. */
-private val HeaderInset = 10.dp
+/** The side margin of everything on the page; the task text lines up with it. */
+private val ScreenMargin = 20.dp
 
 /** Today's date as a quiet overline, the task as the heading, and the sound as a small round toggle. */
 @Composable
@@ -177,21 +175,18 @@ private fun StudioHeader(
     val today = remember { SimpleDateFormat("EEEE · d MMMM", Locale.getDefault()).format(Date()).uppercase() }
     val sound = remember(soundId) { BackgroundSound.fromId(soundId) }
 
-    Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-        // The tap area's rounded corners would shave the first letter if the text sat flush
-        // against them, so the text gets room inside it and the whole block shifts back by the
-        // same amount to stay aligned with everything below
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            // Starts short of the side margin by the tap area's own inset, so the text still lines
+            // up with the content below while the ripple gets room around it: the same as Refined
+            .padding(start = ScreenMargin - TaskTapInset, end = ScreenMargin),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
         Column(
             modifier = Modifier
                 .weight(1f)
-                .offset(x = -HeaderInset)
-                .pressClickable(
-                    shape = RoundedCornerShape(16.dp),
-                    enabled = canEdit,
-                    onClickLabel = "Change task",
-                    onClick = onTask
-                )
-                .padding(horizontal = HeaderInset, vertical = 4.dp)
+                .taskTapArea(enabled = canEdit, onClick = onTask)
         ) {
             Text(
                 text = today,
@@ -233,34 +228,12 @@ private fun StudioHeader(
             }
         }
 
-        // Only there when a sound is chosen; tap to mute or unmute it
-        AnimatedVisibility(visible = sound != BackgroundSound.NONE, enter = fadeIn(), exit = fadeOut()) {
-            // The same colours as Refined's sound pill: a proper secondary container while the
-            // sound plays, a neutral tone otherwise, and muted dimmed
-            val live = soundOn && soundPlaying
-            val container by animateColorAsState(
-                if (live) scheme.secondaryContainer else scheme.surfaceContainerHigh,
-                label = "studioSoundContainer"
-            )
-            val tint by animateColorAsState(
-                when {
-                    !soundOn -> scheme.onSurfaceVariant.copy(alpha = 0.5f)
-                    live -> scheme.onSecondaryContainer
-                    else -> scheme.onSurfaceVariant
-                },
-                label = "studioSoundTint"
-            )
-            Icon(
-                imageVector = if (soundOn) Icons.AutoMirrored.Rounded.VolumeUp else Icons.AutoMirrored.Rounded.VolumeOff,
-                contentDescription = if (soundOn) "Mute sound" else "Unmute sound",
-                tint = tint,
-                modifier = Modifier
-                    .padding(start = 12.dp)
-                    .pressClickable(shape = CircleShape, onClick = onToggleSound)
-                    .background(container, CircleShape)
-                    .padding(12.dp)
-                    .size(22.dp)
-            )
-        }
+        SoundPill(
+            backgroundSound = sound,
+            isEnabled = soundOn,
+            isRunning = soundPlaying,
+            onClick = onToggleSound,
+            modifier = Modifier.padding(start = 12.dp)
+        )
     }
 }

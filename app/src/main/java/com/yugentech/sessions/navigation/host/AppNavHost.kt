@@ -113,7 +113,7 @@ fun AppNavHost(
     }
 
     // Sign-in and sign-up sit on the one aura drawn here, as in Quill, so moving between them
-    // changes only their content: the background never jumps or shows an edge, and keeps drifting
+    // changes only their content: the background never jumps or shows an edge, and stays still
     // while they slide over it. It fades with the switch into the app.
     val currentEntry by navController.currentBackStackEntryAsState()
     val onAura = currentEntry?.destination?.route in AuraRoutes
@@ -127,10 +127,7 @@ fun AppNavHost(
             exit = fadeOut(animationSpec = tween(300))
         ) {
             AuraTheme {
-                SessionsAuraBackground(
-                    modifier = Modifier.fillMaxSize(),
-                    travel = { auraBackground.travel }
-                )
+                SessionsAuraBackground(modifier = Modifier.fillMaxSize())
             }
         }
 

@@ -15,7 +15,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.yugentech.sessions.R
 import com.yugentech.sessions.theme.LocalThemeReveal
-import com.yugentech.sessions.theme.SLOW_FADE_MS
 import com.yugentech.sessions.theme.builder.getColorScheme
 import com.yugentech.sessions.theme.viewmodel.ThemeViewModel
 import com.yugentech.sessions.theme.tokens.spacing
@@ -55,7 +54,7 @@ fun ThemeColorSelector(
                             onClick = {
                                 // A simple fade from the old colours to the new, across the whole screen
                                 val apply = { viewModel.updateTheme(themeConfig.copy(colorTheme = option.colorTheme)) }
-                                reveal?.fade(apply, SLOW_FADE_MS) ?: apply()
+                                reveal?.fade(apply, COLOR_THEME_FADE_MS) ?: apply()
                             },
                             modifier = Modifier.weight(1f)
                         )

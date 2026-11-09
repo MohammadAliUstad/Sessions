@@ -15,6 +15,7 @@ private val Context.notificationDataStore: DataStore<Preferences> by preferences
 private val Context.userDataStore: DataStore<Preferences> by preferencesDataStore(name = "user")
 private val Context.timerDataStore: DataStore<Preferences> by preferencesDataStore(name = "timer")
 private val Context.syncDataStore: DataStore<Preferences> by preferencesDataStore(name = "sync")
+private val Context.announcementsDataStore: DataStore<Preferences> by preferencesDataStore(name = "announcements")
 
 
 // Koin module providing named DataStore instances
@@ -47,5 +48,10 @@ val dataStoreModule = module {
 
     single<DataStore<Preferences>>(named("sync")) {
         androidContext().syncDataStore
+    }
+
+    // DataStore for release announcements and update dialogs
+    single<DataStore<Preferences>>(named("announcements")) {
+        androidContext().announcementsDataStore
     }
 }
