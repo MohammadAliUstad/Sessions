@@ -1,5 +1,7 @@
 package com.yugentech.sessions.ui.config.attributionsScreen.components
 
+import com.yugentech.sessions.R
+import androidx.compose.ui.res.stringResource
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -22,9 +24,9 @@ fun AttributionsTopBar(
     LargeTopAppBar(
         title = {
             Column {
-                Text("Attributions")
+                Text(stringResource(R.string.attributions_title))
                 Text(
-                    "Powered by community",
+                    stringResource(R.string.attributions_subtitle),
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
@@ -32,7 +34,7 @@ fun AttributionsTopBar(
         },
         navigationIcon = {
             IconButton(onClick = onNavigateBack) {
-                Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
+                Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(R.string.back))
             }
         },
         scrollBehavior = scrollBehavior,

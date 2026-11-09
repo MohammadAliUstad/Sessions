@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Sessions</string>
+    <string name="app_name" translatable="false">Sessions</string>
     <string name="app_description">Sessions helps you build focus and discipline, one mindful session at a time. Track your time, protect your attention, and grow a little every day.</string>
     <string name="tagline">Master Time, Master Learning</string>
     <string name="branding">Made by Yugen Tech</string>
     <string name="version">Version 6.0.0</string>
     <string name="feedback_sub">Sessions App Feedback</string>
 
-    <string name="mail">mailto:yugentech.kazuki@gmail.com</string>
-    <string name="github">https://github.com/MohammadAliUstad/Sessions</string>
+    <string name="mail" translatable="false">mailto:yugentech.kazuki@gmail.com</string>
+    <string name="github" translatable="false">https://github.com/MohammadAliUstad/Sessions</string>
 
     <string name="about">About</string>
     <string name="back">Back</string>
@@ -52,6 +52,892 @@
     <string name="at_least_2_characters_please">At least 2 characters please</string>
     <string name="keep_it_under_20_characters">Keep it under 20 characters</string>
     <string name="letters_numbers_and_basic_symbols_only">Letters, numbers, and basic symbols only</string>
-    <string name="a_za_z0_9_s">^[a-zA-Z0-9\\s._-]+$</string>
+    <string name="a_za_z0_9_s" translatable="false">^[a-zA-Z0-9\\s._-]+$</string>
     <string name="please_focus_for_at_least_1_minute_to_save_a_session">Please focus for at least 1 minute to save a session</string>
+
+    <!-- Language -->
+    <string name="language_title">Language</string>
+    <string name="language_subtitle">Choose the language Sessions speaks</string>
+    <string name="language_section_device">Device</string>
+    <string name="language_section_languages">Languages</string>
+    <string name="language_system_default">System default</string>
+    <string name="language_footer">Sessions switches straight away. On Android 13 and later you can also change it from your phone\'s settings under Apps › Sessions › Language.</string>
+    <string name="language_name_english">English</string>
+    <string name="language_name_spanish">Spanish</string>
+    <string name="language_name_portuguese">Portuguese (Brazil)</string>
+    <string name="language_name_french">French</string>
+    <string name="language_name_german">German</string>
+    <string name="language_name_hindi">Hindi</string>
+    <string name="language_name_arabic">Arabic</string>
+    <string name="language_name_japanese">Japanese</string>
+    <string name="language_name_korean">Korean</string>
+    <string name="language_name_chinese">Chinese (Simplified)</string>
+
+    <!-- Settings -->
+    <string name="settings_section_notifications">Notifications</string>
+    <string name="settings_enable_notifications">Enable Notifications</string>
+    <string name="settings_enable_notifications_subtitle">Allow Sessions to send you notifications</string>
+    <string name="settings_daily_reminder">Daily Focus Reminder</string>
+    <string name="settings_playful_reminders">Playful Reminders</string>
+    <string name="settings_playful_reminders_subtitle">Friendly nudges now and then</string>
+    <string name="settings_section_audio_haptics">Audio &amp; Haptics</string>
+    <string name="settings_sound_effects">Sound Effects</string>
+    <string name="settings_sound_effects_subtitle">Play sounds for timer events</string>
+    <string name="settings_haptic_feedback">Haptic Feedback</string>
+    <string name="settings_haptic_feedback_subtitle">Feel vibrations throughout the app</string>
+    <string name="settings_section_appearance">Appearance</string>
+    <string name="settings_theme_colors">Theme &amp; Colors</string>
+    <string name="settings_theme_colors_subtitle">Customize your app\'s look and feel</string>
+    <string name="settings_home_cards">Home &amp; Cards</string>
+    <string name="settings_home_cards_subtitle">Customize your home layout and session card</string>
+    <string name="settings_keep_screen_on">Keep Screen On</string>
+    <string name="settings_keep_screen_on_subtitle">Prevent screen from sleeping during active sessions</string>
+    <string name="settings_about_sessions">About Sessions</string>
+    <string name="settings_whats_new">What\'s New</string>
+    <string name="settings_whats_new_subtitle">See the latest changes</string>
+    <string name="settings_replay_onboarding">Replay Onboarding</string>
+    <string name="settings_replay_onboarding_subtitle">Take the tour of Sessions again</string>
+    <string name="settings_more_from_us">More from us</string>
+    <string name="settings_more_from_us_subtitle">Explore our other apps</string>
+    <string name="settings_section_session">Session</string>
+    <string name="settings_exit">Exit</string>
+    <string name="settings_exit_subtitle">Close the Sessions app</string>
+    <string name="settings_sign_out">Sign Out</string>
+    <string name="settings_sign_out_subtitle">Log out of your current account</string>
+
+    <!-- Exact alarm permission -->
+    <string name="alarm_permission_title">Permission Required</string>
+    <string name="alarm_permission_setting">Alarms &amp; Reminders</string>
+    <string name="alarm_permission_go_to_settings">Go to Settings</string>
+    <string name="cancel">Cancel</string>
+
+    <!-- Reminder time picker -->
+    <string name="reminder_time_picker_title">Select Reminder Time</string>
+    <string name="reminder_time_picker_confirm">Set Time</string>
+
+    <!-- Main screen -->
+    <string name="delete_all_sessions_title">Delete All Sessions?</string>
+    <string name="delete_all_sessions_message">This will permanently remove all your focus history. This action cannot be undone.</string>
+    <string name="delete_all_sessions_confirm">Delete All</string>
+
+    <string name="notification_permission_denied">Notification permission denied. Please enable notifications to see Session alerts.</string>
+
+    <!-- Top bar -->
+    <string name="tab_profile">Profile</string>
+    <string name="tab_settings">Settings</string>
+    <string name="cd_delete_all_sessions">Delete All Sessions</string>
+    <string name="cd_sort">Sort</string>
+
+    <string name="idle_message_locked_in">Locked in!</string>
+    <string name="idle_message_all_you">It\'s all you.</string>
+    <string name="idle_message_make_it_count">Make it count.</string>
+    <string name="idle_message_one_step">One step at a time.</string>
+    <string name="idle_message_focus_now">Focus on the now.</string>
+
+    <string name="cd_delete_group">Delete Group</string>
+
+    <!-- Auth -->
+    <string name="cd_hide_password">Hide password</string>
+    <string name="cd_show_password">Show password</string>
+
+    <string name="forgot_password_sent_title">Check your email</string>
+    <string name="ok">OK</string>
+
+    <string name="sign_in_forgot_password">Forgot password?</string>
+    <string name="sign_in_action">Sign in</string>
+    <string name="auth_divider_or">or</string>
+
+    <string name="sign_up_action">Create account</string>
+
+    <string name="timer_hint_focusing">Focusing</string>
+    <string-array name="auth_dial_activities">
+        <item>Studying</item>
+        <item>Working</item>
+        <item>Reading</item>
+        <item>Writing</item>
+        <item>Coding</item>
+        <item>Designing</item>
+        <item>Practicing</item>
+        <item>Learning</item>
+        <item>Creating</item>
+    </string-array>
+
+    <string name="sign_in_title">Pick up your focus</string>
+    <string name="sign_in_subtitle">Your sessions, streaks and templates are right where you left them.</string>
+    <string name="sign_in_prompt">New to Sessions?</string>
+    <string name="sign_in_prompt_action">Create an account</string>
+
+    <string name="sign_up_form_title">Sign up</string>
+    <string name="sign_up_title">Build a focus habit</string>
+    <string name="sign_up_subtitle">A calm timer, gentle nudges, and a record of every minute you focus.</string>
+    <string name="sign_up_prompt">Already focusing with us?</string>
+
+    <!-- Onboarding -->
+    <string name="skip">Skip</string>
+    <string name="onboarding_continue">Continue</string>
+
+    <!-- Form validation -->
+    <string name="validation_name_empty">Name cannot be empty</string>
+    <string name="validation_name_too_short">Name must be at least 2 characters</string>
+    <string name="validation_email_empty">Email cannot be empty</string>
+    <string name="validation_email_invalid">Please enter a valid email</string>
+    <string name="validation_password_empty">Password cannot be empty</string>
+    <string name="validation_password_too_short">Password must be at least 8 characters</string>
+    <string name="validation_password_needs_number">Password must contain at least one number</string>
+    <string name="validation_password_needs_uppercase">Password must contain at least one uppercase letter</string>
+    <string name="validation_password_needs_lowercase">Password must contain at least one lowercase letter</string>
+    <string name="sign_in_reset_needs_email">Enter your email first, and we\'ll send a reset link</string>
+
+    <string name="forgot_password_sent_message">We have sent a password reset link to your email address. Please check your inbox and spam folder to reset your password.</string>
+
+    <!-- Colour themes -->
+    <string name="theme_name_dynamic">Dynamic</string>
+    <string name="theme_name_sessions">Sessions</string>
+    <string name="theme_name_lagoon">Lagoon</string>
+    <string name="theme_name_grove">Grove</string>
+    <string name="theme_name_harvest">Harvest</string>
+    <string name="theme_name_sakura">Sakura</string>
+    <string name="theme_name_alpine">Alpine</string>
+    <string name="theme_name_twilight">Twilight</string>
+
+    <!-- Soundscapes -->
+    <string name="sound_rain">Rain</string>
+    <string name="sound_brown_noise">Brown noise</string>
+    <string name="sound_fireplace">Fireplace</string>
+    <string name="sound_library">Library</string>
+    <string name="sound_riverside">Riverside</string>
+    <string name="sound_forest">Forest</string>
+
+    <!-- Theme modes -->
+    <string name="theme_mode_light">Light</string>
+    <string name="theme_mode_dark">Dark</string>
+    <string name="theme_mode_amoled">AMOLED</string>
+
+    <string name="onboarding_hours_short">%1$dh</string>
+
+    <!-- Onboarding scenes -->
+    <string name="onboarding_focus_idle">Ready when you are</string>
+    <string name="timer_session_complete">Session complete</string>
+    <string name="onboarding_focus_complete_body">5 min of focus</string>
+    <string name="onboarding_focus_again">Nice work! Tap to go again</string>
+    <string name="onboarding_focus_tap">Tap the dial to start</string>
+    <string name="onboarding_focus_title">Focus, one block\nat a time</string>
+    <string name="onboarding_focus_body">Set how long you want to focus, press start, and let Sessions keep the time. Pause whenever you need to.</string>
+    <string name="onboarding_sets_on_break">On a break</string>
+    <string name="onboarding_sets_title">Sets, with breaks\nbuilt in</string>
+    <string name="onboarding_ambience_title">Set the mood</string>
+    <string name="onboarding_ambience_body">Rain on the window, a crackling fire, a quiet library. Pick a soundscape to play under your sessions, or keep it silent.</string>
+    <string name="onboarding_theme_tap">Tap a tile to try it</string>
+    <string name="onboarding_theme_title">Make it yours</string>
+    <string name="onboarding_theme_body">Pick a palette or your wallpaper\'s colours, and go light, dark or true-black AMOLED. Every screen follows along.</string>
+    <string name="onboarding_mini_greeting">Good evening</string>
+    <string name="onboarding_mini_subtitle">Ready to focus?</string>
+    <string name="onboarding_mini_start">Start</string>
+    <string name="onboarding_growth_title">Watch it grow</string>
+    <string name="onboarding_growth_body">Every focused minute counts. Insights, a year-long heatmap and gentle daily reminders keep you coming back.</string>
+    <string name="onboarding_growth_caption">focused this season</string>
+
+    <string name="onboarding_start_focusing">Start focusing</string>
+    <string name="onboarding_done">Done</string>
+
+    <string name="onboarding_sets_body">Stack focus blocks into a session. Short breaks fall between them, a long one comes before the last, and Skip moves you on when you\'re ready.</string>
+
+    <!-- Session card -->
+    <string name="card_long_break_main">You earned this.</string>
+    <string name="card_long_break_sub">Reset &amp; recover</string>
+    <string name="card_power_hour_main">Power Hour</string>
+    <string name="card_power_hour_sub">Deep Work Session</string>
+    <string name="card_one_and_done_main">One and done</string>
+    <string name="card_one_and_done_sub">Make it count</string>
+    <string name="card_double_header_main">Double Header</string>
+    <string name="card_double_header_sub">Building momentum</string>
+    <string name="card_final_push_main">Final push!</string>
+    <string name="card_final_push_finish_strong">Finish strong</string>
+    <string name="card_final_push_stay_focused">Stay focused</string>
+    <string name="card_all_done_main">All done!</string>
+    <string name="card_all_done_sub">Great session</string>
+    <string name="card_finish_line_main">Finish line!</string>
+    <string name="card_finish_line_sub">You made it</string>
+    <string name="card_chill">Chill</string>
+    <string name="card_long_break_badge">%1$dm Long Break</string>
+    <string name="mode_focus">Focus</string>
+    <string name="mode_short_break">Short Break</string>
+    <string name="mode_long_break">Long Break</string>
+    <string name="tagline_focus_zone">Stay in the zone</string>
+    <string name="tagline_focus_consistency">Consistency is key</string>
+    <string name="tagline_focus_one_step">One step at a time</string>
+    <string name="tagline_focus_process">Focus on the process</string>
+    <string name="tagline_focus_small_wins">Small wins add up</string>
+    <string name="tagline_focus_momentum">Keep the momentum</string>
+    <string name="tagline_focus_disciplined">Stay disciplined</string>
+    <string name="tagline_focus_trust">Trust the process</string>
+    <string name="tagline_focus_got_this">You\'ve got this</string>
+    <string name="tagline_focus_prize">Eyes on the prize</string>
+    <string name="tagline_focus_deep_work">Deep work mode</string>
+    <string name="tagline_focus_distractions">Eliminate distractions</string>
+    <string name="tagline_break_reset">Reset and recover</string>
+    <string name="tagline_break_breathe">Take a deep breath</string>
+    <string name="tagline_break_recharge">Time to recharge</string>
+    <string name="tagline_break_stretch">Stretch your legs</string>
+    <string name="tagline_break_hydrate">Hydrate and relax</string>
+    <string name="tagline_break_mindful">Mindful pause</string>
+    <string name="tagline_break_step_away">Step away for a bit</string>
+    <string name="tagline_break_silence">Enjoy the silence</string>
+    <string name="tagline_break_eyes">Relax your eyes</string>
+    <string name="tagline_break_disconnect">Briefly disconnect</string>
+
+    <plurals name="card_sets_to_go">
+        <item quantity="one">%1$d set to go</item>
+        <item quantity="other">%1$d sets to go</item>
+    </plurals>
+
+    <string name="card_long_break_reached">Long Break Reached</string>
+    <string name="card_session_goal">Session Goal</string>
+
+    <string name="card_set_of">Set %1$s of %2$d</string>
+
+    <string name="cd_skip_to_next">Skip to next</string>
+
+    <string name="notification_channel_active">Active Session</string>
+    <string name="notification_channel_active_description">Shows when a study session is active</string>
+    <string name="action_finish">Finish</string>
+    <string name="action_pause">Pause</string>
+    <string name="action_resume">Resume</string>
+
+    <string name="mode_focus_time">Focus Time</string>
+    <string name="notification_remaining">%1$s remaining  •  %2$s</string>
+    <string name="notification_title" translatable="false">%1$s – %2$s</string>
+
+    <string name="notification_starting">Starting session…</string>
+
+    <!-- Reminders -->
+    <string name="reminder_daily_1">It\'s your focus time. Start a session whenever you\'re ready.</string>
+    <string name="reminder_daily_2">Your timer is ready whenever you are.</string>
+    <string name="reminder_daily_3">A few focused minutes today: pick a task and start the timer.</string>
+    <string name="reminder_daily_4">Little and often works best. Time for today\'s session.</string>
+    <string name="reminder_default_task">your focus session</string>
+    <string name="reminder_playful_1">Ready to tackle %1$s again? You\'ve got this!</string>
+    <string name="reminder_playful_2">Remember how good it felt to finish %1$s? Let\'s do it again.</string>
+    <string name="reminder_playful_3">Your future self will thank you for focusing on %1$s today.</string>
+    <string name="reminder_playful_4">Got a few minutes for %1$s? Just a quick session!</string>
+    <string name="reminder_playful_5">Hey! A little progress on %1$s goes a long way.</string>
+    <string name="reminder_playful_6">Focused minds achieve great things. Ready for %1$s?</string>
+    <string name="reminder_playful_7">Psst… %1$s is calling your name!</string>
+    <string name="reminder_playful_8">A quick focus session on %1$s? You\'ll feel great after.</string>
+
+    <plurals name="reminder_away_1">
+        <item quantity="one">It\'s been %1$d day! Ready for a fresh focus session?</item>
+        <item quantity="other">It\'s been %1$d days! Ready for a fresh focus session?</item>
+    </plurals>
+
+    <plurals name="reminder_away_2">
+        <item quantity="one">%1$d day since your last session. A short one is an easy way back in.</item>
+        <item quantity="other">%1$d days since your last session. A short one is an easy way back in.</item>
+    </plurals>
+
+    <plurals name="reminder_away_3">
+        <item quantity="one">Your timer\'s ready whenever you are. Let\'s ease back in.</item>
+        <item quantity="other">Your timer\'s ready whenever you are. Let\'s ease back in.</item>
+    </plurals>
+
+    <plurals name="reminder_away_4">
+        <item quantity="one">%1$d day is a long time! How about a 15-minute focus session?</item>
+        <item quantity="other">%1$d days is a long time! How about a 15-minute focus session?</item>
+    </plurals>
+
+    <!-- Reminder channels -->
+    <string name="reminder_channel_daily">Focus reminder</string>
+    <string name="reminder_channel_daily_description">Your daily reminder to focus, at the time you choose</string>
+    <string name="reminder_channel_nudges">Friendly nudges</string>
+    <string name="reminder_channel_nudges_description">Friendly nudges now and then, never more than one a day</string>
+
+    <!-- Durations -->
+    <string name="unit_min">min</string>
+    <string name="duration_minutes">%1$d min</string>
+    <string name="duration_minutes_short">%1$dm</string>
+    <string name="duration_hours_short">%1$dh</string>
+    <string name="duration_hours_minutes_short">%1$dh %2$dm</string>
+    <string name="duration_hr">%1$d hr</string>
+    <string name="duration_hr_min">%1$d hr %2$d min</string>
+
+    <!-- Sets -->
+    <plurals name="sets_count">
+        <item quantity="one">%1$d set</item>
+        <item quantity="other">%1$d sets</item>
+    </plurals>
+
+    <plurals name="every_n_sets">
+        <item quantity="one">every set</item>
+        <item quantity="other">every %1$d sets</item>
+    </plurals>
+
+    <plurals name="unit_sets">
+        <item quantity="one">set</item>
+        <item quantity="other">sets</item>
+    </plurals>
+
+    <!-- Home controls -->
+    <string name="action_discard">Discard</string>
+    <string name="action_sound">Sound</string>
+    <string name="action_play">Play</string>
+    <string name="action_sets">Sets</string>
+
+    <!-- Dialogs -->
+    <string name="goal_reached_title">Goal Reached!</string>
+    <string name="goal_reached_congrats">Congratulations</string>
+    <string name="goal_reached_message">You\'ve completed all your planned sets for this session. Take a well-deserved break and recharge!</string>
+    <string name="goal_reached_confirm">Great!</string>
+
+    <string name="review_title">Enjoying Sessions?</string>
+    <string name="review_message">If you find this app helpful, please take a moment to leave a review. It really helps us improve!</string>
+    <string name="review_rate">Rate on Play Store</string>
+    <string name="maybe_later">Maybe Later</string>
+
+    <string name="sets_title">Session Goals</string>
+    <string name="sets_subtitle">Set your focus goal and configure long breaks.</string>
+    <string name="sets_interval">Interval</string>
+    <string name="cd_decrease">Decrease</string>
+    <string name="cd_increase">Increase</string>
+    <string name="sets_duration">Duration</string>
+
+    <string name="sound_none">None</string>
+    <string name="sound_no_sound">No sound</string>
+    <string name="sound_muted">Muted</string>
+
+    <string name="sounds_title">Ambient Sounds</string>
+    <string name="sounds_subtitle">Choose a soothing ambience to stay focused during your session.</string>
+    <string name="sounds_turn_on">Turn On Sounds</string>
+    <string name="sounds_turn_on_subtitle">Enable to preview and pick a sound below</string>
+
+    <string name="task_placeholder_enter">Enter a name...</string>
+    <string name="cd_edit">Edit</string>
+    <string name="status_active">Active</string>
+    <string name="status_idle">Idle</string>
+
+    <string name="task_placeholder_name">Name this session</string>
+    <string name="cd_unmute_sound">Unmute sound</string>
+    <string name="cd_mute_sound">Mute sound</string>
+
+    <string name="template_summary">%1$dm focus · %2$dm break · %3$s</string>
+    <string name="template_long_break_summary">%1$dm long break · %2$s</string>
+    <string name="template_long_break_value">%1$dm %2$s</string>
+    <string name="template_long_break_label">Long break</string>
+    <string name="plan_break">Break</string>
+
+    <!-- Tasks and templates -->
+    <string name="template_delete_title">Delete Template?</string>
+    <string name="template_delete_message">This template will be permanently removed. This action cannot be undone.</string>
+    <string name="delete">Delete</string>
+    <string name="task_title">Session Task</string>
+    <string name="task_subtitle">Name your session or pick a saved template.</string>
+    <string name="task_hint">e.g. Coding, Math, Reading...</string>
+    <string name="cd_clear">Clear</string>
+    <string name="task_set">Set Task</string>
+    <string name="templates_title">Saved Templates</string>
+    <string name="templates_empty">No templates yet</string>
+    <string name="templates_empty_message">Set your timer config and save it as a template using the button below.</string>
+    <string name="template_update">Update Template</string>
+    <string name="close">Close</string>
+    <string name="template_save">Save as Template</string>
+    <string name="template_current_config">Current configuration</string>
+    <string name="cd_delete_template">Delete template</string>
+
+    <string name="exit_title">Exit App</string>
+    <string name="exit_message">Are you sure you want to exit the app?</string>
+
+    <string name="sign_out_message">Are you sure you want to sign out of your account?</string>
+
+    <string name="timer_idle_classic">Press the play button\nto start.</string>
+
+    <string name="timer_idle_refined">Tap play to begin</string>
+    <string name="timer_ends_at">Ends at %1$s</string>
+    <string name="timer_paused">Paused</string>
+    <string name="timer_ends">Ends %1$s</string>
+
+    <string name="plan_summary">%1$s · about %2$s</string>
+    <string name="cd_change_length">Change %1$s length</string>
+    <string name="cd_change">Change %1$s</string>
+    <string name="plan_done_around">Done around %1$s  ·  %2$s in all</string>
+
+    <string name="action_start_focus">Start focus</string>
+
+    <string name="task_placeholder_studio">What are you working on?</string>
+
+    <string name="cd_change_task">Change task</string>
+
+    <string name="duration_focus_title">Focus Duration</string>
+    <string name="duration_focus_subtitle">Choose how long you want to focus before taking a break.</string>
+    <string name="duration_break_subtitle">Choose the duration of your break between sessions.</string>
+
+    <plurals name="finish_sets_remaining">
+        <item quantity="one">You still have %1$d set remaining. Are you sure you want to finish your session now?</item>
+        <item quantity="other">You still have %1$d sets remaining. Are you sure you want to finish your session now?</item>
+    </plurals>
+
+    <string name="finish_title">Finish Session?</string>
+    <string name="finish_keep_going">Keep Going</string>
+
+    <!-- Avatars -->
+    <string name="avatar_category_everyday">Everyday Vibes</string>
+    <string name="avatar_category_professional">Professional Mode</string>
+    <string name="avatar_category_coffee">Coffee &amp; Contemplation</string>
+
+    <string name="avatar_chill_vibes">Chill Vibes</string>
+    <string name="avatar_easy_going">Easy Going</string>
+    <string name="avatar_weekender">Weekender</string>
+    <string name="avatar_cool_singh">Cool Singh</string>
+    <string name="avatar_hands_up">Hands Up</string>
+    <string name="avatar_beard_mod">Beard Mod</string>
+    <string name="avatar_simple_soul">Simple Soul</string>
+    <string name="avatar_karen">Karen</string>
+    <string name="avatar_studious">Studious</string>
+    <string name="avatar_corporate">Corporate</string>
+    <string name="avatar_clean_cut">Clean Cut</string>
+    <string name="avatar_dapper_gent">Dapper Gent</string>
+    <string name="avatar_beard_boss">Beard Boss</string>
+    <string name="avatar_doc_life">Doc Life</string>
+    <string name="avatar_open_collar">Open Collar</string>
+    <string name="avatar_smart_hijabi">Smart Hijabi</string>
+    <string name="avatar_teeth_grind">Teeth Grind</string>
+    <string name="avatar_wise_elder">Wise Elder</string>
+    <string name="avatar_vibing">Vibing</string>
+    <string name="avatar_late_night">Late Night</string>
+    <string name="avatar_wise_one">Wise One</string>
+    <string name="avatar_lost_soul">Lost Soul</string>
+    <string name="avatar_unbothered">Unbothered</string>
+    <string name="avatar_minimalist">Minimalist</string>
+    <string name="avatar_black_tee">Black Tee</string>
+    <string name="avatar_caffeinated">Caffeinated</string>
+    <string name="avatar_bored_bun">Bored Bun</string>
+
+    <!-- Profile -->
+    <plurals name="profile_streak_days">
+        <item quantity="one">%1$d Day</item>
+        <item quantity="other">%1$d Days</item>
+    </plurals>
+
+    <string name="profile_no_streak">No Streak</string>
+
+    <string name="cd_change_avatar">Change avatar</string>
+    <string name="cd_profile_avatar">Profile Avatar</string>
+    <string name="profile_default_name">User</string>
+    <string name="cd_change_name">Change name</string>
+    <string name="profile_insights">Insights</string>
+
+    <string name="study_label_in_the_zone">In the zone for</string>
+    <string name="study_label_locked_in">Locked in for</string>
+    <string name="study_label_deep_work">Deep work</string>
+    <string name="study_label_invested">Time invested</string>
+    <string name="study_label_grinded">Time grinded</string>
+    <string name="study_label_well_spent">Time well spent</string>
+    <string name="study_label_committed">Committed</string>
+    <string name="study_label_logged">Time logged</string>
+    <string name="study_label_none">No sessions yet</string>
+
+    <string name="avatar_sheet_title">Choose Your Avatar</string>
+    <string name="name_sheet_title">Change Your Name</string>
+    <string name="name_sheet_label">Display Name</string>
+
+    <string name="profile_empty_sessions">Start your first session to track your progress and build productive habits!</string>
+    <string name="cd_no_sessions">No sessions illustration</string>
+
+    <string name="profile_delete_day">Delete Day?</string>
+    <string name="profile_delete_week">Delete Week?</string>
+    <string name="profile_delete_month">Delete Month?</string>
+
+    <string name="profile_title">My Account</string>
+    <string name="profile_delete_group_message">All sessions recorded for this period will be permanently removed. This action cannot be undone.</string>
+    <string name="profile_delete_session_title">Delete Session?</string>
+    <string name="profile_delete_session_message">This action cannot be undone. The session data will be permanently removed.</string>
+
+    <!-- Dates -->
+    <string name="date_today">Today</string>
+    <string name="date_yesterday">Yesterday</string>
+
+    <string name="default_task_name">Focus Session</string>
+
+    <!-- Appearance -->
+    <string name="card_animation_off">Off</string>
+    <string name="card_animation_sand">Desert crossing</string>
+    <string name="card_animation_rain">Lo-fi rain</string>
+    <string name="card_animation_candle">Candle &amp; embers</string>
+    <string name="card_animation_aurora">Aurora</string>
+    <string name="card_animation_mesh">Mesh gradient</string>
+
+    <string name="card_style_filled">Filled</string>
+    <string name="card_style_outlined">Outlined</string>
+    <string name="card_style_glass">Glass</string>
+
+    <string name="layout_classic">Classic</string>
+    <string name="layout_classic_description">The original layout</string>
+    <string name="layout_refined">Refined</string>
+    <string name="layout_refined_description">Calmer, with the ring in front</string>
+    <string name="layout_studio">Studio</string>
+    <string name="layout_studio_description">A dial and a floating dock</string>
+
+    <string name="appearance_subtitle">Choose your preferred look</string>
+
+    <string name="amoled_title">AMOLED Black</string>
+    <string name="amoled_subtitle">Pure black background</string>
+    <string name="amoled_unavailable">Available in dark mode</string>
+
+    <string name="card_animation_title">Card Animation</string>
+
+    <string name="card_style_title">Card Style</string>
+
+    <string name="font_title">App Font</string>
+
+    <string name="home_gradient_title">Home Gradient</string>
+    <string name="home_gradient_subtitle">Colour wash at the top of the home screen</string>
+    <string name="home_gradient_unavailable">Available in Refined and Studio layouts</string>
+
+    <string name="home_layout_title">Home Layout</string>
+
+    <string name="card_preview_title">Card Preview</string>
+
+    <!-- Attributions -->
+    <string name="attributions_libraries">Libraries We Use</string>
+
+    <string name="attributions_title">Attributions</string>
+    <string name="attributions_subtitle">Powered by community</string>
+
+    <!-- About -->
+    <string name="about_subtitle">App information and credits</string>
+    <string name="about_section_connect">Connect &amp; Support</string>
+    <string name="about_section_spread">Spread the Word</string>
+    <string name="about_section_legal">Legal</string>
+
+    <string name="error_open_link">Could not open link</string>
+
+    <string name="donation_title">Fuel the Development</string>
+    <string name="donation_message">Sessions is free and open source. If you enjoy the focus, consider supporting the journey!</string>
+    <string name="donation_coffee">Buy me a Coffee</string>
+    <string name="donation_lunch">Buy me Lunch</string>
+    <string name="donation_kofi">Ko-fi (PayPal / International)</string>
+
+    <string name="thanks_title">You\'re Amazing!</string>
+    <string name="thanks_message">Thank you so much for your support! Your contribution helps keep Sessions alive and improving. It really means a lot.</string>
+    <string name="thanks_confirm">You\'re Welcome!</string>
+
+    <string name="about_contact_subtitle">Get in touch for support</string>
+    <string name="about_donate">Buy me a coffee</string>
+    <string name="about_donate_subtitle">Support the development</string>
+    <string name="about_more_apps_subtitle">Discover other apps we\'ve built</string>
+    <string name="about_rate">Rate this App</string>
+    <string name="about_rate_subtitle">Leave a review on the Play Store</string>
+    <string name="about_share">Share with Friends</string>
+    <string name="about_share_subtitle">Help others focus better</string>
+    <string name="about_privacy">Privacy Policy</string>
+    <string name="about_terms">Terms of Service</string>
+    <string name="about_attributions_subtitle">Open source &amp; credits</string>
+
+    <!-- Insights -->
+    <string name="streak_getting_started">Getting Started</string>
+    <string name="streak_getting_started_message">Begin your first session to start building a streak</string>
+    <string name="streak_building">Building Momentum</string>
+    <string name="streak_strong_start">Strong Start</string>
+    <string name="streak_habit">Habit Forming</string>
+    <string name="streak_committed">Committed</string>
+    <string name="streak_master">Focus Master</string>
+
+    <plurals name="streak_building_message">
+        <item quantity="one">You\'re on a %1$d-day streak. Keep going!</item>
+        <item quantity="other">You\'re on a %1$d-day streak. Keep going!</item>
+    </plurals>
+
+    <plurals name="streak_strong_start_message">
+        <item quantity="one">You\'ve maintained a %1$d-day focus streak. Great progress!</item>
+        <item quantity="other">You\'ve maintained a %1$d-day focus streak. Great progress!</item>
+    </plurals>
+
+    <plurals name="streak_habit_message">
+        <item quantity="one">Impressive %1$d-day streak! You\'re building a solid routine.</item>
+        <item quantity="other">Impressive %1$d-day streak! You\'re building a solid routine.</item>
+    </plurals>
+
+    <plurals name="streak_committed_message">
+        <item quantity="one">%1$d day of consistent focus. You\'re on fire!</item>
+        <item quantity="other">%1$d days of consistent focus. You\'re on fire!</item>
+    </plurals>
+
+    <plurals name="streak_master_message">
+        <item quantity="one">Outstanding %1$d-day streak. Your dedication is remarkable!</item>
+        <item quantity="other">Outstanding %1$d-day streak. Your dedication is remarkable!</item>
+    </plurals>
+
+    <string name="peak_title">Peak Productivity</string>
+    <string name="peak_subtitle">Your most active hour</string>
+    <string name="peak_empty">No Data Yet</string>
+    <string name="peak_empty_subtitle">Log more sessions to calculate</string>
+
+    <string name="insights_time_percent" translatable="false">%1$s (%2$d%%)</string>
+    <string name="insights_less_than_minute">&lt; 1 min</string>
+    <string name="insights_no_focus_time">No focus time</string>
+
+    <string name="heatmap_title">History</string>
+    <string name="heatmap_subtitle">Your year in pixels</string>
+    <string name="heatmap_less">Less</string>
+    <string name="heatmap_more">More</string>
+
+    <string name="insights_no_data">No data yet</string>
+
+    <string name="insights_subtitle">Your productivity patterns</string>
+    <string name="insights_total_title">Total Focus Time</string>
+    <string name="insights_total_subtitle">Cumulative time across all sessions</string>
+    <string name="insights_primary_focus">Primary Focus</string>
+    <string name="insights_momentum">Momentum</string>
+    <string name="insights_momentum_subtitle">Your consistency streak</string>
+    <string name="insights_weekly">Weekly Rhythm</string>
+    <string name="insights_weekly_subtitle">Session volume by day of week</string>
+    <string name="insights_weekly_empty">Complete a session to see volume</string>
+    <string name="insights_tasks">Task Allocation</string>
+    <string name="insights_tasks_subtitle">How your time is distributed</string>
+    <string name="insights_tasks_empty">Complete a session to see distribution</string>
+
+    <!-- Billing -->
+    <string name="billing_error">Something went wrong with the purchase. Please try again.</string>
+    <string name="billing_not_loaded">Product details not loaded. Please check your internet connection.</string>
+    <string name="billing_thanks">Thank you for your support!</string>
+
+    <string name="credit_design_title">Design &amp; Illustrations</string>
+    <string name="credit_design_subtitle">Artwork by Pablo Stanley</string>
+    <string name="credit_design_body">The beautiful illustrations and doodles used throughout Sessions are created by Pablo Stanley. Big thanks for his amazing contributions to the open design community!</string>
+    <string name="credit_design_action">Visit Portfolio</string>
+
+    <string name="credit_lordicon_title">Animated Icons</string>
+    <string name="credit_lordicon_subtitle">Provided by Lordicon</string>
+    <string name="credit_lordicon_body">The lively animated icons used in the navigation bar are provided by Lordicon. They offer a massive library of high-quality animated assets for all creators.</string>
+    <string name="credit_lordicon_action">Visit Lordicon</string>
+
+    <string name="credit_oss_title">Sessions is Open Source</string>
+    <string name="credit_oss_subtitle">Licensed under Apache 2.0</string>
+    <string name="credit_oss_body">The source code is available on GitHub. You are free to view, learn from, and modify the code for personal use.</string>
+    <string name="credit_oss_action">View Source Code</string>
+
+    <!-- What's New -->
+    <string name="whats_new_title">What\'s New</string>
+    <string name="whats_new_current_version">Current Version %1$s</string>
+    <string name="whats_new_version">Version %1$s</string>
+    <string name="collapse">Collapse</string>
+    <string name="expand">Expand</string>
+
+    <!-- Release notes -->
+    <string name="whats_new_v6_1_title">Home Gradient Toggle</string>
+    <string name="whats_new_v6_1_body">You can now turn the living colour-wash gradient at the top of the home screen on or off from Home &amp; Cards in Settings. Applies to Refined and Studio layouts; the toggle card previews the glow right on itself.</string>
+    <string name="whats_new_v6_2_title">Animated Studio Sound Button</string>
+    <string name="whats_new_v6_2_body">The sound button in Studio now breathes gently while your ambient sound plays, pulsing in and out to show it\'s active. The icon also fades through when you mute or unmute, rather than snapping.</string>
+    <string name="whats_new_v6_3_title">Unique Settings Toggle Icons</string>
+    <string name="whats_new_v6_3_body">Each toggle in Settings now carries its own icon: a bell for notifications, an alarm for your daily reminder, a spark for playful reminders, a wave for sound effects, a vibration for haptics, and a sun for keeping the screen on.</string>
+    <string name="whats_new_v6_4_title">Avatar Ring Fix</string>
+    <string name="whats_new_v6_4_body">The selection ring on avatar items now wraps around the outside of each avatar as intended, instead of drawing over the edges of the image.</string>
+    <string name="whats_new_v6_5_title">Choose Your Home Layout</string>
+    <string name="whats_new_v6_5_body">Pick how your Home screen looks from the new Home &amp; Cards screen in Settings: Classic, the original layout; Refined, a calmer take with the date above your task; or Studio, an all-new design.</string>
+    <string name="whats_new_v6_6_title">Meet Studio</string>
+    <string name="whats_new_v6_6_body">A watch-style dial whose ticks fill as you focus, with a dot riding the rim. Before you start, three tiles show your plan and when you\'d be done. During a session, a card shows each block on a timeline, and a floating dock holds every control.</string>
+    <string name="whats_new_v6_7_title">A Living Glow</string>
+    <string name="whats_new_v6_7_body">Refined and Studio have a soft, moving glow across the top of the screen in your theme\'s colours. It follows your session, leaning towards focus or break colours and flowing faster and brighter while the timer runs.</string>
+    <string name="whats_new_v6_8_title">A Floating Navigation Bar</string>
+    <string name="whats_new_v6_8_body">The bottom bar is now a floating pill. Each tab is just its icon, and the one you\'re on opens into a capsule with its name, while your pages run softly underneath it.</string>
+    <string name="whats_new_v6_9_title">Aurora &amp; Mesh Card Animations</string>
+    <string name="whats_new_v6_9_body">Two new animations for your session card: Aurora, soft light drifting over the card, and Mesh gradient, your theme\'s colours blending as they move. Like the others, they move only while the timer runs.</string>
+    <string name="whats_new_v6_10_title">A New Welcome</string>
+    <string name="whats_new_v6_10_body">Sign in and sign up now sit on a slowly drifting glow, each with its own little animation: a focus dial still counting down where you left off, or a week of focus building up bar by bar.</string>
+    <string name="whats_new_v6_11_title">New Colour Theme Cards</string>
+    <string name="whats_new_v6_11_body">Each colour theme now shows a palette disc of its key colours and a strip of swatches, in a more compact card. Choosing one gives the disc a little spin.</string>
+    <string name="whats_new_v6_12_title">Smoother Theme Changes</string>
+    <string name="whats_new_v6_12_body">Changing your colour theme, switching between light and dark, or turning on AMOLED black now fades gently across the whole screen.</string>
+    <string name="whats_new_v6_13_title">Sessions in Your Language</string>
+    <string name="whats_new_v6_13_body">Sessions now speaks ten languages: English, Spanish, Portuguese, French, German, Hindi, Arabic, Japanese, Korean and Chinese. Pick yours in Settings › Language, or follow your phone\'s, and the whole app switches instantly, right where you are. Arabic reads right to left.</string>
+    <string name="whats_new_v51_1_title">Templates Sync to Your Account</string>
+    <string name="whats_new_v51_1_body">Your task templates are now saved to your account. Reinstall the app or sign in on another phone and they come right back.</string>
+    <string name="whats_new_v51_2_title">Redesigned Sign In &amp; Sign Up</string>
+    <string name="whats_new_v51_2_body">Cleaner sign in and sign up screens with simpler fields, a smoother password toggle, and Google sign in at the bottom.</string>
+    <string name="whats_new_v51_3_title">A New Profile Card</string>
+    <string name="whats_new_v51_3_body">Your profile card is more compact, with a bigger avatar. Tap the avatar to pick a new one from a sheet, or the pencil to change your name, right from the Profile tab.</string>
+    <string name="whats_new_v51_4_title">Refreshed Onboarding</string>
+    <string name="whats_new_v51_4_body">The welcome screens have a new look, with smoother animations as you swipe through them.</string>
+    <string name="whats_new_v51_5_title">Gentler Reminders</string>
+    <string name="whats_new_v51_5_body">Your daily focus reminder now shows when it rings, like \"Every evening at 7:00 PM\". Smart Reminders are now Playful Reminders: quieter, never more than one a day, with a few kind words if you\'ve been away for a while.</string>
+    <string name="whats_new_v51_6_title">Daily Focus Time in Insights</string>
+    <string name="whats_new_v51_6_body">Tap any day on the Insights heatmap to see the date and the total time you spent focusing that day. The tooltip now animates in and closes as soon as you scroll.</string>
+    <string name="whats_new_v51_7_title">New App Icon in About</string>
+    <string name="whats_new_v51_7_body">The app info card on the About screen now shows the Sessions icon on its launcher background, matching how it appears on your home screen.</string>
+    <string name="whats_new_v51_8_title">More From Us in About</string>
+    <string name="whats_new_v51_8_body">A new More from us row in the About section shows our other apps, Quill, Hajime and Ryori, in a quick sheet with animated icons and a link to each on the Play Store. The full More from us screen has a refreshed layout too.</string>
+    <string name="whats_new_v51_9_title">Background Sound Fixes</string>
+    <string name="whats_new_v51_9_body">Ambient sounds now fade and crossfade reliably when the screen is off or the app is in the background. The Ambient Sounds sheet also has a new switch to turn sounds on or off, and it remembers your last sound.</string>
+    <string name="whats_new_v5_1_title">Task Templates</string>
+    <string name="whats_new_v5_1_body">Save your current timer configuration as a named template and reapply it in one tap. Create, update, and delete templates directly from the task sheet.</string>
+    <string name="whats_new_v5_2_title">Ambient Sounds &amp; Active Badges</string>
+    <string name="whats_new_v5_2_body">Rebranded background audio controls with a dedicated Ambient Sounds bottom sheet. The home header sound badge now animates dynamically in tertiary colors during active sessions.</string>
+    <string name="whats_new_v5_3_title">Fully Rounded Dialog Buttons</string>
+    <string name="whats_new_v5_3_body">All confirmation and reward dialogs now use fully pill-shaped buttons for a more consistent, polished look throughout the app.</string>
+    <string name="whats_new_v5_4_title">Connected Insights Cards</string>
+    <string name="whats_new_v5_4_body">The Insights screen top metrics are now grouped into a connected Material 3 list layout.</string>
+    <string name="whats_new_v5_5_title">Redesigned Settings Sheets</string>
+    <string name="whats_new_v5_5_body">Background sound and session goal controls are now full bottom sheets with explicit Save buttons. Changes are only applied when you choose to save them.</string>
+    <string name="whats_new_v5_6_title">Redesigned Long Break System</string>
+    <string name="whats_new_v5_6_body">Long breaks are now fully configurable. You can choose whether to enable them at all, and if so, set the interval: after every set, every two sets, every three sets, and so on. Previously, long breaks were only triggered automatically once your total session time crossed 100 minutes.</string>
+    <string name="whats_new_v5_7_title">Removed Swipe Navigation</string>
+    <string name="whats_new_v5_7_body">The swipe gesture to switch between main screens has been removed. It was causing unintended navigation and interfering with horizontal interactions.</string>
+    <string name="whats_new_v5_8_title">Achievements Coming Soon</string>
+    <string name="whats_new_v5_8_body">A new Achievements section has been added to your profile screen. Earn badges as you build your focus habits launching in a future update.</string>
+    <string name="whats_new_v5_9_title">General Improvements &amp; Bug Fixes</string>
+    <string name="whats_new_v5_9_body">Various under-the-hood improvements and bug fixes to enhance stability and overall performance.</string>
+    <string name="whats_new_v5_10_title">Segmented Notification Progress</string>
+    <string name="whats_new_v5_10_body">The notification progress bar is now segmented with the appropriate color roles for each session phase.</string>
+    <string name="whats_new_v4_1_title">Smart Focus Reminders</string>
+    <string name="whats_new_v4_1_body">Stay consistent with our new intelligent notification system. Sessions now checks in if you\'ve been away too long, helping you maintain your productivity streak.</string>
+    <string name="whats_new_v4_2_title">Personalized Nudges</string>
+    <string name="whats_new_v4_2_body">Receive playful, unique reminders based on your actual focus habits and task history, making every nudge feel personal to you.</string>
+    <string name="whats_new_v4_3_title">New Skip Action</string>
+    <string name="whats_new_v4_3_body">Enjoy better control during your sessions. You can now skip focus or break periods directly from the notification tray.</string>
+    <string name="whats_new_v4_4_title">Smoother Animations</string>
+    <string name="whats_new_v4_4_body">Enjoy a more polished experience with new animated icons and refined transitions across the home, settings, and profile screens.</string>
+    <string name="whats_new_v4_5_title">Live Update Notifications</string>
+    <string name="whats_new_v4_5_body">Track your focus journey directly from your status bar and lock screen. Pause, finish, and see your progress at a glance.</string>
+    <string name="whats_new_v4_6_title">Flexible History Sorting</string>
+    <string name="whats_new_v4_6_body">Organize your focus history by Day, Week, or Month. View cumulative time spent for each period to better track your long-term productivity.</string>
+    <string name="whats_new_v4_7_title">Quick Audio Toggle</string>
+    <string name="whats_new_v4_7_body">Instantly mute or unmute your background ambience by tapping the sound badge in the home screen header.</string>
+    <string name="whats_new_v4_8_title">Smart Finish Logic</string>
+    <string name="whats_new_v4_8_body">New confirmation dialogs for early session exits and automatic celebrations for reaching your goal.</string>
+    <string name="whats_new_v4_9_title">More from Yugen Tech</string>
+    <string name="whats_new_v4_9_body">Discover our other productivity tools directly from the new \'More from us\' section in the About screen.</string>
+
+    <!-- More from us -->
+    <string name="more_from_us">More from us</string>
+    <string name="more_apps_key_features">Key Features</string>
+    <string name="more_apps_subtitle">Four more apps, made with the same care</string>
+    <string name="more_apps_sheet_subtitle">Four more apps, made with the same care.</string>
+    <string name="more_apps_intro">If you enjoy focusing with Sessions, you might like reading with Quill, keeping track of your money with Mynt, learning Japanese with Hajime and cooking with Ryori.</string>
+    <string name="quill_tagline">Read Deeper. Think Further.</string>
+    <string name="ryori_tagline">Cook Something Wonderful</string>
+    <string name="mynt_tagline">Your Voice Money Assistant</string>
+    <string name="hajime_tagline">Learn to Read Japanese</string>
+    <string name="more_apps_get_on_play">Get on Play Store</string>
+    <string name="more_apps_coming_soon">Coming soon</string>
+    <string name="more_apps_overview_title">Focus. Read. Track. Learn. Cook.</string>
+    <string name="more_apps_overview_body">Sessions, Quill, Mynt, Hajime and Ryori are made by YugenTech: small, thoughtful apps built to make everyday moments a little calmer.</string>
+    <string name="more_apps_see_all">See all features</string>
+    <string name="more_apps_get">Get</string>
+    <string name="quill_feature_1_title" translatable="false">Aira</string>
+    <string name="quill_feature_1_body">An AI reading companion that answers from your book, locked to your progress so it never spoils what\'s next.</string>
+    <string name="quill_feature_2_title">Character Companion</string>
+    <string name="quill_feature_2_body">Recall who someone is, what they\'re up to lately, or trace their whole journey so far.</string>
+    <string name="quill_feature_3_title">Visualize Scenes</string>
+    <string name="quill_feature_3_body">Turn a passage into an illustration, then jump straight back to where it came from.</string>
+    <string name="quill_feature_4_title">A Beautiful Reader</string>
+    <string name="quill_feature_4_body">Fonts, spacing, page themes, highlights, night light and paged or scrolling layouts.</string>
+    <string name="quill_feature_5_title">Endless Library</string>
+    <string name="quill_feature_5_body">Import your own EPUBs or download from 60,000+ free Project Gutenberg and Standard Ebooks titles.</string>
+    <string name="quill_feature_6_title">Reading Insights</string>
+    <string name="quill_feature_6_body">Streaks, a reading heatmap, peak hours and favorite authors, with gentle daily reminders.</string>
+    <string name="ryori_feature_1_title">A Home That Inspires</string>
+    <string name="ryori_feature_1_body">A featured carousel, a cuisine and a category of the day, and a Surprise me button for when you can\'t decide.</string>
+    <string name="ryori_feature_2_title">Explore Every Kitchen</string>
+    <string name="ryori_feature_2_body">Browse recipes by category, cuisine or ingredient, or search for one by name.</string>
+    <string name="ryori_feature_3_title">Cook Along</string>
+    <string name="ryori_feature_3_body">Clear step-by-step instructions, with ingredients you can tick off as you go.</string>
+    <string name="ryori_feature_4_title">Mocktails</string>
+    <string name="ryori_feature_4_body">Non-alcoholic drinks sit right next to the meals, so there\'s something for every glass.</string>
+    <string name="ryori_feature_5_title">Vegetarian Mode</string>
+    <string name="ryori_feature_5_body">One switch hides meat and seafood across the whole app.</string>
+    <string name="ryori_feature_6_title">Works Offline</string>
+    <string name="ryori_feature_6_body">Recipes you\'ve opened are saved on your device and load instantly, even without a connection.</string>
+    <string name="mynt_feature_1_title">Just Say It</string>
+    <string name="mynt_feature_1_body">Tell Mynt what you spent the way you\'d tell a friend. Several things in one sentence become separate entries.</string>
+    <string name="mynt_feature_2_title">Lend &amp; Borrow</string>
+    <string name="mynt_feature_2_body">Say who you lent to or borrowed from, and when they paid you back. Mynt keeps every balance straight.</string>
+    <string name="mynt_feature_3_title">Split Bills</string>
+    <string name="mynt_feature_3_body">Split a dinner or a trip between friends just by saying who was there and what it cost.</string>
+    <string name="mynt_feature_4_title">Ask About Your Money</string>
+    <string name="mynt_feature_4_body">Ask how much you spent on food this month, or who still owes you, and get an answer straight away.</string>
+    <string name="mynt_feature_5_title">Check Before Saving</string>
+    <string name="mynt_feature_5_body">Everything Mynt understood is shown first, so you can fix an amount or a category before it\'s saved.</string>
+    <string name="mynt_feature_6_title">Talks Back</string>
+    <string name="mynt_feature_6_body">When something\'s missing, Mynt asks you, and can read its questions aloud so you can answer hands-free.</string>
+    <string name="hajime_feature_1_body">Hiragana and katakana first, then kanji, words and sentences, one short lesson at a time.</string>
+    <string name="hajime_feature_2_title">Every JLPT Kanji</string>
+    <string name="hajime_feature_2_body">N5 to N1 kanji with readings, meanings, parts, common words and example sentences with furigana.</string>
+    <string name="hajime_feature_3_title">Reviews That Remember</string>
+    <string name="hajime_feature_3_body">Spaced repetition brings each item back just before you\'d forget it, so what you learn sticks.</string>
+    <string name="hajime_feature_4_title">Sensei, Your AI Tutor</string>
+    <string name="hajime_feature_4_body">Ask anything about Japanese and get stories, sentence breakdowns and quizzes built from what you\'ve learned.</string>
+    <string name="hajime_feature_5_title">Hear Every Word</string>
+    <string name="hajime_feature_5_body">Every kana, kanji, word and sentence can be read aloud in a Japanese voice.</string>
+    <string name="hajime_feature_6_title">Study Insights</string>
+    <string name="hajime_feature_6_body">Streaks, a study heatmap, your trickiest mix-ups and progress through every JLPT level.</string>
+
+    <!-- Announcements -->
+    <string name="announcement_got_it">Got it</string>
+
+    <string name="announcement_v6_title">What\'s New in Sessions 6.0</string>
+    <string name="announcement_v6_message">We\'ve added the new Studio layout with a watch-style dial, living glow backgrounds, mesh animations, and smoother transitions throughout the app.</string>
+    <string name="announcement_see_whats_new">See What\'s New</string>
+    <string name="announcement_maybe_later">Maybe Later</string>
+    <string name="announcement_layouts_title">Try the New Layouts</string>
+    <string name="announcement_layouts_message">You can switch between Classic, Refined, and Studio layouts anytime under Settings &gt; Home &amp; Cards.</string>
+    <string name="announcement_customize_now">Customize Now</string>
+
+    <string name="announcement_toast" translatable="false">%1$s: %2$s</string>
+
+    <!-- Bottom navigation -->
+    <string name="nav_home">Home</string>
+    <string name="nav_profile">Profile</string>
+    <string name="nav_settings">Settings</string>
+
+    <!-- Auth errors -->
+    <string name="auth_error_weak_password">Password is too weak. Please use at least 6 characters.</string>
+    <string name="auth_error_email_in_use">An account with this email already exists. Please sign in instead.</string>
+    <string name="auth_error_invalid_email">Please enter a valid email address.</string>
+    <string name="auth_error_user_not_found">No account found with this email. Please check your email or sign up.</string>
+    <string name="auth_error_wrong_password">Incorrect password. Please try again.</string>
+    <string name="auth_error_invalid_credential">Invalid email or password. Please check your credentials.</string>
+    <string name="auth_error_user_disabled">This account has been disabled. Please contact support.</string>
+    <string name="auth_error_different_credential">An account exists with this email but a different sign-in method.</string>
+    <string name="auth_error_network">Network error. Please check your internet connection.</string>
+    <string name="auth_error_too_many_requests">Too many failed attempts. Please try again later.</string>
+    <string name="auth_error_not_allowed">This sign-in method is not enabled. Contact support.</string>
+    <string name="auth_error_recent_login">Please sign in again to complete this action.</string>
+    <string name="auth_error_credential_in_use">This credential is already associated with a different account.</string>
+    <string name="auth_error_invalid_token">Invalid authentication token. Please try again.</string>
+    <string name="auth_error_token_mismatch">Authentication token mismatch. Please try again.</string>
+    <string name="auth_error_user_mismatch">The credential does not correspond to the user.</string>
+    <string name="auth_error_session_expired">Your session has expired. Please sign in again.</string>
+    <string name="auth_error_generic">Authentication failed. Please try again.</string>
+    <string name="error_network">Network error. Please check your connection.</string>
+    <string name="error_timeout">Request timed out. Please try again.</string>
+    <string name="error_cancelled">Operation was cancelled.</string>
+    <string name="error_permission">Permission denied. Check permissions and try again.</string>
+    <string name="error_generic">Something went wrong. Please try again.</string>
+    <string name="google_error_cancelled">Google Sign-In was cancelled.</string>
+    <string name="google_error_failed">Google Sign-In failed. Please try again.</string>
+    <string name="google_error_in_progress">Sign-in is already in progress. Please wait.</string>
+    <string name="google_error_unavailable">Google Sign-In is not available. Try again later.</string>
+    <string name="google_error_resolution">Google Sign-In requires additional setup. Please try again.</string>
+    <string name="google_error_invalid_account">Invalid Google account. Please select a different account.</string>
+    <string name="google_error_timeout">Google Sign-In timed out. Please try again.</string>
+    <string name="google_error_fallback">Google Sign-In failed. Please try again or use email sign-in.</string>
+
+    <string name="auth_error_profile_load">Couldn\'t load your profile. Please try again.</string>
+    <string name="auth_error_sync">Sync failed: %1$s</string>
+    <string name="auth_error_profile_create">Couldn\'t create your profile: %1$s</string>
+
+    <!-- View models -->
+    <string name="timer_too_short">Session too short to be saved</string>
+    <string name="home_history_error">Could not load history</string>
+
+    <!-- Daily reminder subtitle -->
+    <string name="reminder_pick_time">Pick a time for a daily nudge</string>
+    <string name="reminder_every_morning">Every morning at %1$s</string>
+    <string name="reminder_every_afternoon">Every afternoon at %1$s</string>
+    <string name="reminder_every_evening">Every evening at %1$s</string>
+    <string name="reminder_every_night">Every night at %1$s</string>
+
+    <string name="label_your_name">Your name</string>
+
+    <string name="sets_target">Target Sets</string>
+
+    <string name="alarm_permission_body">To ensure your study reminder rings at the exact time you set, please allow this permission in the next screen.</string>
 </resources>

@@ -1,5 +1,9 @@
 package com.yugentech.sessions.ui.config.insightsScreen.components
 
+import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.runtime.remember
+import com.yugentech.sessions.R
+import androidx.compose.ui.res.stringResource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -38,7 +42,7 @@ fun TaskDistributionList(
                 val percentage = if (totalSeconds > 0) duration / totalSeconds else 0f
 
                 val timeText = formatSeconds(duration)
-                val displayText = "$timeText (${(percentage * 100).toInt()}%)"
+                val displayText = stringResource(R.string.insights_time_percent, timeText, (percentage * 100).toInt())
 
                 TaskProgressItem(
                     label = task,
@@ -50,12 +54,13 @@ fun TaskDistributionList(
     }
 }
 
+@Composable
 private fun formatSeconds(seconds: Int): String {
     val hours = seconds / 3600
     val minutes = (seconds % 3600) / 60
     return if (hours > 0) {
-        "${hours}h ${minutes}m"
+        stringResource(R.string.duration_hours_minutes_short, hours, minutes)
     } else {
-        "${minutes}m"
+        stringResource(R.string.duration_minutes_short, minutes)
     }
 }

@@ -1,5 +1,7 @@
 package com.yugentech.sessions.ui.auth.onboardingScreen
 
+import com.yugentech.sessions.R
+import androidx.compose.ui.res.stringResource
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
@@ -83,7 +85,7 @@ private enum class Scene { Focus, Session, Ambience, Theme, Growth }
 @Composable
 fun OnboardingScreen(
     onFinish: () -> Unit,
-    finishLabel: String = "Start focusing"
+    finishLabel: String = stringResource(R.string.onboarding_start_focusing)
 ) {
     // The aura's colours, which the nav host draws behind this screen
     AuraTheme { OnboardingContent(onFinish, finishLabel) }
@@ -125,7 +127,7 @@ private fun OnboardingContent(onFinish: () -> Unit, finishLabel: String) {
                     enabled = !onLast,
                     modifier = Modifier.graphicsLayer { alpha = skipAlpha }
                 ) {
-                    Text("Skip", style = MaterialTheme.typography.labelLarge)
+                    Text(stringResource(R.string.skip), style = MaterialTheme.typography.labelLarge)
                 }
             }
 
@@ -217,7 +219,7 @@ private fun OnboardingContent(onFinish: () -> Unit, finishLabel: String) {
                             label = "onboardingButton"
                         ) { last ->
                             Text(
-                                text = if (last) finishLabel else "Continue",
+                                text = if (last) finishLabel else stringResource(R.string.onboarding_continue),
                                 style = MaterialTheme.typography.titleMedium,
                                 fontWeight = FontWeight.SemiBold,
                                 maxLines = 1
@@ -251,7 +253,7 @@ private fun BackAction(onClick: () -> Unit) {
     ) {
         Icon(
             Icons.AutoMirrored.Filled.ArrowBack,
-            contentDescription = "Back",
+            contentDescription = stringResource(R.string.back),
             modifier = Modifier.size(22.dp),
             tint = primary
         )

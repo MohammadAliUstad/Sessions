@@ -1,5 +1,7 @@
 package com.yugentech.sessions.ui.dash.homeScreen.components.dialogs
 
+import com.yugentech.sessions.R
+import androidx.compose.ui.res.stringResource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -89,7 +91,7 @@ fun GoalReachedDialog(
                     verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.xs)
                 ) {
                     Text(
-                        text = "Goal Reached!",
+                        text = stringResource(R.string.goal_reached_title),
                         style = MaterialTheme.typography.headlineMedium,
                         fontWeight = FontWeight.Bold,
                         color = MaterialTheme.colorScheme.primary,
@@ -97,7 +99,7 @@ fun GoalReachedDialog(
                     )
 
                     Text(
-                        text = "Congratulations",
+                        text = stringResource(R.string.goal_reached_congrats),
                         style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.SemiBold,
                         color = MaterialTheme.colorScheme.onSurface,
@@ -106,7 +108,7 @@ fun GoalReachedDialog(
                 }
 
                 Text(
-                    text = "You've completed all your planned sets for this session. Take a well-deserved break and recharge!",
+                    text = stringResource(R.string.goal_reached_message),
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     textAlign = TextAlign.Center,
@@ -126,7 +128,7 @@ fun GoalReachedDialog(
                     shape = CircleShape
                 ) {
                     Text(
-                        text = "Great!",
+                        text = stringResource(R.string.goal_reached_confirm),
                         style = MaterialTheme.typography.labelLarge,
                         fontWeight = FontWeight.SemiBold
                     )

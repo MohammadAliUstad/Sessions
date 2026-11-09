@@ -1,5 +1,7 @@
 package com.yugentech.sessions.ui.config.appearanceScreen.components
 
+import com.yugentech.sessions.R
+import androidx.compose.ui.res.stringResource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
@@ -44,7 +46,7 @@ fun FontSelector(
     Column(modifier = modifier.fillMaxWidth()) {
         SectionHeader(
             icon = Icons.Default.TextFields,
-            title = "App Font"
+            title = stringResource(R.string.font_title)
         )
 
         // No ripple on the chips either

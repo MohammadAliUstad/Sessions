@@ -1,5 +1,8 @@
 package com.yugentech.sessions.ui.auth.components.forms
 
+import androidx.compose.ui.platform.LocalContext
+import com.yugentech.sessions.R
+import androidx.compose.ui.res.stringResource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -44,6 +47,8 @@ fun SignInForm(
     modifier: Modifier = Modifier
 ) {
     var formState by remember { mutableStateOf(SignInFormState()) }
+    // Errors are worked out in callbacks, so read from resources (in the app's language)
+    val resources = LocalContext.current.resources
     val scope = rememberCoroutineScope()
     // isLoading is shared by both sign-in paths; remember which button started it so only
     // that one shows the spinner while the other is just disabled.
@@ -62,10 +67,10 @@ fun SignInForm(
             onValueChange = { newEmail ->
                 formState = formState.copy(
                     email = newEmail,
-                    emailError = FormValidator.validateEmail(newEmail)
+                    emailError = FormValidator.validateEmail(resources, newEmail)
                 )
             },
-            label = "Email",
+            label = stringResource(R.string.label_email),
             leadingIcon = Icons.Default.Email,
             error = formState.emailError
         )
@@ -76,10 +81,10 @@ fun SignInForm(
                 onValueChange = { newPassword ->
                     formState = formState.copy(
                         password = newPassword,
-                        passwordError = FormValidator.validatePassword(newPassword)
+                        passwordError = FormValidator.validatePassword(resources, newPassword)
                     )
                 },
-                label = "Password",
+                label = stringResource(R.string.label_password),
                 leadingIcon = Icons.Default.Lock,
                 error = formState.passwordError,
                 isPassword = true
@@ -95,7 +100,7 @@ fun SignInForm(
                     onClick = {
                         if (formState.email.isBlank()) {
                             formState = formState.copy(
-                                emailError = "Enter your email first, and we'll send a reset link"
+                                emailError = resources.getString(R.string.sign_in_reset_needs_email)
                             )
                         } else {
                             onForgotPassword(formState.email)
@@ -104,7 +109,7 @@ fun SignInForm(
                     modifier = Modifier.height(MaterialTheme.components.buttonSmall)
                 ) {
                     Text(
-                        text = "Forgot password?",
+                        text = stringResource(R.string.sign_in_forgot_password),
                         style = MaterialTheme.typography.labelLarge,
                         color = MaterialTheme.colorScheme.primary
                     )
@@ -113,12 +118,13 @@ fun SignInForm(
         }
 
         ActionButton(
-            text = "Sign in",
+            text = stringResource(R.string.sign_in_action),
             isLoading = isLoading && !isGoogleSignIn,
             enabled = !isLoading,
             onClick = {
                 isGoogleSignIn = false
                 val isValid = FormValidator.validateSignInForm(
+                    res = resources,
                     email = formState.email,
                     password = formState.password,
                     onEmailError = { error ->
@@ -137,7 +143,7 @@ fun SignInForm(
             }
         )
 
-        AuthDivider(text = "or")
+        AuthDivider(text = stringResource(R.string.auth_divider_or))
 
         GoogleSignInButton(
             isLoading = isLoading && isGoogleSignIn,

@@ -1,5 +1,7 @@
 package com.yugentech.sessions.ui.config.editProfileScreen.components
 
+import com.yugentech.sessions.R
+import androidx.compose.ui.res.stringResource
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -97,7 +99,7 @@ fun AvatarSection(
                         ),
                         text = {
                             Text(
-                                text = category.displayName,
+                                text = stringResource(category.displayName),
                                 style = MaterialTheme.typography.labelLarge
                             )
                         }

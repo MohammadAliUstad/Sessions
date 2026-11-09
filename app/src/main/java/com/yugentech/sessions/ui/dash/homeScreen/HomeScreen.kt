@@ -1,5 +1,7 @@
 package com.yugentech.sessions.ui.dash.homeScreen
 
+import com.yugentech.sessions.R
+import androidx.compose.ui.res.stringResource
 import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
@@ -152,8 +154,8 @@ fun HomeScreen(
                     when (activeDialog) {
                         ActiveDialog.Focus -> {
                             DurationPickerDialog(
-                                title = "Focus Duration",
-                                description = "Choose how long you want to focus before taking a break.",
+                                title = stringResource(R.string.duration_focus_title),
+                                description = stringResource(R.string.duration_focus_subtitle),
                                 initialValue = currentFocus,
                                 range = 5..120,
                                 step = 5,
@@ -168,8 +170,8 @@ fun HomeScreen(
 
                         ActiveDialog.ShortBreak -> {
                             DurationPickerDialog(
-                                title = "Short Break",
-                                description = "Choose the duration of your break between sessions.",
+                                title = stringResource(R.string.mode_short_break),
+                                description = stringResource(R.string.duration_break_subtitle),
                                 initialValue = currentShort,
                                 range = 5..30,
                                 step = 5,

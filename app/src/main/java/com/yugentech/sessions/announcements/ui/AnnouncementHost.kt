@@ -1,5 +1,7 @@
 package com.yugentech.sessions.announcements.ui
 
+import com.yugentech.sessions.R
+import androidx.compose.ui.res.stringResource
 import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
@@ -85,7 +87,7 @@ fun AnnouncementHost(
         AnnouncementStyle.MESSAGE -> {
             Box(modifier = Modifier.fillMaxSize()) {
                 ToastMessage(
-                    message = current.title + if (current.message.isNotBlank()) ": ${current.message}" else "",
+                    message = stringResource(R.string.announcement_toast, stringResource(current.title), stringResource(current.message)),
                     onDismiss = { viewModel.dismissCurrent() },
                     duration = 5000L,
                     modifier = Modifier

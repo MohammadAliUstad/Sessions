@@ -1,5 +1,8 @@
 package com.yugentech.sessions.ui.dash.homeScreen.layouts.studio
 
+import com.yugentech.sessions.R
+import androidx.compose.ui.res.stringResource
+import com.yugentech.sessions.localization.asString
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.FastOutSlowInEasing
@@ -99,7 +102,11 @@ fun StudioSessionCard(
         ) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(
-                    text = if (state.isLongBreakActive) "LONG BREAK" else "SET ${state.progressDisplay} OF $targetSets",
+                    text = if (state.isLongBreakActive) {
+                        stringResource(R.string.mode_long_break).uppercase()
+                    } else {
+                        stringResource(R.string.card_set_of, state.progressDisplay.asString(), targetSets).uppercase()
+                    },
                     style = MaterialTheme.typography.labelMedium,
                     fontWeight = FontWeight.SemiBold,
                     letterSpacing = 1.8.sp,
@@ -118,7 +125,7 @@ fun StudioSessionCard(
                             .pressClickable(
                                 shape = CircleShape,
                                 enabled = isRunning,
-                                onClickLabel = "Skip to next",
+                                onClickLabel = stringResource(R.string.cd_skip_to_next),
                                 onClick = onSkip
                             )
                             .graphicsLayer { alpha = skipAlpha }
@@ -134,7 +141,7 @@ fun StudioSessionCard(
                         )
                         Spacer(Modifier.width(4.dp))
                         Text(
-                            text = "Skip",
+                            text = stringResource(R.string.skip),
                             style = MaterialTheme.typography.labelMedium,
                             fontWeight = FontWeight.SemiBold,
                             color = palette.content
@@ -150,7 +157,7 @@ fun StudioSessionCard(
             ) { (main, sub) ->
                 Row(verticalAlignment = Alignment.Bottom) {
                     Text(
-                        text = main,
+                        text = main.asString(),
                         style = MaterialTheme.typography.titleLarge,
                         fontWeight = FontWeight.SemiBold,
                         color = palette.content,
@@ -159,7 +166,7 @@ fun StudioSessionCard(
                         modifier = Modifier.weight(1f, fill = false)
                     )
                     Text(
-                        text = "  ·  $sub",
+                        text = "  ·  ${sub.asString()}",
                         style = MaterialTheme.typography.bodyMedium,
                         color = palette.content.copy(alpha = 0.65f),
                         maxLines = 1,

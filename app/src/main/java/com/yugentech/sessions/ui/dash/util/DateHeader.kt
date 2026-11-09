@@ -1,64 +1,60 @@
 package com.yugentech.sessions.ui.dash.util
 
-import java.text.SimpleDateFormat
+import android.content.Context
+import android.text.format.DateFormat
+import android.text.format.DateUtils
+import com.yugentech.sessions.R
 import java.util.Calendar
 import java.util.Date
 import java.util.Locale
 
-fun dateHeader(timestamp: Long): String {
+/*
+ * The history's group headers, written the way the app's language writes dates: the patterns are
+ * the locale's best fit for a set of fields (day name, month, day...), so the order, words and
+ * punctuation follow the language rather than English.
+ */
+
+private fun locale(context: Context): Locale = context.resources.configuration.locales[0]
+
+private fun format(context: Context, skeleton: String, timestamp: Long): String {
+    val locale = locale(context)
+    val pattern = DateFormat.getBestDateTimePattern(locale, skeleton)
+    return java.text.SimpleDateFormat(pattern, locale).format(Date(timestamp))
+}
+
+/** "Today", "Yesterday", or the weekday and date. */
+fun dateHeader(context: Context, timestamp: Long): String {
     val sessionCalendar = Calendar.getInstance().apply { timeInMillis = timestamp }
     val todayCalendar = Calendar.getInstance()
     val yesterdayCalendar = Calendar.getInstance().apply { add(Calendar.DAY_OF_YEAR, -1) }
 
     return when {
-        isSameDay(sessionCalendar, todayCalendar) -> "Today"
-        isSameDay(sessionCalendar, yesterdayCalendar) -> "Yesterday"
-        else -> {
-            val formatter = SimpleDateFormat("EEEE, MMM dd", Locale.getDefault())
-            formatter.format(Date(timestamp))
-        }
+        isSameDay(sessionCalendar, todayCalendar) -> context.getString(R.string.date_today)
+        isSameDay(sessionCalendar, yesterdayCalendar) -> context.getString(R.string.date_yesterday)
+        else -> format(context, "EEEEMMMdd", timestamp)
     }
 }
 
-fun weeklyHeader(timestamp: Long): String {
+/** The week (Monday to Sunday) the session falls in, as a date range. */
+fun weeklyHeader(context: Context, timestamp: Long): String {
     val cal = Calendar.getInstance().apply {
         timeInMillis = timestamp
         firstDayOfWeek = Calendar.MONDAY
         set(Calendar.DAY_OF_WEEK, Calendar.MONDAY)
     }
-    val startCal = cal.clone() as Calendar
-    val startOfWeek = cal.time
-
+    val start = cal.timeInMillis
     cal.add(Calendar.DAY_OF_WEEK, 6)
-    val endCal = cal.clone() as Calendar
-    val endOfWeek = cal.time
-
-    val startMonthFormat = SimpleDateFormat("MMM d", Locale.getDefault())
-    val endMonthFormat = SimpleDateFormat("MMM d", Locale.getDefault())
-    val dayOnlyFormat = SimpleDateFormat("d", Locale.getDefault())
-
-    val startYear = startCal.get(Calendar.YEAR)
-    val endYear = endCal.get(Calendar.YEAR)
-    val startMonth = startCal.get(Calendar.MONTH)
-    val endMonth = endCal.get(Calendar.MONTH)
-
-    return when {
-        startYear != endYear -> {
-            "${startMonthFormat.format(startOfWeek)}, $startYear – ${endMonthFormat.format(endOfWeek)}, $endYear"
-        }
-        startMonth != endMonth -> {
-            "${startMonthFormat.format(startOfWeek)} – ${endMonthFormat.format(endOfWeek)}, $startYear"
-        }
-        else -> {
-            "${startMonthFormat.format(startOfWeek)} – ${dayOnlyFormat.format(endOfWeek)}, $startYear"
-        }
-    }
+    val end = cal.timeInMillis
+    return DateUtils.formatDateRange(
+        context,
+        start,
+        end,
+        DateUtils.FORMAT_SHOW_DATE or DateUtils.FORMAT_SHOW_YEAR or DateUtils.FORMAT_ABBREV_MONTH
+    )
 }
 
-fun monthlyHeader(timestamp: Long): String {
-    val formatter = SimpleDateFormat("MMMM yyyy", Locale.getDefault())
-    return formatter.format(Date(timestamp))
-}
+/** The month and year. */
+fun monthlyHeader(context: Context, timestamp: Long): String = format(context, "MMMMyyyy", timestamp)
 
 fun isSameDay(cal1: Calendar, cal2: Calendar): Boolean {
     return cal1.get(Calendar.YEAR) == cal2.get(Calendar.YEAR) &&

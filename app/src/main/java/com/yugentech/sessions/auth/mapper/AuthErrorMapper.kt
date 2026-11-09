@@ -1,5 +1,7 @@
 package com.yugentech.sessions.auth.mapper
 
+import com.yugentech.sessions.localization.AppStrings
+import com.yugentech.sessions.R
 import com.google.firebase.auth.FirebaseAuthException
 
 // Utility to translate technical exceptions into user-friendly error messages
@@ -16,30 +18,30 @@ object AuthErrorMapper {
     // Handles specific Firebase authentication error codes
     private fun mapFirebaseAuthException(exception: FirebaseAuthException): String {
         return when (exception.errorCode) {
-            "ERROR_WEAK_PASSWORD" -> "Password is too weak. Please use at least 6 characters."
-            "ERROR_EMAIL_ALREADY_IN_USE" -> "An account with this email already exists. Please sign in instead."
-            "ERROR_INVALID_EMAIL" -> "Please enter a valid email address."
+            "ERROR_WEAK_PASSWORD" -> AppStrings.get(R.string.auth_error_weak_password)
+            "ERROR_EMAIL_ALREADY_IN_USE" -> AppStrings.get(R.string.auth_error_email_in_use)
+            "ERROR_INVALID_EMAIL" -> AppStrings.get(R.string.auth_error_invalid_email)
 
-            "ERROR_USER_NOT_FOUND" -> "No account found with this email. Please check your email or sign up."
-            "ERROR_WRONG_PASSWORD" -> "Incorrect password. Please try again."
-            "ERROR_INVALID_CREDENTIAL" -> "Invalid email or password. Please check your credentials."
-            "ERROR_USER_DISABLED" -> "This account has been disabled. Please contact support."
-            "ERROR_ACCOUNT_EXISTS_WITH_DIFFERENT_CREDENTIAL" -> "An account exists with this email but a different sign-in method."
+            "ERROR_USER_NOT_FOUND" -> AppStrings.get(R.string.auth_error_user_not_found)
+            "ERROR_WRONG_PASSWORD" -> AppStrings.get(R.string.auth_error_wrong_password)
+            "ERROR_INVALID_CREDENTIAL" -> AppStrings.get(R.string.auth_error_invalid_credential)
+            "ERROR_USER_DISABLED" -> AppStrings.get(R.string.auth_error_user_disabled)
+            "ERROR_ACCOUNT_EXISTS_WITH_DIFFERENT_CREDENTIAL" -> AppStrings.get(R.string.auth_error_different_credential)
 
-            "ERROR_NETWORK_REQUEST_FAILED" -> "Network error. Please check your internet connection."
-            "ERROR_TOO_MANY_REQUESTS" -> "Too many failed attempts. Please try again later."
+            "ERROR_NETWORK_REQUEST_FAILED" -> AppStrings.get(R.string.auth_error_network)
+            "ERROR_TOO_MANY_REQUESTS" -> AppStrings.get(R.string.auth_error_too_many_requests)
 
-            "ERROR_OPERATION_NOT_ALLOWED" -> "This sign-in method is not enabled. Contact support."
-            "ERROR_REQUIRES_RECENT_LOGIN" -> "Please sign in again to complete this action."
-            "ERROR_CREDENTIAL_ALREADY_IN_USE" -> "This credential is already associated with a different account."
+            "ERROR_OPERATION_NOT_ALLOWED" -> AppStrings.get(R.string.auth_error_not_allowed)
+            "ERROR_REQUIRES_RECENT_LOGIN" -> AppStrings.get(R.string.auth_error_recent_login)
+            "ERROR_CREDENTIAL_ALREADY_IN_USE" -> AppStrings.get(R.string.auth_error_credential_in_use)
 
-            "ERROR_INVALID_CUSTOM_TOKEN" -> "Invalid authentication token. Please try again."
-            "ERROR_CUSTOM_TOKEN_MISMATCH" -> "Authentication token mismatch. Please try again."
+            "ERROR_INVALID_CUSTOM_TOKEN" -> AppStrings.get(R.string.auth_error_invalid_token)
+            "ERROR_CUSTOM_TOKEN_MISMATCH" -> AppStrings.get(R.string.auth_error_token_mismatch)
 
-            "ERROR_USER_MISMATCH" -> "The credential does not correspond to the user."
-            "ERROR_INVALID_USER_TOKEN", "ERROR_USER_TOKEN_EXPIRED" -> "Your session has expired. Please sign in again."
+            "ERROR_USER_MISMATCH" -> AppStrings.get(R.string.auth_error_user_mismatch)
+            "ERROR_INVALID_USER_TOKEN", "ERROR_USER_TOKEN_EXPIRED" -> AppStrings.get(R.string.auth_error_session_expired)
 
-            else -> "Authentication failed. Please try again."
+            else -> AppStrings.get(R.string.auth_error_generic)
         }
     }
 
@@ -47,11 +49,11 @@ object AuthErrorMapper {
     private fun mapGeneralException(exception: Exception): String {
         val message = exception.message?.lowercase() ?: ""
         return when {
-            message.contains("network") -> "Network error. Please check your connection."
-            message.contains("timeout") -> "Request timed out. Please try again."
-            message.contains("cancelled") -> "Operation was cancelled."
-            message.contains("permission") -> "Permission denied. Check permissions and try again."
-            else -> "Something went wrong. Please try again."
+            message.contains("network") -> AppStrings.get(R.string.error_network)
+            message.contains("timeout") -> AppStrings.get(R.string.error_timeout)
+            message.contains("cancelled") -> AppStrings.get(R.string.error_cancelled)
+            message.contains("permission") -> AppStrings.get(R.string.error_permission)
+            else -> AppStrings.get(R.string.error_generic)
         }
     }
 
@@ -60,22 +62,22 @@ object AuthErrorMapper {
         val message = exception.message?.uppercase() ?: ""
         return when {
             message.contains("SIGN_IN_CANCELLED") || message.contains("CANCELLED") ->
-                "Google Sign-In was cancelled."
+                AppStrings.get(R.string.google_error_cancelled)
             message.contains("SIGN_IN_FAILED") ->
-                "Google Sign-In failed. Please try again."
+                AppStrings.get(R.string.google_error_failed)
             message.contains("NETWORK_ERROR") || message.contains("NETWORK") ->
-                "Network error. Please check your connection."
+                AppStrings.get(R.string.error_network)
             message.contains("SIGN_IN_CURRENTLY_IN_PROGRESS") ->
-                "Sign-in is already in progress. Please wait."
+                AppStrings.get(R.string.google_error_in_progress)
             message.contains("API_NOT_CONNECTED") ->
-                "Google Sign-In is not available. Try again later."
+                AppStrings.get(R.string.google_error_unavailable)
             message.contains("RESOLUTION_REQUIRED") ->
-                "Google Sign-In requires additional setup. Please try again."
+                AppStrings.get(R.string.google_error_resolution)
             message.contains("INVALID_ACCOUNT") ->
-                "Invalid Google account. Please select a different account."
+                AppStrings.get(R.string.google_error_invalid_account)
             message.contains("TIMEOUT") ->
-                "Google Sign-In timed out. Please try again."
-            else -> "Google Sign-In failed. Please try again or use email sign-in."
+                AppStrings.get(R.string.google_error_timeout)
+            else -> AppStrings.get(R.string.google_error_fallback)
         }
     }
 }

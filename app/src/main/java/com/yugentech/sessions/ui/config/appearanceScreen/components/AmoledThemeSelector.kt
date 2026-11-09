@@ -1,5 +1,7 @@
 package com.yugentech.sessions.ui.config.appearanceScreen.components
 
+import com.yugentech.sessions.R
+import androidx.compose.ui.res.stringResource
 import androidx.compose.animation.core.Easing
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.LinearEasing
@@ -140,12 +142,12 @@ fun AmoledThemeSelector(
                     .graphicsLayer { alpha = contentAlpha }
             ) {
                 Text(
-                    text = "AMOLED Black",
+                    text = stringResource(R.string.amoled_title),
                     style = MaterialTheme.typography.titleMedium,
                     color = scheme.onSurface
                 )
                 Text(
-                    text = if (isDarkThemeActive) "Pure black background" else "Available in dark mode",
+                    text = if (isDarkThemeActive) stringResource(R.string.amoled_subtitle) else stringResource(R.string.amoled_unavailable),
                     style = MaterialTheme.typography.bodyMedium,
                     color = scheme.onSurfaceVariant
                 )

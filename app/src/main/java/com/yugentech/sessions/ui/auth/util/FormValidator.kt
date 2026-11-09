@@ -1,47 +1,51 @@
 package com.yugentech.sessions.ui.auth.util
 
+import android.content.res.Resources
 import android.util.Patterns
+import com.yugentech.sessions.R
 import com.yugentech.sessions.utils.AppConstants.EMPTY
 
+/** Form checks; each returns the error to show (from [Resources], so it's in the app's language) or empty. */
 object FormValidator {
 
-    fun validateName(name: String): String {
+    fun validateName(res: Resources, name: String): String {
         return when {
-            name.isBlank() -> "Name cannot be empty"
-            name.length < 2 -> "Name must be at least 2 characters"
+            name.isBlank() -> res.getString(R.string.validation_name_empty)
+            name.length < 2 -> res.getString(R.string.validation_name_too_short)
             else -> EMPTY
         }
     }
 
-    fun validateEmail(email: String): String {
+    fun validateEmail(res: Resources, email: String): String {
         return when {
-            email.isBlank() -> "Email cannot be empty"
+            email.isBlank() -> res.getString(R.string.validation_email_empty)
             !Patterns.EMAIL_ADDRESS.matcher(email).matches() ->
-                "Please enter a valid email"
+                res.getString(R.string.validation_email_invalid)
 
             else -> EMPTY
         }
     }
 
-    fun validatePassword(password: String): String {
+    fun validatePassword(res: Resources, password: String): String {
         return when {
-            password.isBlank() -> "Password cannot be empty"
-            password.length < 8 -> "Password must be at least 8 characters"
-            !password.any { it.isDigit() } -> "Password must contain at least one number"
-            !password.any { it.isUpperCase() } -> "Password must contain at least one uppercase letter"
-            !password.any { it.isLowerCase() } -> "Password must contain at least one lowercase letter"
+            password.isBlank() -> res.getString(R.string.validation_password_empty)
+            password.length < 8 -> res.getString(R.string.validation_password_too_short)
+            !password.any { it.isDigit() } -> res.getString(R.string.validation_password_needs_number)
+            !password.any { it.isUpperCase() } -> res.getString(R.string.validation_password_needs_uppercase)
+            !password.any { it.isLowerCase() } -> res.getString(R.string.validation_password_needs_lowercase)
             else -> EMPTY
         }
     }
 
     fun validateSignInForm(
+        res: Resources,
         email: String,
         password: String,
         onEmailError: (String) -> Unit,
         onPasswordError: (String) -> Unit
     ): Boolean {
-        val emailError = validateEmail(email)
-        val passwordError = validatePassword(password)
+        val emailError = validateEmail(res, email)
+        val passwordError = validatePassword(res, password)
 
         onEmailError(emailError)
         onPasswordError(passwordError)
@@ -50,6 +54,7 @@ object FormValidator {
     }
 
     fun validateSignUpForm(
+        res: Resources,
         name: String,
         email: String,
         password: String,
@@ -57,9 +62,9 @@ object FormValidator {
         onEmailError: (String) -> Unit,
         onPasswordError: (String) -> Unit
     ): Boolean {
-        val nameError = validateName(name)
-        val emailError = validateEmail(email)
-        val passwordError = validatePassword(password)
+        val nameError = validateName(res, name)
+        val emailError = validateEmail(res, email)
+        val passwordError = validatePassword(res, password)
 
         onNameError(nameError)
         onEmailError(emailError)

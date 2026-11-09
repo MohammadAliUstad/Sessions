@@ -1,5 +1,7 @@
 package com.yugentech.sessions.ui.dash.mainScreen.components
 
+import com.yugentech.sessions.R
+import androidx.compose.ui.res.stringResource
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.SizeTransform
 import androidx.compose.animation.fadeIn
@@ -103,7 +105,7 @@ fun SectionHeader(
             ) {
                 Icon(
                     imageVector = Icons.Rounded.DeleteForever,
-                    contentDescription = "Delete Group",
+                    contentDescription = stringResource(R.string.cd_delete_group),
                     tint = MaterialTheme.colorScheme.tertiary,
                     modifier = Modifier.size(MaterialTheme.icons.smallMedium)
                 )

@@ -48,7 +48,7 @@ fun ThemeColorSelector(
                     rowOptions.forEach { option ->
                         // Each tile is drawn in the scheme it would give, in the current mode
                         ThemeCard(
-                            name = option.displayName,
+                            name = stringResource(option.displayName),
                             scheme = getColorScheme(themeConfig.copy(colorTheme = option.colorTheme)),
                             isSelected = themeConfig.colorTheme == option.colorTheme,
                             onClick = {

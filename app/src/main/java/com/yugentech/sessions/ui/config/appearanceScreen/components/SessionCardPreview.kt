@@ -1,5 +1,8 @@
 package com.yugentech.sessions.ui.config.appearanceScreen.components
 
+import androidx.compose.ui.res.stringResource
+import com.yugentech.sessions.R
+import com.yugentech.sessions.localization.UiText
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.icons.Icons
@@ -26,10 +29,10 @@ import org.koin.androidx.compose.koinViewModel
 /** A session part-way through, so the preview looks like the card mid-focus. */
 private val PreviewState = SessionDashboardState(
     showLongBreakBadge = true,
-    badgeText = "15m Long Break",
-    mainMessage = "3 sets to go",
-    subMessage = "Stay in the flow",
-    progressDisplay = "2",
+    badgeText = UiText.Res(R.string.card_long_break_badge, 15),
+    mainMessage = UiText.Plural(R.plurals.card_sets_to_go, 3, 3),
+    subMessage = UiText.Res(R.string.tagline_focus_zone),
+    progressDisplay = UiText.Raw("2"),
     visualSchedule = listOf(
         SessionVisualItem.FocusBlock(ItemStatus.Completed),
         SessionVisualItem.ShortBreak(ItemStatus.Completed),
@@ -68,7 +71,7 @@ fun SessionCardPreview(
     Column(modifier = modifier.fillMaxWidth()) {
         SectionHeader(
             icon = Icons.Default.Visibility,
-            title = "Card Preview"
+            title = stringResource(R.string.card_preview_title)
         )
         SessionProgressCard(
             state = PreviewState,

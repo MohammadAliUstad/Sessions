@@ -1,5 +1,7 @@
 package com.yugentech.sessions.ui.dash.mainScreen
 
+import com.yugentech.sessions.R
+import androidx.compose.ui.res.stringResource
 import android.Manifest
 import android.content.pm.PackageManager
 import android.os.Build
@@ -85,6 +87,7 @@ fun MainScreen(
     onMoreApps: () -> Unit,
     onAppearance: () -> Unit,
     onHomeCustomization: () -> Unit = {},
+    onLanguage: () -> Unit = {},
     onReplayOnboarding: () -> Unit = {},
     onNavigateRoute: (String) -> Unit = {}
 ) {
@@ -112,7 +115,7 @@ fun MainScreen(
         onResult = { isGranted ->
             if (!isGranted) {
                 toastMessage =
-                    "Notification permission denied. Please enable notifications to see Session alerts."
+                    context.getString(R.string.notification_permission_denied)
             }
         }
     )
@@ -167,8 +170,8 @@ fun MainScreen(
     if (showDeleteAllDialog) {
         AlertDialog(
             onDismissRequest = { showDeleteAllDialog = false },
-            title = { Text("Delete All Sessions?") },
-            text = { Text("This will permanently remove all your focus history. This action cannot be undone.") },
+            title = { Text(stringResource(R.string.delete_all_sessions_title)) },
+            text = { Text(stringResource(R.string.delete_all_sessions_message)) },
             confirmButton = {
                 Button(
                     onClick = {
@@ -181,12 +184,12 @@ fun MainScreen(
                         contentColor = MaterialTheme.colorScheme.onError
                     )
                 ) {
-                    Text("Delete All")
+                    Text(stringResource(R.string.delete_all_sessions_confirm))
                 }
             },
             dismissButton = {
                 TextButton(onClick = { showDeleteAllDialog = false }) {
-                    Text("Cancel")
+                    Text(stringResource(R.string.cancel))
                 }
             },
             containerColor = MaterialTheme.colorScheme.surfaceContainer,
@@ -264,6 +267,7 @@ fun MainScreen(
                                 onMoreApps = onMoreApps,
                                 onAppearance = onAppearance,
                                 onHomeCustomization = onHomeCustomization,
+                                onLanguage = onLanguage,
                                 onReplayOnboarding = onReplayOnboarding
                             )
                         }

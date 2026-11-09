@@ -1,5 +1,7 @@
 package com.yugentech.sessions.ui.config.appearanceScreen.components
 
+import com.yugentech.sessions.R
+import androidx.compose.ui.res.stringResource
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.FastOutLinearInEasing
@@ -162,7 +164,7 @@ fun SelectionTick(
         ) {
             Icon(
                 imageVector = Icons.Rounded.Check,
-                contentDescription = "Selected",
+                contentDescription = stringResource(R.string.selected),
                 tint = contentColor,
                 modifier = Modifier.size(iconSize)
             )

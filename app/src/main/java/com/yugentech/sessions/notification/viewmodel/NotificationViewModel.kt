@@ -1,5 +1,8 @@
 package com.yugentech.sessions.notification.viewmodel
 
+import com.yugentech.sessions.R
+import android.text.format.DateFormat
+import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.yugentech.sessions.notification.datastore.NotificationDataStore
@@ -11,9 +14,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import java.text.SimpleDateFormat
 import java.util.Calendar
-import java.util.Locale
 
 /** The reminder switches and time on the settings screen, the same in Quill and Sessions. */
 class NotificationViewModel(
@@ -119,10 +120,10 @@ class NotificationViewModel(
      * The daily reminder row's subtitle. The title already says "daily", so this names the part
      * of the day instead: "Every evening at 7:00 PM".
      */
-    fun formatReminderTime(): String {
+    fun formatReminderTime(context: Context): String {
         val config = notificationConfig.value
         if (!config.dailyReminderEnabled) {
-            return "Pick a time for a daily nudge"
+            return context.getString(R.string.reminder_pick_time)
         }
 
         val hour = config.reminderHour
@@ -130,14 +131,15 @@ class NotificationViewModel(
             set(Calendar.HOUR_OF_DAY, hour)
             set(Calendar.MINUTE, config.reminderMinute)
         }
-        val partOfDay = when (hour) {
-            in 5..11 -> "morning"
-            in 12..16 -> "afternoon"
-            in 17..20 -> "evening"
-            else -> "night"
+        // Whole sentences per part of the day, since word order differs between languages
+        val sentence = when (hour) {
+            in 5..11 -> R.string.reminder_every_morning
+            in 12..16 -> R.string.reminder_every_afternoon
+            in 17..20 -> R.string.reminder_every_evening
+            else -> R.string.reminder_every_night
         }
-
-        return "Every $partOfDay at " + SimpleDateFormat("h:mm a", Locale.getDefault()).format(calendar.time)
+        val time = DateFormat.getTimeFormat(context).format(calendar.time)
+        return context.getString(sentence, time)
     }
 
     /** Cancels every reminder, for signing out. */

@@ -1,5 +1,8 @@
 package com.yugentech.sessions.ui.dash.homeScreen.layouts.refined
 
+import androidx.compose.ui.res.pluralStringResource
+import com.yugentech.sessions.R
+import androidx.compose.ui.res.stringResource
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.SizeTransform
 import androidx.compose.animation.core.tween
@@ -80,7 +83,7 @@ fun RefinedPlanCard(
             verticalAlignment = Alignment.CenterVertically
         ) {
             PlanItem(
-                label = "Focus",
+                label = stringResource(R.string.mode_focus),
                 minutes = focusDurationMinutes,
                 icon = Icons.Outlined.Timer,
                 accent = MaterialTheme.colorScheme.primary,
@@ -94,7 +97,7 @@ fun RefinedPlanCard(
                     .background(MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.6f))
             )
             PlanItem(
-                label = "Break",
+                label = stringResource(R.string.plan_break),
                 minutes = shortBreakDurationMinutes,
                 icon = Icons.Outlined.Coffee,
                 accent = MaterialTheme.colorScheme.tertiary,
@@ -120,7 +123,11 @@ fun RefinedPlanCard(
             )
             Spacer(Modifier.width(MaterialTheme.spacing.xs))
             Text(
-                text = "${targetSets} ${if (targetSets == 1) "set" else "sets"} · about ${formatMinutes(totalMinutes)}",
+                text = stringResource(
+                    R.string.plan_summary,
+                    pluralStringResource(R.plurals.sets_count, targetSets, targetSets),
+                    formatMinutes(totalMinutes)
+                ),
                 style = MaterialTheme.typography.labelLarge,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
@@ -144,7 +151,7 @@ private fun PlanItem(
             .padding(horizontal = MaterialTheme.spacing.xs)
             .pressClickable(
                 shape = RoundedCornerShape(MaterialTheme.corners.medium),
-                onClickLabel = "Change $label length",
+                onClickLabel = stringResource(R.string.cd_change_length, label),
                 onClick = onClick
             )
             .padding(MaterialTheme.spacing.xs),
@@ -185,7 +192,7 @@ private fun PlanItem(
                 )
             }
             Text(
-                text = "min",
+                text = stringResource(R.string.unit_min),
                 style = MaterialTheme.typography.titleSmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier.padding(start = MaterialTheme.spacing.xxs, bottom = MaterialTheme.spacing.xsSmall)

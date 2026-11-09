@@ -34,6 +34,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
 import com.yugentech.sessions.R
+import com.yugentech.sessions.localization.AppLocale
 import com.yugentech.sessions.notification.viewmodel.NotificationViewModel
 import com.yugentech.sessions.theme.tokens.spacing
 import com.yugentech.sessions.ui.dash.homeScreen.components.ExitConfirmationDialog
@@ -58,6 +59,7 @@ fun SettingsScreen(
     onMoreApps: () -> Unit,
     onAppearance: () -> Unit,
     onHomeCustomization: () -> Unit = {},
+    onLanguage: () -> Unit = {},
     onReplayOnboarding: () -> Unit = {}
 ) {
     val alertsConfiguration by alertsViewModel.alertConfigurations.collectAsState()
@@ -94,13 +96,13 @@ fun SettingsScreen(
         item {
             SectionHeader(
                 icon = Icons.Default.Notifications,
-                title = "Notifications"
+                title = stringResource(R.string.settings_section_notifications)
             )
         }
         item {
             SettingsSwitchItem(
-                title = "Enable Notifications",
-                subtitle = "Allow Sessions to send you notifications",
+                title = stringResource(R.string.settings_enable_notifications),
+                subtitle = stringResource(R.string.settings_enable_notifications_subtitle),
                 checked = notificationConfig.notificationsEnabled,
                 checkedIcon = Icons.Default.Notifications,
                 index = 0,
@@ -113,8 +115,8 @@ fun SettingsScreen(
         }
         item {
             SettingsSwitchItem(
-                title = "Daily Focus Reminder",
-                subtitle = notificationViewModel.formatReminderTime(),
+                title = stringResource(R.string.settings_daily_reminder),
+                subtitle = notificationViewModel.formatReminderTime(context),
                 checked = notificationConfig.dailyReminderEnabled,
                 enabled = notificationConfig.notificationsEnabled,
                 checkedIcon = Icons.Default.Alarm,
@@ -139,8 +141,8 @@ fun SettingsScreen(
         }
         item {
             SettingsSwitchItem(
-                title = "Playful Reminders",
-                subtitle = "Friendly nudges now and then",
+                title = stringResource(R.string.settings_playful_reminders),
+                subtitle = stringResource(R.string.settings_playful_reminders_subtitle),
                 checked = notificationConfig.playfulRemindersEnabled,
                 enabled = notificationConfig.notificationsEnabled,
                 checkedIcon = Icons.Default.AutoAwesome,
@@ -156,13 +158,13 @@ fun SettingsScreen(
         item {
             SectionHeader(
                 icon = Icons.AutoMirrored.Filled.VolumeUp,
-                title = "Audio & Haptics"
+                title = stringResource(R.string.settings_section_audio_haptics)
             )
         }
         item {
             SettingsSwitchItem(
-                title = "Sound Effects",
-                subtitle = "Play sounds for timer events",
+                title = stringResource(R.string.settings_sound_effects),
+                subtitle = stringResource(R.string.settings_sound_effects_subtitle),
                 checked = alertsConfiguration.soundEnabled,
                 checkedIcon = Icons.AutoMirrored.Filled.VolumeUp,
                 index = 0,
@@ -177,8 +179,8 @@ fun SettingsScreen(
         }
         item {
             SettingsSwitchItem(
-                title = "Haptic Feedback",
-                subtitle = "Feel vibrations throughout the app",
+                title = stringResource(R.string.settings_haptic_feedback),
+                subtitle = stringResource(R.string.settings_haptic_feedback_subtitle),
                 checked = alertsConfiguration.hapticsEnabled,
                 checkedIcon = Icons.Default.Vibration,
                 index = 1,
@@ -195,35 +197,46 @@ fun SettingsScreen(
         item {
             SectionHeader(
                 icon = Icons.Default.Palette,
-                title = "Appearance"
+                title = stringResource(R.string.settings_section_appearance)
             )
         }
         item {
             SettingsListItem(
-                title = "Theme & Colors",
-                subtitle = "Customize your app's look and feel",
+                title = stringResource(R.string.settings_theme_colors),
+                subtitle = stringResource(R.string.settings_theme_colors_subtitle),
                 index = 0,
-                totalCount = 3,
+                totalCount = 4,
                 onClick = onAppearance
             )
         }
         item {
             SettingsListItem(
-                title = "Home & Cards",
-                subtitle = "Customize your home layout and session card",
+                title = stringResource(R.string.settings_home_cards),
+                subtitle = stringResource(R.string.settings_home_cards_subtitle),
                 index = 1,
-                totalCount = 3,
+                totalCount = 4,
                 onClick = onHomeCustomization
             )
         }
         item {
+            val context = LocalContext.current
+            SettingsListItem(
+                title = stringResource(R.string.language_title),
+                subtitle = AppLocale.current(context)?.nativeName
+                    ?: stringResource(R.string.language_system_default),
+                index = 2,
+                totalCount = 4,
+                onClick = onLanguage
+            )
+        }
+        item {
             SettingsSwitchItem(
-                title = "Keep Screen On",
-                subtitle = "Prevent screen from sleeping during active sessions",
+                title = stringResource(R.string.settings_keep_screen_on),
+                subtitle = stringResource(R.string.settings_keep_screen_on_subtitle),
                 checked = alertsConfiguration.keepScreenOn,
                 checkedIcon = Icons.Default.LightMode,
-                index = 2,
-                totalCount = 3,
+                index = 3,
+                totalCount = 4,
                 onCheckedChange = { enabled ->
                     alertsViewModel.setKeepScreenOn(enabled)
                     haptic.performHapticFeedback(
@@ -236,12 +249,12 @@ fun SettingsScreen(
         item {
             SectionHeader(
                 icon = Icons.Default.Info,
-                title = "About"
+                title = stringResource(R.string.about)
             )
         }
         item {
             SettingsListItem(
-                title = "About Sessions",
+                title = stringResource(R.string.settings_about_sessions),
                 subtitle = stringResource(R.string.version),
                 index = 0,
                 totalCount = 4,
@@ -250,8 +263,8 @@ fun SettingsScreen(
         }
         item {
             SettingsListItem(
-                title = "What's New",
-                subtitle = "See the latest changes",
+                title = stringResource(R.string.settings_whats_new),
+                subtitle = stringResource(R.string.settings_whats_new_subtitle),
                 index = 1,
                 totalCount = 4,
                 onClick = onWhatsNew
@@ -259,8 +272,8 @@ fun SettingsScreen(
         }
         item {
             SettingsListItem(
-                title = "Replay Onboarding",
-                subtitle = "Take the tour of Sessions again",
+                title = stringResource(R.string.settings_replay_onboarding),
+                subtitle = stringResource(R.string.settings_replay_onboarding_subtitle),
                 index = 2,
                 totalCount = 4,
                 onClick = onReplayOnboarding
@@ -268,8 +281,8 @@ fun SettingsScreen(
         }
         item {
             SettingsListItem(
-                title = "More from us",
-                subtitle = "Explore our other apps",
+                title = stringResource(R.string.settings_more_from_us),
+                subtitle = stringResource(R.string.settings_more_from_us_subtitle),
                 index = 3,
                 totalCount = 4,
                 onClick = { showMoreApps = true }
@@ -279,13 +292,13 @@ fun SettingsScreen(
         item {
             SectionHeader(
                 icon = Icons.AutoMirrored.Filled.ExitToApp,
-                title = "Session"
+                title = stringResource(R.string.settings_section_session)
             )
         }
         item {
             SettingsListItem(
-                title = "Exit",
-                subtitle = "Close the Sessions app",
+                title = stringResource(R.string.settings_exit),
+                subtitle = stringResource(R.string.settings_exit_subtitle),
                 index = 0,
                 totalCount = 2,
                 onClick = { showExitDialog = true }
@@ -293,8 +306,8 @@ fun SettingsScreen(
         }
         item {
             SettingsListItem(
-                title = "Sign Out",
-                subtitle = "Log out of your current account",
+                title = stringResource(R.string.settings_sign_out),
+                subtitle = stringResource(R.string.settings_sign_out_subtitle),
                 index = 1,
                 totalCount = 2,
                 onClick = { showLogoutDialog = true }

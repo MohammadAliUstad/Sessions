@@ -1,5 +1,7 @@
 package com.yugentech.sessions.ui.dash.homeScreen.layouts.studio
 
+import com.yugentech.sessions.R
+import androidx.compose.ui.res.stringResource
 import android.text.format.DateFormat
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.SizeTransform
@@ -110,9 +112,9 @@ fun StudioDial(
             ) { m ->
                 Text(
                     text = when (m) {
-                        TimerMode.Focus -> "FOCUS"
-                        TimerMode.ShortBreak -> "SHORT BREAK"
-                        TimerMode.LongBreak -> "LONG BREAK"
+                        TimerMode.Focus -> stringResource(R.string.mode_focus).uppercase()
+                        TimerMode.ShortBreak -> stringResource(R.string.mode_short_break).uppercase()
+                        TimerMode.LongBreak -> stringResource(R.string.mode_long_break).uppercase()
                     },
                     style = MaterialTheme.typography.labelMedium,
                     fontWeight = FontWeight.SemiBold,
@@ -137,9 +139,9 @@ fun StudioDial(
 
             val line = when {
                 errorMessage != null -> errorMessage
-                isRunning -> "Ends ${clockTime(seconds)}"
-                isSessionActive -> "Paused"
-                else -> "Ready when you are"
+                isRunning -> stringResource(R.string.timer_ends, clockTime(seconds))
+                isSessionActive -> stringResource(R.string.timer_paused)
+                else -> stringResource(R.string.onboarding_focus_idle)
             }
             AnimatedContent(
                 targetState = line,

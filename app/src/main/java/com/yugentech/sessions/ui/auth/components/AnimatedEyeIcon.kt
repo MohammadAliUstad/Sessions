@@ -1,5 +1,7 @@
 package com.yugentech.sessions.ui.auth.components
 
+import com.yugentech.sessions.R
+import androidx.compose.ui.res.stringResource
 import androidx.compose.animation.core.FastOutLinearInEasing
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.animateFloatAsState
@@ -67,7 +69,7 @@ fun AnimatedEyeIcon(
     )
     val eye = remember { PathParser().parsePathString(EYE_PATH).toPath() }
     val color = MaterialTheme.colorScheme.onSurfaceVariant
-    val description = if (isVisible) "Hide password" else "Show password"
+    val description = if (isVisible) stringResource(R.string.cd_hide_password) else stringResource(R.string.cd_show_password)
 
     Canvas(modifier = modifier.semantics { contentDescription = description }) {
         scale(size.minDimension / VIEWPORT, pivot = Offset.Zero) {

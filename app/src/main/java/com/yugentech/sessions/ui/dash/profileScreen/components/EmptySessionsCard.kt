@@ -1,5 +1,6 @@
 package com.yugentech.sessions.ui.dash.profileScreen.components
 
+import androidx.compose.ui.res.stringResource
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
@@ -33,7 +34,7 @@ fun EmptySessionsCard(
         horizontalArrangement = Arrangement.Center
     ) {
         Text(
-            text = "Start your first session to track your progress and build productive habits!",
+            text = stringResource(R.string.profile_empty_sessions),
             style = MaterialTheme.typography.titleMedium.copy(
                 fontWeight = FontWeight.Normal
             ),
@@ -46,7 +47,7 @@ fun EmptySessionsCard(
 
         Image(
             painter = painterResource(id = R.drawable.new_beginnings),
-            contentDescription = "No sessions illustration",
+            contentDescription = stringResource(R.string.cd_no_sessions),
             modifier = Modifier
                 .size(MaterialTheme.components.imageSizeHuge)
                 .align(Alignment.CenterVertically),

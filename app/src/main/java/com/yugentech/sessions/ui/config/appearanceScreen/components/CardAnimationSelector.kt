@@ -1,5 +1,7 @@
 package com.yugentech.sessions.ui.config.appearanceScreen.components
 
+import com.yugentech.sessions.R
+import androidx.compose.ui.res.stringResource
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
@@ -59,7 +61,7 @@ fun CardAnimationSelector(
     Column(modifier = modifier.fillMaxWidth()) {
         SectionHeader(
             icon = Icons.Default.AutoAwesome,
-            title = "Card Animation"
+            title = stringResource(R.string.card_animation_title)
         )
 
         Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
@@ -103,7 +105,7 @@ fun CardAnimationSelector(
                                 modifier = Modifier.matchParentSize()
                             )
                             Text(
-                                text = style.label,
+                                text = stringResource(style.label),
                                 style = MaterialTheme.typography.labelLarge.copy(fontWeight = FontWeight.Bold),
                                 color = palette.content,
                                 modifier = Modifier

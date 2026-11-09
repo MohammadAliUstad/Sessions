@@ -1,5 +1,7 @@
 package com.yugentech.sessions.navigation.screen
 
+import androidx.annotation.StringRes
+import com.yugentech.sessions.R
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Home
@@ -12,27 +14,27 @@ import androidx.compose.ui.graphics.vector.ImageVector
 // Defines the main bottom navigation screens with icons
 sealed class BottomBarScreen(
     val route: String,
-    val title: String,
+    @StringRes val title: Int,
     val selectedIcon: ImageVector,
     val unselectedIcon: ImageVector
 ) {
     data object Home : BottomBarScreen(
         route = "main",
-        title = "Home",
+        title = R.string.nav_home,
         selectedIcon = Icons.Filled.Home,
         unselectedIcon = Icons.Outlined.Home
     )
 
     data object Profile : BottomBarScreen(
         route = "profile",
-        title = "Profile",
+        title = R.string.nav_profile,
         selectedIcon = Icons.Filled.AccountCircle,
         unselectedIcon = Icons.Outlined.AccountCircle
     )
 
     data object Settings : BottomBarScreen(
         route = "settings",
-        title = "Settings",
+        title = R.string.nav_settings,
         selectedIcon = Icons.Filled.Settings,
         unselectedIcon = Icons.Outlined.Settings
     )

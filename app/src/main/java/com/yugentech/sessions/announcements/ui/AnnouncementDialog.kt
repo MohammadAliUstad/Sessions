@@ -1,5 +1,6 @@
 package com.yugentech.sessions.announcements.ui
 
+import androidx.compose.ui.res.stringResource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -72,7 +73,7 @@ fun AnnouncementDialog(
                 }
 
                 Text(
-                    text = announcement.title,
+                    text = stringResource(announcement.title),
                     style = MaterialTheme.typography.headlineSmall,
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.onSurface,
@@ -80,7 +81,7 @@ fun AnnouncementDialog(
                 )
 
                 Text(
-                    text = announcement.message,
+                    text = stringResource(announcement.message),
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     textAlign = TextAlign.Center,
@@ -104,13 +105,13 @@ fun AnnouncementDialog(
                         shape = CircleShape
                     ) {
                         Text(
-                            text = announcement.primaryActionLabel,
+                            text = stringResource(announcement.primaryActionLabel),
                             style = MaterialTheme.typography.labelLarge,
                             fontWeight = FontWeight.SemiBold
                         )
                     }
 
-                    if (!announcement.dismissLabel.isNullOrBlank()) {
+                    announcement.dismissLabel?.let { dismissLabel ->
                         TextButton(
                             onClick = {
                                 haptic.performHapticFeedback(HapticFeedbackType.GestureThresholdActivate)
@@ -120,7 +121,7 @@ fun AnnouncementDialog(
                             shape = RoundedCornerShape(MaterialTheme.corners.medium)
                         ) {
                             Text(
-                                text = announcement.dismissLabel,
+                                text = stringResource(dismissLabel),
                                 style = MaterialTheme.typography.labelLarge,
                                 color = MaterialTheme.colorScheme.primary
                             )

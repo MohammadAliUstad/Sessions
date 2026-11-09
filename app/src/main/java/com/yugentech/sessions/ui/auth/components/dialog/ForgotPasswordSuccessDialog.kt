@@ -1,5 +1,7 @@
 package com.yugentech.sessions.ui.auth.components.dialog
 
+import com.yugentech.sessions.R
+import androidx.compose.ui.res.stringResource
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -17,9 +19,9 @@ fun ForgotPasswordSuccessDialog(
 
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text("Check your email") },
+        title = { Text(stringResource(R.string.forgot_password_sent_title)) },
         text = {
-            Text("We have sent a password reset link to your email address. Please check your inbox and spam folder to reset your password.")
+            Text(stringResource(R.string.forgot_password_sent_message))
         },
         confirmButton = {
             Button(
@@ -32,7 +34,7 @@ fun ForgotPasswordSuccessDialog(
                     contentColor = MaterialTheme.colorScheme.onPrimary
                 )
             ) {
-                Text("OK")
+                Text(stringResource(R.string.ok))
             }
         },
         containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,

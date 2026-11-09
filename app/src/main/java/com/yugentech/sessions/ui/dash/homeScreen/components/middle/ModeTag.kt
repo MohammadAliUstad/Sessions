@@ -1,5 +1,7 @@
 package com.yugentech.sessions.ui.dash.homeScreen.components.middle
 
+import com.yugentech.sessions.R
+import androidx.compose.ui.res.stringResource
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.CircleShape
@@ -17,9 +19,9 @@ fun ModeTag(
     mode: TimerMode
 ) {
     val (text, color) = when (mode) {
-        TimerMode.Focus -> "Focus Time" to MaterialTheme.colorScheme.primary
-        TimerMode.ShortBreak -> "Short Break" to MaterialTheme.colorScheme.tertiary
-        TimerMode.LongBreak -> "Long Break" to MaterialTheme.colorScheme.secondary
+        TimerMode.Focus -> stringResource(R.string.mode_focus_time) to MaterialTheme.colorScheme.primary
+        TimerMode.ShortBreak -> stringResource(R.string.mode_short_break) to MaterialTheme.colorScheme.tertiary
+        TimerMode.LongBreak -> stringResource(R.string.mode_long_break) to MaterialTheme.colorScheme.secondary
     }
 
     Surface(

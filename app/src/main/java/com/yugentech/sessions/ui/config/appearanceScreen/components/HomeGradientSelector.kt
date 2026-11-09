@@ -1,5 +1,7 @@
 package com.yugentech.sessions.ui.config.appearanceScreen.components
 
+import com.yugentech.sessions.R
+import androidx.compose.ui.res.stringResource
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.animateFloatAsState
@@ -141,12 +143,12 @@ fun HomeGradientSelector(
 
             Column(modifier = Modifier.weight(1f)) {
                 Text(
-                    text = "Home Gradient",
+                    text = stringResource(R.string.home_gradient_title),
                     style = MaterialTheme.typography.titleMedium,
                     color = scheme.onSurface
                 )
                 AnimatedContent(
-                    targetState = if (enabled) "Colour wash at the top of the home screen" else "Available in Refined and Studio layouts",
+                    targetState = if (enabled) stringResource(R.string.home_gradient_subtitle) else stringResource(R.string.home_gradient_unavailable),
                     transitionSpec = { fadeThrough() },
                     label = "gradientSubtitleTransition"
                 ) { targetText ->

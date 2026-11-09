@@ -1,5 +1,7 @@
 package com.yugentech.sessions.ui.dash.homeScreen.components.dialogs
 
+import com.yugentech.sessions.R
+import androidx.compose.ui.res.stringResource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -69,7 +71,7 @@ fun DurationPickerDialog(
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Text(
-                    text = "${sliderValue.roundToInt()} min",
+                    text = stringResource(R.string.duration_minutes, sliderValue.roundToInt()),
                     style = MaterialTheme.typography.displayMedium.copy(
                         fontFeatureSettings = "tnum"
                     ),
@@ -105,12 +107,12 @@ fun DurationPickerDialog(
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
                         Text(
-                            text = "${range.first}m",
+                            text = stringResource(R.string.duration_minutes_short, range.first),
                             style = MaterialTheme.typography.labelMedium,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                         Text(
-                            text = "${range.last}m",
+                            text = stringResource(R.string.duration_minutes_short, range.last),
                             style = MaterialTheme.typography.labelMedium,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
@@ -129,12 +131,12 @@ fun DurationPickerDialog(
                     contentColor = MaterialTheme.colorScheme.onPrimary
                 )
             ) {
-                Text("Set Time")
+                Text(stringResource(R.string.reminder_time_picker_confirm))
             }
         },
         dismissButton = {
             TextButton(onClick = onDismiss) {
-                Text("Cancel", color = MaterialTheme.colorScheme.onSurfaceVariant)
+                Text(stringResource(R.string.cancel), color = MaterialTheme.colorScheme.onSurfaceVariant)
             }
         },
         containerColor = MaterialTheme.colorScheme.surfaceContainer,

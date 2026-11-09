@@ -1,5 +1,9 @@
 package com.yugentech.sessions.ui.dash.profileScreen.components
 
+import com.yugentech.sessions.ui.dash.util.displayTaskName
+import androidx.compose.ui.platform.LocalContext
+import com.yugentech.sessions.R
+import androidx.compose.ui.res.stringResource
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
@@ -40,22 +44,22 @@ fun SessionHistoryItem(
 ) {
     val shape = itemShape(index, totalCount)
 
-    val timeFormat = SimpleDateFormat("hh:mm a", Locale.getDefault())
-    val formattedTime = timeFormat.format(Date(session.timestamp))
+    // The phone's own 12 or 24 hour clock, in the app's language
+    val formattedTime = android.text.format.DateFormat.getTimeFormat(LocalContext.current).format(Date(session.timestamp))
 
     val hours = session.duration / 3600
     val minutes = (session.duration % 3600) / 60
 
     val durationText = when {
-        hours > 0 && minutes == 0 -> "${hours}h"
-        hours > 0 -> "${hours}h ${minutes}m"
-        else -> "${minutes}m"
+        hours > 0 && minutes == 0 -> stringResource(R.string.duration_hours_short, hours.toInt())
+        hours > 0 -> stringResource(R.string.duration_hours_minutes_short, hours.toInt(), minutes.toInt())
+        else -> stringResource(R.string.duration_minutes_short, minutes.toInt())
     }
 
     ListItem(
         headlineContent = {
             Text(
-                text = session.sessionTask.ifBlank { "Focus Session" },
+                text = displayTaskName(session.sessionTask),
                 style = MaterialTheme.typography.titleMedium.copy(
                     fontWeight = FontWeight.SemiBold
                 ),
@@ -96,7 +100,7 @@ fun SessionHistoryItem(
                 ) {
                     Icon(
                         imageVector = Icons.Default.Delete,
-                        contentDescription = "Delete",
+                        contentDescription = stringResource(R.string.delete),
                         tint = MaterialTheme.colorScheme.onSurfaceVariant,
                         modifier = Modifier.size(MaterialTheme.icons.mediumSmall)
                     )

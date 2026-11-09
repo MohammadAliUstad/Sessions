@@ -1,5 +1,7 @@
 package com.yugentech.sessions.ui.auth.signUpScreen
 
+import com.yugentech.sessions.R
+import androidx.compose.ui.res.stringResource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -32,9 +34,9 @@ fun SignUpScreen(
 
     AuthScaffold(
         header = { WeekStreak() },
-        formTitle = "Sign up",
-        title = "Build a focus habit",
-        subtitle = "A calm timer, gentle nudges, and a record of every minute you focus.",
+        formTitle = stringResource(R.string.sign_up_form_title),
+        title = stringResource(R.string.sign_up_title),
+        subtitle = stringResource(R.string.sign_up_subtitle),
         overlay = {
             Box(modifier = Modifier.fillMaxSize()) {
                 ToastMessage(
@@ -55,11 +57,12 @@ fun SignUpScreen(
             onClearError = { authViewModel.clearError() }
         )
 
-        Spacer(modifier = Modifier.height(MaterialTheme.spacing.m))
+        // Matches the card's bottom padding, so the link sits evenly between form and edge
+        Spacer(modifier = Modifier.height(MaterialTheme.spacing.s))
 
         AuthSwitchLink(
-            prompt = "Already focusing with us?",
-            action = "Sign in",
+            prompt = stringResource(R.string.sign_up_prompt),
+            action = stringResource(R.string.sign_in_action),
             onClick = onNavigateToSignIn
         )
     }

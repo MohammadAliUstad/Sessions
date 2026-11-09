@@ -1,5 +1,7 @@
 package com.yugentech.sessions.utils
 
+import com.yugentech.sessions.localization.UiText
+import com.yugentech.sessions.R
 import android.app.Activity
 import android.content.Context
 import com.android.billingclient.api.*
@@ -12,7 +14,13 @@ import timber.log.Timber
 
 class BillingManager(context: Context) {
 
-    private val _purchaseEvent = MutableSharedFlow<String>()
+    companion object {
+        /** The event for a completed donation, which shows the thank-you dialog. */
+        val ThankYou: UiText = UiText.Res(R.string.billing_thanks)
+    }
+
+    /** What to tell the user about a purchase; put into words where it's shown. */
+    private val _purchaseEvent = MutableSharedFlow<UiText>()
     val purchaseEvent = _purchaseEvent.asSharedFlow()
 
     private var productDetailsCache: List<ProductDetails> = emptyList()
@@ -30,10 +38,9 @@ class BillingManager(context: Context) {
                 Timber.i("User canceled the purchase")
             }
             else -> {
-                val errorMessage = "Billing error: ${result.debugMessage.ifBlank { "Unknown Error" }}"
-                Timber.e(errorMessage)
+                Timber.e("Billing error: ${result.debugMessage.ifBlank { "Unknown Error" }}")
                 CoroutineScope(Dispatchers.Main).launch {
-                    _purchaseEvent.emit(errorMessage)
+                    _purchaseEvent.emit(UiText.Res(R.string.billing_error))
                 }
             }
         }
@@ -108,7 +115,7 @@ class BillingManager(context: Context) {
         } else {
             startConnection()
             CoroutineScope(Dispatchers.Main).launch {
-                _purchaseEvent.emit("Product details not loaded. Please check internet.")
+                _purchaseEvent.emit(UiText.Res(R.string.billing_not_loaded))
             }
         }
     }
@@ -123,7 +130,7 @@ class BillingManager(context: Context) {
                 if (result.responseCode == BillingClient.BillingResponseCode.OK) {
                     Timber.d("Donation Consumed")
                     CoroutineScope(Dispatchers.Main).launch {
-                        _purchaseEvent.emit("Thank you for your support!")
+                        _purchaseEvent.emit(ThankYou)
                     }
                 }
             }

@@ -1,5 +1,6 @@
 package com.yugentech.sessions.ui.dash.mainScreen.components
 
+import androidx.compose.ui.res.stringResource
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateDpAsState
@@ -134,6 +135,8 @@ private fun DockTab(
         BottomBarScreen.Settings -> R.raw.settings
     }
 
+    val title = stringResource(screen.title)
+
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
@@ -148,7 +151,7 @@ private fun DockTab(
                 role = Role.Tab,
                 onClick = onClick
             )
-            .semantics { contentDescription = screen.title }
+            .semantics { contentDescription = title }
             .padding(horizontal = horizontalPad)
     ) {
         CompositionLocalProvider(LocalContentColor provides content) {
@@ -163,7 +166,7 @@ private fun DockTab(
                 shrinkHorizontally(motion.fastSpatialSpec<IntSize>(), shrinkTowards = Alignment.Start)
         ) {
             Text(
-                text = screen.title,
+                text = title,
                 style = MaterialTheme.typography.labelLarge,
                 fontWeight = FontWeight.SemiBold,
                 color = content,

@@ -1,5 +1,7 @@
 package com.yugentech.sessions.ui.dash.homeScreen.layouts.shared
 
+import com.yugentech.sessions.R
+import androidx.compose.ui.res.stringResource
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -26,5 +28,5 @@ val TaskTapInset = 12.dp
 fun Modifier.taskTapArea(enabled: Boolean, onClick: () -> Unit): Modifier =
     this
         .clip(RoundedCornerShape(MaterialTheme.corners.medium))
-        .clickable(enabled = enabled, onClickLabel = "Change task", onClick = onClick)
+        .clickable(enabled = enabled, onClickLabel = stringResource(R.string.cd_change_task), onClick = onClick)
         .padding(horizontal = TaskTapInset, vertical = MaterialTheme.spacing.s)

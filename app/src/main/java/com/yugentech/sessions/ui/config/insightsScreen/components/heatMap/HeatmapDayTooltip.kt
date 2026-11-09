@@ -1,5 +1,7 @@
 package com.yugentech.sessions.ui.config.insightsScreen.components.heatMap
 
+import com.yugentech.sessions.R
+import androidx.compose.ui.res.stringResource
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.MutableTransitionState
@@ -91,13 +93,16 @@ fun HeatmapDayTooltip(day: HeatmapDay, visible: Boolean) {
 }
 
 private fun formatTooltipDate(date: LocalDate): String {
-    val pattern = if (date.year == LocalDate.now().year) "EEE, MMM d" else "EEE, MMM d, yyyy"
-    return date.format(DateTimeFormatter.ofPattern(pattern))
+    val locale = java.util.Locale.getDefault()
+    val skeleton = if (date.year == LocalDate.now().year) "EEEMMMd" else "EEEMMMdyyyy"
+    val pattern = android.text.format.DateFormat.getBestDateTimePattern(locale, skeleton)
+    return date.format(DateTimeFormatter.ofPattern(pattern, locale))
 }
 
+@Composable
 private fun formatFocusTime(seconds: Long): String = when {
-    seconds <= 0L -> "No focus time"
-    seconds < 60L -> "< 1 min"
+    seconds <= 0L -> stringResource(R.string.insights_no_focus_time)
+    seconds < 60L -> stringResource(R.string.insights_less_than_minute)
     else -> formatTime(seconds)
 }
 

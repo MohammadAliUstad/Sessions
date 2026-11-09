@@ -1,5 +1,6 @@
 package com.yugentech.sessions.ui.dash.homeScreen.components.bottomRow
 
+import androidx.compose.ui.res.stringResource
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -107,7 +108,7 @@ fun SessionControlBar(
                                 modifier = Modifier.size(MaterialTheme.icons.medium)
                             )
                             Text(
-                                if (isSessionActive) "Discard" else "Sound",
+                                if (isSessionActive) stringResource(R.string.action_discard) else stringResource(R.string.action_sound),
                                 style = MaterialTheme.typography.labelSmall,
                                 modifier = Modifier.padding(top = MaterialTheme.spacing.xxs)
                             )
@@ -122,7 +123,7 @@ fun SessionControlBar(
                                 contentDescription = null
                             )
                         },
-                        text = { Text(if (isSessionActive) "Discard" else "Sound") },
+                        text = { Text(if (isSessionActive) stringResource(R.string.action_discard) else stringResource(R.string.action_sound)) },
                         onClick = {
                             if (isSessionActive) onStopDiscard() else onSoundClick()
                             state.dismiss()
@@ -169,7 +170,7 @@ fun SessionControlBar(
                                 contentDescription = null
                             )
                         },
-                        text = { Text(if (isStudying) "Pause" else "Play") },
+                        text = { Text(if (isStudying) stringResource(R.string.action_pause) else stringResource(R.string.action_play)) },
                         onClick = {
                             onStartStop()
                             state.dismiss()
@@ -201,7 +202,7 @@ fun SessionControlBar(
                                 modifier = Modifier.size(MaterialTheme.icons.medium)
                             )
                             Text(
-                                if (isSessionActive) "Finish" else "Sets",
+                                if (isSessionActive) stringResource(R.string.action_finish) else stringResource(R.string.action_sets),
                                 style = MaterialTheme.typography.labelSmall,
                                 modifier = Modifier.padding(top = MaterialTheme.spacing.xxs)
                             )
@@ -216,7 +217,7 @@ fun SessionControlBar(
                                 contentDescription = null
                             )
                         },
-                        text = { Text(if (isSessionActive) "Finish" else "Sets") },
+                        text = { Text(if (isSessionActive) stringResource(R.string.action_finish) else stringResource(R.string.action_sets)) },
                         onClick = {
                             if (isSessionActive) onStopSave() else onSetsClick()
                             state.dismiss()

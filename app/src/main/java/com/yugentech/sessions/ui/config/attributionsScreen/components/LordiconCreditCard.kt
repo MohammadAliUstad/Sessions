@@ -1,5 +1,7 @@
 package com.yugentech.sessions.ui.config.attributionsScreen.components
 
+import com.yugentech.sessions.R
+import androidx.compose.ui.res.stringResource
 import android.content.Intent
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -72,13 +74,13 @@ fun LordiconCreditCard() {
 
                 Column {
                     Text(
-                        "Animated Icons",
+                        stringResource(R.string.credit_lordicon_title),
                         style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.Bold,
                         color = MaterialTheme.colorScheme.onSecondaryContainer
                     )
                     Text(
-                        "Provided by Lordicon",
+                        stringResource(R.string.credit_lordicon_subtitle),
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSecondaryContainer.copy(alpha = 0.8f)
                     )
@@ -86,7 +88,7 @@ fun LordiconCreditCard() {
             }
 
             Text(
-                "The lively animated icons used in the navigation bar are provided by Lordicon. They offer a massive library of high-quality animated assets for all creators.",
+                stringResource(R.string.credit_lordicon_body),
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSecondaryContainer.copy(alpha = 0.8f),
                 minLines = 4,
@@ -105,7 +107,7 @@ fun LordiconCreditCard() {
                     contentColor = MaterialTheme.colorScheme.onSurface
                 )
             ) {
-                Text("Visit Lordicon")
+                Text(stringResource(R.string.credit_lordicon_action))
             }
         }
     }

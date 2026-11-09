@@ -1,5 +1,8 @@
 package com.yugentech.sessions.ui.dash.homeScreen.components
 
+import androidx.compose.ui.res.stringResource
+import com.yugentech.sessions.R
+import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -71,7 +74,7 @@ fun FinishConfirmationDialog(
                     Spacer(modifier = Modifier.height(MaterialTheme.spacing.m))
 
                     Text(
-                        text = "Finish Session?",
+                        text = stringResource(R.string.finish_title),
                         style = MaterialTheme.typography.headlineSmall,
                         color = MaterialTheme.colorScheme.onSurface,
                         textAlign = TextAlign.Center
@@ -80,10 +83,7 @@ fun FinishConfirmationDialog(
                     Spacer(modifier = Modifier.height(MaterialTheme.spacing.s))
 
                     Text(
-                        text = if (setsRemaining == 1) 
-                            "You still have 1 set remaining. Are you sure you want to finish your session now?"
-                        else 
-                            "You still have $setsRemaining sets remaining. Are you sure you want to finish your session now?",
+                        text = pluralStringResource(R.plurals.finish_sets_remaining, setsRemaining, setsRemaining),
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                         textAlign = TextAlign.Center
@@ -100,7 +100,7 @@ fun FinishConfirmationDialog(
                             modifier = Modifier.weight(1f)
                         ) {
                             Text(
-                                text = "Keep Going",
+                                text = stringResource(R.string.finish_keep_going),
                                 style = MaterialTheme.typography.labelLarge,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant
                             )
@@ -115,7 +115,7 @@ fun FinishConfirmationDialog(
                             )
                         ) {
                             Text(
-                                text = "Finish",
+                                text = stringResource(R.string.action_finish),
                                 style = MaterialTheme.typography.labelLarge,
                                 fontWeight = FontWeight.Normal
                             )

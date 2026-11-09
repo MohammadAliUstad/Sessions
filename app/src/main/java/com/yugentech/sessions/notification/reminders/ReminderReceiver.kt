@@ -58,19 +58,19 @@ class ReminderReceiver : BroadcastReceiver() {
                 notificationManager.createNotificationChannel(
                     NotificationChannel(
                         DAILY_CHANNEL_ID,
-                        "Focus reminder",
+                        context.getString(R.string.reminder_channel_daily),
                         NotificationManager.IMPORTANCE_DEFAULT
                     ).apply {
-                        description = "Your daily reminder to focus, at the time you choose"
+                        description = context.getString(R.string.reminder_channel_daily_description)
                     }
                 )
                 notificationManager.createNotificationChannel(
                     NotificationChannel(
                         NUDGE_CHANNEL_ID,
-                        "Friendly nudges",
+                        context.getString(R.string.reminder_channel_nudges),
                         NotificationManager.IMPORTANCE_LOW
                     ).apply {
-                        description = "Friendly nudges now and then, never more than one a day"
+                        description = context.getString(R.string.reminder_channel_nudges_description)
                     }
                 )
             }

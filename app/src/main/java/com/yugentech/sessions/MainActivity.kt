@@ -1,5 +1,6 @@
 package com.yugentech.sessions
 
+import android.content.Context
 import android.graphics.Color
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -17,6 +18,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.compose.rememberNavController
 import com.yugentech.sessions.auth.viewmodel.AuthViewModel
+import com.yugentech.sessions.localization.AppLocale
 import com.yugentech.sessions.navigation.host.AppNavHost
 import com.yugentech.sessions.theme.SessionsTheme
 import com.yugentech.sessions.theme.ThemeRevealHost
@@ -31,6 +33,11 @@ import timber.log.Timber
 import kotlin.time.Duration.Companion.milliseconds
 
 class MainActivity : ComponentActivity() {
+
+    // Below Android 13, the language picked in the app (see AppLocale); from 13 the system's
+    override fun attachBaseContext(newBase: Context) {
+        super.attachBaseContext(AppLocale.wrap(newBase))
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         val splashScreen = installSplashScreen()

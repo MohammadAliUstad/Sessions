@@ -1,5 +1,7 @@
 package com.yugentech.sessions.ui.dash.profileScreen.components
 
+import com.yugentech.sessions.R
+import androidx.compose.ui.res.stringResource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -26,22 +28,19 @@ fun StudyTimeSection(
 
     val timeLabels = remember {
         listOf(
-            "IN THE ZONE FOR",
-            "LOCKED IN FOR",
-            "DEEP WORK",
-            "TIME INVESTED",
-            "TIME GRINDED",
-            "TIME WELL SPENT",
-            "COMMITTED",
-            "TIME LOGGED"
+            R.string.study_label_in_the_zone,
+            R.string.study_label_locked_in,
+            R.string.study_label_deep_work,
+            R.string.study_label_invested,
+            R.string.study_label_grinded,
+            R.string.study_label_well_spent,
+            R.string.study_label_committed,
+            R.string.study_label_logged
         )
     }
 
-    val label = if (hasTime) {
-        remember { timeLabels.random() }
-    } else {
-        "NO SESSIONS YET"
-    }
+    val labelRes = remember { timeLabels.random() }
+    val label = stringResource(if (hasTime) labelRes else R.string.study_label_none).uppercase()
 
     Surface(
         modifier = Modifier.fillMaxWidth(),

@@ -1,5 +1,7 @@
 package com.yugentech.sessions.ui.dash.homeScreen.components.dialogs
 
+import com.yugentech.sessions.R
+import androidx.compose.ui.res.stringResource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -73,7 +75,7 @@ fun ReviewReminderDialog(
                 )
 
                 Text(
-                    text = "Enjoying Sessions?",
+                    text = stringResource(R.string.review_title),
                     style = MaterialTheme.typography.headlineSmall,
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.onSurface,
@@ -81,7 +83,7 @@ fun ReviewReminderDialog(
                 )
 
                 Text(
-                    text = "If you find this app helpful, please take a moment to leave a review. It really helps us improve!",
+                    text = stringResource(R.string.review_message),
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     textAlign = TextAlign.Center,
@@ -105,7 +107,7 @@ fun ReviewReminderDialog(
                         shape = CircleShape
                     ) {
                         Text(
-                            text = "Rate on Play Store",
+                            text = stringResource(R.string.review_rate),
                             style = MaterialTheme.typography.labelLarge,
                             fontWeight = FontWeight.SemiBold
                         )
@@ -117,7 +119,7 @@ fun ReviewReminderDialog(
                         shape = RoundedCornerShape(MaterialTheme.corners.medium)
                     ) {
                         Text(
-                            text = "Maybe Later",
+                            text = stringResource(R.string.maybe_later),
                             style = MaterialTheme.typography.labelLarge,
                             color = MaterialTheme.colorScheme.primary
                         )

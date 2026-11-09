@@ -1,5 +1,7 @@
 package com.yugentech.sessions.ui.config.appearanceScreen
 
+import com.yugentech.sessions.R
+import androidx.compose.ui.res.stringResource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -49,9 +51,9 @@ fun AppearanceScreen(
             LargeTopAppBar(
                 title = {
                     Column {
-                        Text("Appearance")
+                        Text(stringResource(R.string.settings_section_appearance))
                         Text(
-                            "Choose your preferred look",
+                            stringResource(R.string.appearance_subtitle),
                             style = MaterialTheme.typography.bodyMedium,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
@@ -61,7 +63,7 @@ fun AppearanceScreen(
                     IconButton(onClick = onNavigateBack) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = "Back"
+                            contentDescription = stringResource(R.string.back)
                         )
                     }
                 },

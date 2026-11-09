@@ -1,5 +1,7 @@
 package com.yugentech.sessions.ui.config.appearanceScreen
 
+import com.yugentech.sessions.R
+import androidx.compose.ui.res.stringResource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -50,9 +52,9 @@ fun HomeCustomizationScreen(
             LargeTopAppBar(
                 title = {
                     Column {
-                        Text("Home & Cards")
+                        Text(stringResource(R.string.settings_home_cards))
                         Text(
-                            "Customize your home layout and session card",
+                            stringResource(R.string.settings_home_cards_subtitle),
                             style = MaterialTheme.typography.bodyMedium,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
@@ -62,7 +64,7 @@ fun HomeCustomizationScreen(
                     IconButton(onClick = onNavigateBack) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = "Back"
+                            contentDescription = stringResource(R.string.back)
                         )
                     }
                 },

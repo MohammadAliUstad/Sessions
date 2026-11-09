@@ -1,5 +1,6 @@
 package com.yugentech.sessions.ui.config.model.about
 
+import com.yugentech.sessions.R
 import android.content.Context
 import android.content.Intent
 import androidx.compose.material.icons.Icons
@@ -24,8 +25,8 @@ object AboutContent {
     ): List<AboutOption> {
         return listOf(
             AboutOption(
-                title = "Contact Developer",
-                subtitle = "Get in touch for support",
+                title = context.getString(R.string.contact_developer),
+                subtitle = context.getString(R.string.about_contact_subtitle),
                 icon = Icons.Default.Email,
                 onClick = {
                     val intent = Intent(Intent.ACTION_SENDTO, AppConstants.SUPPORT_EMAIL.toUri())
@@ -33,14 +34,14 @@ object AboutContent {
                 }
             ),
             AboutOption(
-                title = "Buy me a coffee",
-                subtitle = "Support the development",
+                title = context.getString(R.string.about_donate),
+                subtitle = context.getString(R.string.about_donate_subtitle),
                 icon = Icons.Default.LocalCafe,
                 onClick = onDonateClick
             ),
             AboutOption(
-                title = "Visit GitHub",
-                subtitle = "View source code and contribute",
+                title = context.getString(R.string.visit_github),
+                subtitle = context.getString(R.string.view_source_code_and_contribute),
                 icon = Icons.Default.Code,
                 onClick = {
                     val urlIntent = Intent(Intent.ACTION_VIEW, AppConstants.GITHUB_URL.toUri())
@@ -48,8 +49,8 @@ object AboutContent {
                 }
             ),
             AboutOption(
-                title = "More from us",
-                subtitle = "Discover other apps we've built",
+                title = context.getString(R.string.settings_more_from_us),
+                subtitle = context.getString(R.string.about_more_apps_subtitle),
                 icon = Icons.Default.Apps,
                 onClick = onMoreAppsClick
             )
@@ -59,8 +60,8 @@ object AboutContent {
     fun getCommunityItems(context: Context): List<AboutOption> {
         return listOf(
             AboutOption(
-                title = "Rate this App",
-                subtitle = "Leave a review on the Play Store",
+                title = context.getString(R.string.about_rate),
+                subtitle = context.getString(R.string.about_rate_subtitle),
                 icon = Icons.Default.StarRate,
                 onClick = {
                     val intent = Intent(Intent.ACTION_VIEW, AppConstants.MARKET_URL.toUri())
@@ -68,8 +69,8 @@ object AboutContent {
                 }
             ),
             AboutOption(
-                title = "Share with Friends",
-                subtitle = "Help others focus better",
+                title = context.getString(R.string.about_share),
+                subtitle = context.getString(R.string.about_share_subtitle),
                 icon = Icons.Default.Share,
                 onClick = {
                     val sendIntent = Intent().apply {
@@ -89,7 +90,7 @@ object AboutContent {
     ): List<AboutOption> {
         return listOf(
             AboutOption(
-                title = "Privacy Policy",
+                title = context.getString(R.string.about_privacy),
                 subtitle = null,
                 icon = Icons.Default.Policy,
                 onClick = {
@@ -98,7 +99,7 @@ object AboutContent {
                 }
             ),
             AboutOption(
-                title = "Terms of Service",
+                title = context.getString(R.string.about_terms),
                 subtitle = null,
                 icon = Icons.Default.Gavel,
                 onClick = {
@@ -108,8 +109,8 @@ object AboutContent {
                 }
             ),
             AboutOption(
-                title = "Attributions",
-                subtitle = "Open source & credits",
+                title = context.getString(R.string.attributions_title),
+                subtitle = context.getString(R.string.about_attributions_subtitle),
                 icon = Icons.Default.Description,
                 onClick = onNavigateToLicenses
             )

@@ -1,5 +1,8 @@
 package com.yugentech.sessions.ui.dash.homeScreen.layouts.studio
 
+import androidx.compose.ui.res.pluralStringResource
+import com.yugentech.sessions.R
+import androidx.compose.ui.res.stringResource
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.SizeTransform
 import androidx.compose.animation.core.tween
@@ -86,13 +89,13 @@ fun StudioPlan(
                 .weight(1f),
             horizontalArrangement = Arrangement.spacedBy(10.dp)
         ) {
-            PlanTile("Focus", config.focusDuration, "min", scheme.primary, onFocus, Modifier.weight(1f))
-            PlanTile("Break", config.shortBreakDuration, "min", scheme.tertiary, onBreak, Modifier.weight(1f))
-            PlanTile("Sets", config.targetSets, if (config.targetSets == 1) "set" else "sets", scheme.secondary, onSets, Modifier.weight(1f))
+            PlanTile(stringResource(R.string.mode_focus), config.focusDuration, stringResource(R.string.unit_min), scheme.primary, onFocus, Modifier.weight(1f))
+            PlanTile(stringResource(R.string.plan_break), config.shortBreakDuration, stringResource(R.string.unit_min), scheme.tertiary, onBreak, Modifier.weight(1f))
+            PlanTile(stringResource(R.string.action_sets), config.targetSets, pluralStringResource(R.plurals.unit_sets, config.targetSets), scheme.secondary, onSets, Modifier.weight(1f))
         }
         Spacer(Modifier.height(10.dp))
         Text(
-            text = "Done around $finish  ·  ${formatMinutes(total)} in all",
+            text = stringResource(R.string.plan_done_around, finish, formatMinutes(total)),
             style = MaterialTheme.typography.bodyMedium,
             color = scheme.onSurfaceVariant,
             textAlign = TextAlign.Center,
@@ -114,7 +117,7 @@ private fun PlanTile(
     Column(
         modifier = modifier
             .fillMaxHeight()
-            .pressClickable(shape = TileShape, onClickLabel = "Change $label", onClick = onClick)
+            .pressClickable(shape = TileShape, onClickLabel = stringResource(R.string.cd_change, label), onClick = onClick)
             .background(scheme.surfaceContainer, TileShape)
             .padding(horizontal = 14.dp, vertical = 10.dp),
         verticalArrangement = Arrangement.Center

@@ -27,7 +27,7 @@ interface AnnouncementRepository {
  * TEMPORARY: while true, every announcement for this build shows on each app launch, ignoring
  * whether it has been seen (and the fresh-install skip). Set back to false before release.
  */
-private const val SHOW_ANNOUNCEMENTS_EVERY_LAUNCH = true
+private const val SHOW_ANNOUNCEMENTS_EVERY_LAUNCH = false
 
 class AnnouncementRepositoryImpl(
     private val announcementDataStore: AnnouncementDataStore,

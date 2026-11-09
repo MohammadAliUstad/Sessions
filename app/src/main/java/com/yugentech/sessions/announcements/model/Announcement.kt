@@ -1,6 +1,8 @@
 package com.yugentech.sessions.announcements.model
 
+import androidx.annotation.StringRes
 import androidx.compose.ui.graphics.vector.ImageVector
+import com.yugentech.sessions.R
 
 /**
  * Kind of presentation for an update announcement.
@@ -53,10 +55,10 @@ data class Announcement(
     val maxVersionCode: Int = minVersionCode,
     val priority: Int = 0,
     val style: AnnouncementStyle = AnnouncementStyle.DIALOG,
-    val title: String,
-    val message: String,
+    @StringRes val title: Int,
+    @StringRes val message: Int,
     val icon: ImageVector? = null,
     val primaryAction: AnnouncementAction = AnnouncementAction.Dismiss,
-    val primaryActionLabel: String = "Got it",
-    val dismissLabel: String? = null
+    @StringRes val primaryActionLabel: Int = R.string.announcement_got_it,
+    @StringRes val dismissLabel: Int? = null
 )

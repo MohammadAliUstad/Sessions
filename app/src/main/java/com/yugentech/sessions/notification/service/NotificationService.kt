@@ -1,5 +1,6 @@
 package com.yugentech.sessions.notification.service
 
+import com.yugentech.sessions.localization.asString
 import android.Manifest
 import android.app.NotificationChannel
 import android.app.NotificationManager
@@ -59,10 +60,10 @@ class NotificationService(
     private fun buildActiveChannel(): NotificationChannel =
         NotificationChannel(
             ACTIVE_CHANNEL_ID,
-            "Active Session",
+            context.getString(R.string.notification_channel_active),
             NotificationManager.IMPORTANCE_LOW
         ).apply {
-            description = "Shows when a study session is active"
+            description = context.getString(R.string.notification_channel_active_description)
             setSound(null, null)
             enableVibration(false)
         }
@@ -173,9 +174,13 @@ class NotificationService(
 
         val title = buildTitle(notification)
         val text = if (formattedTime != null) {
-            "$formattedTime remaining  •  ${dashboardState.subMessage}"
+            context.getString(
+                R.string.notification_remaining,
+                formattedTime,
+                dashboardState.subMessage.asString(context)
+            )
         } else {
-            dashboardState.subMessage
+            dashboardState.subMessage.asString(context)
         }
 
         return ActiveContent(title, text, formattedTime)
@@ -183,9 +188,9 @@ class NotificationService(
 
     private fun buildTitle(notification: Notification): String {
         val modeTitle = when (notification.mode) {
-            TimerMode.Focus -> "Focus Time"
-            TimerMode.ShortBreak -> "Short Break"
-            TimerMode.LongBreak -> "Long Break"
+            TimerMode.Focus -> context.getString(R.string.mode_focus_time)
+            TimerMode.ShortBreak -> context.getString(R.string.mode_short_break)
+            TimerMode.LongBreak -> context.getString(R.string.mode_long_break)
             else -> ""
         }
 
@@ -194,12 +199,11 @@ class NotificationService(
         val setsLeft = (targetSets - completedSets).coerceAtLeast(0)
 
         val setsText = when {
-            setsLeft == 1 -> "1 set to go"
-            setsLeft > 1 -> "$setsLeft sets to go"
-            else -> "Finish line!"
+            setsLeft >= 1 -> context.resources.getQuantityString(R.plurals.card_sets_to_go, setsLeft, setsLeft)
+            else -> context.getString(R.string.card_finish_line_main)
         }
 
-        return if (modeTitle.isNotEmpty()) "$modeTitle – $setsText" else setsText
+        return if (modeTitle.isNotEmpty()) context.getString(R.string.notification_title, modeTitle, setsText) else setsText
     }
 
     // endregion
@@ -212,7 +216,7 @@ class NotificationService(
             builder.addAction(
                 action(
                     android.R.drawable.ic_media_next,
-                    "Skip",
+                    context.getString(R.string.skip),
                     AppConstants.ACTION_SKIP_SESSION,
                     RC_SKIP
                 )
@@ -221,7 +225,7 @@ class NotificationService(
         builder.addAction(
             action(
                 android.R.drawable.ic_menu_save,
-                "Finish",
+                context.getString(R.string.action_finish),
                 AppConstants.ACTION_FINISH_SESSION,
                 RC_FINISH
             )
@@ -232,14 +236,14 @@ class NotificationService(
         if (state.isTimerRunning) {
             action(
                 android.R.drawable.ic_media_pause,
-                "Pause",
+                context.getString(R.string.action_pause),
                 AppConstants.ACTION_PAUSE_SESSION,
                 RC_PAUSE_RESUME
             )
         } else {
             action(
                 android.R.drawable.ic_media_play,
-                "Resume",
+                context.getString(R.string.action_resume),
                 AppConstants.ACTION_RESUME_SESSION,
                 RC_PAUSE_RESUME
             )

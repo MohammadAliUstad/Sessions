@@ -1,5 +1,8 @@
 package com.yugentech.sessions.ui.config.insightsScreen
 
+import com.yugentech.sessions.ui.dash.util.displayTaskName
+import com.yugentech.sessions.R
+import androidx.compose.ui.res.stringResource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box // Added
 import androidx.compose.foundation.layout.Column
@@ -69,7 +72,8 @@ fun InsightsScreen(
     onBack: () -> Unit
 ) {
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
-    val topTask = taskDistribution.maxByOrNull { it.value }?.key ?: "No data yet"
+    val topTask = taskDistribution.maxByOrNull { it.value }?.key?.let { displayTaskName(it) }
+        ?: stringResource(R.string.insights_no_data)
 
     // 1. Get LayoutDirection and NavBar padding manually
     val layoutDirection = LocalLayoutDirection.current
@@ -82,9 +86,9 @@ fun InsightsScreen(
             LargeTopAppBar(
                 title = {
                     Column {
-                        Text("Insights")
+                        Text(stringResource(R.string.profile_insights))
                         Text(
-                            "Your productivity patterns",
+                            stringResource(R.string.insights_subtitle),
                             style = MaterialTheme.typography.bodyMedium,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
@@ -92,7 +96,7 @@ fun InsightsScreen(
                 },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(R.string.back))
                     }
                 },
                 scrollBehavior = scrollBehavior
@@ -122,9 +126,9 @@ fun InsightsScreen(
                         verticalArrangement = Arrangement.spacedBy(2.dp)
                     ) {
                         MetricCard(
-                            title = "Total Focus Time",
+                            title = stringResource(R.string.insights_total_title),
                             value = totalTime,
-                            subtitle = "Cumulative time across all sessions",
+                            subtitle = stringResource(R.string.insights_total_subtitle),
                             icon = Icons.Default.Timer,
                             shape = itemShape(index = 0, count = topSectionCount)
                         )
@@ -153,7 +157,7 @@ fun InsightsScreen(
 
                                     Column {
                                         Text(
-                                            "Primary Focus",
+                                            stringResource(R.string.insights_primary_focus),
                                             style = MaterialTheme.typography.labelSmall,
                                             color = MaterialTheme.colorScheme.onSecondaryContainer.copy(
                                                 alpha = 0.7f
@@ -200,8 +204,8 @@ fun InsightsScreen(
                             Modifier.padding(MaterialTheme.spacing.m)
                         ) {
                             InsightSectionHeader(
-                                title = "Momentum",
-                                subtitle = "Your consistency streak"
+                                title = stringResource(R.string.insights_momentum),
+                                subtitle = stringResource(R.string.insights_momentum_subtitle)
                             )
 
                             Spacer(Modifier.height(MaterialTheme.spacing.s))
@@ -225,15 +229,15 @@ fun InsightsScreen(
                             Modifier.padding(MaterialTheme.spacing.m)
                         ) {
                             InsightSectionHeader(
-                                title = "Weekly Rhythm",
-                                subtitle = "Session volume by day of week"
+                                title = stringResource(R.string.insights_weekly),
+                                subtitle = stringResource(R.string.insights_weekly_subtitle)
                             )
 
                             Spacer(Modifier.height(MaterialTheme.spacing.m))
 
                             if (taskDistribution.isEmpty()) {
                                 EmptyDistributionPlaceholder(
-                                    "Complete a session to see volume"
+                                    stringResource(R.string.insights_weekly_empty)
                                 )
                             } else {
                                 WeeklyRhythmChart(
@@ -256,15 +260,15 @@ fun InsightsScreen(
                             Modifier.padding(MaterialTheme.spacing.m)
                         ) {
                             InsightSectionHeader(
-                                title = "Task Allocation",
-                                subtitle = "How your time is distributed"
+                                title = stringResource(R.string.insights_tasks),
+                                subtitle = stringResource(R.string.insights_tasks_subtitle)
                             )
 
                             Spacer(Modifier.height(MaterialTheme.spacing.s))
 
                             if (taskDistribution.isEmpty()) {
                                 EmptyDistributionPlaceholder(
-                                    "Complete a session to see distribution"
+                                    stringResource(R.string.insights_tasks_empty)
                                 )
                             } else {
                                 TaskDistributionList(

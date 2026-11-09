@@ -1,5 +1,7 @@
 package com.yugentech.sessions.ui.dash.homeScreen.components.durationSelection
 
+import com.yugentech.sessions.R
+import androidx.compose.ui.res.stringResource
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.spring
@@ -68,7 +70,7 @@ fun SessionConfigCard(
             verticalAlignment = Alignment.CenterVertically
         ) {
             ConfigItem(
-                label = "Focus Duration",
+                label = stringResource(R.string.duration_focus_title),
                 value = "$focusDurationMinutes",
                 icon = Icons.Outlined.Timer,
                 onClick = onFocusClick,
@@ -78,7 +80,7 @@ fun SessionConfigCard(
             )
 
             ConfigItem(
-                label = "Short Break",
+                label = stringResource(R.string.mode_short_break),
                 value = "$shortBreakDurationMinutes",
                 icon = Icons.Outlined.Coffee,
                 onClick = onShortBreakClick,
@@ -167,7 +169,7 @@ fun ConfigItem(
                     )
 
                     Text(
-                        text = "min",
+                        text = stringResource(R.string.unit_min),
                         style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.SemiBold,
                         color = contentColor.copy(alpha = 0.6f),

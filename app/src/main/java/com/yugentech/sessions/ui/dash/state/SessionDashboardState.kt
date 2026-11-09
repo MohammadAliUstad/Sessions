@@ -1,13 +1,13 @@
 package com.yugentech.sessions.ui.dash.state
 
-import com.yugentech.sessions.utils.AppConstants.EMPTY
+import com.yugentech.sessions.localization.UiText
 
 data class SessionDashboardState(
     val showLongBreakBadge: Boolean = false,
-    val badgeText: String = EMPTY,
-    val mainMessage: String = EMPTY,
-    val subMessage: String = EMPTY,
-    val progressDisplay: String = EMPTY,
+    val badgeText: UiText = UiText.Empty,
+    val mainMessage: UiText = UiText.Empty,
+    val subMessage: UiText = UiText.Empty,
+    val progressDisplay: UiText = UiText.Empty,
     val isLongBreakActive: Boolean = false,
     val visualSchedule: List<SessionVisualItem> = emptyList()
 )

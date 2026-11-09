@@ -1,5 +1,7 @@
 package com.yugentech.sessions.ui.config.insightsScreen.components.heatMap
 
+import com.yugentech.sessions.R
+import androidx.compose.ui.res.stringResource
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.basicMarquee
@@ -111,7 +113,7 @@ fun Heatmap(
                     modifier = Modifier.weight(1f)
                 ) {
                     Text(
-                        text = "History",
+                        text = stringResource(R.string.heatmap_title),
                         style = MaterialTheme.typography.titleLarge,
                         fontWeight = FontWeight.Bold,
                         color = MaterialTheme.colorScheme.onSurface,
@@ -120,7 +122,7 @@ fun Heatmap(
                     )
 
                     Text(
-                        text = "Your year in pixels",
+                        text = stringResource(R.string.heatmap_subtitle),
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                         maxLines = 1
@@ -135,7 +137,7 @@ fun Heatmap(
                     horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.xs)
                 ) {
                     Text(
-                        text = "Less",
+                        text = stringResource(R.string.heatmap_less),
                         style = MaterialTheme.typography.labelSmall
                     )
 
@@ -144,7 +146,7 @@ fun Heatmap(
                     HeatmapCell(5)
 
                     Text(
-                        text = "More",
+                        text = stringResource(R.string.heatmap_more),
                         style = MaterialTheme.typography.labelSmall
                     )
                 }

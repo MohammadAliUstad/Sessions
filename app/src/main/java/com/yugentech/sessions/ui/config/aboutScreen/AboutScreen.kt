@@ -1,5 +1,8 @@
 package com.yugentech.sessions.ui.config.aboutScreen
 
+import com.yugentech.sessions.R
+import androidx.compose.ui.res.stringResource
+import com.yugentech.sessions.localization.asString
 import android.app.Activity
 import android.content.Intent
 import androidx.compose.foundation.layout.Arrangement
@@ -81,11 +84,11 @@ fun AboutScreen(
 
     LaunchedEffect(Unit) {
         billingManager.purchaseEvent.collect { message ->
-            if (message == "Thank you for your support!") {
+            if (message == BillingManager.ThankYou) {
                 showThankYouDialog = true
                 haptic.performHapticFeedback(HapticFeedbackType.GestureEnd)
             } else {
-                toastMessage = message
+                toastMessage = message.asString(context)
             }
         }
     }
@@ -115,9 +118,9 @@ fun AboutScreen(
             LargeTopAppBar(
                 title = {
                     Column {
-                        Text("About")
+                        Text(stringResource(R.string.about))
                         Text(
-                            "App information and credits",
+                            stringResource(R.string.about_subtitle),
                             style = MaterialTheme.typography.bodyMedium,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
@@ -125,7 +128,7 @@ fun AboutScreen(
                 },
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(R.string.back))
                     }
                 },
                 scrollBehavior = scrollBehavior,
@@ -157,7 +160,7 @@ fun AboutScreen(
             ) {
                 item { AppInfoCard() }
 
-                item { SectionHeader(Icons.Filled.Favorite, "Connect & Support") }
+                item { SectionHeader(Icons.Filled.Favorite, stringResource(R.string.about_section_connect)) }
                 itemsIndexed(supportItems) { index, item ->
                     SettingsListItem(
                         title = item.title,
@@ -169,7 +172,7 @@ fun AboutScreen(
                     )
                 }
 
-                item { SectionHeader(Icons.Filled.ThumbUp, "Spread the Word") }
+                item { SectionHeader(Icons.Filled.ThumbUp, stringResource(R.string.about_section_spread)) }
                 itemsIndexed(communityItems) { index, item ->
                     SettingsListItem(
                         title = item.title,
@@ -181,7 +184,7 @@ fun AboutScreen(
                     )
                 }
 
-                item { SectionHeader(Icons.Filled.Info, "Legal") }
+                item { SectionHeader(Icons.Filled.Info, stringResource(R.string.about_section_legal)) }
                 itemsIndexed(legalItems) { index, item ->
                     SettingsListItem(
                         title = item.title,
@@ -221,7 +224,7 @@ fun AboutScreen(
                         val intent = Intent(Intent.ACTION_VIEW, AppConstants.KOFI_URL.toUri())
                         context.startActivity(intent)
                     } catch (e: Exception) {
-                        toastMessage = "Could not open link"
+                        toastMessage = context.getString(R.string.error_open_link)
                     }
                     showDonationDialog = false
                 }

@@ -1,5 +1,7 @@
 package com.yugentech.sessions.ui.config.aboutScreen.components
 
+import com.yugentech.sessions.R
+import androidx.compose.ui.res.stringResource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -77,7 +79,7 @@ fun ThankYouDialog(
                     verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.s)
                 ) {
                     Text(
-                        text = "You're Amazing!",
+                        text = stringResource(R.string.thanks_title),
                         style = MaterialTheme.typography.headlineSmall,
                         fontWeight = FontWeight.Bold,
                         color = MaterialTheme.colorScheme.onSurface,
@@ -85,7 +87,7 @@ fun ThankYouDialog(
                     )
 
                     Text(
-                        text = "Thank you so much for your support! Your contribution helps keep Sessions alive and improving. It really means a lot.",
+                        text = stringResource(R.string.thanks_message),
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                         textAlign = TextAlign.Center
@@ -102,7 +104,7 @@ fun ThankYouDialog(
                         .height(MaterialTheme.components.buttonLarge),
                     shape = CircleShape
                 ) {
-                    Text("You're Welcome!")
+                    Text(stringResource(R.string.thanks_confirm))
                 }
             }
         }

@@ -1,5 +1,8 @@
 package com.yugentech.sessions.ui.dash.homeScreen.layouts.studio
 
+import com.yugentech.sessions.localization.rememberTodayLabel
+import com.yugentech.sessions.R
+import androidx.compose.ui.res.stringResource
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
@@ -47,9 +50,6 @@ import com.yugentech.sessions.ui.dash.homeScreen.layouts.shared.TaskTapInset
 import com.yugentech.sessions.ui.dash.homeScreen.layouts.shared.modeColor
 import com.yugentech.sessions.ui.dash.homeScreen.layouts.shared.taskTapArea
 import com.yugentech.sessions.ui.dash.mainScreen.components.topBarInset
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
 
 /**
  * Studio: Home as one calm composition. The day and the task set the scene at the top; the dial
@@ -172,7 +172,7 @@ private fun StudioHeader(
     onToggleSound: () -> Unit
 ) {
     val scheme = MaterialTheme.colorScheme
-    val today = remember { SimpleDateFormat("EEEE · d MMMM", Locale.getDefault()).format(Date()).uppercase() }
+    val today = rememberTodayLabel()
     val sound = remember(soundId) { BackgroundSound.fromId(soundId) }
 
     Row(
@@ -203,7 +203,7 @@ private fun StudioHeader(
                     modifier = Modifier.weight(1f, fill = false)
                 ) { t ->
                     Text(
-                        text = t.ifEmpty { "What are you working on?" },
+                        text = t.ifEmpty { stringResource(R.string.task_placeholder_studio) },
                         style = MaterialTheme.typography.headlineMedium,
                         fontWeight = if (t.isEmpty()) FontWeight.Normal else FontWeight.SemiBold,
                         color = if (t.isEmpty()) scheme.onSurfaceVariant.copy(alpha = 0.6f) else scheme.onSurface,

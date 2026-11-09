@@ -1,5 +1,7 @@
 package com.yugentech.sessions.ui.dash.settingsScreen.components
 
+import com.yugentech.sessions.R
+import androidx.compose.ui.res.stringResource
 import android.content.Context
 import android.content.Intent
 import android.os.Build
@@ -39,7 +41,7 @@ fun AlarmPermissionDialog(
         onDismissRequest = onDismiss,
         properties = DialogProperties(usePlatformDefaultWidth = false),
         modifier = Modifier.fillMaxWidth(0.84f),
-        title = { Text(text = "Permission Required") },
+        title = { Text(text = stringResource(R.string.alarm_permission_title)) },
         text = {
             Column(
                 verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.m),
@@ -51,7 +53,7 @@ fun AlarmPermissionDialog(
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     Text(
-                        text = "Alarms & Reminders",
+                        text = stringResource(R.string.alarm_permission_setting),
                         style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.Bold,
                         color = MaterialTheme.colorScheme.onSurface,
@@ -64,7 +66,7 @@ fun AlarmPermissionDialog(
                 }
 
                 Text(
-                    text = "To ensure your study reminder rings at the exact time you set, please allow this permission in the next screen.",
+                    text = stringResource(R.string.alarm_permission_body),
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
@@ -95,11 +97,11 @@ fun AlarmPermissionDialog(
                     containerColor = MaterialTheme.colorScheme.primary,
                     contentColor = MaterialTheme.colorScheme.onPrimary
                 )
-            ) { Text(text = "Go to Settings") }
+            ) { Text(text = stringResource(R.string.alarm_permission_go_to_settings)) }
         },
         dismissButton = {
             TextButton(onClick = onDismiss) {
-                Text(text = "Cancel")
+                Text(text = stringResource(R.string.cancel))
             }
         },
         containerColor = MaterialTheme.colorScheme.surfaceContainer,

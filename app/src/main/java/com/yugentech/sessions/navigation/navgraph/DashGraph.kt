@@ -1,5 +1,7 @@
 package com.yugentech.sessions.navigation.navgraph
 
+import com.yugentech.sessions.R
+import androidx.compose.ui.res.stringResource
 import android.app.Activity
 import android.content.Context
 import androidx.activity.compose.BackHandler
@@ -40,7 +42,7 @@ fun NavGraphBuilder.dashGraph(
     composable(route = AppScreen.OnboardingReplay.route) {
         OnboardingScreen(
             onFinish = { navController.popBackStack() },
-            finishLabel = "Done"
+            finishLabel = stringResource(R.string.onboarding_done)
         )
     }
 
@@ -98,6 +100,11 @@ fun NavGraphBuilder.dashGraph(
                 },
                 onHomeCustomization = {
                     navController.navigate(AppScreen.HomeCustomization.route) {
+                        launchSingleTop = true
+                    }
+                },
+                onLanguage = {
+                    navController.navigate(AppScreen.Language.route) {
                         launchSingleTop = true
                     }
                 },

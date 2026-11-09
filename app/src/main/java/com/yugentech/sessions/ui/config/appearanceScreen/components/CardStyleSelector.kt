@@ -1,5 +1,7 @@
 package com.yugentech.sessions.ui.config.appearanceScreen.components
 
+import com.yugentech.sessions.R
+import androidx.compose.ui.res.stringResource
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -54,7 +56,7 @@ fun CardStyleSelector(
     Column(modifier = modifier.fillMaxWidth()) {
         SectionHeader(
             icon = Icons.Default.Style,
-            title = "Card Style"
+            title = stringResource(R.string.card_style_title)
         )
 
         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
@@ -121,7 +123,7 @@ fun CardStyleSelector(
                     }
                     Spacer(Modifier.height(6.dp))
                     Text(
-                        text = style.label,
+                        text = stringResource(style.label),
                         style = MaterialTheme.typography.labelLarge.copy(fontWeight = FontWeight.SemiBold),
                         color = animateSelectionColor(
                             isSelected,

@@ -1,5 +1,6 @@
 package com.yugentech.sessions.notification.reminders
 
+import com.yugentech.sessions.R
 import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.Context
@@ -88,7 +89,7 @@ class ReminderManager(
             hour = hour,
             minute = minute,
             title = APP_NAME,
-            message = dailyMessages.random()
+            message = context.getString(dailyMessages.random())
         )
     }
 
@@ -192,8 +193,11 @@ class ReminderManager(
             .filter { it.isNotBlank() && it != DEFAULT_TASK_NAME }
             .distinct()
         return NudgeMessages(
-            playful = { playfulMessages.random().replace("{task}", tasks.randomOrNull() ?: "your focus session") },
-            away = { daysAway -> awayMessages.random().replace("{days}", daysAway.toString()) }
+            playful = {
+                val task = tasks.randomOrNull() ?: context.getString(R.string.reminder_default_task)
+                context.getString(playfulMessages.random(), task)
+            },
+            away = { daysAway -> context.resources.getQuantityString(awayMessages.random(), daysAway, daysAway) }
         )
     }
 
@@ -224,30 +228,30 @@ class ReminderManager(
 
         /** The daily reminder: calm and plain. */
         val dailyMessages = listOf(
-            "It's your focus time. Start a session whenever you're ready.",
-            "Your timer is ready whenever you are.",
-            "A few focused minutes today: pick a task and start the timer.",
-            "Little and often works best. Time for today's session."
+            R.string.reminder_daily_1,
+            R.string.reminder_daily_2,
+            R.string.reminder_daily_3,
+            R.string.reminder_daily_4
         )
 
-        /** Now and then in the first days: light and playful. */
+        /** Now and then in the first days: light and playful. Each takes the task's name. */
         val playfulMessages = listOf(
-            "Ready to tackle {task} again? You've got this!",
-            "Remember how good it felt to finish {task}? Let's do it again.",
-            "Your future self will thank you for focusing on {task} today.",
-            "Got a few minutes for {task}? Just a quick session!",
-            "Hey! A little progress on {task} goes a long way.",
-            "Focused minds achieve great things. Ready for {task}?",
-            "Psst... {task} is calling your name!",
-            "A quick focus session on {task}? You'll feel great after."
+            R.string.reminder_playful_1,
+            R.string.reminder_playful_2,
+            R.string.reminder_playful_3,
+            R.string.reminder_playful_4,
+            R.string.reminder_playful_5,
+            R.string.reminder_playful_6,
+            R.string.reminder_playful_7,
+            R.string.reminder_playful_8
         )
 
-        /** After almost a week away, every other day: warm, no pressure. */
+        /** After almost a week away, every other day: warm, no pressure. Each takes the days away. */
         val awayMessages = listOf(
-            "It's been {days} days! Ready for a fresh focus session?",
-            "{days} days since your last session. A short one is an easy way back in.",
-            "Your timer's ready whenever you are. Let's ease back in.",
-            "{days} days is a long time! How about a 15-minute focus session?"
+            R.plurals.reminder_away_1,
+            R.plurals.reminder_away_2,
+            R.plurals.reminder_away_3,
+            R.plurals.reminder_away_4
         )
     }
 }

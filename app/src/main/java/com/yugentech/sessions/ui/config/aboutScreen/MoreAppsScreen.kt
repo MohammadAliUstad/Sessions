@@ -1,5 +1,7 @@
 package com.yugentech.sessions.ui.config.aboutScreen
 
+import com.yugentech.sessions.R
+import androidx.compose.ui.res.stringResource
 import android.content.Context
 import android.content.Intent
 import androidx.compose.foundation.background
@@ -108,12 +110,12 @@ fun MoreAppsScreen(
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
             TopAppBar(
-                title = { Text("More from us") },
+                title = { Text(stringResource(R.string.more_from_us)) },
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = "Back"
+                            contentDescription = stringResource(R.string.back)
                         )
                     }
                 },
@@ -147,7 +149,7 @@ fun MoreAppsScreen(
 
             item {
                 Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
-                    SectionLabel("Key Features")
+                    SectionLabel(stringResource(R.string.more_apps_key_features))
                     QuillCapabilitiesCarousel()
                 }
             }
@@ -159,7 +161,7 @@ fun MoreAppsScreen(
 
             item {
                 Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
-                    SectionLabel("Key Features")
+                    SectionLabel(stringResource(R.string.more_apps_key_features))
                     MyntCapabilitiesCarousel()
                 }
             }
@@ -171,7 +173,7 @@ fun MoreAppsScreen(
 
             item {
                 Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
-                    SectionLabel("Key Features")
+                    SectionLabel(stringResource(R.string.more_apps_key_features))
                     HajimeCapabilitiesCarousel()
                 }
             }
@@ -183,7 +185,7 @@ fun MoreAppsScreen(
 
             item {
                 Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
-                    SectionLabel("Key Features")
+                    SectionLabel(stringResource(R.string.more_apps_key_features))
                     RyoriCapabilitiesCarousel()
                 }
             }
@@ -202,13 +204,13 @@ private fun IntroText() {
         verticalArrangement = Arrangement.spacedBy(4.dp)
     ) {
         Text(
-            text = "Four more apps, made with the same care",
+            text = stringResource(R.string.more_apps_subtitle),
             style = MaterialTheme.typography.headlineSmall,
             fontWeight = FontWeight.Bold,
             color = MaterialTheme.colorScheme.onSurface
         )
         Text(
-            text = "If you enjoy focusing with Sessions, you might like reading with Quill, keeping track of your money with Mynt, learning Japanese with Hajime and cooking with Ryori.",
+            text = stringResource(R.string.more_apps_intro),
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant
         )
@@ -258,7 +260,7 @@ private fun SectionLabel(text: String) {
 private fun QuillHeroSection(onDownloadClick: () -> Unit) {
     AppHeroSection(
         name = "Quill",
-        tagline = "Read Deeper. Think Further.",
+        tagline = stringResource(R.string.quill_tagline),
         iconBackground = QuillIconBackground,
         animationMillis = 1900,
         onDownloadClick = onDownloadClick
@@ -277,38 +279,38 @@ private fun QuillCapabilitiesCarousel() {
         items = listOf(
             CapabilityItem(
                 icon = Icons.Outlined.Psychology,
-                title = "Aira",
-                description = "An AI reading companion that answers from your book, locked to your progress so it never spoils what's next.",
+                title = stringResource(R.string.quill_feature_1_title),
+                description = stringResource(R.string.quill_feature_1_body),
                 slot = 0
             ),
             CapabilityItem(
                 icon = Icons.Outlined.AutoAwesome,
-                title = "Character Companion",
-                description = "Recall who someone is, what they're up to lately, or trace their whole journey so far.",
+                title = stringResource(R.string.quill_feature_2_title),
+                description = stringResource(R.string.quill_feature_2_body),
                 slot = 1
             ),
             CapabilityItem(
                 icon = Icons.Outlined.Image,
-                title = "Visualize Scenes",
-                description = "Turn a passage into an illustration, then jump straight back to where it came from.",
+                title = stringResource(R.string.quill_feature_3_title),
+                description = stringResource(R.string.quill_feature_3_body),
                 slot = 2
             ),
             CapabilityItem(
                 icon = Icons.Outlined.AutoStories,
-                title = "A Beautiful Reader",
-                description = "Fonts, spacing, page themes, highlights, night light and paged or scrolling layouts.",
+                title = stringResource(R.string.quill_feature_4_title),
+                description = stringResource(R.string.quill_feature_4_body),
                 slot = 0
             ),
             CapabilityItem(
                 icon = Icons.Outlined.LocalLibrary,
-                title = "Endless Library",
-                description = "Import your own EPUBs or download from 60,000+ free Project Gutenberg and Standard Ebooks titles.",
+                title = stringResource(R.string.quill_feature_5_title),
+                description = stringResource(R.string.quill_feature_5_body),
                 slot = 1
             ),
             CapabilityItem(
                 icon = Icons.Outlined.Insights,
-                title = "Reading Insights",
-                description = "Streaks, a reading heatmap, peak hours and favorite authors, with gentle daily reminders.",
+                title = stringResource(R.string.quill_feature_6_title),
+                description = stringResource(R.string.quill_feature_6_body),
                 slot = 2
             )
         )
@@ -321,7 +323,7 @@ private fun QuillCapabilitiesCarousel() {
 private fun RyoriHeroSection() {
     AppHeroSection(
         name = "Ryori",
-        tagline = "Cook Something Wonderful",
+        tagline = stringResource(R.string.ryori_tagline),
         iconBackground = RyoriIconBackground,
         animationMillis = 1200,
         onDownloadClick = null
@@ -343,38 +345,38 @@ private fun RyoriCapabilitiesCarousel() {
         items = listOf(
             CapabilityItem(
                 icon = Icons.Outlined.Home,
-                title = "A Home That Inspires",
-                description = "A featured carousel, a cuisine and a category of the day, and a Surprise me button for when you can't decide.",
+                title = stringResource(R.string.ryori_feature_1_title),
+                description = stringResource(R.string.ryori_feature_1_body),
                 slot = 0
             ),
             CapabilityItem(
                 icon = Icons.Outlined.TravelExplore,
-                title = "Explore Every Kitchen",
-                description = "Browse recipes by category, cuisine or ingredient, or search for one by name.",
+                title = stringResource(R.string.ryori_feature_2_title),
+                description = stringResource(R.string.ryori_feature_2_body),
                 slot = 1
             ),
             CapabilityItem(
                 icon = Icons.Outlined.Checklist,
-                title = "Cook Along",
-                description = "Clear step-by-step instructions, with ingredients you can tick off as you go.",
+                title = stringResource(R.string.ryori_feature_3_title),
+                description = stringResource(R.string.ryori_feature_3_body),
                 slot = 2
             ),
             CapabilityItem(
                 icon = Icons.Outlined.LocalBar,
-                title = "Mocktails",
-                description = "Non-alcoholic drinks sit right next to the meals, so there's something for every glass.",
+                title = stringResource(R.string.ryori_feature_4_title),
+                description = stringResource(R.string.ryori_feature_4_body),
                 slot = 0
             ),
             CapabilityItem(
                 icon = Icons.Outlined.Eco,
-                title = "Vegetarian Mode",
-                description = "One switch hides meat and seafood across the whole app.",
+                title = stringResource(R.string.ryori_feature_5_title),
+                description = stringResource(R.string.ryori_feature_5_body),
                 slot = 1
             ),
             CapabilityItem(
                 icon = Icons.Outlined.CloudOff,
-                title = "Works Offline",
-                description = "Recipes you've opened are saved on your device and load instantly, even without a connection.",
+                title = stringResource(R.string.ryori_feature_6_title),
+                description = stringResource(R.string.ryori_feature_6_body),
                 slot = 2
             )
         )
@@ -387,7 +389,7 @@ private fun RyoriCapabilitiesCarousel() {
 private fun MyntHeroSection() {
     AppHeroSection(
         name = "Mynt",
-        tagline = "Your Voice Money Assistant",
+        tagline = stringResource(R.string.mynt_tagline),
         iconBackground = MyntIconBackground,
         animationMillis = 1300,
         onDownloadClick = null
@@ -410,38 +412,38 @@ private fun MyntCapabilitiesCarousel() {
         items = listOf(
             CapabilityItem(
                 icon = Icons.Outlined.KeyboardVoice,
-                title = "Just Say It",
-                description = "Tell Mynt what you spent the way you'd tell a friend. Several things in one sentence become separate entries.",
+                title = stringResource(R.string.mynt_feature_1_title),
+                description = stringResource(R.string.mynt_feature_1_body),
                 slot = 0
             ),
             CapabilityItem(
                 icon = Icons.Outlined.Handshake,
-                title = "Lend & Borrow",
-                description = "Say who you lent to or borrowed from, and when they paid you back. Mynt keeps every balance straight.",
+                title = stringResource(R.string.mynt_feature_2_title),
+                description = stringResource(R.string.mynt_feature_2_body),
                 slot = 1
             ),
             CapabilityItem(
                 icon = Icons.AutoMirrored.Outlined.CallSplit,
-                title = "Split Bills",
-                description = "Split a dinner or a trip between friends just by saying who was there and what it cost.",
+                title = stringResource(R.string.mynt_feature_3_title),
+                description = stringResource(R.string.mynt_feature_3_body),
                 slot = 2
             ),
             CapabilityItem(
                 icon = Icons.Outlined.QueryStats,
-                title = "Ask About Your Money",
-                description = "Ask how much you spent on food this month, or who still owes you, and get an answer straight away.",
+                title = stringResource(R.string.mynt_feature_4_title),
+                description = stringResource(R.string.mynt_feature_4_body),
                 slot = 0
             ),
             CapabilityItem(
                 icon = Icons.Outlined.EditNote,
-                title = "Check Before Saving",
-                description = "Everything Mynt understood is shown first, so you can fix an amount or a category before it's saved.",
+                title = stringResource(R.string.mynt_feature_5_title),
+                description = stringResource(R.string.mynt_feature_5_body),
                 slot = 1
             ),
             CapabilityItem(
                 icon = Icons.Outlined.RecordVoiceOver,
-                title = "Talks Back",
-                description = "When something's missing, Mynt asks you, and can read its questions aloud so you can answer hands-free.",
+                title = stringResource(R.string.mynt_feature_6_title),
+                description = stringResource(R.string.mynt_feature_6_body),
                 slot = 2
             )
         )
@@ -454,7 +456,7 @@ private fun MyntCapabilitiesCarousel() {
 private fun HajimeHeroSection() {
     AppHeroSection(
         name = "Hajime",
-        tagline = "Learn to Read Japanese",
+        tagline = stringResource(R.string.hajime_tagline),
         iconBackground = HajimeIconBackground,
         animationMillis = 1660,
         onDownloadClick = null
@@ -474,38 +476,38 @@ private fun HajimeCapabilitiesCarousel() {
         items = listOf(
             CapabilityItem(
                 icon = Icons.Outlined.Translate,
-                title = "Learn to Read Japanese",
-                description = "Hiragana and katakana first, then kanji, words and sentences, one short lesson at a time.",
+                title = stringResource(R.string.hajime_tagline),
+                description = stringResource(R.string.hajime_feature_1_body),
                 slot = 0
             ),
             CapabilityItem(
                 icon = Icons.Outlined.School,
-                title = "Every JLPT Kanji",
-                description = "N5 to N1 kanji with readings, meanings, parts, common words and example sentences with furigana.",
+                title = stringResource(R.string.hajime_feature_2_title),
+                description = stringResource(R.string.hajime_feature_2_body),
                 slot = 1
             ),
             CapabilityItem(
                 icon = Icons.Outlined.History,
-                title = "Reviews That Remember",
-                description = "Spaced repetition brings each item back just before you'd forget it, so what you learn sticks.",
+                title = stringResource(R.string.hajime_feature_3_title),
+                description = stringResource(R.string.hajime_feature_3_body),
                 slot = 2
             ),
             CapabilityItem(
                 icon = Icons.Outlined.AutoAwesome,
-                title = "Sensei, Your AI Tutor",
-                description = "Ask anything about Japanese and get stories, sentence breakdowns and quizzes built from what you've learned.",
+                title = stringResource(R.string.hajime_feature_4_title),
+                description = stringResource(R.string.hajime_feature_4_body),
                 slot = 0
             ),
             CapabilityItem(
                 icon = Icons.Outlined.RecordVoiceOver,
-                title = "Hear Every Word",
-                description = "Every kana, kanji, word and sentence can be read aloud in a Japanese voice.",
+                title = stringResource(R.string.hajime_feature_5_title),
+                description = stringResource(R.string.hajime_feature_5_body),
                 slot = 1
             ),
             CapabilityItem(
                 icon = Icons.Outlined.Insights,
-                title = "Study Insights",
-                description = "Streaks, a study heatmap, your trickiest mix-ups and progress through every JLPT level.",
+                title = stringResource(R.string.hajime_feature_6_title),
+                description = stringResource(R.string.hajime_feature_6_body),
                 slot = 2
             )
         )
@@ -605,7 +607,7 @@ private fun AppHeroSection(
                         )
                         Spacer(modifier = Modifier.width(8.dp))
                         Text(
-                            text = "Get on Play Store",
+                            text = stringResource(R.string.more_apps_get_on_play),
                             style = MaterialTheme.typography.labelLarge.copy(
                                 fontWeight = FontWeight.SemiBold
                             )
@@ -626,7 +628,7 @@ private fun ComingSoonLabel() {
         contentColor = MaterialTheme.colorScheme.onSecondaryContainer
     ) {
         Text(
-            text = "Coming soon",
+            text = stringResource(R.string.more_apps_coming_soon),
             style = MaterialTheme.typography.labelLarge.copy(fontWeight = FontWeight.SemiBold),
             modifier = Modifier.padding(horizontal = 14.dp, vertical = 8.dp)
         )
@@ -726,14 +728,14 @@ private fun ClosingCard() {
                 OverviewIcon(icon = Icons.Outlined.LunchDining, contentDescription = "Ryori")
             }
             Text(
-                text = "Focus. Read. Track. Learn. Cook.",
+                text = stringResource(R.string.more_apps_overview_title),
                 style = MaterialTheme.typography.headlineSmall,
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.onPrimaryContainer,
                 textAlign = TextAlign.Center
             )
             Text(
-                text = "Sessions, Quill, Mynt, Hajime and Ryori are made by YugenTech: small, thoughtful apps built to make everyday moments a little calmer.",
+                text = stringResource(R.string.more_apps_overview_body),
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.8f),
                 textAlign = TextAlign.Center,
@@ -786,16 +788,16 @@ fun MoreFromUsSheet(onDismiss: () -> Unit, onSeeAll: () -> Unit) {
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     val scope = rememberCoroutineScope()
     val apps = listOf(
-        SheetEntry("Quill", "Read Deeper. Think Further.", "com.yugentech.quill", QuillIconBackground, 1900) {
+        SheetEntry("Quill", stringResource(R.string.quill_tagline), "com.yugentech.quill", QuillIconBackground, 1900) {
             AnimatedQuillIcon(isAnimating = it, modifier = Modifier.requiredSize(41.dp))
         },
-        SheetEntry("Mynt", "Your Voice Money Assistant", null, MyntIconBackground, 1300) {
+        SheetEntry("Mynt", stringResource(R.string.mynt_tagline), null, MyntIconBackground, 1300) {
             AnimatedMyntIcon(isAnimating = it, modifier = Modifier.requiredSize(84.dp))
         },
-        SheetEntry("Hajime", "Learn to Read Japanese", null, HajimeIconBackground, 1660) {
+        SheetEntry("Hajime", stringResource(R.string.hajime_tagline), null, HajimeIconBackground, 1660) {
             AnimatedHajimeIcon(isAnimating = it, modifier = Modifier.requiredSize(100.dp))
         },
-        SheetEntry("Ryori", "Cook Something Wonderful", null, RyoriIconBackground, 1200) {
+        SheetEntry("Ryori", stringResource(R.string.ryori_tagline), null, RyoriIconBackground, 1200) {
             AnimatedRyoriIcon(isAnimating = it, modifier = Modifier.requiredSize(56.dp))
         }
     )
@@ -835,13 +837,13 @@ fun MoreFromUsSheet(onDismiss: () -> Unit, onSeeAll: () -> Unit) {
                 .padding(bottom = 16.dp)
         ) {
             Text(
-                text = "More from us",
+                text = stringResource(R.string.more_from_us),
                 style = MaterialTheme.typography.headlineSmall,
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.onSurface
             )
             Text(
-                text = "Four more apps, made with the same care.",
+                text = stringResource(R.string.more_apps_sheet_subtitle),
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier.padding(top = 4.dp)
@@ -873,7 +875,7 @@ fun MoreFromUsSheet(onDismiss: () -> Unit, onSeeAll: () -> Unit) {
                     .align(Alignment.CenterHorizontally)
                     .padding(top = 12.dp)
             ) {
-                Text("See all features")
+                Text(stringResource(R.string.more_apps_see_all))
                 Spacer(modifier = Modifier.width(8.dp))
                 Icon(
                     imageVector = Icons.AutoMirrored.Filled.ArrowForward,
@@ -952,7 +954,7 @@ private fun SheetAppRow(app: SheetEntry, index: Int, count: Int, onGetApp: (() -
                     onClick = onGetApp,
                     contentPadding = PaddingValues(horizontal = 18.dp)
                 ) {
-                    Text("Get")
+                    Text(stringResource(R.string.more_apps_get))
                 }
             }
         }

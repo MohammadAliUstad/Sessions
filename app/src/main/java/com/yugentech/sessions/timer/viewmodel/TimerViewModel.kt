@@ -1,5 +1,7 @@
 package com.yugentech.sessions.timer.viewmodel
 
+import com.yugentech.sessions.R
+import com.yugentech.sessions.localization.AppStrings
 import android.view.View
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -189,7 +191,7 @@ class TimerViewModel(
 
         // 1. "Too short" message ONLY in Focus mode
         if (state.currentMode == TimerMode.Focus && timeSpentSeconds < 60) {
-            _errorMessage.value = "Session too short to be saved"
+            _errorMessage.value = AppStrings.get(R.string.timer_too_short)
             viewModelScope.launch {
                 timerRepository.reset()
                 // The ActiveForeground service will handle the single onFocusStop haptic.

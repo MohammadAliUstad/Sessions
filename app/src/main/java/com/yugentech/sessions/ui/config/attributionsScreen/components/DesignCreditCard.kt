@@ -1,5 +1,7 @@
 package com.yugentech.sessions.ui.config.attributionsScreen.components
 
+import com.yugentech.sessions.R
+import androidx.compose.ui.res.stringResource
 import android.content.Intent
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -72,13 +74,13 @@ fun DesignCreditCard() {
 
                 Column {
                     Text(
-                        "Design & Illustrations",
+                        stringResource(R.string.credit_design_title),
                         style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.Bold,
                         color = MaterialTheme.colorScheme.onSecondaryContainer
                     )
                     Text(
-                        "Artwork by Pablo Stanley",
+                        stringResource(R.string.credit_design_subtitle),
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSecondaryContainer.copy(alpha = 0.8f)
                     )
@@ -86,7 +88,7 @@ fun DesignCreditCard() {
             }
 
             Text(
-                "The beautiful illustrations and doodles used throughout Sessions are created by Pablo Stanley. Big thanks for his amazing contributions to the open design community!",
+                stringResource(R.string.credit_design_body),
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSecondaryContainer.copy(alpha = 0.8f),
                 minLines = 4,
@@ -105,7 +107,7 @@ fun DesignCreditCard() {
                     contentColor = MaterialTheme.colorScheme.onSurface
                 )
             ) {
-                Text("Visit Portfolio")
+                Text(stringResource(R.string.credit_design_action))
             }
         }
     }

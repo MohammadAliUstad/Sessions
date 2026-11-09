@@ -1,5 +1,11 @@
 package com.yugentech.sessions.ui.config.insightsScreen.components
 
+import java.time.format.TextStyle
+import java.time.DayOfWeek
+import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.runtime.remember
+import com.yugentech.sessions.R
+import androidx.compose.ui.res.stringResource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -17,7 +23,14 @@ import com.yugentech.sessions.theme.tokens.spacing
 fun WeeklyRhythmChart(
     dailyVolume: Map<Int, Int>
 ) {
-    val days = listOf("Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday")
+    // Sunday first, as dailyVolume counts them; each day named in the app's language
+    val locale = LocalConfiguration.current.locales[0]
+    val days = remember(locale) {
+        listOf(
+            DayOfWeek.SUNDAY, DayOfWeek.MONDAY, DayOfWeek.TUESDAY, DayOfWeek.WEDNESDAY,
+            DayOfWeek.THURSDAY, DayOfWeek.FRIDAY, DayOfWeek.SATURDAY
+        ).map { day -> day.getDisplayName(TextStyle.FULL, locale).replaceFirstChar { it.titlecase(locale) } }
+    }
     val totalVolume = dailyVolume.values.sum().toFloat()
 
     Card(
@@ -35,8 +48,7 @@ fun WeeklyRhythmChart(
                 val durationSeconds = dailyVolume[index + 1] ?: 0
                 val percentage = if (totalVolume > 0) durationSeconds / totalVolume else 0f
                 val timeText = formatSeconds(durationSeconds)
-                val percentageText = "(${(percentage * 100).toInt()}%)"
-                val displayText = "$timeText $percentageText"
+                val displayText = stringResource(R.string.insights_time_percent, timeText, (percentage * 100).toInt())
 
                 TaskProgressItem(
                     label = dayName,
@@ -48,13 +60,13 @@ fun WeeklyRhythmChart(
     }
 }
 
+@Composable
 private fun formatSeconds(seconds: Int): String {
-    if (seconds <= 0) return "0m"
     val hours = seconds / 3600
     val minutes = (seconds % 3600) / 60
     return if (hours > 0) {
-        "${hours}h ${minutes}m"
+        stringResource(R.string.duration_hours_minutes_short, hours, minutes)
     } else {
-        "${minutes}m"
+        stringResource(R.string.duration_minutes_short, minutes)
     }
 }

@@ -1,5 +1,8 @@
 package com.yugentech.sessions.ui.auth.onboardingScreen.components
 
+import com.yugentech.sessions.R
+import androidx.compose.ui.res.stringResource
+import androidx.annotation.StringRes
 import android.os.Build
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.animateColorAsState
@@ -189,7 +192,7 @@ private const val DEMO_RUN_MS = 6_000f
 /**
  * Home's timer, as the Refined layout draws it: tap it and the wavy ring fills while 5:00 counts
  * down as a timelapse, tap again to pause. When it runs out, rings ripple out from the dial and a
- * check pops in with "Session complete"; it holds a few seconds (or until a tap), then resets.
+ * check pops in with stringResource(R.string.timer_session_complete); it holds a few seconds (or until a tap), then resets.
  */
 @Composable
 internal fun FocusScene(active: Boolean) {
@@ -270,7 +273,7 @@ internal fun FocusScene(active: Boolean) {
                 isStudying = running,
                 currentMode = TimerMode.Focus,
                 isSessionActive = running || (progress > 0f && !full),
-                idleHint = "Ready when you are",
+                idleHint = stringResource(R.string.onboarding_focus_idle),
                 showEndTime = false,
                 dialSize = 220.dp,
                 timeFontSize = 48.sp,
@@ -279,8 +282,8 @@ internal fun FocusScene(active: Boolean) {
                 rollingDigits = false,
                 animateProgress = false,
                 isComplete = full,
-                completeTitle = "Session complete",
-                completeBody = "5 min of focus"
+                completeTitle = stringResource(R.string.timer_session_complete),
+                completeBody = stringResource(R.string.onboarding_focus_complete_body)
             )
         }
         Spacer(Modifier.height(20.dp))
@@ -291,15 +294,15 @@ internal fun FocusScene(active: Boolean) {
             label = "focusHint"
         ) { done ->
             if (done) {
-                Pill("Nice work! Tap to go again", Icons.Default.TouchApp)
+                Pill(stringResource(R.string.onboarding_focus_again), Icons.Default.TouchApp)
             } else {
-                Pill("Tap the dial to start", Icons.Default.TouchApp)
+                Pill(stringResource(R.string.onboarding_focus_tap), Icons.Default.TouchApp)
             }
         }
         Spacer(Modifier.height(40.dp))
         SceneText(
-            title = "Focus, one block\nat a time",
-            body = "Set how long you want to focus, press start, and let Sessions keep the time. Pause whenever you need to.",
+            title = stringResource(R.string.onboarding_focus_title),
+            body = stringResource(R.string.onboarding_focus_body),
             active = active,
             delayMs = 900
         )
@@ -374,9 +377,9 @@ internal fun SessionScene(active: Boolean) {
                         Column(modifier = Modifier.weight(1f)) {
                             AnimatedContent(
                                 targetState = when {
-                                    finished -> "Session complete"
-                                    onBreak -> "On a break"
-                                    else -> "Focusing"
+                                    finished -> stringResource(R.string.timer_session_complete)
+                                    onBreak -> stringResource(R.string.onboarding_sets_on_break)
+                                    else -> stringResource(R.string.timer_hint_focusing)
                                 },
                                 transitionSpec = { fadeIn(tween(220)).togetherWith(fadeOut(tween(120))) },
                                 label = "sessionPhase"
@@ -427,7 +430,7 @@ internal fun SessionScene(active: Boolean) {
                             ) {
                                 Icon(Icons.Default.SkipNext, contentDescription = null, modifier = Modifier.size(18.dp))
                                 Spacer(Modifier.width(4.dp))
-                                Text("Skip", style = MaterialTheme.typography.labelLarge, fontWeight = FontWeight.SemiBold)
+                                Text(stringResource(R.string.skip), style = MaterialTheme.typography.labelLarge, fontWeight = FontWeight.SemiBold)
                             }
                         }
                     }
@@ -442,8 +445,8 @@ internal fun SessionScene(active: Boolean) {
         }
         Spacer(Modifier.height(44.dp))
         SceneText(
-            title = "Sets, with breaks\nbuilt in",
-            body = "Stack focus blocks into a session. Short breaks fall between them, a long one comes before the last, and Skip moves you on when you're ready.",
+            title = stringResource(R.string.onboarding_sets_title),
+            body = stringResource(R.string.onboarding_sets_body),
             active = active,
             delayMs = 700
         )
@@ -452,15 +455,15 @@ internal fun SessionScene(active: Boolean) {
 
 // ---------------------------------------------------------------- 3. Ambience
 
-private class Sound(val name: String, val icon: ImageVector)
+private class Sound(@param:StringRes val name: Int, val icon: ImageVector)
 
 private val Sounds = listOf(
-    Sound("Rain", Icons.Default.WaterDrop),
-    Sound("Brown noise", Icons.Default.GraphicEq),
-    Sound("Fireplace", Icons.Default.LocalFireDepartment),
-    Sound("Library", Icons.Default.LocalLibrary),
-    Sound("Riverside", Icons.Default.Waves),
-    Sound("Forest", Icons.Default.Forest)
+    Sound(R.string.sound_rain, Icons.Default.WaterDrop),
+    Sound(R.string.sound_brown_noise, Icons.Default.GraphicEq),
+    Sound(R.string.sound_fireplace, Icons.Default.LocalFireDepartment),
+    Sound(R.string.sound_library, Icons.Default.LocalLibrary),
+    Sound(R.string.sound_riverside, Icons.Default.Waves),
+    Sound(R.string.sound_forest, Icons.Default.Forest)
 )
 
 /**
@@ -486,8 +489,8 @@ internal fun AmbienceScene(active: Boolean) {
         }
         Spacer(Modifier.height(40.dp))
         SceneText(
-            title = "Set the mood",
-            body = "Rain on the window, a crackling fire, a quiet library. Pick a soundscape to play under your sessions, or keep it silent.",
+            title = stringResource(R.string.onboarding_ambience_title),
+            body = stringResource(R.string.onboarding_ambience_body),
             active = active,
             delayMs = 800
         )
@@ -522,7 +525,7 @@ private fun SoundTile(
         )
         Spacer(Modifier.height(8.dp))
         Text(
-            text = sound.name,
+            text = stringResource(sound.name),
             style = MaterialTheme.typography.labelMedium,
             fontWeight = FontWeight.SemiBold,
             color = colors.onBackground.copy(alpha = 0.85f),
@@ -533,27 +536,27 @@ private fun SoundTile(
 
 // ---------------------------------------------------------------- 4. Make it yours
 
-private enum class LookMode(val label: String, val icon: ImageVector) {
-    Light("Light", Icons.Default.LightMode),
-    Dark("Dark", Icons.Default.DarkMode),
-    Amoled("AMOLED", Icons.Default.Contrast)
+private enum class LookMode(@param:StringRes val label: Int, val icon: ImageVector) {
+    Light(R.string.theme_mode_light, Icons.Default.LightMode),
+    Dark(R.string.theme_mode_dark, Icons.Default.DarkMode),
+    Amoled(R.string.theme_mode_amoled, Icons.Default.Contrast)
 }
 
-private class PaletteOption(val theme: ColorTheme, val name: String)
+private class PaletteOption(val theme: ColorTheme, @param:StringRes val name: Int)
 
 /**
  * The palettes in Appearance's order. Dynamic (the wallpaper's colours) only joins on Android 12
  * and up, where the app can offer it.
  */
 private val PaletteOptions: List<PaletteOption> = buildList {
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) add(PaletteOption(ColorTheme.DYNAMIC, "Dynamic"))
-    add(PaletteOption(ColorTheme.SESSIONS, "Sessions"))
-    add(PaletteOption(ColorTheme.LAGOON, "Lagoon"))
-    add(PaletteOption(ColorTheme.GROVE, "Grove"))
-    add(PaletteOption(ColorTheme.HARVEST, "Harvest"))
-    add(PaletteOption(ColorTheme.SAKURA, "Sakura"))
-    add(PaletteOption(ColorTheme.ALPINE, "Alpine"))
-    add(PaletteOption(ColorTheme.TWILIGHT, "Twilight"))
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) add(PaletteOption(ColorTheme.DYNAMIC, R.string.theme_name_dynamic))
+    add(PaletteOption(ColorTheme.SESSIONS, R.string.theme_name_sessions))
+    add(PaletteOption(ColorTheme.LAGOON, R.string.theme_name_lagoon))
+    add(PaletteOption(ColorTheme.GROVE, R.string.theme_name_grove))
+    add(PaletteOption(ColorTheme.HARVEST, R.string.theme_name_harvest))
+    add(PaletteOption(ColorTheme.SAKURA, R.string.theme_name_sakura))
+    add(PaletteOption(ColorTheme.ALPINE, R.string.theme_name_alpine))
+    add(PaletteOption(ColorTheme.TWILIGHT, R.string.theme_name_twilight))
 }
 
 private enum class Facets { Palette, Mode }
@@ -606,14 +609,14 @@ internal fun ThemeScene(active: Boolean) {
         ) {
             Facet(
                 icon = Icons.Default.Palette,
-                value = palette.name,
+                value = stringResource(palette.name),
                 lit = lastTapped == Facets.Palette,
                 onClick = { tap(Facets.Palette) },
                 modifier = Modifier.weight(1f)
             )
             Facet(
                 icon = mode.icon,
-                value = mode.label,
+                value = stringResource(mode.label),
                 lit = lastTapped == Facets.Mode,
                 onClick = { tap(Facets.Mode) },
                 modifier = Modifier.weight(1f)
@@ -621,14 +624,14 @@ internal fun ThemeScene(active: Boolean) {
         }
         Spacer(Modifier.height(4.dp))
         Pill(
-            text = "Tap a tile to try it",
+            text = stringResource(R.string.onboarding_theme_tap),
             icon = Icons.Default.TouchApp,
             modifier = Modifier.rise({ hintIn.value }, 12.dp)
         )
         Spacer(Modifier.height(24.dp))
         SceneText(
-            title = "Make it yours",
-            body = "Pick a palette or your wallpaper's colours, and go light, dark or true-black AMOLED. Every screen follows along.",
+            title = stringResource(R.string.onboarding_theme_title),
+            body = stringResource(R.string.onboarding_theme_body),
             active = active,
             delayMs = 800
         )
@@ -674,8 +677,8 @@ private fun MiniApp(scheme: ColorScheme, modifier: Modifier = Modifier) {
                     .fillMaxWidth()
                     .padding(horizontal = 14.dp)
             ) {
-                MiniText("Good evening", typography.titleSmall, FontWeight.SemiBold, ink)
-                MiniText("Ready to focus?", typography.labelSmall, FontWeight.Normal, softInk)
+                MiniText(stringResource(R.string.onboarding_mini_greeting), typography.titleSmall, FontWeight.SemiBold, ink)
+                MiniText(stringResource(R.string.onboarding_mini_subtitle), typography.labelSmall, FontWeight.Normal, softInk)
             }
             Spacer(Modifier.weight(1f))
             Box(contentAlignment = Alignment.Center, modifier = Modifier.size(104.dp)) {
@@ -702,7 +705,7 @@ private fun MiniApp(scheme: ColorScheme, modifier: Modifier = Modifier) {
                     .background(primary)
                     .padding(horizontal = 20.dp, vertical = 7.dp)
             ) {
-                MiniText("Start", typography.labelMedium, FontWeight.SemiBold, onPrimary)
+                MiniText(stringResource(R.string.onboarding_mini_start), typography.labelMedium, FontWeight.SemiBold, onPrimary)
             }
             Spacer(Modifier.weight(1f))
             // The bottom bar: home picked, two more tabs beside it
@@ -841,8 +844,8 @@ internal fun GrowthScene(active: Boolean) {
 
     SceneColumn {
         SceneText(
-            title = "Watch it grow",
-            body = "Every focused minute counts. Insights, a year-long heatmap and gentle daily reminders keep you coming back.",
+            title = stringResource(R.string.onboarding_growth_title),
+            body = stringResource(R.string.onboarding_growth_body),
             active = active,
             delayMs = 100
         )
@@ -877,14 +880,14 @@ internal fun GrowthScene(active: Boolean) {
                 Spacer(Modifier.height(18.dp))
                 Row(verticalAlignment = Alignment.Bottom) {
                     Text(
-                        text = "${hours}h",
+                        text = stringResource(R.string.onboarding_hours_short, hours),
                         style = MaterialTheme.typography.displaySmall,
                         fontWeight = FontWeight.Black,
                         color = colors.primary
                     )
                     Spacer(Modifier.width(8.dp))
                     Text(
-                        text = "focused this season",
+                        text = stringResource(R.string.onboarding_growth_caption),
                         style = MaterialTheme.typography.titleMedium,
                         color = colors.onSurfaceVariant,
                         modifier = Modifier.padding(bottom = 6.dp)

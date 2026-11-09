@@ -1,5 +1,7 @@
 package com.yugentech.sessions.ui.config.editProfileScreen.components
 
+import com.yugentech.sessions.R
+import androidx.compose.ui.res.stringResource
 import androidx.compose.foundation.MarqueeAnimationMode
 import androidx.compose.foundation.background
 import androidx.compose.foundation.basicMarquee
@@ -62,7 +64,7 @@ fun AvatarOption(
         )
 
         Text(
-            text = avatar.name,
+            text = stringResource(avatar.name),
             style = MaterialTheme.typography.labelMedium,
             color = if (isSelected) {
                 MaterialTheme.colorScheme.primary

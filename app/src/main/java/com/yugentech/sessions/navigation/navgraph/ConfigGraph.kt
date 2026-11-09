@@ -18,6 +18,7 @@ import com.yugentech.sessions.ui.config.appearanceScreen.AppearanceScreen
 import com.yugentech.sessions.ui.config.appearanceScreen.HomeCustomizationScreen
 import com.yugentech.sessions.ui.config.attributionsScreen.AttributionsScreen
 import com.yugentech.sessions.ui.config.insightsScreen.InsightsScreen
+import com.yugentech.sessions.ui.config.languageScreen.LanguageScreen
 import com.yugentech.sessions.ui.dash.util.formatTime
 import com.yugentech.sessions.viewModels.ProfileViewModel
 import org.koin.androidx.compose.koinViewModel
@@ -43,6 +44,11 @@ fun NavGraphBuilder.configGraph(
             onNavigateBack = { navController.popBackStack() },
             themeViewModel = themeViewModel
         )
+    }
+
+    // Settings > Language: the app's own language, apart from the phone's
+    composable(AppScreen.Language.route) {
+        LanguageScreen(onNavigateBack = { navController.popBackStack() })
     }
 
     // Defines the about screen

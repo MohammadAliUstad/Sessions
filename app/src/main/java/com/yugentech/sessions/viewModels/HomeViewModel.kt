@@ -1,5 +1,7 @@
 package com.yugentech.sessions.viewModels
 
+import com.yugentech.sessions.R
+import com.yugentech.sessions.localization.AppStrings
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.yugentech.sessions.sessions.model.Session
@@ -93,7 +95,7 @@ class HomeViewModel(
             Timber.i("Sessions fetched successfully")
         } catch (e: Exception) {
             Timber.e(e, "Error fetching sessions")
-            _dataState.value = _dataState.value.copy(errorMessage = "Could not load history")
+            _dataState.value = _dataState.value.copy(errorMessage = AppStrings.get(R.string.home_history_error))
         } finally {
             _dataState.value = _dataState.value.copy(isLoading = false)
         }

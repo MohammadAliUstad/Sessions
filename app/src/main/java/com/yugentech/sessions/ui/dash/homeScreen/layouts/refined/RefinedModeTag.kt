@@ -1,5 +1,7 @@
 package com.yugentech.sessions.ui.dash.homeScreen.layouts.refined
 
+import com.yugentech.sessions.R
+import androidx.compose.ui.res.stringResource
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -20,9 +22,9 @@ fun RefinedModeTag(
     AnimatedContent(targetState = mode, transitionSpec = { fadeThrough() }, label = "modeTag") { m ->
         Text(
             text = when (m) {
-                TimerMode.Focus -> "FOCUS"
-                TimerMode.ShortBreak -> "SHORT BREAK"
-                TimerMode.LongBreak -> "LONG BREAK"
+                TimerMode.Focus -> stringResource(R.string.mode_focus).uppercase()
+                TimerMode.ShortBreak -> stringResource(R.string.mode_short_break).uppercase()
+                TimerMode.LongBreak -> stringResource(R.string.mode_long_break).uppercase()
             },
             style = MaterialTheme.typography.labelMedium,
             fontWeight = FontWeight.Bold,

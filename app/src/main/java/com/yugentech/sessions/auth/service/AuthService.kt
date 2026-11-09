@@ -1,5 +1,7 @@
 package com.yugentech.sessions.auth.service
 
+import com.yugentech.sessions.R
+import com.yugentech.sessions.localization.AppStrings
 import android.app.PendingIntent
 import android.content.Intent
 import com.google.android.gms.auth.api.identity.BeginSignInRequest
@@ -115,12 +117,12 @@ class AuthService(
         return try {
             if (data == null) {
                 Timber.w("Google Sign-In result data was null")
-                return AuthResult.Error("Google Sign-In cancelled")
+                return AuthResult.Error(AppStrings.get(R.string.google_error_cancelled))
             }
 
             val credential = oneTapClient.getSignInCredentialFromIntent(data)
             val idToken = credential.googleIdToken
-                ?: return AuthResult.Error("Google ID token is missing").also { Timber.e("Missing Google ID Token") }
+                ?: return AuthResult.Error(AppStrings.get(R.string.google_error_failed)).also { Timber.e("Missing Google ID Token") }
 
             Timber.d("Google ID Token retrieved, exchanging for Firebase Credential")
             val firebaseCredential = GoogleAuthProvider.getCredential(idToken, null)

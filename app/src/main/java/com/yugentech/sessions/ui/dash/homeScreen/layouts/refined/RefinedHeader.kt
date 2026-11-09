@@ -1,5 +1,8 @@
 package com.yugentech.sessions.ui.dash.homeScreen.layouts.refined
 
+import com.yugentech.sessions.localization.rememberTodayLabel
+import com.yugentech.sessions.R
+import androidx.compose.ui.res.stringResource
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateColorAsState
@@ -41,9 +44,6 @@ import com.yugentech.sessions.ui.dash.homeScreen.layouts.shared.TaskTapInset
 import com.yugentech.sessions.ui.dash.homeScreen.layouts.shared.taskTapArea
 import com.yugentech.sessions.ui.dash.mainScreen.components.pressClickable
 import androidx.compose.ui.unit.sp
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
 
 /**
  * The top of Home: the task as the heading (tap to change it while nothing is running), and the background sound in a pill on the
@@ -64,7 +64,7 @@ fun RefinedHeader(
     val backgroundSound = remember(activeBackgroundSoundId) {
         BackgroundSound.fromId(activeBackgroundSoundId)
     }
-    val today = remember { SimpleDateFormat("EEEE · d MMMM", Locale.getDefault()).format(Date()).uppercase() }
+    val today = rememberTodayLabel()
 
     Row(
         modifier = Modifier
@@ -103,7 +103,7 @@ fun RefinedHeader(
                     modifier = Modifier.weight(1f, fill = false)
                 ) { task ->
                     Text(
-                        text = task.ifEmpty { "Name this session" },
+                        text = task.ifEmpty { stringResource(R.string.task_placeholder_name) },
                         style = MaterialTheme.typography.headlineSmall,
                         fontWeight = if (task.isEmpty()) FontWeight.Normal else FontWeight.SemiBold,
                         color = if (task.isEmpty()) {
@@ -152,13 +152,13 @@ internal fun SoundPill(
     modifier: Modifier = Modifier
 ) {
     val soundName = when (backgroundSound) {
-        BackgroundSound.NONE -> "No sound"
-        BackgroundSound.RAIN -> "Rain"
-        BackgroundSound.BROWN_NOISE -> "Brown noise"
-        BackgroundSound.FIREPLACE -> "Fireplace"
-        BackgroundSound.LIBRARY -> "Library"
-        BackgroundSound.RIVERSIDE -> "Riverside"
-        BackgroundSound.FOREST -> "Forest"
+        BackgroundSound.NONE -> stringResource(R.string.sound_no_sound)
+        BackgroundSound.RAIN -> stringResource(R.string.sound_rain)
+        BackgroundSound.BROWN_NOISE -> stringResource(R.string.sound_brown_noise)
+        BackgroundSound.FIREPLACE -> stringResource(R.string.sound_fireplace)
+        BackgroundSound.LIBRARY -> stringResource(R.string.sound_library)
+        BackgroundSound.RIVERSIDE -> stringResource(R.string.sound_riverside)
+        BackgroundSound.FOREST -> stringResource(R.string.sound_forest)
     }
     val isNone = backgroundSound == BackgroundSound.NONE
     val isMuted = !isEnabled && !isNone
@@ -186,7 +186,7 @@ internal fun SoundPill(
             .pressClickable(
                 shape = CircleShape,
                 enabled = !isNone,
-                onClickLabel = if (isMuted) "Unmute sound" else "Mute sound",
+                onClickLabel = if (isMuted) stringResource(R.string.cd_unmute_sound) else stringResource(R.string.cd_mute_sound),
                 onClick = onClick
             )
             .background(container, CircleShape)
@@ -202,7 +202,7 @@ internal fun SoundPill(
             )
         }
         Spacer(Modifier.width(MaterialTheme.spacing.xs))
-        AnimatedContent(targetState = if (isMuted) "Muted" else soundName, transitionSpec = { fadeThrough() }, label = "soundText") { text ->
+        AnimatedContent(targetState = if (isMuted) stringResource(R.string.sound_muted) else soundName, transitionSpec = { fadeThrough() }, label = "soundText") { text ->
             Text(
                 text = text,
                 style = MaterialTheme.typography.labelLarge,

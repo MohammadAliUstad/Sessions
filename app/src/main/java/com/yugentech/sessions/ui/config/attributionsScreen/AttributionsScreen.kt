@@ -1,5 +1,7 @@
 package com.yugentech.sessions.ui.config.attributionsScreen
 
+import com.yugentech.sessions.R
+import androidx.compose.ui.res.stringResource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.WindowInsets
@@ -71,7 +73,7 @@ fun AttributionsScreen(
 
             item {
                 SectionHeader(
-                    title = "Libraries We Use",
+                    title = stringResource(R.string.attributions_libraries),
                     icon = Icons.Default.IntegrationInstructions
                 )
             }

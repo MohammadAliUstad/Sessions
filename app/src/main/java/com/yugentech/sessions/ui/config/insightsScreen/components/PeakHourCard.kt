@@ -1,5 +1,10 @@
 package com.yugentech.sessions.ui.config.insightsScreen.components
 
+import androidx.compose.runtime.remember
+import androidx.compose.ui.platform.LocalConfiguration
+import android.text.format.DateFormat
+import com.yugentech.sessions.R
+import androidx.compose.ui.res.stringResource
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -36,15 +41,15 @@ fun PeakHourCard(
             verticalAlignment = Alignment.CenterVertically
         ) {
             if (peakHour != null) {
-                val period = if (peakHour < 12) "AM" else "PM"
-                val displayHour = when {
-                    peakHour == 0 -> 12
-                    peakHour > 12 -> peakHour - 12
-                    else -> peakHour
+                // The hour as the language writes it ("3 PM", "15 h", "午後3時"...)
+                val locale = LocalConfiguration.current.locales[0]
+                val hourText = remember(peakHour, locale) {
+                    val pattern = DateFormat.getBestDateTimePattern(locale, "j")
+                    java.time.LocalTime.of(peakHour, 0).format(java.time.format.DateTimeFormatter.ofPattern(pattern, locale))
                 }
 
                 Text(
-                    text = "$displayHour$period",
+                    text = hourText,
                     style = MaterialTheme.typography.displaySmall,
                     fontWeight = FontWeight.Black,
                     color = MaterialTheme.colorScheme.onTertiaryContainer
@@ -54,13 +59,13 @@ fun PeakHourCard(
 
                 Column {
                     Text(
-                        text = "Peak Productivity",
+                        text = stringResource(R.string.peak_title),
                         style = MaterialTheme.typography.labelLarge,
                         fontWeight = FontWeight.Bold
                     )
 
                     Text(
-                        text = "Your most active hour",
+                        text = stringResource(R.string.peak_subtitle),
                         style = MaterialTheme.typography.bodySmall
                     )
                 }
@@ -76,13 +81,13 @@ fun PeakHourCard(
 
                 Column {
                     Text(
-                        text = "No Data Yet",
+                        text = stringResource(R.string.peak_empty),
                         style = MaterialTheme.typography.labelLarge,
                         fontWeight = FontWeight.Bold
                     )
 
                     Text(
-                        text = "Log more sessions to calculate",
+                        text = stringResource(R.string.peak_empty_subtitle),
                         style = MaterialTheme.typography.bodySmall
                     )
                 }

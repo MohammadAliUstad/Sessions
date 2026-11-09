@@ -1,5 +1,7 @@
 package com.yugentech.sessions.ui.dash.settingsScreen.components
 
+import com.yugentech.sessions.R
+import androidx.compose.ui.res.stringResource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -67,7 +69,7 @@ fun TimePickerDialog(
                 verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.m)
             ) {
                 Text(
-                    text = "Select Reminder Time",
+                    text = stringResource(R.string.reminder_time_picker_title),
                     style = MaterialTheme.typography.headlineSmall,
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.onSurface,
@@ -93,7 +95,7 @@ fun TimePickerDialog(
                 ) {
                     TextButton(onClick = onDismiss) {
                         Text(
-                            text = "Cancel",
+                            text = stringResource(R.string.cancel),
                             style = MaterialTheme.typography.labelLarge,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
@@ -105,7 +107,7 @@ fun TimePickerDialog(
                         }
                     ) {
                         Text(
-                            text = "Set Time",
+                            text = stringResource(R.string.reminder_time_picker_confirm),
                             style = MaterialTheme.typography.labelLarge,
                             fontWeight = FontWeight.SemiBold
                         )

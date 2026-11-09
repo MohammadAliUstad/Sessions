@@ -1,5 +1,8 @@
 package com.yugentech.sessions.notification.active
 
+import com.yugentech.sessions.localization.AppLocale
+import android.content.Context
+import com.yugentech.sessions.R
 import android.app.Service
 import android.content.Intent
 import android.content.pm.ServiceInfo
@@ -25,6 +28,11 @@ import timber.log.Timber
 import kotlin.time.Duration.Companion.milliseconds
 
 class ActiveForeground : Service() {
+
+    // Below Android 13, the language picked in the app, for the notification's text
+    override fun attachBaseContext(newBase: Context) {
+        super.attachBaseContext(AppLocale.wrap(newBase))
+    }
 
     private val notificationService: NotificationService by inject()
     private val timerRepository: TimerRepository by inject()
@@ -107,7 +115,7 @@ class ActiveForeground : Service() {
         val placeholderNotification = buildNotificationFromState(
             seconds = timerState.currentTime,
             mode = timerState.currentMode,
-            message = "Starting session..."
+            message = applicationContext.getString(R.string.notification_starting)
         )
 
         val androidNotification = notificationService.buildNotification(placeholderNotification)
@@ -202,9 +210,9 @@ class ActiveForeground : Service() {
 
     private fun getModeTitle(mode: TimerMode): String {
         return when (mode) {
-            TimerMode.Focus -> "Focus"
-            TimerMode.ShortBreak -> "Short Break"
-            TimerMode.LongBreak -> "Long Break"
+            TimerMode.Focus -> applicationContext.getString(R.string.mode_focus)
+            TimerMode.ShortBreak -> applicationContext.getString(R.string.mode_short_break)
+            TimerMode.LongBreak -> applicationContext.getString(R.string.mode_long_break)
         }
     }
 

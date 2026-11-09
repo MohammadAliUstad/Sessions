@@ -1,5 +1,7 @@
 package com.yugentech.sessions.ui.config.attributionsScreen.components
 
+import com.yugentech.sessions.R
+import androidx.compose.ui.res.stringResource
 import android.content.Intent
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -68,13 +70,13 @@ fun OpenSourceCard(githubUrl: String) {
 
                 Column {
                     Text(
-                        "Sessions is Open Source",
+                        stringResource(R.string.credit_oss_title),
                         style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.Bold,
                         color = MaterialTheme.colorScheme.onSurface
                     )
                     Text(
-                        "Licensed under Apache 2.0",
+                        stringResource(R.string.credit_oss_subtitle),
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
@@ -82,7 +84,7 @@ fun OpenSourceCard(githubUrl: String) {
             }
 
             Text(
-                "The source code is available on GitHub. You are free to view, learn from, and modify the code for personal use.",
+                stringResource(R.string.credit_oss_body),
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
@@ -99,7 +101,7 @@ fun OpenSourceCard(githubUrl: String) {
                     contentColor = MaterialTheme.colorScheme.onTertiaryContainer
                 )
             ) {
-                Text("View Source Code")
+                Text(stringResource(R.string.credit_oss_action))
             }
         }
     }

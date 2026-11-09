@@ -1,6 +1,8 @@
 package com.yugentech.sessions.di
 
+import com.yugentech.sessions.localization.AppStrings
 import android.app.Application
+import android.content.Context
 import androidx.work.Configuration
 import com.yugentech.sessions.BuildConfig
 import com.google.firebase.FirebaseApp
@@ -17,6 +19,7 @@ import com.yugentech.sessions.di.module.templateModule
 import com.yugentech.sessions.di.module.timerModule
 import com.yugentech.sessions.di.module.userModule
 import com.yugentech.sessions.di.module.viewModelModule
+import com.yugentech.sessions.localization.AppLocale
 import com.yugentech.sessions.notification.reminders.ReminderManager
 import com.yugentech.sessions.utils.ReleaseTree
 import org.koin.android.ext.android.get
@@ -33,8 +36,15 @@ class SessionsApp : Application(), Configuration.Provider {
             .setMinimumLoggingLevel(if (BuildConfig.DEBUG) android.util.Log.DEBUG else android.util.Log.ERROR)
             .build()
 
+    // Below Android 13, the language picked in the app (see AppLocale), so notifications and
+    // anything else read from the app context follow it too; from 13 the system applies it
+    override fun attachBaseContext(base: Context) {
+        super.attachBaseContext(AppLocale.wrap(base))
+    }
+
     override fun onCreate() {
         super.onCreate()
+        AppStrings.init(this)
 
         // Configure logging: DebugTree for development, ReleaseTree for production
         Timber.plant(ReleaseTree())

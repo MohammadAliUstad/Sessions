@@ -1,5 +1,6 @@
 package com.yugentech.sessions.announcements.catalog
 
+import com.yugentech.sessions.R
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AutoAwesome
 import androidx.compose.material.icons.filled.SpaceDashboard
@@ -32,12 +33,12 @@ object AnnouncementsCatalog {
             maxVersionCode = 27,
             priority = 100,
             style = AnnouncementStyle.DIALOG,
-            title = "What's New in Sessions 6.0",
-            message = "We've added the new Studio layout with a watch-style dial, living glow backgrounds, mesh animations, and smoother transitions throughout the app.",
+            title = R.string.announcement_v6_title,
+            message = R.string.announcement_v6_message,
             icon = Icons.Default.AutoAwesome,
             primaryAction = AnnouncementAction.OpenWhatsNew,
-            primaryActionLabel = "See What's New",
-            dismissLabel = "Maybe Later"
+            primaryActionLabel = R.string.announcement_see_whats_new,
+            dismissLabel = R.string.announcement_maybe_later
         ),
         Announcement(
             id = "v6_0_0_layouts_tip",
@@ -45,12 +46,12 @@ object AnnouncementsCatalog {
             maxVersionCode = 27,
             priority = 50,
             style = AnnouncementStyle.DIALOG,
-            title = "Try the New Layouts",
-            message = "You can switch between Classic, Refined, and Studio layouts anytime under Settings > Home & Cards.",
+            title = R.string.announcement_layouts_title,
+            message = R.string.announcement_layouts_message,
             icon = Icons.Default.SpaceDashboard,
             primaryAction = AnnouncementAction.OpenRoute(AppScreen.HomeCustomization.route),
-            primaryActionLabel = "Customize Now",
-            dismissLabel = "Got It"
+            primaryActionLabel = R.string.announcement_customize_now,
+            dismissLabel = R.string.announcement_got_it
         )
     )
 }

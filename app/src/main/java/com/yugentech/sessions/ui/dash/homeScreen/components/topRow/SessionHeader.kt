@@ -1,5 +1,7 @@
 package com.yugentech.sessions.ui.dash.homeScreen.components.topRow
 
+import com.yugentech.sessions.R
+import androidx.compose.ui.res.stringResource
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.background
@@ -86,7 +88,7 @@ fun SessionHeader(
                     modifier = Modifier.weight(1f)
                 ) { task ->
                     Text(
-                        text = task.ifEmpty { "Enter a name..." },
+                        text = task.ifEmpty { stringResource(R.string.task_placeholder_enter) },
                         style = MaterialTheme.typography.titleMedium,
                         fontWeight = if (task.isEmpty()) FontWeight.Medium else FontWeight.SemiBold,
                         color = if (task.isEmpty())
@@ -101,7 +103,7 @@ fun SessionHeader(
                 if (!isSessionActive) {
                     Icon(
                         imageVector = Icons.Rounded.Edit,
-                        contentDescription = "Edit",
+                        contentDescription = stringResource(R.string.cd_edit),
                         modifier = Modifier.size(MaterialTheme.icons.smallMedium),
                         tint = MaterialTheme.colorScheme.primary
                     )
@@ -174,7 +176,7 @@ fun StatusBadge(
                 label = "statusText"
             ) { running ->
                 Text(
-                    text = if (running) "Active" else "Idle",
+                    text = if (running) stringResource(R.string.status_active) else stringResource(R.string.status_idle),
                     style = MaterialTheme.typography.labelMedium.copy(
                         fontWeight = FontWeight.Medium
                     ),
@@ -194,13 +196,13 @@ fun SoundBadge(
     onClick: () -> Unit
 ) {
     val soundName = when (backgroundSound) {
-        BackgroundSound.NONE -> "None"
-        BackgroundSound.RAIN -> "Rain"
-        BackgroundSound.BROWN_NOISE -> "Brown Noise"
-        BackgroundSound.FIREPLACE -> "Fireplace"
-        BackgroundSound.LIBRARY -> "Library"
-        BackgroundSound.RIVERSIDE -> "Riverside"
-        BackgroundSound.FOREST -> "Forest"
+        BackgroundSound.NONE -> stringResource(R.string.sound_none)
+        BackgroundSound.RAIN -> stringResource(R.string.sound_rain)
+        BackgroundSound.BROWN_NOISE -> stringResource(R.string.sound_brown_noise)
+        BackgroundSound.FIREPLACE -> stringResource(R.string.sound_fireplace)
+        BackgroundSound.LIBRARY -> stringResource(R.string.sound_library)
+        BackgroundSound.RIVERSIDE -> stringResource(R.string.sound_riverside)
+        BackgroundSound.FOREST -> stringResource(R.string.sound_forest)
     }
 
     val isNone = backgroundSound == BackgroundSound.NONE
@@ -251,7 +253,7 @@ fun SoundBadge(
                         Icons.AutoMirrored.Rounded.VolumeOff
                     else
                         Icons.AutoMirrored.Rounded.VolumeUp,
-                    contentDescription = "Sound",
+                    contentDescription = stringResource(R.string.action_sound),
                     modifier = Modifier.size(MaterialTheme.icons.smallMedium),
                     tint = contentColor
                 )
@@ -260,7 +262,7 @@ fun SoundBadge(
             Spacer(modifier = Modifier.width(MaterialTheme.spacing.xs))
 
             AnimatedContent(
-                targetState = if (isMuted) "Muted" else soundName,
+                targetState = if (isMuted) stringResource(R.string.sound_muted) else soundName,
                 transitionSpec = { fadeThrough() },
                 label = "soundText"
             ) { text ->

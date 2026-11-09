@@ -1,5 +1,7 @@
 package com.yugentech.sessions.ui.dash.homeScreen.layouts.studio
 
+import com.yugentech.sessions.R
+import androidx.compose.ui.res.stringResource
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.tween
@@ -76,7 +78,7 @@ fun StudioDock(
         // one, Discard stays neutral (a step brighter) and Finish takes the primary container
         SideAction(
             icon = if (isSessionActive) Icons.Rounded.Close else Icons.Rounded.GraphicEq,
-            label = if (isSessionActive) "Discard" else "Sound",
+            label = if (isSessionActive) stringResource(R.string.action_discard) else stringResource(R.string.action_sound),
             container = scheme.surfaceContainerHighest,
             content = if (isSessionActive) scheme.onSurface else scheme.onSurfaceVariant,
             onClick = if (isSessionActive) onDiscard else onSound
@@ -94,7 +96,7 @@ fun StudioDock(
 
         SideAction(
             icon = if (isSessionActive) Icons.Rounded.Check else Icons.Rounded.Layers,
-            label = if (isSessionActive) "Finish" else "Sets",
+            label = if (isSessionActive) stringResource(R.string.action_finish) else stringResource(R.string.action_sets),
             container = if (isSessionActive) scheme.primaryContainer else scheme.surfaceContainerHighest,
             content = if (isSessionActive) scheme.onPrimaryContainer else scheme.onSurfaceVariant,
             onClick = if (isSessionActive) onFinish else onSets
@@ -115,9 +117,9 @@ private fun MainAction(
     val fill by animateColorAsState(container, tween(450), label = "dockMainContainer")
     val ink by animateColorAsState(content, tween(450), label = "dockMainContent")
     val label = when {
-        isRunning -> "Pause"
-        isSessionActive -> "Resume"
-        else -> "Start focus"
+        isRunning -> stringResource(R.string.action_pause)
+        isSessionActive -> stringResource(R.string.action_resume)
+        else -> stringResource(R.string.action_start_focus)
     }
 
     Row(

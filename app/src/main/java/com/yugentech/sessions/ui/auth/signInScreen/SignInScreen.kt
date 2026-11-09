@@ -1,5 +1,9 @@
 package com.yugentech.sessions.ui.auth.signInScreen
 
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.yugentech.sessions.R
+import androidx.compose.ui.res.stringResource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -36,9 +40,11 @@ fun SignInScreen(
 
     AuthScaffold(
         header = { ResumeDial() },
-        formTitle = "Sign in",
-        title = "Pick up your focus",
-        subtitle = "Your sessions, streaks and templates are right where you left them.",
+        formTitle = stringResource(R.string.sign_in_action),
+        title = stringResource(R.string.sign_in_title),
+        subtitle = stringResource(R.string.sign_in_subtitle),
+        titleSize = 30.sp,
+        headerGap = 0.dp,
         overlay = {
             Box(modifier = Modifier.fillMaxSize()) {
                 ToastMessage(
@@ -71,11 +77,12 @@ fun SignInScreen(
             onForgotPassword = onForgotPassword
         )
 
-        Spacer(modifier = Modifier.height(MaterialTheme.spacing.m))
+        // Matches the card's bottom padding, so the link sits evenly between form and edge
+        Spacer(modifier = Modifier.height(MaterialTheme.spacing.s))
 
         AuthSwitchLink(
-            prompt = "New to Sessions?",
-            action = "Create an account",
+            prompt = stringResource(R.string.sign_in_prompt),
+            action = stringResource(R.string.sign_in_prompt_action),
             onClick = onNavigateToSignUp
         )
     }

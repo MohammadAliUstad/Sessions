@@ -8,6 +8,7 @@ sealed class AppScreen(val route: String) {
     data object Insights : AppScreen("insights")
     data object Appearance : AppScreen("appearance")
     data object HomeCustomization : AppScreen("home_customization")
+    data object Language : AppScreen("language")
     data object SignUp : AppScreen("sign_up")
     data object SignIn : AppScreen("sign_in")
     data object Main : AppScreen("main")

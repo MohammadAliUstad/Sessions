@@ -1,5 +1,8 @@
 package com.yugentech.sessions.ui.dash.homeScreen.components.dialogs
 
+import androidx.compose.ui.res.pluralStringResource
+import com.yugentech.sessions.R
+import androidx.compose.ui.res.stringResource
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateColorAsState
@@ -130,20 +133,20 @@ fun SetsSettingsSheet(
         ) {
             Column(verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.xs)) {
                 Text(
-                    text = "Session Goals",
+                    text = stringResource(R.string.sets_title),
                     style = MaterialTheme.typography.titleLarge,
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.onSurface
                 )
                 Text(
-                    text = "Set your focus goal and configure long breaks.",
+                    text = stringResource(R.string.sets_subtitle),
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
 
             SettingSliderRow(
-                label = "Target Sets",
+                label = stringResource(R.string.sets_target),
                 valueDisplay = "$sets",
                 icon = Icons.Outlined.Flag,
                 value = sets.toFloat(),
@@ -185,7 +188,7 @@ fun SetsSettingsSheet(
                         )
                         Spacer(modifier = Modifier.width(MaterialTheme.spacing.s))
                         Text(
-                            text = "Long Break",
+                            text = stringResource(R.string.mode_long_break),
                             style = MaterialTheme.typography.titleMedium,
                             fontWeight = FontWeight.Medium,
                             color = MaterialTheme.colorScheme.onSurface
@@ -222,8 +225,8 @@ fun SetsSettingsSheet(
                 ) {
                     Column(verticalArrangement = Arrangement.spacedBy(24.dp)) {
                         SettingSliderRow(
-                            label = "Duration",
-                            valueDisplay = "${longBreak.roundToInt()}m",
+                            label = stringResource(R.string.sets_duration),
+                            valueDisplay = stringResource(R.string.duration_minutes_short, longBreak.roundToInt()),
                             icon = Icons.Outlined.HourglassEmpty,
                             value = longBreak,
                             valueRange = 15f..45f,
@@ -255,7 +258,7 @@ fun SetsSettingsSheet(
                     scope.launch { sheetState.hide() }
                 }
             ) {
-                Text("Save")
+                Text(stringResource(R.string.save))
             }
         }
     }
@@ -298,7 +301,7 @@ private fun LongBreakPatternControl(
                 )
                 Spacer(modifier = Modifier.width(MaterialTheme.spacing.s))
                 Text(
-                    text = "Interval",
+                    text = stringResource(R.string.sets_interval),
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Medium,
                     color = MaterialTheme.colorScheme.onSurface,
@@ -306,7 +309,7 @@ private fun LongBreakPatternControl(
                 )
             }
             Text(
-                text = if (setsPerLongBreak == 1) "1 set" else "$setsPerLongBreak sets",
+                text = pluralStringResource(R.plurals.sets_count, setsPerLongBreak, setsPerLongBreak),
                 style = MaterialTheme.typography.headlineSmall,
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.primary,
@@ -377,10 +380,10 @@ private fun LongBreakPatternControl(
                 },
                 enabled = setsPerLongBreak > 1
             ) {
-                Icon(imageVector = Icons.Rounded.Remove, contentDescription = "Decrease")
+                Icon(imageVector = Icons.Rounded.Remove, contentDescription = stringResource(R.string.cd_decrease))
             }
             Text(
-                text = if (setsPerLongBreak == 1) "every set" else "every $setsPerLongBreak sets",
+                text = pluralStringResource(R.plurals.every_n_sets, setsPerLongBreak, setsPerLongBreak),
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
@@ -391,7 +394,7 @@ private fun LongBreakPatternControl(
                 },
                 enabled = setsPerLongBreak < maxValue
             ) {
-                Icon(imageVector = Icons.Rounded.Add, contentDescription = "Increase")
+                Icon(imageVector = Icons.Rounded.Add, contentDescription = stringResource(R.string.cd_increase))
             }
         }
     }

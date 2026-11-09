@@ -61,6 +61,15 @@ android {
         }
     }
 
+    // Ship every translation in the base APK. With Play's default per-language splits, only the
+    // phone's language is installed, so picking another one in Settings > Language would fall back
+    // to English. The ten languages add only a few hundred KB.
+    bundle {
+        language {
+            enableSplit = false
+        }
+    }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11

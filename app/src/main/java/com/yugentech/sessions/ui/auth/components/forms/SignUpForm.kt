@@ -1,5 +1,8 @@
 package com.yugentech.sessions.ui.auth.components.forms
 
+import androidx.compose.ui.platform.LocalContext
+import com.yugentech.sessions.R
+import androidx.compose.ui.res.stringResource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -36,6 +39,8 @@ fun SignUpForm(
     modifier: Modifier = Modifier
 ) {
     var formState by remember { mutableStateOf(SignUpFormState()) }
+    // Errors are worked out in callbacks, so read from resources (in the app's language)
+    val resources = LocalContext.current.resources
     val scope = rememberCoroutineScope()
     // isLoading is shared by both sign-up paths; remember which button started it so only
     // that one shows the spinner while the other is just disabled.
@@ -58,10 +63,10 @@ fun SignUpForm(
             onValueChange = { newName ->
                 formState = formState.copy(
                     name = newName,
-                    nameError = FormValidator.validateName(newName)
+                    nameError = FormValidator.validateName(resources, newName)
                 )
             },
-            label = "Your name",
+            label = stringResource(R.string.label_your_name),
             leadingIcon = Icons.Default.Person,
             error = formState.nameError
         )
@@ -71,10 +76,10 @@ fun SignUpForm(
             onValueChange = { newEmail ->
                 formState = formState.copy(
                     email = newEmail,
-                    emailError = FormValidator.validateEmail(newEmail)
+                    emailError = FormValidator.validateEmail(resources, newEmail)
                 )
             },
-            label = "Email",
+            label = stringResource(R.string.label_email),
             leadingIcon = Icons.Default.Email,
             error = formState.emailError
         )
@@ -84,22 +89,23 @@ fun SignUpForm(
             onValueChange = { newPassword ->
                 formState = formState.copy(
                     password = newPassword,
-                    passwordError = FormValidator.validatePassword(newPassword)
+                    passwordError = FormValidator.validatePassword(resources, newPassword)
                 )
             },
-            label = "Password",
+            label = stringResource(R.string.label_password),
             leadingIcon = Icons.Default.Lock,
             error = formState.passwordError,
             isPassword = true
         )
 
         ActionButton(
-            text = "Create account",
+            text = stringResource(R.string.sign_up_action),
             isLoading = isLoading && !isGoogleSignIn,
             enabled = !isLoading,
             onClick = {
                 isGoogleSignIn = false
                 val isValid = FormValidator.validateSignUpForm(
+                    res = resources,
                     name = formState.name,
                     email = formState.email,
                     password = formState.password,
@@ -126,7 +132,7 @@ fun SignUpForm(
             }
         )
 
-        AuthDivider(text = "or")
+        AuthDivider(text = stringResource(R.string.auth_divider_or))
 
         GoogleSignInButton(
             isLoading = isLoading && isGoogleSignIn,

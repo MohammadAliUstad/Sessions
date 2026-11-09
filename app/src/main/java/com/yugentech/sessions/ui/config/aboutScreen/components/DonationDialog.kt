@@ -1,5 +1,7 @@
 package com.yugentech.sessions.ui.config.aboutScreen.components
 
+import com.yugentech.sessions.R
+import androidx.compose.ui.res.stringResource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -97,14 +99,14 @@ fun DonationDialog(
                         verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.s)
                     ) {
                         Text(
-                            text = "Fuel the Development",
+                            text = stringResource(R.string.donation_title),
                             style = MaterialTheme.typography.headlineSmall,
                             color = MaterialTheme.colorScheme.onSurface,
                             textAlign = TextAlign.Center
                         )
 
                         Text(
-                            text = "Sessions is free and open source. If you enjoy the focus, consider supporting the journey!",
+                            text = stringResource(R.string.donation_message),
                             style = MaterialTheme.typography.bodyMedium,
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
                             textAlign = TextAlign.Center
@@ -117,19 +119,19 @@ fun DonationDialog(
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     PaymentOptionButton(
-                        text = "Buy me a Coffee",
+                        text = stringResource(R.string.donation_coffee),
                         icon = Icons.Default.Coffee,
                         onClick = onCoffeeClick
                     )
 
                     PaymentOptionButton(
-                        text = "Buy me Lunch",
+                        text = stringResource(R.string.donation_lunch),
                         icon = Icons.Default.ShoppingBag,
                         onClick = onLunchClick
                     )
 
                     PaymentOptionButton(
-                        text = "Ko-fi (PayPal / International)",
+                        text = stringResource(R.string.donation_kofi),
                         icon = Icons.Default.Public,
                         onClick = onWebClick
                     )
@@ -137,7 +139,7 @@ fun DonationDialog(
 
                 TextButton(onClick = onDismiss) {
                     Text(
-                        text = "Maybe Later",
+                        text = stringResource(R.string.maybe_later),
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }

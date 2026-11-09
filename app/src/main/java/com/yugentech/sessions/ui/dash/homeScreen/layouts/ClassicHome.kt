@@ -1,5 +1,7 @@
 package com.yugentech.sessions.ui.dash.homeScreen.layouts
 
+import com.yugentech.sessions.R
+import androidx.compose.ui.res.stringResource
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -44,7 +46,7 @@ fun ClassicHome(ui: HomeUi, actions: HomeActions, screenHeight: Dp) {
             selectedDuration = ui.timer.totalTime.toInt(),
             isStudying = ui.isRunning,
             currentMode = ui.mode,
-            idleLabel = ui.errorMessage ?: "Press the play button\nto start."
+            idleLabel = ui.errorMessage ?: stringResource(R.string.timer_idle_classic)
         )
 
         AnimatedContent(targetState = ui.isSessionActive, label = "dashboard_swap") { showProgress ->

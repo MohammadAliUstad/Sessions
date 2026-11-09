@@ -1,5 +1,7 @@
 package com.yugentech.sessions.ui.dash.homeScreen.components.dialogs
 
+import com.yugentech.sessions.R
+import androidx.compose.ui.res.stringResource
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
@@ -84,12 +86,12 @@ fun SoundSelectionSheet(
     val scope = rememberCoroutineScope()
 
     val soundOptions = listOf(
-        SoundOption("Forest", BackgroundSound.FOREST.id, Icons.Rounded.Forest),
-        SoundOption("Rain", BackgroundSound.RAIN.id, Icons.Rounded.WaterDrop),
-        SoundOption("Brown Noise", BackgroundSound.BROWN_NOISE.id, Icons.Rounded.BlurOn),
-        SoundOption("Fireplace", BackgroundSound.FIREPLACE.id, Icons.Rounded.LocalFireDepartment),
-        SoundOption("Library", BackgroundSound.LIBRARY.id, Icons.AutoMirrored.Rounded.LibraryBooks),
-        SoundOption("Riverside", BackgroundSound.RIVERSIDE.id, Icons.Rounded.Water)
+        SoundOption(stringResource(R.string.sound_forest), BackgroundSound.FOREST.id, Icons.Rounded.Forest),
+        SoundOption(stringResource(R.string.sound_rain), BackgroundSound.RAIN.id, Icons.Rounded.WaterDrop),
+        SoundOption(stringResource(R.string.sound_brown_noise), BackgroundSound.BROWN_NOISE.id, Icons.Rounded.BlurOn),
+        SoundOption(stringResource(R.string.sound_fireplace), BackgroundSound.FIREPLACE.id, Icons.Rounded.LocalFireDepartment),
+        SoundOption(stringResource(R.string.sound_library), BackgroundSound.LIBRARY.id, Icons.AutoMirrored.Rounded.LibraryBooks),
+        SoundOption(stringResource(R.string.sound_riverside), BackgroundSound.RIVERSIDE.id, Icons.Rounded.Water)
     )
 
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
@@ -129,21 +131,21 @@ fun SoundSelectionSheet(
         ) {
             Column(verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.xs)) {
                 Text(
-                    text = "Ambient Sounds",
+                    text = stringResource(R.string.sounds_title),
                     style = MaterialTheme.typography.titleLarge,
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.onSurface
                 )
                 Text(
-                    text = "Choose a soothing ambience to stay focused during your session.",
+                    text = stringResource(R.string.sounds_subtitle),
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
 
             SoundSwitchRow(
-                title = "Turn On Sounds",
-                subtitle = "Enable to preview and pick a sound below",
+                title = stringResource(R.string.sounds_turn_on),
+                subtitle = stringResource(R.string.sounds_turn_on_subtitle),
                 checked = isSoundOn,
                 onCheckedChange = { checked ->
                     haptic.performHapticFeedback(if (checked) HapticFeedbackType.ToggleOn else HapticFeedbackType.ToggleOff)
@@ -196,7 +198,7 @@ fun SoundSelectionSheet(
                     scope.launch { sheetState.hide() }
                 }
             ) {
-                Text("Save")
+                Text(stringResource(R.string.save))
             }
         }
     }

@@ -1,5 +1,7 @@
 package com.yugentech.sessions.ui.dash.homeScreen.components.middle
 
+import com.yugentech.sessions.R
+import androidx.compose.ui.res.stringResource
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.SizeTransform
 import androidx.compose.animation.core.FastOutSlowInEasing
@@ -41,7 +43,7 @@ fun TimerDisplay(
     isStudying: Boolean,
     currentMode: TimerMode,
     modifier: Modifier = Modifier,
-    idleLabel: String = "Press the play button\nto start."
+    idleLabel: String = stringResource(R.string.timer_idle_classic)
 ) {
     val targetProgress = if (selectedDuration > 0) {
         val raw = 1f - (displayTime.toFloat() / selectedDuration.toFloat())
@@ -110,7 +112,7 @@ fun TimerDisplay(
                             fontWeight = FontWeight.Medium
                         ),
                         textAlign = TextAlign.Center,
-                        color = if (target != "Press the play button\nto start.")
+                        color = if (target != stringResource(R.string.timer_idle_classic))
                             MaterialTheme.colorScheme.error
                         else
                             MaterialTheme.colorScheme.onSurfaceVariant

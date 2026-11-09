@@ -92,7 +92,7 @@ fun AvatarPickerSheet(
             verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.s)
         ) {
             Text(
-                text = "Choose Your Avatar",
+                text = stringResource(R.string.avatar_sheet_title),
                 style = MaterialTheme.typography.titleLarge,
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.onSurface,
@@ -191,7 +191,7 @@ fun EditNameSheet(
             verticalArrangement = Arrangement.spacedBy(20.dp)
         ) {
             Text(
-                text = "Change Your Name",
+                text = stringResource(R.string.name_sheet_title),
                 style = MaterialTheme.typography.titleLarge,
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.onSurface
@@ -202,7 +202,7 @@ fun EditNameSheet(
                 onValueChange = {
                     if (it.text.length <= MAX_NAME_LENGTH) textFieldValue = it
                 },
-                label = { Text("Display Name") },
+                label = { Text(stringResource(R.string.name_sheet_label)) },
                 supportingText = {
                     // Only complain once something has changed, so the sheet doesn't open on an error.
                     val showError = error != null && currentText != currentName
@@ -237,7 +237,7 @@ fun EditNameSheet(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 // No haptic on Cancel: only the action button gives feedback.
-                TextButton(onClick = onDismiss) { Text("Cancel") }
+                TextButton(onClick = onDismiss) { Text(stringResource(R.string.cancel)) }
                 Spacer(modifier = Modifier.width(8.dp))
                 Button(
                     onClick = save,
@@ -248,7 +248,7 @@ fun EditNameSheet(
                         disabledContainerColor = saveContainerColor,
                         disabledContentColor = saveContentColor
                     )
-                ) { Text("Save") }
+                ) { Text(stringResource(R.string.save)) }
             }
         }
     }

@@ -1,4 +1,7 @@
 package com.yugentech.sessions.ui.config.insightsScreen.components
+import androidx.compose.ui.res.pluralStringResource
+import com.yugentech.sessions.R
+import androidx.compose.ui.res.stringResource
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -20,12 +23,12 @@ fun ConsistencyCard(
     streakCount: Int
 ) {
     val (title, message) = when {
-        streakCount == 0 -> "Getting Started" to "Begin your first session to start building a streak"
-        streakCount < 3 -> "Building Momentum" to "You're on a $streakCount-day streak. Keep going!"
-        streakCount < 7 -> "Strong Start" to "You've maintained a $streakCount-day focus streak. Great progress!"
-        streakCount < 14 -> "Habit Forming" to "Impressive $streakCount-day streak! You're building a solid routine."
-        streakCount < 30 -> "Committed" to "$streakCount days of consistent focus. You're on fire!"
-        else -> "Focus Master" to "Outstanding $streakCount-day streak. Your dedication is remarkable!"
+        streakCount == 0 -> stringResource(R.string.streak_getting_started) to stringResource(R.string.streak_getting_started_message)
+        streakCount < 3 -> stringResource(R.string.streak_building) to pluralStringResource(R.plurals.streak_building_message, streakCount, streakCount)
+        streakCount < 7 -> stringResource(R.string.streak_strong_start) to pluralStringResource(R.plurals.streak_strong_start_message, streakCount, streakCount)
+        streakCount < 14 -> stringResource(R.string.streak_habit) to pluralStringResource(R.plurals.streak_habit_message, streakCount, streakCount)
+        streakCount < 30 -> stringResource(R.string.streak_committed) to pluralStringResource(R.plurals.streak_committed_message, streakCount, streakCount)
+        else -> stringResource(R.string.streak_master) to pluralStringResource(R.plurals.streak_master_message, streakCount, streakCount)
     }
 
     Card(

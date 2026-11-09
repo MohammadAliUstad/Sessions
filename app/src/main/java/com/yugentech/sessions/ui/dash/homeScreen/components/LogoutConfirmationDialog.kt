@@ -1,5 +1,7 @@
 package com.yugentech.sessions.ui.dash.homeScreen.components
 
+import com.yugentech.sessions.R
+import androidx.compose.ui.res.stringResource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -74,7 +76,7 @@ fun LogoutConfirmationDialog(
                     Spacer(modifier = Modifier.height(MaterialTheme.spacing.m))
 
                     Text(
-                        text = "Sign Out",
+                        text = stringResource(R.string.settings_sign_out),
                         style = MaterialTheme.typography.headlineSmall,
                         color = MaterialTheme.colorScheme.onSurface,
                         textAlign = TextAlign.Center
@@ -83,7 +85,7 @@ fun LogoutConfirmationDialog(
                     Spacer(modifier = Modifier.height(MaterialTheme.spacing.s))
 
                     Text(
-                        text = "Are you sure you want to sign out of your account?",
+                        text = stringResource(R.string.sign_out_message),
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                         textAlign = TextAlign.Center
@@ -100,7 +102,7 @@ fun LogoutConfirmationDialog(
                             modifier = Modifier.weight(1f)
                         ) {
                             Text(
-                                text = "Cancel",
+                                text = stringResource(R.string.cancel),
                                 style = MaterialTheme.typography.labelLarge,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant
                             )
@@ -118,7 +120,7 @@ fun LogoutConfirmationDialog(
                             )
                         ) {
                             Text(
-                                text = "Sign Out",
+                                text = stringResource(R.string.settings_sign_out),
                                 style = MaterialTheme.typography.labelLarge
                             )
                         }

@@ -1,5 +1,7 @@
 package com.yugentech.sessions.ui.config.whatsNewScreen
 
+import com.yugentech.sessions.R
+import androidx.compose.ui.res.stringResource
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
@@ -51,6 +53,7 @@ import androidx.compose.material.icons.filled.SwipeLeft
 import androidx.compose.material.icons.filled.Sync
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.filled.Tune
+import androidx.compose.material.icons.filled.Translate
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -90,212 +93,217 @@ fun WhatsNewScreen(
 
     val v6Updates = listOf(
         UpdateItem(
-            "Home Gradient Toggle",
-            "You can now turn the living colour-wash gradient at the top of the home screen on or off from Home & Cards in Settings. Applies to Refined and Studio layouts; the toggle card previews the glow right on itself.",
+            stringResource(R.string.whats_new_v6_13_title),
+            stringResource(R.string.whats_new_v6_13_body),
+            Icons.Default.Translate
+        ),
+        UpdateItem(
+            stringResource(R.string.whats_new_v6_1_title),
+            stringResource(R.string.whats_new_v6_1_body),
             Icons.Default.Gradient
         ),
         UpdateItem(
-            "Animated Studio Sound Button",
-            "The sound button in Studio now breathes gently while your ambient sound plays, pulsing in and out to show it's active. The icon also fades through when you mute or unmute, rather than snapping.",
+            stringResource(R.string.whats_new_v6_2_title),
+            stringResource(R.string.whats_new_v6_2_body),
             Icons.AutoMirrored.Filled.VolumeUp
         ),
         UpdateItem(
-            "Unique Settings Toggle Icons",
-            "Each toggle in Settings now carries its own icon: a bell for notifications, an alarm for your daily reminder, a spark for playful reminders, a wave for sound effects, a vibration for haptics, and a sun for keeping the screen on.",
+            stringResource(R.string.whats_new_v6_3_title),
+            stringResource(R.string.whats_new_v6_3_body),
             Icons.Default.Tune
         ),
         UpdateItem(
-            "Avatar Ring Fix",
-            "The selection ring on avatar items now wraps around the outside of each avatar as intended, instead of drawing over the edges of the image.",
+            stringResource(R.string.whats_new_v6_4_title),
+            stringResource(R.string.whats_new_v6_4_body),
             Icons.Default.AccountCircle
         ),
         UpdateItem(
-            "Choose Your Home Layout",
-            "Pick how your Home screen looks from the new Home & Cards screen in Settings: Classic, the original layout; Refined, a calmer take with the date above your task; or Studio, an all-new design.",
+            stringResource(R.string.whats_new_v6_5_title),
+            stringResource(R.string.whats_new_v6_5_body),
             Icons.Default.SpaceDashboard
         ),
         UpdateItem(
-            "Meet Studio",
-            "A watch-style dial whose ticks fill as you focus, with a dot riding the rim. Before you start, three tiles show your plan and when you'd be done. During a session, a card shows each block on a timeline, and a floating dock holds every control.",
+            stringResource(R.string.whats_new_v6_6_title),
+            stringResource(R.string.whats_new_v6_6_body),
             Icons.Default.Timer
         ),
         UpdateItem(
-            "A Living Glow",
-            "Refined and Studio have a soft, moving glow across the top of the screen in your theme's colours. It follows your session, leaning towards focus or break colours and flowing faster and brighter while the timer runs.",
+            stringResource(R.string.whats_new_v6_7_title),
+            stringResource(R.string.whats_new_v6_7_body),
             Icons.Default.Gradient
         ),
         UpdateItem(
-            "A Floating Navigation Bar",
-            "The bottom bar is now a floating pill. Each tab is just its icon, and the one you're on opens into a capsule with its name, while your pages run softly underneath it.",
+            stringResource(R.string.whats_new_v6_8_title),
+            stringResource(R.string.whats_new_v6_8_body),
             Icons.Default.Explore
         ),
         UpdateItem(
-            "Aurora & Mesh Card Animations",
-            "Two new animations for your session card: Aurora, soft light drifting over the card, and Mesh gradient, your theme's colours blending as they move. Like the others, they move only while the timer runs.",
+            stringResource(R.string.whats_new_v6_9_title),
+            stringResource(R.string.whats_new_v6_9_body),
             Icons.Default.Animation
         ),
         UpdateItem(
-            "A New Welcome",
-            "Sign in and sign up now sit on a slowly drifting glow, each with its own little animation: a focus dial still counting down where you left off, or a week of focus building up bar by bar.",
+            stringResource(R.string.whats_new_v6_10_title),
+            stringResource(R.string.whats_new_v6_10_body),
             Icons.AutoMirrored.Filled.Login
         ),
         UpdateItem(
-            "New Colour Theme Cards",
-            "Each colour theme now shows a palette disc of its key colours and a strip of swatches, in a more compact card. Choosing one gives the disc a little spin.",
+            stringResource(R.string.whats_new_v6_11_title),
+            stringResource(R.string.whats_new_v6_11_body),
             Icons.Default.Palette
         ),
         UpdateItem(
-            "Smoother Theme Changes",
-            "Changing your colour theme, switching between light and dark, or turning on AMOLED black now fades gently across the whole screen.",
+            stringResource(R.string.whats_new_v6_12_title),
+            stringResource(R.string.whats_new_v6_12_body),
             Icons.Default.Contrast
         )
     )
 
     val v51Updates = listOf(
         UpdateItem(
-            "Templates Sync to Your Account",
-            "Your task templates are now saved to your account. Reinstall the app or sign in on another phone and they come right back.",
+            stringResource(R.string.whats_new_v51_1_title),
+            stringResource(R.string.whats_new_v51_1_body),
             Icons.Default.Sync
         ),
         UpdateItem(
-            "Redesigned Sign In & Sign Up",
-            "Cleaner sign in and sign up screens with simpler fields, a smoother password toggle, and Google sign in at the bottom.",
+            stringResource(R.string.whats_new_v51_2_title),
+            stringResource(R.string.whats_new_v51_2_body),
             Icons.AutoMirrored.Filled.Login
         ),
         UpdateItem(
-            "A New Profile Card",
-            "Your profile card is more compact, with a bigger avatar. Tap the avatar to pick a new one from a sheet, or the pencil to change your name, right from the Profile tab.",
+            stringResource(R.string.whats_new_v51_3_title),
+            stringResource(R.string.whats_new_v51_3_body),
             Icons.Default.AccountCircle
         ),
         UpdateItem(
-            "Refreshed Onboarding",
-            "The welcome screens have a new look, with smoother animations as you swipe through them.",
+            stringResource(R.string.whats_new_v51_4_title),
+            stringResource(R.string.whats_new_v51_4_body),
             Icons.Default.Celebration
         ),
         UpdateItem(
-            "Gentler Reminders",
-            "Your daily focus reminder now shows when it rings, like \"Every evening at 7:00 PM\". Smart Reminders are now Playful Reminders: quieter, never more than one a day, with a few kind words if you've been away for a while.",
+            stringResource(R.string.whats_new_v51_5_title),
+            stringResource(R.string.whats_new_v51_5_body),
             Icons.Default.NotificationsActive
         ),
         UpdateItem(
-            "Daily Focus Time in Insights",
-            "Tap any day on the Insights heatmap to see the date and the total time you spent focusing that day. The tooltip now animates in and closes as soon as you scroll.",
+            stringResource(R.string.whats_new_v51_6_title),
+            stringResource(R.string.whats_new_v51_6_body),
             Icons.AutoMirrored.Filled.ShowChart
         ),
         UpdateItem(
-            "New App Icon in About",
-            "The app info card on the About screen now shows the Sessions icon on its launcher background, matching how it appears on your home screen.",
+            stringResource(R.string.whats_new_v51_7_title),
+            stringResource(R.string.whats_new_v51_7_body),
             Icons.Default.AutoAwesome
         ),
         UpdateItem(
-            "More From Us in About",
-            "A new More from us row in the About section shows our other apps, Quill, Hajime and Ryori, in a quick sheet with animated icons and a link to each on the Play Store. The full More from us screen has a refreshed layout too.",
+            stringResource(R.string.whats_new_v51_8_title),
+            stringResource(R.string.whats_new_v51_8_body),
             Icons.Default.Apps
         ),
         UpdateItem(
-            "Background Sound Fixes",
-            "Ambient sounds now fade and crossfade reliably when the screen is off or the app is in the background. The Ambient Sounds sheet also has a new switch to turn sounds on or off, and it remembers your last sound.",
+            stringResource(R.string.whats_new_v51_9_title),
+            stringResource(R.string.whats_new_v51_9_body),
             Icons.AutoMirrored.Filled.VolumeUp
         )
     )
 
     val v5Updates = listOf(
         UpdateItem(
-            "Task Templates",
-            "Save your current timer configuration as a named template and reapply it in one tap. Create, update, and delete templates directly from the task sheet.",
+            stringResource(R.string.whats_new_v5_1_title),
+            stringResource(R.string.whats_new_v5_1_body),
             Icons.Default.Bookmark
         ),
         UpdateItem(
-            "Ambient Sounds & Active Badges",
-            "Rebranded background audio controls with a dedicated Ambient Sounds bottom sheet. The home header sound badge now animates dynamically in tertiary colors during active sessions.",
+            stringResource(R.string.whats_new_v5_2_title),
+            stringResource(R.string.whats_new_v5_2_body),
             Icons.AutoMirrored.Filled.VolumeUp
         ),
         UpdateItem(
-            "Fully Rounded Dialog Buttons",
-            "All confirmation and reward dialogs now use fully pill-shaped buttons for a more consistent, polished look throughout the app.",
+            stringResource(R.string.whats_new_v5_3_title),
+            stringResource(R.string.whats_new_v5_3_body),
             Icons.Default.CheckCircle
         ),
         UpdateItem(
-            "Connected Insights Cards",
-            "The Insights screen top metrics are now grouped into a connected Material 3 list layout.",
+            stringResource(R.string.whats_new_v5_4_title),
+            stringResource(R.string.whats_new_v5_4_body),
             Icons.AutoMirrored.Filled.ShowChart
         ),
         UpdateItem(
-            "Redesigned Settings Sheets",
-            "Background sound and session goal controls are now full bottom sheets with explicit Save buttons. Changes are only applied when you choose to save them.",
+            stringResource(R.string.whats_new_v5_5_title),
+            stringResource(R.string.whats_new_v5_5_body),
             Icons.Default.Tune
         ),
         UpdateItem(
-            "Redesigned Long Break System",
-            "Long breaks are now fully configurable. You can choose whether to enable them at all, and if so, set the interval: after every set, every two sets, every three sets, and so on. Previously, long breaks were only triggered automatically once your total session time crossed 100 minutes.",
+            stringResource(R.string.whats_new_v5_6_title),
+            stringResource(R.string.whats_new_v5_6_body),
             Icons.Default.Tune
         ),
         UpdateItem(
-            "Removed Swipe Navigation",
-            "The swipe gesture to switch between main screens has been removed. It was causing unintended navigation and interfering with horizontal interactions.",
+            stringResource(R.string.whats_new_v5_7_title),
+            stringResource(R.string.whats_new_v5_7_body),
             Icons.Default.SwipeLeft
         ),
         UpdateItem(
-            "Achievements Coming Soon",
-            "A new Achievements section has been added to your profile screen. Earn badges as you build your focus habits launching in a future update.",
+            stringResource(R.string.whats_new_v5_8_title),
+            stringResource(R.string.whats_new_v5_8_body),
             Icons.Default.EmojiEvents
         ),
         UpdateItem(
-            "General Improvements & Bug Fixes",
-            "Various under-the-hood improvements and bug fixes to enhance stability and overall performance.",
+            stringResource(R.string.whats_new_v5_9_title),
+            stringResource(R.string.whats_new_v5_9_body),
             Icons.AutoMirrored.Filled.VolumeUp
         ),
         UpdateItem(
-            "Segmented Notification Progress",
-            "The notification progress bar is now segmented with the appropriate color roles for each session phase.",
+            stringResource(R.string.whats_new_v5_10_title),
+            stringResource(R.string.whats_new_v5_10_body),
             Icons.Default.Flag
         )
     )
 
     val v4Updates = listOf(
         UpdateItem(
-            "Smart Focus Reminders",
-            "Stay consistent with our new intelligent notification system. Sessions now checks in if you've been away too long, helping you maintain your productivity streak.",
+            stringResource(R.string.whats_new_v4_1_title),
+            stringResource(R.string.whats_new_v4_1_body),
             Icons.Default.NotificationsActive
         ),
         UpdateItem(
-            "Personalized Nudges",
-            "Receive playful, unique reminders based on your actual focus habits and task history, making every nudge feel personal to you.",
+            stringResource(R.string.whats_new_v4_2_title),
+            stringResource(R.string.whats_new_v4_2_body),
             Icons.Default.AutoAwesome
         ),
         UpdateItem(
-            "New Skip Action",
-            "Enjoy better control during your sessions. You can now skip focus or break periods directly from the notification tray.",
+            stringResource(R.string.whats_new_v4_3_title),
+            stringResource(R.string.whats_new_v4_3_body),
             Icons.Default.SmartDisplay
         ),
         UpdateItem(
-            "Smoother Animations",
-            "Enjoy a more polished experience with new animated icons and refined transitions across the home, settings, and profile screens.",
+            stringResource(R.string.whats_new_v4_4_title),
+            stringResource(R.string.whats_new_v4_4_body),
             Icons.Default.Celebration
         ),
         UpdateItem(
-            "Live Update Notifications",
-            "Track your focus journey directly from your status bar and lock screen. Pause, finish, and see your progress at a glance.",
+            stringResource(R.string.whats_new_v4_5_title),
+            stringResource(R.string.whats_new_v4_5_body),
             Icons.Default.NotificationsActive
         ),
         UpdateItem(
-            "Flexible History Sorting",
-            "Organize your focus history by Day, Week, or Month. View cumulative time spent for each period to better track your long-term productivity.",
+            stringResource(R.string.whats_new_v4_6_title),
+            stringResource(R.string.whats_new_v4_6_body),
             Icons.Default.History
         ),
         UpdateItem(
-            "Quick Audio Toggle",
-            "Instantly mute or unmute your background ambience by tapping the sound badge in the home screen header.",
+            stringResource(R.string.whats_new_v4_7_title),
+            stringResource(R.string.whats_new_v4_7_body),
             Icons.AutoMirrored.Filled.VolumeUp
         ),
         UpdateItem(
-            "Smart Finish Logic",
-            "New confirmation dialogs for early session exits and automatic celebrations for reaching your goal.",
+            stringResource(R.string.whats_new_v4_8_title),
+            stringResource(R.string.whats_new_v4_8_body),
             Icons.Default.Celebration
         ),
         UpdateItem(
-            "More from Yugen Tech",
-            "Discover our other productivity tools directly from the new 'More from us' section in the About screen.",
+            stringResource(R.string.whats_new_v4_9_title),
+            stringResource(R.string.whats_new_v4_9_body),
             Icons.Default.Apps
         )
     )
@@ -310,9 +318,9 @@ fun WhatsNewScreen(
             LargeTopAppBar(
                 title = {
                     Column {
-                        Text("What's New")
+                        Text(stringResource(R.string.whats_new_title))
                         Text(
-                            text = "Current Version 6.0.0",
+                            text = stringResource(R.string.whats_new_current_version, "6.0.0"),
                             style = MaterialTheme.typography.bodyMedium,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
@@ -322,7 +330,7 @@ fun WhatsNewScreen(
                     IconButton(onClick = onNavigateBack) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = "Back"
+                            contentDescription = stringResource(R.string.back)
                         )
                     }
                 },
@@ -461,7 +469,7 @@ private fun VersionSectionHeader(
     ) {
         Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
             Text(
-                text = "Version $version",
+                text = stringResource(R.string.whats_new_version, version),
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Bold,
                 color = if (isLatest) MaterialTheme.colorScheme.primary
@@ -471,7 +479,7 @@ private fun VersionSectionHeader(
         if (onClick != null) {
             Icon(
                 imageVector = Icons.Default.ExpandMore,
-                contentDescription = if (expanded) "Collapse" else "Expand",
+                contentDescription = stringResource(if (expanded) R.string.collapse else R.string.expand),
                 tint = MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier.graphicsLayer { rotationZ = chevronRotation }
             )

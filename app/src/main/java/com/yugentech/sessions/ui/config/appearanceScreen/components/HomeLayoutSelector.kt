@@ -1,5 +1,7 @@
 package com.yugentech.sessions.ui.config.appearanceScreen.components
 
+import com.yugentech.sessions.R
+import androidx.compose.ui.res.stringResource
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -63,7 +65,7 @@ fun HomeLayoutSelector(
     var chosen by remember(themeConfig.homeLayout) { mutableStateOf(themeConfig.homeLayout) }
 
     Column(modifier = modifier.fillMaxWidth()) {
-        SectionHeader(icon = Icons.Default.SpaceDashboard, title = "Home Layout")
+        SectionHeader(icon = Icons.Default.SpaceDashboard, title = stringResource(R.string.home_layout_title))
 
         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
             HomeLayout.entries.forEach { layout ->
@@ -103,7 +105,7 @@ fun HomeLayoutSelector(
                     }
                     Spacer(Modifier.height(8.dp))
                     Text(
-                        text = layout.label,
+                        text = stringResource(layout.label),
                         style = MaterialTheme.typography.labelLarge,
                         fontWeight = FontWeight.SemiBold,
                         color = animateSelectionColor(selected, scheme.onSurface, scheme.onSurfaceVariant),
@@ -111,7 +113,7 @@ fun HomeLayoutSelector(
                     )
                     // Always two lines tall, wrapped or not, so the three tiles stay the same height
                     Text(
-                        text = layout.description,
+                        text = stringResource(layout.description),
                         style = MaterialTheme.typography.labelSmall,
                         color = scheme.onSurfaceVariant,
                         textAlign = TextAlign.Center,

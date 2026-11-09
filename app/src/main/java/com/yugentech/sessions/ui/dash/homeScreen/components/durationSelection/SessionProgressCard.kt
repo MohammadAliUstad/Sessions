@@ -1,5 +1,8 @@
 package com.yugentech.sessions.ui.dash.homeScreen.components.durationSelection
 
+import com.yugentech.sessions.R
+import androidx.compose.ui.res.stringResource
+import com.yugentech.sessions.localization.asString
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.animateContentSize
@@ -122,7 +125,7 @@ fun SessionProgressCard(
                         Spacer(modifier = Modifier.width(MaterialTheme.spacing.xsSmall))
 
                         Text(
-                            text = if (state.isLongBreakActive) "Long Break Reached" else "Session Goal",
+                            text = if (state.isLongBreakActive) stringResource(R.string.card_long_break_reached) else stringResource(R.string.card_session_goal),
                             style = MaterialTheme.typography.labelLarge,
                             fontWeight = FontWeight.SemiBold,
                             color = MaterialTheme.colorScheme.onSecondaryContainer.copy(alpha = 0.9f)
@@ -151,7 +154,7 @@ fun SessionProgressCard(
                                 Spacer(modifier = Modifier.width(MaterialTheme.spacing.xxs))
 
                                 Text(
-                                    text = state.badgeText,
+                                    text = state.badgeText.asString(),
                                     style = MaterialTheme.typography.labelSmall,
                                     fontWeight = FontWeight.Bold,
                                     color = MaterialTheme.colorScheme.onSecondaryContainer.copy(alpha = 0.8f),
@@ -191,14 +194,14 @@ fun SessionProgressCard(
                         ) { (isLongBreak, progress) ->
                             if (isLongBreak) {
                                 Text(
-                                    text = progress,
+                                    text = progress.asString(),
                                     style = MaterialTheme.typography.displaySmall.copy(fontWeight = FontWeight.Bold),
                                     color = MaterialTheme.colorScheme.onSecondaryContainer
                                 )
                             } else {
                                 Row(verticalAlignment = Alignment.CenterVertically) {
                                     Text(
-                                        text = progress,
+                                        text = progress.asString(),
                                         style = MaterialTheme.typography.displaySmall,
                                         fontWeight = FontWeight.Bold,
                                         color = MaterialTheme.colorScheme.onSecondaryContainer
@@ -259,7 +262,7 @@ fun SessionProgressCard(
                                 )
                                 Spacer(modifier = Modifier.width(MaterialTheme.spacing.xxs))
                                 Text(
-                                    text = "Skip",
+                                    text = stringResource(R.string.skip),
                                     style = MaterialTheme.typography.labelMedium,
                                     fontWeight = FontWeight.SemiBold
                                 )
@@ -274,14 +277,14 @@ fun SessionProgressCard(
                     ) { (main, sub) ->
                         Column(horizontalAlignment = Alignment.End) {
                             Text(
-                                text = main,
+                                text = main.asString(),
                                 style = MaterialTheme.typography.titleMedium,
                                 fontWeight = FontWeight.SemiBold,
                                 color = MaterialTheme.colorScheme.onSecondaryContainer,
                                 textAlign = TextAlign.End
                             )
                             Text(
-                                text = sub,
+                                text = sub.asString(),
                                 style = MaterialTheme.typography.bodySmall,
                                 color = MaterialTheme.colorScheme.onSecondaryContainer.copy(alpha = 0.6f),
                                 textAlign = TextAlign.End

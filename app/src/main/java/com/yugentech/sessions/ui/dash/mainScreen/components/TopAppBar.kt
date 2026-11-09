@@ -1,5 +1,7 @@
 package com.yugentech.sessions.ui.dash.mainScreen.components
 
+import com.yugentech.sessions.R
+import androidx.compose.ui.res.stringResource
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
@@ -72,18 +74,18 @@ fun TopAppBar(
 
     val idleMessage = rememberSaveable {
         listOf(
-            "Locked in!",
-            "It's all you.",
-            "Make it count.",
-            "One step at a time.",
-            "Focus on the now."
+            R.string.idle_message_locked_in,
+            R.string.idle_message_all_you,
+            R.string.idle_message_make_it_count,
+            R.string.idle_message_one_step,
+            R.string.idle_message_focus_now
         ).random()
     }
 
     val (titleText, screenIcon) = when (currentScreen) {
-        BottomBarScreen.Home -> idleMessage to Icons.Default.Timer
-        BottomBarScreen.Profile -> "Profile" to Icons.Default.AccountCircle
-        BottomBarScreen.Settings -> "Settings" to Icons.Default.Settings
+        BottomBarScreen.Home -> stringResource(idleMessage) to Icons.Default.Timer
+        BottomBarScreen.Profile -> stringResource(R.string.tab_profile) to Icons.Default.AccountCircle
+        BottomBarScreen.Settings -> stringResource(R.string.tab_settings) to Icons.Default.Settings
     }
 
     // Transparent at rest so the page shows through; once content scrolls under it, a soft scrim
@@ -140,7 +142,7 @@ fun TopAppBar(
                     }) {
                         Icon(
                             imageVector = Icons.Rounded.FolderDelete,
-                            contentDescription = "Delete All Sessions",
+                            contentDescription = stringResource(R.string.cd_delete_all_sessions),
                             tint = MaterialTheme.colorScheme.primary
                         )
                     }
@@ -152,7 +154,7 @@ fun TopAppBar(
                 }) {
                     Icon(
                         imageVector = Icons.AutoMirrored.Filled.Sort,
-                        contentDescription = "Sort",
+                        contentDescription = stringResource(R.string.cd_sort),
                         tint = MaterialTheme.colorScheme.primary
                     )
                 }

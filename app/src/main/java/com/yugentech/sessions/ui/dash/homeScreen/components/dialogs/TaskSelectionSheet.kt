@@ -1,5 +1,8 @@
 package com.yugentech.sessions.ui.dash.homeScreen.components.dialogs
 
+import androidx.compose.ui.res.pluralStringResource
+import com.yugentech.sessions.R
+import androidx.compose.ui.res.stringResource
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateDpAsState
@@ -156,7 +159,7 @@ fun TaskSelectionSheet(
     templateToDelete?.let { target ->
         AlertDialog(
             onDismissRequest = { templateToDelete = null },
-            title = { Text("Delete Template?", style = MaterialTheme.typography.headlineSmall) },
+            title = { Text(stringResource(R.string.template_delete_title), style = MaterialTheme.typography.headlineSmall) },
             text = {
                 Column(
                     verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.m),
@@ -181,7 +184,7 @@ fun TaskSelectionSheet(
                     }
 
                     Text(
-                        text = "This template will be permanently removed. This action cannot be undone.",
+                        text = stringResource(R.string.template_delete_message),
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
@@ -201,12 +204,12 @@ fun TaskSelectionSheet(
                         contentColor = MaterialTheme.colorScheme.onError
                     )
                 ) {
-                    Text("Delete")
+                    Text(stringResource(R.string.delete))
                 }
             },
             dismissButton = {
                 TextButton(onClick = { templateToDelete = null }) {
-                    Text("Cancel", color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    Text(stringResource(R.string.cancel), color = MaterialTheme.colorScheme.onSurfaceVariant)
                 }
             }
         )
@@ -254,13 +257,13 @@ fun TaskSelectionSheet(
                         verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.xs)
                     ) {
                         Text(
-                            text = "Session Task",
+                            text = stringResource(R.string.task_title),
                             style = MaterialTheme.typography.titleLarge,
                             fontWeight = FontWeight.Bold,
                             color = MaterialTheme.colorScheme.onSurface
                         )
                         Text(
-                            text = "Name your session or pick a saved template.",
+                            text = stringResource(R.string.task_subtitle),
                             style = MaterialTheme.typography.bodyMedium,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
@@ -299,7 +302,7 @@ fun TaskSelectionSheet(
                                     decorationBox = { innerTextField ->
                                         if (taskName.isEmpty()) {
                                             Text(
-                                                text = "e.g. Coding, Math, Reading...",
+                                                text = stringResource(R.string.task_hint),
                                                 style = MaterialTheme.typography.titleMedium,
                                                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                                                 fontWeight = FontWeight.Normal
@@ -315,7 +318,7 @@ fun TaskSelectionSheet(
                                     ) {
                                         Icon(
                                             imageVector = Icons.Rounded.Close,
-                                            contentDescription = "Clear",
+                                            contentDescription = stringResource(R.string.cd_clear),
                                             tint = MaterialTheme.colorScheme.onSurfaceVariant,
                                             modifier = Modifier.size(16.dp)
                                         )
@@ -340,7 +343,7 @@ fun TaskSelectionSheet(
                                 }
                             }
                         ) {
-                            Text("Set Task")
+                            Text(stringResource(R.string.task_set))
                         }
                     }
                 }
@@ -352,7 +355,7 @@ fun TaskSelectionSheet(
                         )
                         Spacer(Modifier.height(MaterialTheme.spacing.l))
                         Text(
-                            text = "Saved Templates",
+                            text = stringResource(R.string.templates_title),
                             style = MaterialTheme.typography.labelLarge,
                             color = MaterialTheme.colorScheme.primary,
                             fontWeight = FontWeight.SemiBold
@@ -377,13 +380,13 @@ fun TaskSelectionSheet(
                                 modifier = Modifier.size(40.dp)
                             )
                             Text(
-                                text = "No templates yet",
+                                text = stringResource(R.string.templates_empty),
                                 style = MaterialTheme.typography.titleSmall,
                                 fontWeight = FontWeight.SemiBold,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant
                             )
                             Text(
-                                text = "Set your timer config and save it as a template using the button below.",
+                                text = stringResource(R.string.templates_empty_message),
                                 style = MaterialTheme.typography.bodySmall,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f),
                                 textAlign = TextAlign.Center
@@ -461,9 +464,9 @@ fun TaskSelectionSheet(
                     ) {
                         AnimatedContent(
                             targetState = when {
-                                isExistingTemplate && isConfigChanged -> "Update Template"
-                                isExistingTemplate && !isConfigChanged -> "Close"
-                                else -> "Save as Template"
+                                isExistingTemplate && isConfigChanged -> stringResource(R.string.template_update)
+                                isExistingTemplate && !isConfigChanged -> stringResource(R.string.close)
+                                else -> stringResource(R.string.template_save)
                             },
                             transitionSpec = { fadeThrough() },
                             label = "saveButtonLabel"
@@ -491,7 +494,7 @@ private fun CurrentConfigCard(
         verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.s)
     ) {
         Text(
-            text = "Current configuration",
+            text = stringResource(R.string.template_current_config),
             style = MaterialTheme.typography.titleMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             fontWeight = FontWeight.SemiBold
@@ -501,14 +504,18 @@ private fun CurrentConfigCard(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                ConfigStat(label = "Focus", value = "${focusDuration}m")
-                ConfigStat(label = "Break", value = "${shortBreakDuration}m")
-                ConfigStat(label = "Sets", value = "$targetSets")
+                ConfigStat(label = stringResource(R.string.mode_focus), value = stringResource(R.string.duration_minutes_short, focusDuration))
+                ConfigStat(label = stringResource(R.string.plan_break), value = stringResource(R.string.duration_minutes_short, shortBreakDuration))
+                ConfigStat(label = stringResource(R.string.action_sets), value = "$targetSets")
             }
             if (longBreakEnabled) {
                 ConfigStat(
-                    label = "Long break",
-                    value = if (setsPerLongBreak == 1) "${longBreakDuration}m every set" else "${longBreakDuration}m every $setsPerLongBreak sets"
+                    label = stringResource(R.string.template_long_break_label),
+                    value = stringResource(
+                        R.string.template_long_break_value,
+                        longBreakDuration,
+                        pluralStringResource(R.plurals.every_n_sets, setsPerLongBreak, setsPerLongBreak)
+                    )
                 )
             }
         }
@@ -539,9 +546,18 @@ private fun TemplateCard(
     onClick: () -> Unit,
     onDeleteRequest: () -> Unit
 ) {
-    val mainSummary = "${template.focusDuration}m focus · ${template.shortBreakDuration}m break · ${template.targetSets} ${if (template.targetSets == 1) "set" else "sets"}"
+    val mainSummary = stringResource(
+        R.string.template_summary,
+        template.focusDuration,
+        template.shortBreakDuration,
+        pluralStringResource(R.plurals.sets_count, template.targetSets, template.targetSets)
+    )
     val longBreakSummary = if (template.longBreakEnabled) {
-        "${template.longBreakDuration}m long break · every ${template.setsPerLongBreak} ${if (template.setsPerLongBreak == 1) "set" else "sets"}"
+        stringResource(
+            R.string.template_long_break_summary,
+            template.longBreakDuration,
+            pluralStringResource(R.plurals.every_n_sets, template.setsPerLongBreak, template.setsPerLongBreak)
+        )
     } else null
 
     Surface(
@@ -592,7 +608,7 @@ private fun TemplateCard(
             ) {
                 Icon(
                     imageVector = Icons.Filled.Delete,
-                    contentDescription = "Delete template",
+                    contentDescription = stringResource(R.string.cd_delete_template),
                     tint = MaterialTheme.colorScheme.onSurfaceVariant,
                     modifier = Modifier.size(18.dp)
                 )

@@ -45,6 +45,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.sp
 import com.yugentech.sessions.theme.tokens.spacing
 
@@ -56,7 +58,8 @@ private val MaxFormWidth = 440.dp
  * animated [header], a bold [title] and one supporting [subtitle] line, then the screen's
  * [content] on a floating card in the app's own colours, headed by a plain [formTitle] at its top
  * left. Each part rises in after the one above it, with [riseIn]. [overlay] sits above everything,
- * for toasts.
+ * for toasts. [titleSize] shrinks the headline when given; it is displaySmall otherwise.
+ * [headerGap] is the space between the header and the headline (spacing.m when not given).
  */
 @Composable
 fun AuthScaffold(
@@ -65,11 +68,13 @@ fun AuthScaffold(
     title: String,
     subtitle: String,
     modifier: Modifier = Modifier,
+    titleSize: TextUnit = TextUnit.Unspecified,
+    headerGap: Dp = Dp.Unspecified,
     overlay: @Composable () -> Unit = {},
     content: @Composable ColumnScope.() -> Unit
 ) {
     // White on the shared aura, which the nav host draws behind this screen
-    AuraTheme { AuthFrame(header, formTitle, title, subtitle, modifier, overlay, content) }
+    AuraTheme { AuthFrame(header, formTitle, title, subtitle, modifier, titleSize, headerGap, overlay, content) }
 }
 
 @Composable
@@ -79,6 +84,8 @@ private fun AuthFrame(
     title: String,
     subtitle: String,
     modifier: Modifier,
+    titleSize: TextUnit,
+    headerGap: Dp,
     overlay: @Composable () -> Unit,
     content: @Composable ColumnScope.() -> Unit
 ) {
@@ -118,13 +125,20 @@ private fun AuthFrame(
                             .riseIn(shown, order = 0, rise = rise)
                     ) { header() }
 
-                    Spacer(modifier = Modifier.height(MaterialTheme.spacing.m))
+                    Spacer(
+                        modifier = Modifier.height(
+                            if (headerGap == Dp.Unspecified) MaterialTheme.spacing.m else headerGap
+                        )
+                    )
 
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
                         // The headline: bold, modern and tight
                         Text(
                             text = title,
-                            style = MaterialTheme.typography.displaySmall,
+                            style = MaterialTheme.typography.displaySmall.let { base ->
+                                if (titleSize == TextUnit.Unspecified) base
+                                else base.copy(fontSize = titleSize, lineHeight = titleSize * 1.2f)
+                            },
                             fontWeight = FontWeight.SemiBold,
                             letterSpacing = (-0.5).sp,
                             color = colors.onBackground,

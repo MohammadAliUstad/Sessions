@@ -1,5 +1,9 @@
 package com.yugentech.sessions.ui.dash.profileScreen
 
+import com.yugentech.sessions.localization.currentLocale
+import androidx.compose.ui.platform.LocalContext
+import com.yugentech.sessions.R
+import androidx.compose.ui.res.stringResource
 import com.yugentech.sessions.ui.dash.mainScreen.components.bottomBarInset
 import com.yugentech.sessions.ui.dash.mainScreen.components.topBarInset
 import androidx.compose.foundation.layout.Arrangement
@@ -94,12 +98,15 @@ fun ProfileScreen(
         profileViewModel.loadProfile(userId)
     }
 
-    val groupedSessions = remember(profileUiState.sessions, profileUiState.sortOption) {
+    val context = LocalContext.current
+    // Keyed on the locale too: the headers are formatted in the app's language
+    val locale = currentLocale()
+    val groupedSessions = remember(profileUiState.sessions, profileUiState.sortOption, locale) {
         profileUiState.sessions.groupBy { session ->
             when (profileUiState.sortOption) {
-                SessionSortOption.DAILY -> dateHeader(session.timestamp)
-                SessionSortOption.WEEKLY -> weeklyHeader(session.timestamp)
-                SessionSortOption.MONTHLY -> monthlyHeader(session.timestamp)
+                SessionSortOption.DAILY -> dateHeader(context, session.timestamp)
+                SessionSortOption.WEEKLY -> weeklyHeader(context, session.timestamp)
+                SessionSortOption.MONTHLY -> monthlyHeader(context, session.timestamp)
             }
         }
     }
@@ -116,7 +123,7 @@ fun ProfileScreen(
                 )
         ) {
             SectionHeader(
-                title = "My Account",
+                title = stringResource(R.string.profile_title),
                 icon = Icons.Filled.Person
             )
 
@@ -150,7 +157,7 @@ fun ProfileScreen(
         ) {
             item(key = "profile_header") {
                 SectionHeader(
-                    title = "My Account",
+                    title = stringResource(R.string.profile_title),
                     icon = Icons.Filled.Person
                 )
             }
@@ -234,11 +241,11 @@ fun ProfileScreen(
             },
             title = {
                 val groupType = when (profileUiState.sortOption) {
-                    SessionSortOption.DAILY -> "Day"
-                    SessionSortOption.WEEKLY -> "Week"
-                    SessionSortOption.MONTHLY -> "Month"
+                    SessionSortOption.DAILY -> R.string.profile_delete_day
+                    SessionSortOption.WEEKLY -> R.string.profile_delete_week
+                    SessionSortOption.MONTHLY -> R.string.profile_delete_month
                 }
-                Text("Delete $groupType?", style = MaterialTheme.typography.headlineSmall)
+                Text(stringResource(groupType), style = MaterialTheme.typography.headlineSmall)
             },
             text = {
                 Column(
@@ -264,7 +271,7 @@ fun ProfileScreen(
                     }
 
                     Text(
-                        text = "All sessions recorded for this period will be permanently removed. This action cannot be undone.",
+                        text = stringResource(R.string.profile_delete_group_message),
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
@@ -284,7 +291,7 @@ fun ProfileScreen(
                         contentColor = MaterialTheme.colorScheme.onError
                     )
                 ) {
-                    Text("Delete All")
+                    Text(stringResource(R.string.delete_all_sessions_confirm))
                 }
             },
             dismissButton = {
@@ -294,7 +301,7 @@ fun ProfileScreen(
                         sessionsToGroupDelete = emptyList()
                     }
                 ) {
-                    Text("Cancel", color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    Text(stringResource(R.string.cancel), color = MaterialTheme.colorScheme.onSurfaceVariant)
                 }
             },
             containerColor = MaterialTheme.colorScheme.surfaceContainer
@@ -308,11 +315,11 @@ fun ProfileScreen(
                 sessionToDeleteId = null
             },
             title = {
-                Text("Delete Session?", style = MaterialTheme.typography.headlineSmall)
+                Text(stringResource(R.string.profile_delete_session_title), style = MaterialTheme.typography.headlineSmall)
             },
             text = {
                 Text(
-                    "This action cannot be undone. The session data will be permanently removed.",
+                    stringResource(R.string.profile_delete_session_message),
                     style = MaterialTheme.typography.bodyMedium
                 )
             },
@@ -330,7 +337,7 @@ fun ProfileScreen(
                         contentColor = MaterialTheme.colorScheme.onError
                     )
                 ) {
-                    Text("Delete")
+                    Text(stringResource(R.string.delete))
                 }
             },
             dismissButton = {
@@ -340,7 +347,7 @@ fun ProfileScreen(
                         sessionToDeleteId = null
                     }
                 ) {
-                    Text("Cancel", color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    Text(stringResource(R.string.cancel), color = MaterialTheme.colorScheme.onSurfaceVariant)
                 }
             },
             containerColor = MaterialTheme.colorScheme.surfaceContainer

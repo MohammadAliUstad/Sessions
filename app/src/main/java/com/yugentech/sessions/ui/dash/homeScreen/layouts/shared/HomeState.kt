@@ -1,5 +1,8 @@
 package com.yugentech.sessions.ui.dash.homeScreen.layouts.shared
 
+import androidx.compose.runtime.Composable
+import com.yugentech.sessions.R
+import androidx.compose.ui.res.stringResource
 import androidx.compose.runtime.Immutable
 import com.yugentech.sessions.theme.config.CardAnimationStyle
 import com.yugentech.sessions.theme.config.CardStyle
@@ -70,12 +73,13 @@ fun planMinutes(
 }
 
 /** 95 → "1h 35m", 60 → "1h", 25 → "25m". */
+@Composable
 fun formatMinutes(minutes: Int): String {
     val h = minutes / 60
     val m = minutes % 60
     return when {
-        h == 0 -> "${m}m"
-        m == 0 -> "${h}h"
-        else -> "${h}h ${m}m"
+        h == 0 -> stringResource(R.string.duration_minutes_short, m)
+        m == 0 -> stringResource(R.string.duration_hours_short, h)
+        else -> stringResource(R.string.duration_hours_minutes_short, h, m)
     }
 }

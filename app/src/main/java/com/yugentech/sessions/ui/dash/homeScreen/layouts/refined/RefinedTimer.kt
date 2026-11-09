@@ -1,5 +1,7 @@
 package com.yugentech.sessions.ui.dash.homeScreen.layouts.refined
 
+import com.yugentech.sessions.R
+import androidx.compose.ui.res.stringResource
 import android.text.format.DateFormat
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.SizeTransform
@@ -81,15 +83,16 @@ fun RefinedTimer(
     modifier: Modifier = Modifier,
     isSessionActive: Boolean = isStudying,
     errorMessage: String? = null,
-    idleHint: String = "Tap play to begin",
+    idleHint: String = stringResource(R.string.timer_idle_refined),
     showEndTime: Boolean = true,
     dialSize: Dp = MaterialTheme.components.timerSize,
     timeFontSize: TextUnit = 64.sp,
     trackColor: Color = MaterialTheme.colorScheme.surfaceContainerHighest,
     rollingDigits: Boolean = true,
     animateProgress: Boolean = true,
+    rollingHint: Boolean = false,
     isComplete: Boolean = false,
-    completeTitle: String = "Session complete",
+    completeTitle: String = stringResource(R.string.timer_session_complete),
     completeBody: String? = null
 ) {
     val accent = modeColor(currentMode)
@@ -222,14 +225,25 @@ fun RefinedTimer(
 
             val hint = when {
                 errorMessage != null -> errorMessage
-                isStudying && showEndTime -> "Ends at ${endTime(displayTime)}"
-                isStudying -> "Focusing"
-                isSessionActive -> "Paused"
+                isStudying && showEndTime -> stringResource(R.string.timer_ends_at, endTime(displayTime))
+                isStudying -> stringResource(R.string.timer_hint_focusing)
+                isSessionActive -> stringResource(R.string.timer_paused)
                 else -> idleHint
             }
             AnimatedContent(
                 targetState = hint,
-                transitionSpec = { fadeIn(tween(300)) togetherWith fadeOut(tween(200)) },
+                transitionSpec = {
+                    if (rollingHint) {
+                        // The same plain vertical swap as onboarding's Continue / Start focusing
+                        // button: the new word pushes the old one out upward
+                        (slideInVertically(tween(300)) { it } + fadeIn(tween(300)))
+                            .togetherWith(slideOutVertically(tween(300)) { -it } + fadeOut(tween(300)))
+                            .using(SizeTransform(clip = false) { _, _ -> tween(300) })
+                    } else {
+                        fadeIn(tween(300)) togetherWith fadeOut(tween(200))
+                    }
+                },
+                contentAlignment = Alignment.Center,
                 label = "timerHint"
             ) { text ->
                 Text(

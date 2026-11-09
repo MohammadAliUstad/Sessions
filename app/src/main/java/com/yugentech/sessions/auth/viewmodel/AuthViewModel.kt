@@ -1,5 +1,7 @@
 package com.yugentech.sessions.auth.viewmodel
 
+import com.yugentech.sessions.R
+import com.yugentech.sessions.localization.AppStrings
 import android.content.Intent
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -218,7 +220,7 @@ class AuthViewModel(
                             it.copy(
                                 isInitializing = false,
                                 isLoading = false,
-                                error = "Failed to load local profile"
+                                error = AppStrings.get(R.string.auth_error_profile_load)
                             )
                         }
                     }
@@ -263,7 +265,7 @@ class AuthViewModel(
                         it.copy(
                             isInitializing = false,
                             isLoading = false,
-                            error = "Sync failed: ${syncResult.message}"
+                            error = AppStrings.get(R.string.auth_error_sync, syncResult.message)
                         )
                     }
                 }
@@ -276,7 +278,7 @@ class AuthViewModel(
                 it.copy(
                     isInitializing = false,
                     isLoading = false,
-                    error = "Profile creation failed: ${e.message}"
+                    error = AppStrings.get(R.string.auth_error_profile_create, e.message.orEmpty())
                 )
             }
         }
