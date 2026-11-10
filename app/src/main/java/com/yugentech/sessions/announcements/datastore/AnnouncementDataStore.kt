@@ -60,12 +60,4 @@ class AnnouncementDataStore(
             preferences[LAST_ACKNOWLEDGED_VERSION] = version
         }
     }
-
-    /** Useful for testing/debugging to reset state. */
-    suspend fun clearAll() {
-        dataStore.edit { preferences ->
-            preferences.remove(SEEN_ANNOUNCEMENT_IDS)
-            preferences.remove(LAST_ACKNOWLEDGED_VERSION)
-        }
-    }
 }

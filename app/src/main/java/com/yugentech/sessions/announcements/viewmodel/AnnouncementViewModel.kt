@@ -75,15 +75,4 @@ class AnnouncementViewModel(
             }
         }
     }
-
-    /**
-     * Reset seen status for debugging.
-     */
-    fun debugReset() {
-        viewModelScope.launch {
-            repository.reset()
-            _state.value = AnnouncementState(isInitialized = false)
-            checkForAnnouncements()
-        }
-    }
 }

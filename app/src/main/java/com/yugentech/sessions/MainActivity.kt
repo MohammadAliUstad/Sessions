@@ -1,11 +1,8 @@
 package com.yugentech.sessions
 
 import android.content.Context
-import android.content.pm.ActivityInfo
-import android.content.res.Configuration
 import android.graphics.Color
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
@@ -63,13 +60,6 @@ class MainActivity : ComponentActivity() {
 
         super.onCreate(savedInstanceState)
         Timber.v("MainActivity onCreate: %s", if (isRecreation) "recreated" else "App launching")
-        // TEMP: language-switch flicker diagnosis. What changed since this process's last screen,
-        // if the system rebuilt it rather than handing the change over in place
-        Log.w("LocaleDiag", if (isRecreation) "onCreate (recreated)" else "onCreate (fresh launch)")
-        lastConfiguration?.let {
-            Log.w("LocaleDiag", "recreated, changed: " + describeConfigDiff(it.diff(resources.configuration)))
-        }
-        lastConfiguration = Configuration(resources.configuration)
 
         splashScreen.setKeepOnScreenCondition {
             !animationReady.value ||
@@ -130,51 +120,6 @@ class MainActivity : ComponentActivity() {
                     }
                 }
             }
-        }
-    }
-
-    // TEMP: language-switch flicker diagnosis
-    override fun onConfigurationChanged(newConfig: Configuration) {
-        super.onConfigurationChanged(newConfig)
-        Log.w(
-            "LocaleDiag",
-            "handled in place, changed: " + (lastConfiguration?.let { describeConfigDiff(it.diff(newConfig)) } ?: "?")
-        )
-        lastConfiguration = Configuration(newConfig)
-    }
-
-    private companion object {
-        /** The configuration the last screen in this process had; outlives a recreation. */
-        var lastConfiguration: Configuration? = null
-
-        fun describeConfigDiff(diff: Int): String {
-            val names = listOf(
-                ActivityInfo.CONFIG_MCC to "mcc",
-                ActivityInfo.CONFIG_MNC to "mnc",
-                ActivityInfo.CONFIG_LOCALE to "locale",
-                ActivityInfo.CONFIG_TOUCHSCREEN to "touchscreen",
-                ActivityInfo.CONFIG_KEYBOARD to "keyboard",
-                ActivityInfo.CONFIG_KEYBOARD_HIDDEN to "keyboardHidden",
-                ActivityInfo.CONFIG_NAVIGATION to "navigation",
-                ActivityInfo.CONFIG_ORIENTATION to "orientation",
-                ActivityInfo.CONFIG_SCREEN_LAYOUT to "screenLayout",
-                ActivityInfo.CONFIG_UI_MODE to "uiMode",
-                ActivityInfo.CONFIG_SCREEN_SIZE to "screenSize",
-                ActivityInfo.CONFIG_SMALLEST_SCREEN_SIZE to "smallestScreenSize",
-                ActivityInfo.CONFIG_DENSITY to "density",
-                ActivityInfo.CONFIG_LAYOUT_DIRECTION to "layoutDirection",
-                ActivityInfo.CONFIG_COLOR_MODE to "colorMode",
-                ActivityInfo.CONFIG_FONT_SCALE to "fontScale",
-                0x10000000 to "fontWeightAdjustment",
-                0x8000 to "grammaticalGender",
-                0x80000000.toInt() to "assetsPaths"
-            )
-            val changed = names.filter { (flag, _) -> diff and flag != 0 }.map { it.second }
-            val known = names.fold(0) { acc, (flag, _) -> acc or flag }
-            val unknown = diff and known.inv()
-            return (changed + if (unknown != 0) listOf("0x" + Integer.toHexString(unknown)) else emptyList())
-                .ifEmpty { listOf("nothing") }
-                .joinToString("|")
         }
     }
 }
