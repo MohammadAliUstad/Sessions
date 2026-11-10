@@ -301,7 +301,6 @@
     <string name="cd_edit">编辑</string>
     <string name="status_active">进行中</string>
     <string name="status_idle">空闲</string>
-    <string name="task_placeholder_name">为本次会话命名</string>
     <string name="cd_unmute_sound">取消静音</string>
     <string name="cd_mute_sound">静音</string>
     <string name="template_summary">专注 %1$d分 · 休息 %2$d分 · %3$s</string>
@@ -338,7 +337,6 @@
     <string name="cd_change">更改%1$s</string>
     <string name="plan_done_around">约 %1$s 完成  ·  共 %2$s</string>
     <string name="action_start_focus">开始专注</string>
-    <string name="task_placeholder_studio">你在忙什么？</string>
     <string name="cd_change_task">更改任务</string>
     <string name="duration_focus_title">专注时长</string>
     <string name="duration_focus_subtitle">选择休息前想专注多久。</string>

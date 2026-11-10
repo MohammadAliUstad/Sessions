@@ -47,6 +47,7 @@ import com.yugentech.sessions.ui.dash.settingsScreen.components.AlarmPermissionD
 import com.yugentech.sessions.ui.dash.settingsScreen.components.SettingsListItem
 import com.yugentech.sessions.ui.dash.settingsScreen.components.SettingsSwitchItem
 import com.yugentech.sessions.ui.dash.settingsScreen.components.TimePickerDialog
+import androidx.compose.ui.unit.dp
 
 @Composable
 fun SettingsScreen(
@@ -89,7 +90,7 @@ fun SettingsScreen(
             start = MaterialTheme.spacing.m,
             top = topBarInset,
             end = MaterialTheme.spacing.m,
-            bottom = bottomBarInset
+            bottom = bottomBarInset + 8.dp
         ),
         verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.xxs)
     ) {

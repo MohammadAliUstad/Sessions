@@ -68,6 +68,7 @@ import com.yugentech.sessions.ui.dash.util.weeklyHeader
 import com.yugentech.sessions.utils.AppConstants.EMPTY
 import com.yugentech.sessions.viewModels.ProfileViewModel
 import com.yugentech.sessions.viewModels.SessionSortOption
+import androidx.compose.ui.unit.dp
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
@@ -119,7 +120,7 @@ fun ProfileScreen(
                     start = MaterialTheme.spacing.m,
                     top = topBarInset,
                     end = MaterialTheme.spacing.m,
-                    bottom = bottomBarInset
+                    bottom = bottomBarInset + 8.dp
                 )
         ) {
             SectionHeader(
@@ -151,7 +152,7 @@ fun ProfileScreen(
                 start = MaterialTheme.spacing.m,
                 top = topBarInset,
                 end = MaterialTheme.spacing.m,
-                bottom = bottomBarInset
+                bottom = bottomBarInset + 8.dp
             ),
             verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.xxs)
         ) {

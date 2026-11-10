@@ -30,7 +30,7 @@
 
         <activity
             android:name=".MainActivity"
-            android:configChanges="locale|layoutDirection"
+            android:configChanges="locale|layoutDirection|screenLayout"
             android:exported="true"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Sessions.SplashScreen"

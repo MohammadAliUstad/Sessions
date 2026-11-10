@@ -301,7 +301,6 @@
     <string name="cd_edit">수정</string>
     <string name="status_active">진행 중</string>
     <string name="status_idle">대기 중</string>
-    <string name="task_placeholder_name">이 세션의 이름을 정하세요</string>
     <string name="cd_unmute_sound">음소거 해제</string>
     <string name="cd_mute_sound">음소거</string>
     <string name="template_summary">집중 %1$d분 · 휴식 %2$d분 · %3$s</string>
@@ -338,7 +337,6 @@
     <string name="cd_change">%1$s 변경</string>
     <string name="plan_done_around">%1$s쯤 완료  ·  총 %2$s</string>
     <string name="action_start_focus">집중 시작</string>
-    <string name="task_placeholder_studio">무엇을 하고 있나요?</string>
     <string name="cd_change_task">할 일 변경</string>
     <string name="duration_focus_title">집중 시간</string>
     <string name="duration_focus_subtitle">휴식 전까지 얼마나 집중할지 선택하세요.</string>

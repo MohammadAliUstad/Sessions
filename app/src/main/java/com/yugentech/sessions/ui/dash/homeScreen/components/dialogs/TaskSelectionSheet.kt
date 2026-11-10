@@ -442,7 +442,8 @@ fun TaskSelectionSheet(
                         longBreakEnabled = longBreakEnabled
                     )
                     Button(
-                        modifier = Modifier.fillMaxWidth().height(56.dp),
+                        shape = CircleShape,
+                        modifier = Modifier.fillMaxWidth().height(58.dp),
                         enabled = if (isExistingTemplate && !isConfigChanged) true else hasTask,
                         colors = ButtonDefaults.buttonColors(
                             containerColor = saveContainerColor,
@@ -471,7 +472,12 @@ fun TaskSelectionSheet(
                             transitionSpec = { fadeThrough() },
                             label = "saveButtonLabel"
                         ) { label ->
-                            Text(text = label)
+                            Text(
+                                text = label,
+                                style = MaterialTheme.typography.titleMedium,
+                                fontWeight = FontWeight.SemiBold,
+                                maxLines = 1
+                            )
                         }
                     }
                 }

@@ -3,6 +3,7 @@ package com.yugentech.sessions.ui.config.attributionsScreen
 import com.yugentech.sessions.R
 import androidx.compose.ui.res.stringResource
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
@@ -33,6 +34,7 @@ import com.yugentech.sessions.ui.config.model.license.LicensesContent
 import com.yugentech.sessions.ui.dash.mainScreen.components.SectionHeader
 import com.yugentech.sessions.ui.dash.mainScreen.components.itemShape
 import com.yugentech.sessions.utils.AppConstants.GITHUB_URL
+import androidx.compose.ui.unit.dp
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -54,6 +56,11 @@ fun AttributionsScreen(
         containerColor = MaterialTheme.colorScheme.background
     ) { scaffoldPadding ->
         val navBarPadding = WindowInsets.navigationBars.asPaddingValues()
+        // The side inset each item takes itself, so the carousel can run edge to edge
+        val sidePadding = PaddingValues(
+            start = MaterialTheme.spacing.m + scaffoldPadding.calculateStartPadding(layoutDirection),
+            end = MaterialTheme.spacing.m + scaffoldPadding.calculateEndPadding(layoutDirection)
+        )
 
         LazyColumn(
             modifier = Modifier
@@ -61,28 +68,34 @@ fun AttributionsScreen(
                 .padding(top = scaffoldPadding.calculateTopPadding()),
             contentPadding = PaddingValues(
                 top = MaterialTheme.spacing.m,
-                bottom = navBarPadding.calculateBottomPadding(),
-                start = MaterialTheme.spacing.m + scaffoldPadding.calculateStartPadding(layoutDirection),
-                end = MaterialTheme.spacing.m + scaffoldPadding.calculateEndPadding(layoutDirection)
+                bottom = navBarPadding.calculateBottomPadding() + 8.dp
             ),
             verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.xxs)
         ) {
-            item { OpenSourceCard(githubUrl = GITHUB_URL) }
+            item {
+                Box(Modifier.padding(sidePadding)) { OpenSourceCard(githubUrl = GITHUB_URL) }
+            }
 
-            item { AttributionCarousel() }
+            // Inset inside the pager instead, so the cards line up with the rest at rest but
+            // slide out to the screen edges while scrolling
+            item { AttributionCarousel(contentPadding = sidePadding) }
 
             item {
-                SectionHeader(
-                    title = stringResource(R.string.attributions_libraries),
-                    icon = Icons.Default.IntegrationInstructions
-                )
+                Box(Modifier.padding(sidePadding)) {
+                    SectionHeader(
+                        title = stringResource(R.string.attributions_libraries),
+                        icon = Icons.Default.IntegrationInstructions
+                    )
+                }
             }
 
             itemsIndexed(libraries) { index, lib ->
-                LibraryItem(
-                    lib = lib,
-                    shape = itemShape(index, libraries.size)
-                )
+                Box(Modifier.padding(sidePadding)) {
+                    LibraryItem(
+                        lib = lib,
+                        shape = itemShape(index, libraries.size)
+                    )
+                }
             }
         }
     }

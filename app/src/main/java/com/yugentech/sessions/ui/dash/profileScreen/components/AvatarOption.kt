@@ -1,4 +1,4 @@
-package com.yugentech.sessions.ui.config.editProfileScreen.components
+package com.yugentech.sessions.ui.dash.profileScreen.components
 
 import com.yugentech.sessions.R
 import androidx.compose.ui.res.stringResource

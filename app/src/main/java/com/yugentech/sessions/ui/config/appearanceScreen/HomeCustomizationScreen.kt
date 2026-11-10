@@ -36,6 +36,7 @@ import com.yugentech.sessions.ui.config.appearanceScreen.components.CardStyleSel
 import com.yugentech.sessions.ui.config.appearanceScreen.components.HomeGradientSelector
 import com.yugentech.sessions.ui.config.appearanceScreen.components.HomeLayoutSelector
 import com.yugentech.sessions.ui.config.appearanceScreen.components.SessionCardPreview
+import androidx.compose.ui.unit.dp
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class, ExperimentalMaterial3Api::class)
 @Composable
@@ -86,7 +87,7 @@ fun HomeCustomizationScreen(
                 .fillMaxSize()
                 .padding(top = scaffoldPadding.calculateTopPadding()),
             contentPadding = PaddingValues(
-                bottom = navBarPadding.calculateBottomPadding(),
+                bottom = navBarPadding.calculateBottomPadding() + 8.dp,
                 start = MaterialTheme.spacing.m + scaffoldPadding.calculateStartPadding(layoutDirection),
                 end = MaterialTheme.spacing.m + scaffoldPadding.calculateEndPadding(layoutDirection)
             ),

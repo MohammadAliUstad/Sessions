@@ -134,7 +134,7 @@ fun MoreAppsScreen(
             modifier = Modifier.fillMaxSize(),
             contentPadding = PaddingValues(
                 top = innerPadding.calculateTopPadding() + 8.dp,
-                bottom = innerPadding.calculateBottomPadding()
+                bottom = innerPadding.calculateBottomPadding() + 8.dp
             ),
             verticalArrangement = Arrangement.spacedBy(24.dp)
         ) {

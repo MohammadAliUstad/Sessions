@@ -189,16 +189,22 @@ fun SoundSelectionSheet(
             }
 
             Button(
+                shape = CircleShape,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(56.dp),
+                    .height(58.dp),
                 onClick = {
                     haptic.performHapticFeedback(HapticFeedbackType.Confirm)
                     onConfirm(selectedOption)
                     scope.launch { sheetState.hide() }
                 }
             ) {
-                Text(stringResource(R.string.save))
+                Text(
+                    text = stringResource(R.string.save),
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.SemiBold,
+                    maxLines = 1
+                )
             }
         }
     }

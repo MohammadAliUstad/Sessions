@@ -301,7 +301,6 @@
     <string name="cd_edit">बदलें</string>
     <string name="status_active">सक्रिय</string>
     <string name="status_idle">निष्क्रिय</string>
-    <string name="task_placeholder_name">इस सेशन को नाम दें</string>
     <string name="cd_unmute_sound">आवाज़ चालू करें</string>
     <string name="cd_mute_sound">आवाज़ बंद करें</string>
     <string name="template_summary">%1$d मि फ़ोकस · %2$d मि ब्रेक · %3$s</string>
@@ -338,7 +337,6 @@
     <string name="cd_change">%1$s बदलें</string>
     <string name="plan_done_around">लगभग %1$s तक पूरा  ·  कुल %2$s</string>
     <string name="action_start_focus">फ़ोकस शुरू करें</string>
-    <string name="task_placeholder_studio">आप किस पर काम कर रहे हैं?</string>
     <string name="cd_change_task">काम बदलें</string>
     <string name="duration_focus_title">फ़ोकस अवधि</string>
     <string name="duration_focus_subtitle">ब्रेक लेने से पहले कितनी देर फ़ोकस करना है, चुनें।</string>

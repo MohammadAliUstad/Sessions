@@ -61,9 +61,6 @@ private val DockHeight: Dp = 64.dp
 /** Height of each tab's capsule inside the dock. */
 private val TabHeight = 48.dp
 
-/** Space between the dock and the system navigation bar. */
-private val DockBottomGap = 8.dp
-
 /**
  * A floating pill dock, as on Hajime: each tab is just its animated icon, and the selected one
  * grows into a filled capsule that also spells out its name.
@@ -79,7 +76,7 @@ fun BottomNavBar(
         modifier = modifier
             .fillMaxWidth()
             .navigationBarsPadding()
-            .padding(bottom = DockBottomGap),
+            .padding(bottom = 8.dp),
         contentAlignment = Alignment.Center
     ) {
         Surface(

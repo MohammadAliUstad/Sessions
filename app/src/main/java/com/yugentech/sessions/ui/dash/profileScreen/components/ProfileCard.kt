@@ -61,8 +61,6 @@ import com.yugentech.sessions.theme.tokens.corners
 import com.yugentech.sessions.theme.tokens.dimensions.AppAnimations
 import com.yugentech.sessions.theme.tokens.icons
 import com.yugentech.sessions.theme.tokens.spacing
-import com.yugentech.sessions.ui.config.editProfileScreen.components.AvatarPortrait
-import com.yugentech.sessions.ui.config.editProfileScreen.components.AvatarRepository
 
 // Compact profile card: avatar on the left (tap it or its badge to change it),
 // name and avatar title beside it with a pencil to rename, then Insights and the streak.

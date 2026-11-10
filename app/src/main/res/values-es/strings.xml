@@ -301,7 +301,6 @@
     <string name="cd_edit">Editar</string>
     <string name="status_active">Activo</string>
     <string name="status_idle">Inactivo</string>
-    <string name="task_placeholder_name">Ponle nombre a esta sesión</string>
     <string name="cd_unmute_sound">Activar sonido</string>
     <string name="cd_mute_sound">Silenciar</string>
     <string name="template_summary">%1$d min concentración · %2$d min descanso · %3$s</string>
@@ -338,7 +337,6 @@
     <string name="cd_change">Cambiar %1$s</string>
     <string name="plan_done_around">Terminas hacia las %1$s  ·  %2$s en total</string>
     <string name="action_start_focus">Empezar a concentrarme</string>
-    <string name="task_placeholder_studio">¿En qué estás trabajando?</string>
     <string name="cd_change_task">Cambiar tarea</string>
     <string name="duration_focus_title">Duración de la concentración</string>
     <string name="duration_focus_subtitle">Elige cuánto tiempo quieres concentrarte antes de descansar.</string>

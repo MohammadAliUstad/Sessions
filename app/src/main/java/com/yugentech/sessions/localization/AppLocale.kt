@@ -14,7 +14,8 @@ import java.util.Locale
  * The app's own language, apart from the phone's.
  *
  * Switching never restarts the app or recreates the screen. MainActivity declares
- * `configChanges="locale|layoutDirection"`, so a language change reaches the running screen as a
+ * `configChanges="locale|layoutDirection|screenLayout"` (a language switch can also flip screenLayout
+ * bits; without it the system rebuilds the screen), so a language change reaches the running screen as a
  * configuration change and Compose redraws in place: same back stack, same state, no blink.
  *
  * On Android 13 and up this is the system's per-app language: the choice is stored by the system,
@@ -52,7 +53,7 @@ object AppLocale {
             prefs(activity).edit {
                 if (language == null) remove(KEY_TAG) else putString(KEY_TAG, language.tag)
             }
-            applyInPlace(activity, language?.let { Locale.forLanguageTag(it.tag) } ?: systemLocale())
+            applyInPlace(activity, language?.let { Locale.forLanguageTag(it.tag) } ?: systemLocale(activity))
         }
     }
 
@@ -65,7 +66,7 @@ object AppLocale {
         val tag = storedTag(base)
         if (tag == null) {
             // Following the phone: undo a default left behind by an earlier pick
-            Locale.setDefault(systemLocale())
+            Locale.setDefault(systemLocale(base))
             return base
         }
         val locale = Locale.forLanguageTag(tag)
@@ -79,10 +80,23 @@ object AppLocale {
     }
 
     /**
-     * The phone's own language, for the "System default" row. Read from the system's resources,
-     * which a pick inside the app never touches (unlike [Locale.getDefault]).
+     * The phone's own language, for the "System default" row.
+     *
+     * From Android 13 this asks [LocaleManager.getSystemLocales]: once a per-app language is set,
+     * the system applies it to this process's copy of the system resources too, so
+     * [Resources.getSystem] would report the picked language instead of the phone's.
+     * Below 13 nothing touches the system resources (a pick only updates the app's and the
+     * activity's), so they still hold the phone's language. Never [Locale.getDefault], which
+     * follows the pick.
      */
-    fun systemLocale(): Locale = Resources.getSystem().configuration.locales[0] ?: Locale.getDefault()
+    fun systemLocale(context: Context): Locale {
+        val locales = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            context.getSystemService(LocaleManager::class.java).systemLocales
+        } else {
+            Resources.getSystem().configuration.locales
+        }
+        return if (locales.isEmpty) Locale.getDefault() else locales[0]
+    }
 
     /**
      * Below Android 13: points the activity's and the app's resources at [locale] and tells the

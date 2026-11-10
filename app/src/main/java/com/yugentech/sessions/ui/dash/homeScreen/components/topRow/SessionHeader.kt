@@ -88,10 +88,10 @@ fun SessionHeader(
                     modifier = Modifier.weight(1f)
                 ) { task ->
                     Text(
-                        text = task.ifEmpty { stringResource(R.string.task_placeholder_enter) },
+                        text = task.ifBlank { stringResource(R.string.task_placeholder_enter) },
                         style = MaterialTheme.typography.titleMedium,
-                        fontWeight = if (task.isEmpty()) FontWeight.Medium else FontWeight.SemiBold,
-                        color = if (task.isEmpty())
+                        fontWeight = if (task.isBlank()) FontWeight.Medium else FontWeight.SemiBold,
+                        color = if (task.isBlank())
                             MaterialTheme.colorScheme.onSurfaceVariant
                         else
                             MaterialTheme.colorScheme.onSurface,

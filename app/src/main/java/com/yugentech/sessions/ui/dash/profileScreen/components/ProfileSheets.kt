@@ -56,7 +56,6 @@ import androidx.compose.ui.unit.dp
 import com.yugentech.sessions.R
 import com.yugentech.sessions.theme.tokens.corners
 import com.yugentech.sessions.theme.tokens.spacing
-import com.yugentech.sessions.ui.config.editProfileScreen.components.AvatarSection
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch

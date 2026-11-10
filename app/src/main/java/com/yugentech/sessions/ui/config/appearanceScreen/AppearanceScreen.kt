@@ -35,6 +35,7 @@ import com.yugentech.sessions.ui.config.appearanceScreen.components.AmoledThemeS
 import com.yugentech.sessions.ui.config.appearanceScreen.components.FontSelector
 import com.yugentech.sessions.ui.config.appearanceScreen.components.ThemeColorSelector
 import com.yugentech.sessions.ui.config.appearanceScreen.components.ThemeModeSelector
+import androidx.compose.ui.unit.dp
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class, ExperimentalMaterial3Api::class)
 @Composable
@@ -85,7 +86,7 @@ fun AppearanceScreen(
                 .fillMaxSize()
                 .padding(top = scaffoldPadding.calculateTopPadding()),
             contentPadding = PaddingValues(
-                bottom = navBarPadding.calculateBottomPadding(),
+                bottom = navBarPadding.calculateBottomPadding() + 8.dp,
                 start = MaterialTheme.spacing.m + scaffoldPadding.calculateStartPadding(layoutDirection),
                 end = MaterialTheme.spacing.m + scaffoldPadding.calculateEndPadding(layoutDirection)
             ),

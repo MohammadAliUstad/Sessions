@@ -203,10 +203,10 @@ private fun StudioHeader(
                     modifier = Modifier.weight(1f, fill = false)
                 ) { t ->
                     Text(
-                        text = t.ifEmpty { stringResource(R.string.task_placeholder_studio) },
+                        text = t.ifBlank { stringResource(R.string.task_placeholder_enter) },
                         style = MaterialTheme.typography.headlineMedium,
-                        fontWeight = if (t.isEmpty()) FontWeight.Normal else FontWeight.SemiBold,
-                        color = if (t.isEmpty()) scheme.onSurfaceVariant.copy(alpha = 0.6f) else scheme.onSurface,
+                        fontWeight = if (t.isBlank()) FontWeight.Normal else FontWeight.SemiBold,
+                        color = if (t.isBlank()) scheme.onSurfaceVariant.copy(alpha = 0.6f) else scheme.onSurface,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis
                     )

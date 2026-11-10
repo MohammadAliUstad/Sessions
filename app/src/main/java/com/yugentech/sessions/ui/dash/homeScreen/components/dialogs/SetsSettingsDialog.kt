@@ -249,16 +249,22 @@ fun SetsSettingsSheet(
             }
 
             Button(
+                shape = CircleShape,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(56.dp),
+                    .height(58.dp),
                 onClick = {
                     haptic.performHapticFeedback(HapticFeedbackType.Confirm)
                     onSave(sets, longBreak.roundToInt(), setsPerLongBreak, longBreakEnabled)
                     scope.launch { sheetState.hide() }
                 }
             ) {
-                Text(stringResource(R.string.save))
+                Text(
+                    text = stringResource(R.string.save),
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.SemiBold,
+                    maxLines = 1
+                )
             }
         }
     }

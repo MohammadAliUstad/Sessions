@@ -103,10 +103,10 @@ fun RefinedHeader(
                     modifier = Modifier.weight(1f, fill = false)
                 ) { task ->
                     Text(
-                        text = task.ifEmpty { stringResource(R.string.task_placeholder_name) },
+                        text = task.ifBlank { stringResource(R.string.task_placeholder_enter) },
                         style = MaterialTheme.typography.headlineSmall,
-                        fontWeight = if (task.isEmpty()) FontWeight.Normal else FontWeight.SemiBold,
-                        color = if (task.isEmpty()) {
+                        fontWeight = if (task.isBlank()) FontWeight.Normal else FontWeight.SemiBold,
+                        color = if (task.isBlank()) {
                             MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f)
                         } else {
                             MaterialTheme.colorScheme.onSurface

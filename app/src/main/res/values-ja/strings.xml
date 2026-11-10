@@ -301,7 +301,6 @@
     <string name="cd_edit">編集</string>
     <string name="status_active">進行中</string>
     <string name="status_idle">待機中</string>
-    <string name="task_placeholder_name">このセッションに名前をつける</string>
     <string name="cd_unmute_sound">ミュートを解除</string>
     <string name="cd_mute_sound">ミュート</string>
     <string name="template_summary">集中 %1$d分 · 休憩 %2$d分 · %3$s</string>
@@ -338,7 +337,6 @@
     <string name="cd_change">%1$s を変更</string>
     <string name="plan_done_around">%1$s ごろ終了  ·  合計 %2$s</string>
     <string name="action_start_focus">集中を開始</string>
-    <string name="task_placeholder_studio">何に取り組んでいますか？</string>
     <string name="cd_change_task">タスクを変更</string>
     <string name="duration_focus_title">集中する時間</string>
     <string name="duration_focus_subtitle">休憩までに集中する時間を選びましょう。</string>

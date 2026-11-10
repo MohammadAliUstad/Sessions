@@ -58,6 +58,7 @@ import com.yugentech.sessions.ui.dash.settingsScreen.components.SettingsListItem
 import com.yugentech.sessions.utils.AppConstants
 import com.yugentech.sessions.utils.BillingManager
 import org.koin.compose.koinInject
+import androidx.compose.ui.unit.dp
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -153,7 +154,7 @@ fun AboutScreen(
                 modifier = Modifier.fillMaxSize(),
                 verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.xxs),
                 contentPadding = PaddingValues(
-                    bottom = navBarPadding.calculateBottomPadding(),
+                    bottom = navBarPadding.calculateBottomPadding() + 8.dp,
                     start = MaterialTheme.spacing.m + scaffoldPadding.calculateStartPadding(layoutDirection),
                     end = MaterialTheme.spacing.m + scaffoldPadding.calculateEndPadding(layoutDirection)
                 )

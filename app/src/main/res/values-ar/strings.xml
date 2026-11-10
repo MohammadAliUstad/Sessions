@@ -301,7 +301,6 @@
     <string name="cd_edit">تعديل</string>
     <string name="status_active">نشط</string>
     <string name="status_idle">خامل</string>
-    <string name="task_placeholder_name">سمِّ هذه الجلسة</string>
     <string name="cd_unmute_sound">إلغاء كتم الصوت</string>
     <string name="cd_mute_sound">كتم الصوت</string>
     <string name="template_summary">%1$d د تركيز · %2$d د استراحة · %3$s</string>
@@ -338,7 +337,6 @@
     <string name="cd_change">تغيير %1$s</string>
     <string name="plan_done_around">تنتهي نحو %1$s  ·  %2$s إجمالًا</string>
     <string name="action_start_focus">ابدأ التركيز</string>
-    <string name="task_placeholder_studio">على ماذا تعمل؟</string>
     <string name="cd_change_task">تغيير المهمة</string>
     <string name="duration_focus_title">مدة التركيز</string>
     <string name="duration_focus_subtitle">اختر المدة التي تريد التركيز فيها قبل أخذ استراحة.</string>

@@ -112,7 +112,7 @@ fun InsightsScreen(
             LazyColumn(
                 modifier = Modifier.fillMaxSize(),
                 contentPadding = PaddingValues(
-                    bottom = navBarPadding.calculateBottomPadding(),
+                    bottom = navBarPadding.calculateBottomPadding() + 8.dp,
                     start = MaterialTheme.spacing.m + paddingValues.calculateStartPadding(layoutDirection),
                     end = MaterialTheme.spacing.m + paddingValues.calculateEndPadding(layoutDirection)
                 ),
