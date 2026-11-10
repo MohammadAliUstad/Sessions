@@ -184,7 +184,22 @@ Contributions are what make the open source community such an amazing place to l
 
 ## 📄 License
 
-Distributed under the MIT License. See `LICENSE` file for more information.
+Sessions is free and open source software, licensed under the **GNU General Public License v3.0 or later** (`GPL-3.0-or-later`). See [`LICENSE`](LICENSE) for the full text and [`NOTICE.md`](NOTICE.md) for the copyright notice and additional terms.
+
+In short, you may use, study, modify and share the code. If you distribute a modified version, you must release its full source code under the same license and keep the copyright notices.
+
+- **Google libraries:** an additional permission allows the app to be built with Firebase, Google Play services and the Google Play Billing Library.
+- **Earlier releases:** versions published before this change were released under the Apache License 2.0 and remain available under those terms.
+
+### Name and branding
+
+The license covers the code, not the brand. The **Sessions** name, the **Yugen Tech** name, the logo, the app icon and the artwork in `graphics/`, `badges/` and `screenshots/` are **not** licensed under the GPL and remain all rights reserved.
+
+If you publish a fork, give it a different name, icon and application ID, and don't present it as an official Sessions release. You're welcome to describe it as "based on Sessions" and link back here. See [`NOTICE.md`](NOTICE.md) for details.
+
+### Contributing and licensing
+
+By submitting a pull request, you agree that your contribution is licensed under GPL-3.0-or-later.
 
 ---
 

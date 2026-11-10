@@ -14,3 +14,14 @@
 .externalNativeBuild
 .cxx
 .kotlin
+# Release outputs (APKs, bundles, baseline profiles)
+/app/release
+*.apk
+*.aab
+
+# Signing keys and secrets
+*.jks
+*.keystore
+keystore.properties
+signing.properties
+.env
