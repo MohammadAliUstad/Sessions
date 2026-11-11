@@ -46,8 +46,8 @@ fun SignInForm(
     onGoogleSignIn: () -> Unit,
     onForgotPassword: (email: String) -> Unit,
     onClearError: () -> Unit,
-    onContinueAsGuest: () -> Unit = {},
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onContinueAsGuest: () -> Unit = {}
 ) {
     var formState by remember { mutableStateOf(SignInFormState()) }
     // Errors are worked out in callbacks, so read from resources (in the app's language)

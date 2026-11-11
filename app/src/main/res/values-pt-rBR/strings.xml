@@ -5,7 +5,7 @@
     <string name="version">Versão 6.0.0</string>
     <string name="about">Sobre</string>
     <string name="back">Voltar</string>
-    <string name="selected">Selecionado</string>
+    <string name="state_selected">Selecionado</string>
     <string name="continue_with_google">Continuar com o Google</string>
     <string name="label_email">E-mail</string>
     <string name="label_password">Senha</string>
@@ -275,7 +275,7 @@
     <string name="sounds_subtitle">Escolha um ambiente relaxante para manter o foco durante a sessão.</string>
     <string name="sounds_turn_on">Ativar sons</string>
     <string name="sounds_turn_on_subtitle">Ative para ouvir e escolher um som abaixo</string>
-    <string name="task_placeholder_enter">Digite um nome...</string>
+    <string name="task_placeholder_enter">Digite um nome…</string>
     <string name="cd_edit">Editar</string>
     <string name="status_active">Ativo</string>
     <string name="status_idle">Parado</string>
@@ -290,7 +290,7 @@
     <string name="task_title">Tarefa da sessão</string>
     <string name="task_subtitle">Dê um nome à sessão ou escolha um modelo salvo.</string>
     <string name="task_subtitle_session">Renomeie o que você está fazendo. Durante a sessão, um modelo só define o nome.</string>
-    <string name="task_hint">ex.: Programação, Matemática, Leitura...</string>
+    <string name="task_hint">ex.: Programação, Matemática, Leitura…</string>
     <string name="cd_clear">Limpar</string>
     <string name="task_set">Definir tarefa</string>
     <string name="templates_title">Modelos salvos</string>

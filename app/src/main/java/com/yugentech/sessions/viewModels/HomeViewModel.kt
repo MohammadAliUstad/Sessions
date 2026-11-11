@@ -40,7 +40,7 @@ class HomeViewModel(
 
         viewModelScope.launch {
             fetchUserOnce(userId)
-            fetchSessionsOnce(userId)
+            fetchSessionsOnce()
 
             syncPendingSessions(userId)
         }
@@ -84,7 +84,7 @@ class HomeViewModel(
         }
     }
 
-    suspend fun fetchSessionsOnce(userId: String) {
+    suspend fun fetchSessionsOnce() {
         _dataState.value = _dataState.value.copy(isLoading = true)
         try {
             sessionsRepository.fetchSessionsOnce()
@@ -115,9 +115,5 @@ class HomeViewModel(
                 Timber.e(e, "Sync failed")
             }
         }
-    }
-
-    fun clearError() {
-        _dataState.value = _dataState.value.copy(errorMessage = null)
     }
 }

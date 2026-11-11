@@ -5,7 +5,7 @@
     <string name="version">Version 6.0.0</string>
     <string name="about">Über</string>
     <string name="back">Zurück</string>
-    <string name="selected">Ausgewählt</string>
+    <string name="state_selected">Ausgewählt</string>
     <string name="continue_with_google">Weiter mit Google</string>
     <string name="label_email">E-Mail</string>
     <string name="label_password">Passwort</string>
@@ -275,7 +275,7 @@
     <string name="sounds_subtitle">Wähle eine beruhigende Klangkulisse, um während deiner Session fokussiert zu bleiben.</string>
     <string name="sounds_turn_on">Klänge einschalten</string>
     <string name="sounds_turn_on_subtitle">Einschalten, um unten einen Klang anzuhören und auszuwählen</string>
-    <string name="task_placeholder_enter">Namen eingeben...</string>
+    <string name="task_placeholder_enter">Namen eingeben…</string>
     <string name="cd_edit">Bearbeiten</string>
     <string name="status_active">Aktiv</string>
     <string name="status_idle">Inaktiv</string>
@@ -290,7 +290,7 @@
     <string name="task_title">Session-Aufgabe</string>
     <string name="task_subtitle">Benenne deine Session oder wähle eine gespeicherte Vorlage.</string>
     <string name="task_subtitle_session">Benenne um, woran du arbeitest. Während der Session setzt eine Vorlage nur den Namen.</string>
-    <string name="task_hint">z. B. Programmieren, Mathe, Lesen...</string>
+    <string name="task_hint">z. B. Programmieren, Mathe, Lesen…</string>
     <string name="cd_clear">Leeren</string>
     <string name="task_set">Aufgabe festlegen</string>
     <string name="templates_title">Gespeicherte Vorlagen</string>

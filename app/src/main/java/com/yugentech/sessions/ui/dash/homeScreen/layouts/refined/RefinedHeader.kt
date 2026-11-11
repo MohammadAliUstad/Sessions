@@ -39,7 +39,6 @@ import com.yugentech.sessions.alerts.model.BackgroundSound
 import com.yugentech.sessions.theme.tokens.dimensions.AppAnimations
 import com.yugentech.sessions.theme.tokens.icons
 import com.yugentech.sessions.theme.tokens.spacing
-import com.yugentech.sessions.timer.state.TimerMode
 import com.yugentech.sessions.ui.dash.homeScreen.layouts.shared.TaskTapInset
 import com.yugentech.sessions.ui.dash.homeScreen.layouts.shared.taskTapArea
 import com.yugentech.sessions.ui.dash.mainScreen.components.pressClickable
@@ -55,7 +54,6 @@ fun RefinedHeader(
     sessionTask: String,
     onTaskClick: () -> Unit,
     onSoundBadgeClick: () -> Unit,
-    mode: TimerMode = TimerMode.Focus,
     isAmbientEnabled: Boolean = true,
     activeBackgroundSoundId: String? = null
 ) {

@@ -225,7 +225,7 @@ class ProfileViewModel(
         }
     }
 
-    fun deleteSession(userId: String, sessionId: String) {
+    fun deleteSession(sessionId: String) {
         viewModelScope.launch {
             sessionsRepository.deleteSession(sessionId)
         }

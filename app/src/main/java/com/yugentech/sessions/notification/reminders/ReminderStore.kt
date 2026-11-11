@@ -1,6 +1,7 @@
 package com.yugentech.sessions.notification.reminders
 
 import android.content.Context
+import androidx.core.content.edit
 import org.json.JSONObject
 
 /**
@@ -32,11 +33,11 @@ internal object ReminderStore {
             .put("minute", daily.minute)
             .put("title", daily.title)
             .put("message", daily.message)
-        prefs(context, DAILY_PREFS).edit().putString(daily.id.toString(), json.toString()).apply()
+        prefs(context, DAILY_PREFS).edit { putString(daily.id.toString(), json.toString()) }
     }
 
     fun removeDaily(context: Context, id: Int) {
-        prefs(context, DAILY_PREFS).edit().remove(id.toString()).apply()
+        prefs(context, DAILY_PREFS).edit { remove(id.toString()) }
     }
 
     fun allDaily(context: Context): List<Daily> = prefs(context, DAILY_PREFS).all.mapNotNull { (key, value) ->
@@ -53,7 +54,7 @@ internal object ReminderStore {
             .put("sendFromHour", plan.sendFromHour)
             .put("playful", plan.playful)
             .put("done", plan.done)
-        prefs(context, NUDGE_PREFS).edit().putString(PLAN_KEY, json.toString()).apply()
+        prefs(context, NUDGE_PREFS).edit { putString(PLAN_KEY, json.toString()) }
     }
 
     fun dayPlan(context: Context): DayPlan? = runCatching {

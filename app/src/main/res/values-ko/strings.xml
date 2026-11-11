@@ -5,7 +5,7 @@
     <string name="version">버전 6.0.0</string>
     <string name="about">정보</string>
     <string name="back">뒤로</string>
-    <string name="selected">선택됨</string>
+    <string name="state_selected">선택됨</string>
     <string name="continue_with_google">Google로 계속하기</string>
     <string name="label_email">이메일</string>
     <string name="label_password">비밀번호</string>
@@ -275,7 +275,7 @@
     <string name="sounds_subtitle">세션 중 집중을 유지할 수 있도록 편안한 분위기를 골라 보세요.</string>
     <string name="sounds_turn_on">사운드 켜기</string>
     <string name="sounds_turn_on_subtitle">켜면 아래에서 사운드를 미리 듣고 고를 수 있어요</string>
-    <string name="task_placeholder_enter">이름 입력...</string>
+    <string name="task_placeholder_enter">이름 입력…</string>
     <string name="cd_edit">수정</string>
     <string name="status_active">진행 중</string>
     <string name="status_idle">대기 중</string>
@@ -290,7 +290,7 @@
     <string name="task_title">세션 할 일</string>
     <string name="task_subtitle">세션 이름을 정하거나 저장된 템플릿을 고르세요.</string>
     <string name="task_subtitle_session">하고 있는 일의 이름을 바꿔 보세요. 세션 중에는 템플릿을 골라도 이름만 바뀌어요.</string>
-    <string name="task_hint">예: 코딩, 수학, 독서...</string>
+    <string name="task_hint">예: 코딩, 수학, 독서…</string>
     <string name="cd_clear">지우기</string>
     <string name="task_set">할 일 설정</string>
     <string name="templates_title">저장된 템플릿</string>

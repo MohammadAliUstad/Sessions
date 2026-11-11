@@ -164,11 +164,11 @@ class TimerViewModel(
         }
     }
 
-    fun skipToNextMode(view: View? = null) {
+    fun skipToNextMode() {
         timerRepository.skipToNext()
     }
 
-    fun stopAndDiscardSession(view: View? = null) {
+    fun stopAndDiscardSession() {
         viewModelScope.launch {
             timerRepository.reset()
             // Alerts are handled by ActiveForeground.stopSession(); reset() above ensures
@@ -177,15 +177,15 @@ class TimerViewModel(
         }
     }
 
-    fun onLeave(view: View? = null) {
+    fun onLeave() {
         viewModelScope.launch {
             timerRepository.reset()
-            alertsRepository.onLeave(view)
+            alertsRepository.onLeave()
             stopActiveNotification()
         }
     }
 
-    fun stopAndSaveSession(view: View? = null) {
+    fun stopAndSaveSession() {
         val state = timerState.value
         val timeSpentSeconds = (state.totalTime - state.currentTime).toInt()
 
@@ -215,21 +215,21 @@ class TimerViewModel(
             _showFinishConfirmation.value = setsRemaining
         } else {
             // Final set: proceed to save and show goal reached
-            finishSession(view, showCelebration = true)
+            finishSession(showCelebration = true)
         }
     }
 
-    fun confirmFinishSession(view: View? = null) {
+    fun confirmFinishSession() {
         _showFinishConfirmation.value = null
         // User confirmed they want to finish early despite remaining sets
-        finishSession(view, showCelebration = false)
+        finishSession(showCelebration = false)
     }
 
     fun dismissFinishConfirmation() {
         _showFinishConfirmation.value = null
     }
 
-    private fun finishSession(view: View? = null, showCelebration: Boolean = true) {
+    private fun finishSession(showCelebration: Boolean = true) {
         timerRepository.saveCurrentSession()
 
         viewModelScope.launch {

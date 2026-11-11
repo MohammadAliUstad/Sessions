@@ -101,7 +101,7 @@ class GuestBackupManager(
             val json = JSONObject(text)
             if (json.optString(KEY_APP) != APP_ID) return@withContext null
             val version = json.optInt(KEY_VERSION, -1)
-            if (version < 1 || version > FORMAT_VERSION) return@withContext null
+            if (version !in 1..FORMAT_VERSION) return@withContext null
 
             val sessionsAdded = importSessions(userId, json.optJSONArray(KEY_SESSIONS))
             val templatesAdded = importTemplates(json.optJSONArray(KEY_TEMPLATES))

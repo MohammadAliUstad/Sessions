@@ -60,7 +60,7 @@ import com.yugentech.sessions.alerts.model.BackgroundSound
 import com.yugentech.sessions.theme.tokens.spacing
 import com.yugentech.sessions.ui.dash.util.models.SoundOption
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SoundSelectionSheet(
     currentSoundId: String?,

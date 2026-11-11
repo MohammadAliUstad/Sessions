@@ -4,14 +4,12 @@ import com.yugentech.sessions.R
 import androidx.compose.ui.res.stringResource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.TextFields
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.LocalRippleConfiguration
@@ -33,7 +31,6 @@ import com.yugentech.sessions.theme.tokens.spacing
 import com.yugentech.sessions.theme.viewmodel.ThemeViewModel
 import com.yugentech.sessions.ui.dash.mainScreen.components.SectionHeader
 
-@OptIn(ExperimentalLayoutApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun FontSelector(
     modifier: Modifier = Modifier,

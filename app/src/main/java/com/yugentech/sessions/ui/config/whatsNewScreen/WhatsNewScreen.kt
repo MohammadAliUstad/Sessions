@@ -58,7 +58,6 @@ import androidx.compose.material.icons.filled.Tune
 import androidx.compose.material.icons.filled.Translate
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LargeTopAppBar
@@ -85,7 +84,6 @@ import com.yugentech.sessions.theme.tokens.dimensions.AppAnimations
 import com.yugentech.sessions.theme.tokens.spacing
 import com.yugentech.sessions.ui.dash.mainScreen.components.itemShape
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun WhatsNewScreen(
     onNavigateBack: () -> Unit

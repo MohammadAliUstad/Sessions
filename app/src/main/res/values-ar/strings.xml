@@ -5,7 +5,7 @@
     <string name="version">الإصدار 6.0.0</string>
     <string name="about">حول</string>
     <string name="back">رجوع</string>
-    <string name="selected">محدَّد</string>
+    <string name="state_selected">محدَّد</string>
     <string name="continue_with_google">المتابعة باستخدام Google</string>
     <string name="label_email">البريد الإلكتروني</string>
     <string name="label_password">كلمة المرور</string>
@@ -275,7 +275,7 @@
     <string name="sounds_subtitle">اختر أجواء هادئة لتبقى مركّزًا أثناء جلستك.</string>
     <string name="sounds_turn_on">تشغيل الأصوات</string>
     <string name="sounds_turn_on_subtitle">فعّلها لمعاينة صوت واختياره أدناه</string>
-    <string name="task_placeholder_enter">أدخل اسمًا...</string>
+    <string name="task_placeholder_enter">أدخل اسمًا…</string>
     <string name="cd_edit">تعديل</string>
     <string name="status_active">نشط</string>
     <string name="status_idle">خامل</string>
@@ -290,7 +290,7 @@
     <string name="task_title">مهمة الجلسة</string>
     <string name="task_subtitle">سمِّ جلستك أو اختر قالبًا محفوظًا.</string>
     <string name="task_subtitle_session">غيّر اسم ما تعمل عليه. أثناء الجلسة، يضبط القالب الاسم فقط.</string>
-    <string name="task_hint">مثل: برمجة، رياضيات، قراءة...</string>
+    <string name="task_hint">مثل: برمجة، رياضيات، قراءة…</string>
     <string name="cd_clear">مسح</string>
     <string name="task_set">تعيين المهمة</string>
     <string name="templates_title">القوالب المحفوظة</string>

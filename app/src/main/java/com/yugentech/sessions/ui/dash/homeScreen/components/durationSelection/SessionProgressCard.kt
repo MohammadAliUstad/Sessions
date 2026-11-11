@@ -33,7 +33,6 @@ import androidx.compose.material.icons.filled.SkipNext
 import androidx.compose.material.icons.outlined.Flag
 import androidx.compose.material.icons.outlined.Timer
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -61,7 +60,6 @@ import com.yugentech.sessions.ui.dash.homeScreen.components.hero.heroSurface
 import com.yugentech.sessions.ui.dash.homeScreen.components.hero.rememberEffectTime
 import com.yugentech.sessions.ui.dash.state.SessionDashboardState
 
-@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun SessionProgressCard(
     state: SessionDashboardState,

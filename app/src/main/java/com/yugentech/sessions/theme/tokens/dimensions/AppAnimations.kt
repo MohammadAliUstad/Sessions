@@ -5,7 +5,6 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.scaleIn
 import androidx.compose.animation.togetherWith
-import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -15,23 +14,10 @@ object AppAnimations {
 
     // Standard duration constants (in milliseconds) for consistent animation speeds
     object Durations {
-        const val Immediate = 0
-        const val Micro = 50
-        const val Rapid = 100
         const val Fast = 150
-        const val Base = 200
-        const val Smooth = 250
         const val Standard = 300
-        const val Emphasized = 400
-        const val Complex = 500
-        const val Slow = 700
-        const val Extended = 1000
         const val Delay = 1200
-        const val Sustained = 1500
-        const val Delayed = 2000
-        const val Prolonged = 3000
         const val RepeatDelay = 2000
-        const val Carousel = 20000
     }
 
     // Physical constants for motion-based spatial changes
@@ -48,7 +34,6 @@ object AppAnimations {
         // bounce). Springs can't be delayed, so the two overlap briefly at the start; the fast
         // spring clears the old one within about a tenth of a second.
         // Use: val fadeThrough = rememberExpressiveFadeThrough(), then transitionSpec = { fadeThrough() }.
-        @OptIn(ExperimentalMaterial3ExpressiveApi::class)
         @Composable
         fun rememberExpressiveFadeThrough(): () -> ContentTransform {
             val motionScheme = MaterialTheme.motionScheme

@@ -87,9 +87,9 @@ private val EmphasizedEasing = CubicBezierEasing(0.2f, 0f, 0f, 1f)
 fun GoogleSignInButton(
     isLoading: Boolean,
     onClick: () -> Unit,
+    modifier: Modifier = Modifier,
     enabled: Boolean = !isLoading,
-    label: String = stringResource(continue_with_google),
-    modifier: Modifier = Modifier
+    label: String = stringResource(continue_with_google)
 ) {
     AuthOptionButton(
         icon = { size ->
@@ -121,8 +121,8 @@ fun GoogleSignInButton(
 fun GuestSignInButton(
     isLoading: Boolean,
     onClick: () -> Unit,
-    enabled: Boolean = !isLoading,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    enabled: Boolean = !isLoading
 ) {
     val currentOnClick by rememberUpdatedState(onClick)
     // Once tapped the ghost has gone for good: the button stays empty until the app opens and

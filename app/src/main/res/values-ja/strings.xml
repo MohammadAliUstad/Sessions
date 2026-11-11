@@ -5,7 +5,7 @@
     <string name="version">バージョン 6.0.0</string>
     <string name="about">アプリについて</string>
     <string name="back">戻る</string>
-    <string name="selected">選択中</string>
+    <string name="state_selected">選択中</string>
     <string name="continue_with_google">Google で続ける</string>
     <string name="label_email">メールアドレス</string>
     <string name="label_password">パスワード</string>
@@ -275,7 +275,7 @@
     <string name="sounds_subtitle">セッション中の集中を保つ、心地よい環境音を選びましょう。</string>
     <string name="sounds_turn_on">サウンドをオンにする</string>
     <string name="sounds_turn_on_subtitle">オンにすると下のサウンドを試聴して選べます</string>
-    <string name="task_placeholder_enter">名前を入力...</string>
+    <string name="task_placeholder_enter">名前を入力…</string>
     <string name="cd_edit">編集</string>
     <string name="status_active">進行中</string>
     <string name="status_idle">待機中</string>
@@ -290,7 +290,7 @@
     <string name="task_title">セッションのタスク</string>
     <string name="task_subtitle">セッションに名前をつけるか、保存済みのテンプレートを選びましょう。</string>
     <string name="task_subtitle_session">取り組んでいることの名前を変えられます。セッション中はテンプレートを選んでも名前だけが変わります。</string>
-    <string name="task_hint">例：プログラミング、数学、読書...</string>
+    <string name="task_hint">例：プログラミング、数学、読書…</string>
     <string name="cd_clear">クリア</string>
     <string name="task_set">タスクを設定</string>
     <string name="templates_title">保存済みテンプレート</string>

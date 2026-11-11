@@ -5,7 +5,7 @@
     <string name="version">Versión 6.0.0</string>
     <string name="about">Acerca de</string>
     <string name="back">Atrás</string>
-    <string name="selected">Seleccionado</string>
+    <string name="state_selected">Seleccionado</string>
     <string name="continue_with_google">Continuar con Google</string>
     <string name="label_email">Correo electrónico</string>
     <string name="label_password">Contraseña</string>
@@ -275,7 +275,7 @@
     <string name="sounds_subtitle">Elige un ambiente relajante para mantener la concentración durante la sesión.</string>
     <string name="sounds_turn_on">Activar sonidos</string>
     <string name="sounds_turn_on_subtitle">Actívalo para escuchar y elegir un sonido</string>
-    <string name="task_placeholder_enter">Escribe un nombre...</string>
+    <string name="task_placeholder_enter">Escribe un nombre…</string>
     <string name="cd_edit">Editar</string>
     <string name="status_active">Activo</string>
     <string name="status_idle">Inactivo</string>
@@ -290,7 +290,7 @@
     <string name="task_title">Tarea de la sesión</string>
     <string name="task_subtitle">Ponle nombre a tu sesión o elige una plantilla guardada.</string>
     <string name="task_subtitle_session">Cambia el nombre de lo que estás haciendo. Durante la sesión, una plantilla solo pone el nombre.</string>
-    <string name="task_hint">p. ej. Programación, Matemáticas, Lectura...</string>
+    <string name="task_hint">p. ej. Programación, Matemáticas, Lectura…</string>
     <string name="cd_clear">Borrar</string>
     <string name="task_set">Fijar tarea</string>
     <string name="templates_title">Plantillas guardadas</string>

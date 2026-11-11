@@ -115,15 +115,13 @@ fun TaskSelectionSheet(
         longBreakEnabled,
         setsPerLongBreak
     ) {
-        if (matchedTemplate == null) true
-        else {
-            matchedTemplate.focusDuration != focusDuration ||
-                    matchedTemplate.shortBreakDuration != shortBreakDuration ||
-                    matchedTemplate.longBreakDuration != longBreakDuration ||
-                    matchedTemplate.targetSets != targetSets ||
-                    matchedTemplate.longBreakEnabled != longBreakEnabled ||
-                    matchedTemplate.setsPerLongBreak != setsPerLongBreak
-        }
+        matchedTemplate == null ||
+                matchedTemplate.focusDuration != focusDuration ||
+                matchedTemplate.shortBreakDuration != shortBreakDuration ||
+                matchedTemplate.longBreakDuration != longBreakDuration ||
+                matchedTemplate.targetSets != targetSets ||
+                matchedTemplate.longBreakEnabled != longBreakEnabled ||
+                matchedTemplate.setsPerLongBreak != setsPerLongBreak
     }
 
     val setTaskContainerColor by animateColorAsState(
@@ -445,7 +443,7 @@ fun TaskSelectionSheet(
                     Button(
                         shape = CircleShape,
                         modifier = Modifier.fillMaxWidth().height(58.dp),
-                        enabled = if (isExistingTemplate && !isConfigChanged) true else hasTask,
+                        enabled = (isExistingTemplate && !isConfigChanged) || hasTask,
                         colors = ButtonDefaults.buttonColors(
                             containerColor = saveContainerColor,
                             contentColor = saveContentColor,

@@ -28,7 +28,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Check
 import androidx.compose.material3.ColorScheme
-import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -175,7 +174,6 @@ fun ThemeCard(
  * The corner check, on Material 3 Expressive's standard motion: it pops in on the fast spatial
  * spring with a quick fade, and leaves on the fast effects spec with no bounce.
  */
-@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 private fun ThemeCheck(
     isSelected: Boolean,
@@ -199,7 +197,7 @@ private fun ThemeCheck(
         ) {
             Icon(
                 imageVector = Icons.Rounded.Check,
-                contentDescription = stringResource(R.string.selected),
+                contentDescription = stringResource(R.string.state_selected),
                 tint = contentColor,
                 modifier = Modifier.size(13.dp)
             )

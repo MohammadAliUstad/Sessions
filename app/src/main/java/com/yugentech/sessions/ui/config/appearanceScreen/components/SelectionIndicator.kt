@@ -164,7 +164,7 @@ fun SelectionTick(
         ) {
             Icon(
                 imageVector = Icons.Rounded.Check,
-                contentDescription = stringResource(R.string.selected),
+                contentDescription = stringResource(R.string.state_selected),
                 tint = contentColor,
                 modifier = Modifier.size(iconSize)
             )

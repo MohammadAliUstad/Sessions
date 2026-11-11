@@ -27,11 +27,9 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
@@ -82,7 +80,6 @@ fun StudioHome(ui: HomeUi, actions: HomeActions, screenHeight: Dp) {
                 soundId = config.activeBackgroundSoundId,
                 soundOn = config.isAmbientEnabled,
                 soundPlaying = ui.isRunning,
-                accent = accent,
                 onTask = actions.onTaskClick,
                 onToggleSound = actions.onToggleAmbient
             )
@@ -140,7 +137,6 @@ fun StudioHome(ui: HomeUi, actions: HomeActions, screenHeight: Dp) {
             StudioDock(
                 isRunning = ui.isRunning,
                 isSessionActive = ui.isSessionActive,
-                mode = ui.mode,
                 onStartStop = actions.onStartStop,
                 onSound = actions.onSoundClick,
                 onSets = actions.onSetsClick,
@@ -163,7 +159,6 @@ private fun StudioHeader(
     soundId: String?,
     soundOn: Boolean,
     soundPlaying: Boolean,
-    accent: Color,
     onTask: () -> Unit,
     onToggleSound: () -> Unit
 ) {

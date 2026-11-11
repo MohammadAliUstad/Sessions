@@ -5,7 +5,7 @@
     <string name="version">वर्शन 6.0.0</string>
     <string name="about">जानकारी</string>
     <string name="back">वापस</string>
-    <string name="selected">चुना गया</string>
+    <string name="state_selected">चुना गया</string>
     <string name="continue_with_google">Google के साथ जारी रखें</string>
     <string name="label_email">ईमेल</string>
     <string name="label_password">पासवर्ड</string>
@@ -275,7 +275,7 @@
     <string name="sounds_subtitle">सेशन के दौरान फ़ोकस बनाए रखने के लिए कोई सुकून भरा माहौल चुनें।</string>
     <string name="sounds_turn_on">साउंड चालू करें</string>
     <string name="sounds_turn_on_subtitle">नीचे कोई साउंड सुनने और चुनने के लिए चालू करें</string>
-    <string name="task_placeholder_enter">नाम डालें...</string>
+    <string name="task_placeholder_enter">नाम डालें…</string>
     <string name="cd_edit">बदलें</string>
     <string name="status_active">सक्रिय</string>
     <string name="status_idle">निष्क्रिय</string>
@@ -290,7 +290,7 @@
     <string name="task_title">सेशन का काम</string>
     <string name="task_subtitle">अपने सेशन को नाम दें या कोई सेव किया टेम्पलेट चुनें।</string>
     <string name="task_subtitle_session">आप जिस पर काम कर रहे हैं उसका नाम बदलें। सेशन के दौरान टेम्पलेट सिर्फ़ नाम बदलता है।</string>
-    <string name="task_hint">जैसे कोडिंग, गणित, पढ़ाई...</string>
+    <string name="task_hint">जैसे कोडिंग, गणित, पढ़ाई…</string>
     <string name="cd_clear">साफ़ करें</string>
     <string name="task_set">काम सेट करें</string>
     <string name="templates_title">सेव किए गए टेम्पलेट</string>

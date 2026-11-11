@@ -5,7 +5,7 @@
     <string name="version">版本 6.0.0</string>
     <string name="about">关于</string>
     <string name="back">返回</string>
-    <string name="selected">已选择</string>
+    <string name="state_selected">已选择</string>
     <string name="continue_with_google">使用 Google 继续</string>
     <string name="label_email">电子邮箱</string>
     <string name="label_password">密码</string>
@@ -275,7 +275,7 @@
     <string name="sounds_subtitle">选择一种舒缓的环境音，帮助你在会话中保持专注。</string>
     <string name="sounds_turn_on">开启声音</string>
     <string name="sounds_turn_on_subtitle">开启后可在下方试听并选择声音</string>
-    <string name="task_placeholder_enter">输入名称...</string>
+    <string name="task_placeholder_enter">输入名称…</string>
     <string name="cd_edit">编辑</string>
     <string name="status_active">进行中</string>
     <string name="status_idle">空闲</string>
@@ -290,7 +290,7 @@
     <string name="task_title">会话任务</string>
     <string name="task_subtitle">为会话命名，或选择已保存的模板。</string>
     <string name="task_subtitle_session">重命名你正在做的事。会话进行中，模板只会设置名称。</string>
-    <string name="task_hint">例如：编程、数学、阅读...</string>
+    <string name="task_hint">例如：编程、数学、阅读…</string>
     <string name="cd_clear">清除</string>
     <string name="task_set">设置任务</string>
     <string name="templates_title">已保存的模板</string>

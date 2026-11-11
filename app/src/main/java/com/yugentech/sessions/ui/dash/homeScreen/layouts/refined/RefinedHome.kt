@@ -34,7 +34,6 @@ fun RefinedHome(ui: HomeUi, actions: HomeActions, screenHeight: Dp) {
             sessionTask = config.sessionTask,
             onTaskClick = actions.onTaskClick,
             onSoundBadgeClick = actions.onToggleAmbient,
-            mode = ui.mode,
             isAmbientEnabled = config.isAmbientEnabled,
             activeBackgroundSoundId = config.activeBackgroundSoundId
         )

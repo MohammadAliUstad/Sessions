@@ -40,7 +40,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.yugentech.sessions.timer.state.TimerMode
 import com.yugentech.sessions.ui.dash.mainScreen.components.pressClickable
 
 private val DockShape = RoundedCornerShape(36.dp)
@@ -55,7 +54,6 @@ private val SideShape = RoundedCornerShape(26.dp)
 fun StudioDock(
     isRunning: Boolean,
     isSessionActive: Boolean,
-    mode: TimerMode,
     onStartStop: () -> Unit,
     onSound: () -> Unit,
     onSets: () -> Unit,

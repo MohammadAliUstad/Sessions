@@ -2,41 +2,25 @@ package com.yugentech.sessions.navigation.screen
 
 import androidx.annotation.StringRes
 import com.yugentech.sessions.R
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AccountCircle
-import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.Settings
-import androidx.compose.material.icons.outlined.AccountCircle
-import androidx.compose.material.icons.outlined.Home
-import androidx.compose.material.icons.outlined.Settings
-import androidx.compose.ui.graphics.vector.ImageVector
 
-// Defines the main bottom navigation screens with icons
+// Defines the main bottom navigation screens
 sealed class BottomBarScreen(
     val route: String,
-    @StringRes val title: Int,
-    val selectedIcon: ImageVector,
-    val unselectedIcon: ImageVector
+    @StringRes val title: Int
 ) {
     data object Home : BottomBarScreen(
         route = "main",
-        title = R.string.nav_home,
-        selectedIcon = Icons.Filled.Home,
-        unselectedIcon = Icons.Outlined.Home
+        title = R.string.nav_home
     )
 
     data object Profile : BottomBarScreen(
         route = "profile",
-        title = R.string.nav_profile,
-        selectedIcon = Icons.Filled.AccountCircle,
-        unselectedIcon = Icons.Outlined.AccountCircle
+        title = R.string.nav_profile
     )
 
     data object Settings : BottomBarScreen(
         route = "settings",
-        title = R.string.nav_settings,
-        selectedIcon = Icons.Filled.Settings,
-        unselectedIcon = Icons.Outlined.Settings
+        title = R.string.nav_settings
     )
 
     companion object {

@@ -5,7 +5,6 @@ import androidx.activity.compose.BackHandler
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
-import com.yugentech.sessions.auth.state.AuthState
 import com.yugentech.sessions.navigation.screen.AppScreen
 import com.yugentech.sessions.ui.auth.signInScreen.SignInScreen
 import com.yugentech.sessions.ui.auth.signUpScreen.SignUpScreen
@@ -15,7 +14,6 @@ import timber.log.Timber
 fun NavGraphBuilder.authGraph(
     navController: NavHostController,
     authViewModel: AuthViewModel,
-    authState: AuthState,
     webClientId: String,
     context: android.content.Context
 ) {

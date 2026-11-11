@@ -32,7 +32,6 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Language
 import androidx.compose.material.icons.filled.PhoneAndroid
 import androidx.compose.material.icons.filled.Translate
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LargeTopAppBar
@@ -81,7 +80,6 @@ import kotlinx.coroutines.launch
  * so anyone can find theirs whatever the app is showing now, with its name in the current
  * language under it. Picking one switches the whole app straight away.
  */
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LanguageScreen(onNavigateBack: () -> Unit) {
     val context = LocalContext.current

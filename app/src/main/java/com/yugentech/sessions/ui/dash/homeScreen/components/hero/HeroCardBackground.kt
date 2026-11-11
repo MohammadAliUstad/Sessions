@@ -39,7 +39,7 @@ import kotlin.math.cos
 import kotlin.math.floor
 import kotlin.math.sin
 
-private val TAU = (2 * PI).toFloat()
+private const val TAU = (2 * PI).toFloat()
 
 /**
  * What the timer is doing, for the card's effect to follow: how far the current block has run

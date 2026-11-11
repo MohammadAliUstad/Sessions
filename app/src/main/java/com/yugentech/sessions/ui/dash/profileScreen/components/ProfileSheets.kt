@@ -21,7 +21,6 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.SheetValue
@@ -56,7 +55,6 @@ import androidx.compose.ui.unit.dp
 import com.yugentech.sessions.R
 import com.yugentech.sessions.theme.tokens.corners
 import com.yugentech.sessions.theme.tokens.spacing
-import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
@@ -115,7 +113,7 @@ fun AvatarPickerSheet(
 
 // Same sheet Quill and Ryori use to rename: a filled text field that gets focus once the sheet
 // is open, a character count (or the problem with the name), and Cancel / Save at the end.
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EditNameSheet(
     currentName: String,
@@ -170,8 +168,7 @@ fun EditNameSheet(
 
     LaunchedEffect(Unit) {
         snapshotFlow { sheetState.currentValue }
-            .filter { it == SheetValue.Expanded }
-            .first()
+            .first { it == SheetValue.Expanded }
         focusRequester.requestFocus()
     }
 
@@ -206,7 +203,7 @@ fun EditNameSheet(
                     // Only complain once something has changed, so the sheet doesn't open on an error.
                     val showError = error != null && currentText != currentName
                     Text(
-                        text = if (showError) error.orEmpty() else "${currentText.length} / $MAX_NAME_LENGTH",
+                        text = if (showError) error else "${currentText.length} / $MAX_NAME_LENGTH",
                         color = if (showError) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onSurfaceVariant,
                         modifier = Modifier.fillMaxWidth(),
                         textAlign = TextAlign.End
