@@ -334,10 +334,10 @@
     <string name="timer_ends_at">%1$s पर खत्म होगा</string>
     <string name="timer_paused">रुका हुआ</string>
     <string name="timer_ends">खत्म %1$s</string>
-    <string name="plan_summary">%1$s · लगभग %2$s</string>
+    <string name="plan_chip_total">कुल %1$s</string>
+    <string name="plan_chip_finish">%1$s तक पूरा</string>
     <string name="cd_change_length">%1$s की अवधि बदलें</string>
     <string name="cd_change">%1$s बदलें</string>
-    <string name="plan_done_around">लगभग %1$s तक पूरा  ·  कुल %2$s</string>
     <string name="action_start_focus">फ़ोकस शुरू करें</string>
     <string name="cd_change_task">काम बदलें</string>
     <string name="duration_focus_title">फ़ोकस अवधि</string>
@@ -493,12 +493,11 @@
     <string name="billing_not_loaded">प्रोडक्ट की जानकारी लोड नहीं हुई। अपना इंटरनेट कनेक्शन जांचें।</string>
     <string name="billing_thanks">आपके सपोर्ट के लिए धन्यवाद!</string>
     <string name="credit_design_title">डिज़ाइन और चित्र</string>
-    <string name="credit_design_subtitle">चित्र: Pablo Stanley</string>
+    <string name="credit_design_subtitle">चित्र</string>
     <string name="credit_design_body">Sessions में इस्तेमाल किए गए सुंदर चित्र और डूडल Pablo Stanley ने बनाए हैं। ओपन डिज़ाइन समुदाय में उनके शानदार योगदान के लिए बहुत धन्यवाद!</string>
-    <string name="credit_design_action">पोर्टफ़ोलियो देखें</string>
     <string name="credit_lordicon_title">एनिमेटेड आइकन</string>
     <string name="credit_lordicon_subtitle">Lordicon द्वारा उपलब्ध</string>
-    <string name="credit_lordicon_body">नेविगेशन बार के जीवंत एनिमेटेड आइकन Lordicon से हैं। वे सभी क्रिएटर्स के लिए उच्च गुणवत्ता वाले एनिमेटेड एसेट की विशाल लाइब्रेरी देते हैं।</string>
+    <string name="credit_lordicon_body">पूरे ऐप में इस्तेमाल हुए जीवंत एनिमेटेड आइकन Lordicon से हैं। वे सभी क्रिएटर्स के लिए उच्च गुणवत्ता वाले एनिमेटेड एसेट की विशाल लाइब्रेरी देते हैं।</string>
     <string name="credit_lordicon_action">Lordicon पर जाएं</string>
     <string name="credit_oss_title">Sessions ओपन सोर्स है</string>
     <string name="credit_oss_subtitle">GPL-3.0 के तहत लाइसेंस प्राप्त</string>
@@ -537,6 +536,10 @@
     <string name="whats_new_v6_13_body">Sessions अब दस भाषाओं में उपलब्ध है: अंग्रेज़ी, स्पेनिश, पुर्तगाली, फ़्रेंच, जर्मन, हिंदी, अरबी, जापानी, कोरियाई और चीनी। सेटिंग › भाषा में अपनी भाषा चुनें, या फ़ोन की भाषा अपनाएँ, और पूरा ऐप तुरंत बदल जाता है, ठीक वहीं जहाँ आप हैं। अरबी दाएँ से बाएँ पढ़ी जाती है।</string>
     <string name="whats_new_v6_15_title">सेशन के बीच टास्क बदलें</string>
     <string name="whats_new_v6_15_body">बिना दोबारा शुरू किए अपने टास्क का नाम बदलने के लिए सेशन को रोकें।</string>
+    <string name="whats_new_v6_16_title">बिना खाते के Sessions इस्तेमाल करें</string>
+    <string name="whats_new_v6_16_body">तुरंत फ़ोकस शुरू करने के लिए साइन-इन स्क्रीन पर गेस्ट पर टैप करें। गेस्ट के रूप में सब कुछ आपके फ़ोन पर ही रहता है और कभी क्लाउड पर नहीं जाता। गेस्ट मोड छोड़ने पर यह हट जाता है, इसलिए जाते समय आप इसे एक्सपोर्ट कर सकते हैं।</string>
+    <string name="whats_new_v6_17_title">बैकअप लें और साथ ले जाएं</string>
+    <string name="whats_new_v6_17_body">गेस्ट सेटिंग्स › बैकअप से अपने सेशन, टेम्पलेट और प्रोफ़ाइल एक फ़ाइल में एक्सपोर्ट कर सकते हैं और उसे किसी भी फ़ोन पर इंपोर्ट कर सकते हैं। साइन इन हैं? सेटिंग्स में वह फ़ाइल इंपोर्ट करें, वह आपके खाते से सिंक हो जाएगी। इंपोर्ट करने से कभी कुछ दोहराया नहीं जाता।</string>
     <string name="whats_new_v51_1_title">टेम्पलेट आपके खाते में सिंक होते हैं</string>
     <string name="whats_new_v51_1_body">आपके काम के टेम्पलेट अब आपके खाते में सेव होते हैं। ऐप दोबारा इंस्टॉल करें या दूसरे फ़ोन पर साइन इन करें, वे तुरंत वापस आ जाएंगे।</string>
     <string name="whats_new_v51_2_title">नया साइन इन और साइन अप</string>
@@ -769,4 +772,28 @@
         <item quantity="one">%1$d दिन की शानदार स्ट्रीक। आपका समर्पण काबिले-तारीफ़ है!</item>
         <item quantity="other">%1$d दिन की शानदार स्ट्रीक। आपका समर्पण काबिले-तारीफ़ है!</item>
     </plurals>
+
+    <!-- Guest mode -->
+    <string name="guest_button">गेस्ट</string>
+    <string name="guest_name">गेस्ट</string>
+    <string name="guest_exit_title">गेस्ट मोड से बाहर निकलें</string>
+    <string name="guest_exit_subtitle">आपके गेस्ट सेशन हटा देता है</string>
+    <string name="guest_exit_message">गेस्ट के रूप में रिकॉर्ड की गई हर चीज़ हमेशा के लिए हट जाएगी। इसे रखने के लिए पहले एक्सपोर्ट करें: आप फ़ाइल को बाद में इंपोर्ट कर सकते हैं, किसी खाते में साइन इन करने के बाद भी।</string>
+    <string name="guest_exit_confirm">हटाएं और बाहर निकलें</string>
+
+    <string name="guest_backup_section">बैकअप</string>
+    <string name="guest_export_title">डेटा एक्सपोर्ट करें</string>
+    <string name="guest_export_subtitle">अपने सेशन और टेम्पलेट एक फ़ाइल में सेव करें</string>
+    <string name="guest_import_title">डेटा इंपोर्ट करें</string>
+    <string name="guest_import_subtitle">बैकअप फ़ाइल से सेशन और टेम्पलेट जोड़ें</string>
+    <string name="guest_export_done_title">बैकअप सेव हो गया</string>
+    <string name="guest_export_done_message">इस फ़ाइल को सुरक्षित जगह रखें। अपने सेशन वापस पाने के लिए इसे किसी भी फ़ोन पर इंपोर्ट करें।</string>
+    <string name="guest_export_failed_title">बैकअप सेव नहीं हो सका</string>
+    <string name="guest_export_failed_message">फ़ाइल लिखी नहीं जा सकी। फिर से कोशिश करें या कोई दूसरी जगह चुनें।</string>
+    <string name="guest_import_done_title">इंपोर्ट पूरा हुआ</string>
+    <string name="guest_import_done_message">जोड़े गए सेशन: %1$d\nजोड़े गए टेम्पलेट: %2$d</string>
+    <string name="guest_import_failed_title">इंपोर्ट नहीं हो सका</string>
+    <string name="guest_import_failed_message">यह फ़ाइल Sessions का बैकअप नहीं है, या खराब हो गई है।</string>
+    <string name="account_import_subtitle">गेस्ट के रूप में सेव किया गया बैकअप लाएं। यह आपके खाते से सिंक हो जाएगा।</string>
+    <string name="guest_export_and_exit">एक्सपोर्ट करें और बाहर निकलें</string>
 </resources>

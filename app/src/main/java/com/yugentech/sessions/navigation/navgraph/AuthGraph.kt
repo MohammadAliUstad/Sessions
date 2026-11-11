@@ -41,6 +41,9 @@ fun NavGraphBuilder.authGraph(
             },
             onForgotPassword = { email ->
                 authViewModel.forgotPassword(email)
+            },
+            onContinueAsGuest = {
+                authViewModel.continueAsGuest()
             }
         )
     }

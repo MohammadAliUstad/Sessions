@@ -334,10 +334,10 @@
     <string name="timer_ends_at">ينتهي الساعة %1$s</string>
     <string name="timer_paused">متوقف مؤقتًا</string>
     <string name="timer_ends">ينتهي %1$s</string>
-    <string name="plan_summary">%1$s · نحو %2$s</string>
+    <string name="plan_chip_total">%1$s إجمالًا</string>
+    <string name="plan_chip_finish">تنتهي نحو %1$s</string>
     <string name="cd_change_length">تغيير مدة %1$s</string>
     <string name="cd_change">تغيير %1$s</string>
-    <string name="plan_done_around">تنتهي نحو %1$s  ·  %2$s إجمالًا</string>
     <string name="action_start_focus">ابدأ التركيز</string>
     <string name="cd_change_task">تغيير المهمة</string>
     <string name="duration_focus_title">مدة التركيز</string>
@@ -493,12 +493,11 @@
     <string name="billing_not_loaded">لم يتم تحميل تفاصيل المنتج. يُرجى التحقق من اتصالك بالإنترنت.</string>
     <string name="billing_thanks">شكرًا على دعمك!</string>
     <string name="credit_design_title">التصميم والرسوم</string>
-    <string name="credit_design_subtitle">رسوم من إبداع Pablo Stanley</string>
+    <string name="credit_design_subtitle">رسوم من إبداع</string>
     <string name="credit_design_body">الرسوم والرسومات الجميلة المستخدمة في Sessions من إبداع Pablo Stanley. شكرًا جزيلًا على مساهماته الرائعة في مجتمع التصميم المفتوح!</string>
-    <string name="credit_design_action">زيارة المعرض</string>
     <string name="credit_lordicon_title">أيقونات متحركة</string>
     <string name="credit_lordicon_subtitle">مقدَّمة من Lordicon</string>
-    <string name="credit_lordicon_body">الأيقونات المتحركة الحيوية في شريط التنقل مقدَّمة من Lordicon، التي توفّر مكتبة ضخمة من الأصول المتحركة عالية الجودة لكل المبدعين.</string>
+    <string name="credit_lordicon_body">الأيقونات المتحركة الحيوية المستخدمة في أنحاء التطبيق مقدَّمة من Lordicon، التي توفّر مكتبة ضخمة من الأصول المتحركة عالية الجودة لكل المبدعين.</string>
     <string name="credit_lordicon_action">زيارة Lordicon</string>
     <string name="credit_oss_title">Sessions مفتوح المصدر</string>
     <string name="credit_oss_subtitle">مرخَّص بموجب GPL-3.0</string>
@@ -537,6 +536,10 @@
     <string name="whats_new_v6_13_body">يتحدث Sessions الآن عشر لغات: الإنجليزية والإسبانية والبرتغالية والفرنسية والألمانية والهندية والعربية واليابانية والكورية والصينية. اختر لغتك من الإعدادات › اللغة، أو اتبع لغة هاتفك، وسيتغيّر التطبيق كله فورًا وأنت في مكانك. وتُقرأ العربية من اليمين إلى اليسار.</string>
     <string name="whats_new_v6_15_title">غيّر المهمة أثناء الجلسة</string>
     <string name="whats_new_v6_15_body">أوقف جلستك مؤقتًا لتغيير اسم مهمتك، دون البدء من جديد.</string>
+    <string name="whats_new_v6_16_title">استخدم Sessions بدون حساب</string>
+    <string name="whats_new_v6_16_body">اضغط على ضيف في شاشة تسجيل الدخول لتبدأ التركيز فورًا. كضيف، يبقى كل شيء على هاتفك ولا يُرسل إلى السحابة أبدًا. الخروج من وضع الضيف يحذفه، لذا يمكنك تصديره قبل الخروج.</string>
+    <string name="whats_new_v6_17_title">انسخ احتياطيًا وخذه معك</string>
+    <string name="whats_new_v6_17_body">يمكن للضيوف تصدير جلساتهم وقوالبهم وملفهم الشخصي إلى ملف من الإعدادات › النسخ الاحتياطي، واستيراده على أي هاتف. هل سجّلت الدخول؟ استورد هذا الملف من الإعدادات وستتم مزامنته مع حسابك. الاستيراد لا يكرر أي شيء أبدًا.</string>
     <string name="whats_new_v51_1_title">مزامنة القوالب مع حسابك</string>
     <string name="whats_new_v51_1_body">تُحفظ قوالب مهامك الآن في حسابك. أعد تثبيت التطبيق أو سجّل الدخول على هاتف آخر وستعود فورًا.</string>
     <string name="whats_new_v51_2_title">تصميم جديد لتسجيل الدخول وإنشاء الحساب</string>
@@ -829,4 +832,28 @@
         <item quantity="many">سلسلة استثنائية مدتها %1$d يومًا. تفانيك مذهل!</item>
         <item quantity="other">سلسلة استثنائية مدتها %1$d يوم. تفانيك مذهل!</item>
     </plurals>
+
+    <!-- Guest mode -->
+    <string name="guest_button">ضيف</string>
+    <string name="guest_name">ضيف</string>
+    <string name="guest_exit_title">الخروج من وضع الضيف</string>
+    <string name="guest_exit_subtitle">يحذف جلساتك كضيف</string>
+    <string name="guest_exit_message">سيُحذف كل ما سجّلته كضيف نهائيًا. صدّره أولًا للاحتفاظ به: يمكنك استيراد الملف لاحقًا، حتى بعد تسجيل الدخول إلى حساب.</string>
+    <string name="guest_exit_confirm">حذف وخروج</string>
+
+    <string name="guest_backup_section">النسخ الاحتياطي</string>
+    <string name="guest_export_title">تصدير البيانات</string>
+    <string name="guest_export_subtitle">احفظ جلساتك وقوالبك في ملف</string>
+    <string name="guest_import_title">استيراد البيانات</string>
+    <string name="guest_import_subtitle">أضف جلسات وقوالب من ملف نسخة احتياطية</string>
+    <string name="guest_export_done_title">تم حفظ النسخة الاحتياطية</string>
+    <string name="guest_export_done_message">احتفظ بهذا الملف في مكان آمن. استورده على أي هاتف لاستعادة جلساتك.</string>
+    <string name="guest_export_failed_title">تعذّر حفظ النسخة الاحتياطية</string>
+    <string name="guest_export_failed_message">تعذّرت كتابة الملف. حاول مرة أخرى أو اختر مكانًا آخر.</string>
+    <string name="guest_import_done_title">اكتمل الاستيراد</string>
+    <string name="guest_import_done_message">الجلسات المضافة: %1$d\nالقوالب المضافة: %2$d</string>
+    <string name="guest_import_failed_title">تعذّر الاستيراد</string>
+    <string name="guest_import_failed_message">هذا الملف ليس نسخة احتياطية من Sessions أو أنه تالف.</string>
+    <string name="account_import_subtitle">استورد نسخة احتياطية حفظتها كضيف. ستتم مزامنتها مع حسابك.</string>
+    <string name="guest_export_and_exit">تصدير وخروج</string>
 </resources>

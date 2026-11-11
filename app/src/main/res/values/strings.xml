@@ -455,10 +455,10 @@
     <string name="timer_paused">Paused</string>
     <string name="timer_ends">Ends %1$s</string>
 
-    <string name="plan_summary">%1$s · about %2$s</string>
+    <string name="plan_chip_total">%1$s in all</string>
+    <string name="plan_chip_finish">Done by %1$s</string>
     <string name="cd_change_length">Change %1$s length</string>
     <string name="cd_change">Change %1$s</string>
-    <string name="plan_done_around">Done around %1$s  ·  %2$s in all</string>
 
     <string name="action_start_focus">Start focus</string>
 
@@ -700,13 +700,13 @@
     <string name="billing_thanks">Thank you for your support!</string>
 
     <string name="credit_design_title">Design &amp; Illustrations</string>
-    <string name="credit_design_subtitle">Artwork by Pablo Stanley</string>
+    <string name="credit_design_subtitle">Artwork by</string>
+    <string name="credit_design_artist" translatable="false">Pablo Stanley</string>
     <string name="credit_design_body">The beautiful illustrations and doodles used throughout Sessions are created by Pablo Stanley. Big thanks for his amazing contributions to the open design community!</string>
-    <string name="credit_design_action">Visit Portfolio</string>
 
     <string name="credit_lordicon_title">Animated Icons</string>
     <string name="credit_lordicon_subtitle">Provided by Lordicon</string>
-    <string name="credit_lordicon_body">The lively animated icons used in the navigation bar are provided by Lordicon. They offer a massive library of high-quality animated assets for all creators.</string>
+    <string name="credit_lordicon_body">The lively animated icons used throughout Sessions are provided by Lordicon. They offer a massive library of high-quality animated assets for all creators.</string>
     <string name="credit_lordicon_action">Visit Lordicon</string>
 
     <string name="credit_oss_title">Sessions is Open Source</string>
@@ -750,6 +750,10 @@
     <string name="whats_new_v6_13_body">Sessions now speaks ten languages: English, Spanish, Portuguese, French, German, Hindi, Arabic, Japanese, Korean and Chinese. Pick yours in Settings › Language, or follow your phone\'s, and the whole app switches instantly, right where you are. Arabic reads right to left.</string>
     <string name="whats_new_v6_15_title">Change Your Task Mid-Session</string>
     <string name="whats_new_v6_15_body">Pause your session to rename your task, without starting over.</string>
+    <string name="whats_new_v6_16_title">Use Sessions Without an Account</string>
+    <string name="whats_new_v6_16_body">Tap Guest on the sign-in screen to start focusing right away. As a guest, everything stays on your phone and never goes to the cloud. Leaving guest mode deletes it, so you can export it on the way out.</string>
+    <string name="whats_new_v6_17_title">Back Up and Bring It Along</string>
+    <string name="whats_new_v6_17_body">Guests can export their sessions, templates and profile to a file from Settings › Backup, and import it on any phone. Signed in? Import that file in Settings and it syncs to your account. Importing never doubles anything up.</string>
     <string name="whats_new_v51_1_title">Templates Sync to Your Account</string>
     <string name="whats_new_v51_1_body">Your task templates are now saved to your account. Reinstall the app or sign in on another phone and they come right back.</string>
     <string name="whats_new_v51_2_title">Redesigned Sign In &amp; Sign Up</string>
@@ -942,4 +946,29 @@
     <string name="sets_target">Target Sets</string>
 
     <string name="alarm_permission_body">To ensure your study reminder rings at the exact time you set, please allow this permission in the next screen.</string>
+
+    <!-- Guest mode -->
+    <string name="guest_button">Guest</string>
+    <string name="google_short" translatable="false">Google</string>
+    <string name="guest_name">Guest</string>
+    <string name="guest_exit_title">Exit Guest Mode</string>
+    <string name="guest_exit_subtitle">Deletes your guest sessions</string>
+    <string name="guest_exit_message">Everything you\'ve recorded as a guest will be deleted permanently. Export it first to keep it: you can import the file later, including after signing in to an account.</string>
+    <string name="guest_exit_confirm">Delete and exit</string>
+
+    <string name="guest_backup_section">Backup</string>
+    <string name="guest_export_title">Export data</string>
+    <string name="guest_export_subtitle">Save your sessions and templates to a file</string>
+    <string name="guest_import_title">Import data</string>
+    <string name="guest_import_subtitle">Add sessions and templates from a backup file</string>
+    <string name="guest_export_done_title">Backup saved</string>
+    <string name="guest_export_done_message">Keep this file somewhere safe. Import it on any phone to get your sessions back.</string>
+    <string name="guest_export_failed_title">Couldn\'t save the backup</string>
+    <string name="guest_export_failed_message">The file couldn\'t be written. Try again, or pick another place to save it.</string>
+    <string name="guest_import_done_title">Import complete</string>
+    <string name="guest_import_done_message">Sessions added: %1$d\nTemplates added: %2$d</string>
+    <string name="guest_import_failed_title">Couldn\'t import</string>
+    <string name="guest_import_failed_message">This file isn\'t a Sessions backup, or it\'s damaged.</string>
+    <string name="account_import_subtitle">Bring in a backup you saved as a guest. It syncs to your account.</string>
+    <string name="guest_export_and_exit">Export and exit</string>
 </resources>

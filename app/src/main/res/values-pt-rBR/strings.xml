@@ -334,10 +334,10 @@
     <string name="timer_ends_at">Termina às %1$s</string>
     <string name="timer_paused">Pausado</string>
     <string name="timer_ends">Termina %1$s</string>
-    <string name="plan_summary">%1$s · cerca de %2$s</string>
+    <string name="plan_chip_total">%1$s no total</string>
+    <string name="plan_chip_finish">Termina às %1$s</string>
     <string name="cd_change_length">Alterar duração de %1$s</string>
     <string name="cd_change">Alterar %1$s</string>
-    <string name="plan_done_around">Termina por volta de %1$s  ·  %2$s no total</string>
     <string name="action_start_focus">Começar a focar</string>
     <string name="cd_change_task">Alterar tarefa</string>
     <string name="duration_focus_title">Duração do foco</string>
@@ -493,12 +493,11 @@
     <string name="billing_not_loaded">Os detalhes do produto não carregaram. Verifique sua conexão com a internet.</string>
     <string name="billing_thanks">Obrigado pelo apoio!</string>
     <string name="credit_design_title">Design e ilustrações</string>
-    <string name="credit_design_subtitle">Arte de Pablo Stanley</string>
+    <string name="credit_design_subtitle">Arte de</string>
     <string name="credit_design_body">As belas ilustrações e desenhos usados no Sessions foram criados por Pablo Stanley. Muito obrigado pelas contribuições incríveis à comunidade de design aberto!</string>
-    <string name="credit_design_action">Ver portfólio</string>
     <string name="credit_lordicon_title">Ícones animados</string>
     <string name="credit_lordicon_subtitle">Fornecidos pela Lordicon</string>
-    <string name="credit_lordicon_body">Os ícones animados da barra de navegação são fornecidos pela Lordicon, que oferece uma enorme biblioteca de recursos animados de alta qualidade para todos os criadores.</string>
+    <string name="credit_lordicon_body">Os ícones animados usados em todo o app são fornecidos pela Lordicon, que oferece uma enorme biblioteca de recursos animados de alta qualidade para todos os criadores.</string>
     <string name="credit_lordicon_action">Visitar a Lordicon</string>
     <string name="credit_oss_title">O Sessions é de código aberto</string>
     <string name="credit_oss_subtitle">Licenciado sob GPL-3.0</string>
@@ -537,6 +536,10 @@
     <string name="whats_new_v6_13_body">O Sessions agora fala dez idiomas: inglês, espanhol, português, francês, alemão, hindi, árabe, japonês, coreano e chinês. Escolha o seu em Configurações › Idioma, ou siga o do seu celular, e o app inteiro muda na hora, sem sair de onde você está. O árabe é lido da direita para a esquerda.</string>
     <string name="whats_new_v6_15_title">Mude a tarefa no meio da sessão</string>
     <string name="whats_new_v6_15_body">Pause sua sessão para renomear sua tarefa sem recomeçar.</string>
+    <string name="whats_new_v6_16_title">Use o Sessions sem conta</string>
+    <string name="whats_new_v6_16_body">Toque em Convidado na tela de entrada para começar a focar na hora. Como convidado, tudo fica no seu celular e nunca vai para a nuvem. Sair do modo convidado apaga tudo, então você pode exportar ao sair.</string>
+    <string name="whats_new_v6_17_title">Faça backup e leve junto</string>
+    <string name="whats_new_v6_17_body">Convidados podem exportar sessões, modelos e perfil para um arquivo em Configurações › Backup e importá-lo em qualquer celular. Entrou na sua conta? Importe esse arquivo nas Configurações e ele é sincronizado com a sua conta. Importar nunca duplica nada.</string>
     <string name="whats_new_v51_1_title">Modelos sincronizados com sua conta</string>
     <string name="whats_new_v51_1_body">Seus modelos de tarefa agora ficam salvos na sua conta. Reinstale o app ou entre em outro celular e eles voltam na hora.</string>
     <string name="whats_new_v51_2_title">Login e cadastro redesenhados</string>
@@ -784,4 +787,28 @@
         <item quantity="many">Sequência extraordinária de %1$d dias. Sua dedicação é admirável!</item>
         <item quantity="other">Sequência extraordinária de %1$d dias. Sua dedicação é admirável!</item>
     </plurals>
+
+    <!-- Guest mode -->
+    <string name="guest_button">Convidado</string>
+    <string name="guest_name">Convidado</string>
+    <string name="guest_exit_title">Sair do modo convidado</string>
+    <string name="guest_exit_subtitle">Apaga suas sessões de convidado</string>
+    <string name="guest_exit_message">Tudo o que você registrou como convidado será apagado para sempre. Exporte antes para manter: você poderá importar o arquivo depois, inclusive ao entrar em uma conta.</string>
+    <string name="guest_exit_confirm">Apagar e sair</string>
+
+    <string name="guest_backup_section">Backup</string>
+    <string name="guest_export_title">Exportar dados</string>
+    <string name="guest_export_subtitle">Salve suas sessões e modelos em um arquivo</string>
+    <string name="guest_import_title">Importar dados</string>
+    <string name="guest_import_subtitle">Adicione sessões e modelos de um arquivo de backup</string>
+    <string name="guest_export_done_title">Backup salvo</string>
+    <string name="guest_export_done_message">Guarde este arquivo em um lugar seguro. Importe-o em qualquer celular para recuperar suas sessões.</string>
+    <string name="guest_export_failed_title">Não foi possível salvar o backup</string>
+    <string name="guest_export_failed_message">Não foi possível gravar o arquivo. Tente de novo ou escolha outro lugar.</string>
+    <string name="guest_import_done_title">Importação concluída</string>
+    <string name="guest_import_done_message">Sessões adicionadas: %1$d\nModelos adicionados: %2$d</string>
+    <string name="guest_import_failed_title">Não foi possível importar</string>
+    <string name="guest_import_failed_message">Este arquivo não é um backup do Sessions ou está danificado.</string>
+    <string name="account_import_subtitle">Traga um backup que você salvou como convidado. Ele será sincronizado com sua conta.</string>
+    <string name="guest_export_and_exit">Exportar e sair</string>
 </resources>

@@ -334,10 +334,10 @@
     <string name="timer_ends_at">Fin à %1$s</string>
     <string name="timer_paused">En pause</string>
     <string name="timer_ends">Fin %1$s</string>
-    <string name="plan_summary">%1$s · environ %2$s</string>
+    <string name="plan_chip_total">%1$s au total</string>
+    <string name="plan_chip_finish">Fini vers %1$s</string>
     <string name="cd_change_length">Modifier la durée de %1$s</string>
     <string name="cd_change">Modifier %1$s</string>
-    <string name="plan_done_around">Fini vers %1$s  ·  %2$s au total</string>
     <string name="action_start_focus">Commencer</string>
     <string name="cd_change_task">Changer de tâche</string>
     <string name="duration_focus_title">Durée de concentration</string>
@@ -493,12 +493,11 @@
     <string name="billing_not_loaded">Les détails du produit n\'ont pas été chargés. Vérifiez votre connexion internet.</string>
     <string name="billing_thanks">Merci pour votre soutien !</string>
     <string name="credit_design_title">Design et illustrations</string>
-    <string name="credit_design_subtitle">Illustrations de Pablo Stanley</string>
+    <string name="credit_design_subtitle">Illustrations de</string>
     <string name="credit_design_body">Les belles illustrations et esquisses de Sessions sont l\'œuvre de Pablo Stanley. Un grand merci pour ses formidables contributions à la communauté du design ouvert !</string>
-    <string name="credit_design_action">Voir le portfolio</string>
     <string name="credit_lordicon_title">Icônes animées</string>
     <string name="credit_lordicon_subtitle">Fournies par Lordicon</string>
-    <string name="credit_lordicon_body">Les icônes animées de la barre de navigation sont fournies par Lordicon, qui propose une immense bibliothèque de ressources animées de qualité pour tous les créateurs.</string>
+    <string name="credit_lordicon_body">Les icônes animées utilisées dans toute l\'application sont fournies par Lordicon, qui propose une immense bibliothèque de ressources animées de qualité pour tous les créateurs.</string>
     <string name="credit_lordicon_action">Visiter Lordicon</string>
     <string name="credit_oss_title">Sessions est open source</string>
     <string name="credit_oss_subtitle">Sous licence GPL-3.0</string>
@@ -537,6 +536,10 @@
     <string name="whats_new_v6_13_body">Sessions parle désormais dix langues : anglais, espagnol, portugais, français, allemand, hindi, arabe, japonais, coréen et chinois. Choisissez la vôtre dans Paramètres › Langue, ou suivez celle de votre téléphone, et toute l\'appli change instantanément, là où vous êtes. L\'arabe se lit de droite à gauche.</string>
     <string name="whats_new_v6_15_title">Changez de tâche en pleine session</string>
     <string name="whats_new_v6_15_body">Mettez votre session en pause pour renommer votre tâche, sans tout recommencer.</string>
+    <string name="whats_new_v6_16_title">Utilisez Sessions sans compte</string>
+    <string name="whats_new_v6_16_body">Touchez Invité sur l\'écran de connexion pour vous concentrer tout de suite. En invité, tout reste sur votre téléphone et ne va jamais dans le cloud. Quitter le mode invité efface tout, vous pouvez donc l\'exporter en partant.</string>
+    <string name="whats_new_v6_17_title">Sauvegardez et emportez tout</string>
+    <string name="whats_new_v6_17_body">Les invités peuvent exporter leurs sessions, modèles et profil dans un fichier depuis Paramètres › Sauvegarde, puis l\'importer sur n\'importe quel téléphone. Connecté ? Importez ce fichier dans les Paramètres et il se synchronise avec votre compte. L\'importation ne crée jamais de doublons.</string>
     <string name="whats_new_v51_1_title">Les modèles se synchronisent avec votre compte</string>
     <string name="whats_new_v51_1_body">Vos modèles de tâches sont désormais enregistrés dans votre compte. Réinstallez l\'app ou connectez-vous sur un autre téléphone et ils reviennent aussitôt.</string>
     <string name="whats_new_v51_2_title">Connexion et inscription repensées</string>
@@ -784,4 +787,28 @@
         <item quantity="many">Série remarquable de %1$d jours. Votre engagement est admirable !</item>
         <item quantity="other">Série remarquable de %1$d jours. Votre engagement est admirable !</item>
     </plurals>
+
+    <!-- Guest mode -->
+    <string name="guest_button">Invité</string>
+    <string name="guest_name">Invité</string>
+    <string name="guest_exit_title">Quitter le mode invité</string>
+    <string name="guest_exit_subtitle">Supprime vos sessions d\'invité</string>
+    <string name="guest_exit_message">Tout ce que vous avez enregistré en tant qu\'invité sera supprimé définitivement. Exportez-le d\'abord pour le garder : vous pourrez importer le fichier plus tard, y compris après vous être connecté à un compte.</string>
+    <string name="guest_exit_confirm">Supprimer et quitter</string>
+
+    <string name="guest_backup_section">Sauvegarde</string>
+    <string name="guest_export_title">Exporter les données</string>
+    <string name="guest_export_subtitle">Enregistrez vos sessions et modèles dans un fichier</string>
+    <string name="guest_import_title">Importer des données</string>
+    <string name="guest_import_subtitle">Ajoutez des sessions et modèles depuis une sauvegarde</string>
+    <string name="guest_export_done_title">Sauvegarde enregistrée</string>
+    <string name="guest_export_done_message">Gardez ce fichier en lieu sûr. Importez-le sur n\'importe quel téléphone pour retrouver vos sessions.</string>
+    <string name="guest_export_failed_title">Échec de la sauvegarde</string>
+    <string name="guest_export_failed_message">Le fichier n\'a pas pu être écrit. Réessayez ou choisissez un autre emplacement.</string>
+    <string name="guest_import_done_title">Importation terminée</string>
+    <string name="guest_import_done_message">Sessions ajoutées : %1$d\nModèles ajoutés : %2$d</string>
+    <string name="guest_import_failed_title">Échec de l\'importation</string>
+    <string name="guest_import_failed_message">Ce fichier n\'est pas une sauvegarde Sessions, ou il est endommagé.</string>
+    <string name="account_import_subtitle">Importez une sauvegarde faite en tant qu\'invité. Elle sera synchronisée avec votre compte.</string>
+    <string name="guest_export_and_exit">Exporter et quitter</string>
 </resources>

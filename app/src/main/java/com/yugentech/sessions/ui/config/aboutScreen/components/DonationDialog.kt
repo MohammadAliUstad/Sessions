@@ -137,10 +137,15 @@ fun DonationDialog(
                     )
                 }
 
-                TextButton(onClick = onDismiss) {
+                TextButton(
+                    onClick = onDismiss,
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = RoundedCornerShape(MaterialTheme.corners.medium)
+                ) {
                     Text(
                         text = stringResource(R.string.maybe_later),
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                        style = MaterialTheme.typography.labelLarge,
+                        color = MaterialTheme.colorScheme.primary
                     )
                 }
             }

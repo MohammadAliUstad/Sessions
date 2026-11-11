@@ -334,10 +334,10 @@
     <string name="timer_ends_at">%1$s 结束</string>
     <string name="timer_paused">已暂停</string>
     <string name="timer_ends">结束 %1$s</string>
-    <string name="plan_summary">%1$s · 约 %2$s</string>
+    <string name="plan_chip_total">共 %1$s</string>
+    <string name="plan_chip_finish">约 %1$s 完成</string>
     <string name="cd_change_length">更改%1$s时长</string>
     <string name="cd_change">更改%1$s</string>
-    <string name="plan_done_around">约 %1$s 完成  ·  共 %2$s</string>
     <string name="action_start_focus">开始专注</string>
     <string name="cd_change_task">更改任务</string>
     <string name="duration_focus_title">专注时长</string>
@@ -493,12 +493,11 @@
     <string name="billing_not_loaded">未能加载商品详情，请检查网络连接。</string>
     <string name="billing_thanks">感谢你的支持！</string>
     <string name="credit_design_title">设计与插画</string>
-    <string name="credit_design_subtitle">插画作者：Pablo Stanley</string>
+    <string name="credit_design_subtitle">插画作者</string>
     <string name="credit_design_body">Sessions 中精美的插画和涂鸦由 Pablo Stanley 创作。非常感谢他为开放设计社区做出的出色贡献！</string>
-    <string name="credit_design_action">查看作品集</string>
     <string name="credit_lordicon_title">动画图标</string>
     <string name="credit_lordicon_subtitle">由 Lordicon 提供</string>
-    <string name="credit_lordicon_body">导航栏中生动的动画图标由 Lordicon 提供，他们为所有创作者提供了海量高质量动画素材。</string>
+    <string name="credit_lordicon_body">应用中各处生动的动画图标由 Lordicon 提供，他们为所有创作者提供了海量高质量动画素材。</string>
     <string name="credit_lordicon_action">访问 Lordicon</string>
     <string name="credit_oss_title">Sessions 是开源的</string>
     <string name="credit_oss_subtitle">基于 GPL-3.0 许可</string>
@@ -537,6 +536,10 @@
     <string name="whats_new_v6_13_body">Sessions 现已支持十种语言：英语、西班牙语、葡萄牙语、法语、德语、印地语、阿拉伯语、日语、韩语和中文。在 设置 › 语言 中选择你的语言，或跟随手机语言，整个应用会立即切换，停留在原来的位置。阿拉伯语从右向左显示。</string>
     <string name="whats_new_v6_15_title">会话中更改任务</string>
     <string name="whats_new_v6_15_body">暂停会话即可重命名任务，无需重新开始。</string>
+    <string name="whats_new_v6_16_title">无需账号即可使用 Sessions</string>
+    <string name="whats_new_v6_16_body">在登录页面点按“访客”即可立即开始专注。以访客身份使用时，所有内容都只保存在你的手机上，绝不会上传到云端。退出访客模式会删除这些内容，你可以在退出时先导出。</string>
+    <string name="whats_new_v6_17_title">备份并随身带走</string>
+    <string name="whats_new_v6_17_body">访客可以在 设置 › 备份 中将专注记录、模板和个人资料导出为文件，并在任何手机上导入。已登录？在设置中导入该文件，它会同步到你的账号。导入绝不会产生重复内容。</string>
     <string name="whats_new_v51_1_title">模板同步到你的账号</string>
     <string name="whats_new_v51_1_body">你的任务模板现在会保存到账号中。重新安装应用或在另一部手机上登录，它们都会立即回来。</string>
     <string name="whats_new_v51_2_title">全新设计的登录与注册</string>
@@ -754,4 +757,28 @@
     <plurals name="streak_master_message">
         <item quantity="other">连续 %1$d 天的出色记录，你的投入令人钦佩！</item>
     </plurals>
+
+    <!-- Guest mode -->
+    <string name="guest_button">访客</string>
+    <string name="guest_name">访客</string>
+    <string name="guest_exit_title">退出访客模式</string>
+    <string name="guest_exit_subtitle">删除你的访客记录</string>
+    <string name="guest_exit_message">你以访客身份记录的所有内容都将被永久删除。请先导出以保留：之后可以导入该文件，登录账号后也可以导入。</string>
+    <string name="guest_exit_confirm">删除并退出</string>
+
+    <string name="guest_backup_section">备份</string>
+    <string name="guest_export_title">导出数据</string>
+    <string name="guest_export_subtitle">将你的专注记录和模板保存到文件</string>
+    <string name="guest_import_title">导入数据</string>
+    <string name="guest_import_subtitle">从备份文件添加专注记录和模板</string>
+    <string name="guest_export_done_title">备份已保存</string>
+    <string name="guest_export_done_message">请把这个文件存放在安全的地方。在任何手机上导入即可找回你的记录。</string>
+    <string name="guest_export_failed_title">无法保存备份</string>
+    <string name="guest_export_failed_message">无法写入文件。请重试，或选择其他保存位置。</string>
+    <string name="guest_import_done_title">导入完成</string>
+    <string name="guest_import_done_message">新增记录：%1$d\n新增模板：%2$d</string>
+    <string name="guest_import_failed_title">无法导入</string>
+    <string name="guest_import_failed_message">这个文件不是 Sessions 备份，或者已损坏。</string>
+    <string name="account_import_subtitle">导入你以访客身份保存的备份，它会同步到你的账号。</string>
+    <string name="guest_export_and_exit">导出并退出</string>
 </resources>

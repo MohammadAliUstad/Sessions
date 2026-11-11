@@ -76,7 +76,7 @@ fun AppNavHost(
         }
     }
 
-    // Manages auth-driven navigation
+    // Manages auth-driven navigation. A guest counts as logged in.
     LaunchedEffect(authState.isUserLoggedIn, authState.userId, showOnboarding) {
         if (!authState.isLoading && !authState.isInitializing) {
             val currentRoute = navController.currentDestination?.route

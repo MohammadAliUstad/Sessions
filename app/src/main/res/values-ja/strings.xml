@@ -334,10 +334,10 @@
     <string name="timer_ends_at">%1$s に終了</string>
     <string name="timer_paused">一時停止中</string>
     <string name="timer_ends">終了 %1$s</string>
-    <string name="plan_summary">%1$s · 約 %2$s</string>
+    <string name="plan_chip_total">合計 %1$s</string>
+    <string name="plan_chip_finish">%1$s ごろ終了</string>
     <string name="cd_change_length">%1$s の長さを変更</string>
     <string name="cd_change">%1$s を変更</string>
-    <string name="plan_done_around">%1$s ごろ終了  ·  合計 %2$s</string>
     <string name="action_start_focus">集中を開始</string>
     <string name="cd_change_task">タスクを変更</string>
     <string name="duration_focus_title">集中する時間</string>
@@ -493,12 +493,11 @@
     <string name="billing_not_loaded">商品の詳細を読み込めませんでした。インターネット接続を確認してください。</string>
     <string name="billing_thanks">ご支援ありがとうございます！</string>
     <string name="credit_design_title">デザインとイラスト</string>
-    <string name="credit_design_subtitle">イラスト：Pablo Stanley</string>
+    <string name="credit_design_subtitle">イラスト</string>
     <string name="credit_design_body">Sessions で使われている美しいイラストや落書きは Pablo Stanley 氏によるものです。オープンデザインのコミュニティへの素晴らしい貢献に心から感謝します！</string>
-    <string name="credit_design_action">ポートフォリオを見る</string>
     <string name="credit_lordicon_title">アニメーションアイコン</string>
     <string name="credit_lordicon_subtitle">提供：Lordicon</string>
-    <string name="credit_lordicon_body">ナビゲーションバーの生き生きとしたアニメーションアイコンは Lordicon が提供しています。あらゆるクリエイター向けに、高品質なアニメーション素材の大規模なライブラリを公開しています。</string>
+    <string name="credit_lordicon_body">アプリ全体で使われている生き生きとしたアニメーションアイコンは Lordicon が提供しています。あらゆるクリエイター向けに、高品質なアニメーション素材の大規模なライブラリを公開しています。</string>
     <string name="credit_lordicon_action">Lordicon を見る</string>
     <string name="credit_oss_title">Sessions はオープンソースです</string>
     <string name="credit_oss_subtitle">GPL-3.0 ライセンス</string>
@@ -537,6 +536,10 @@
     <string name="whats_new_v6_13_body">Sessions が 10 言語に対応しました：英語、スペイン語、ポルトガル語、フランス語、ドイツ語、ヒンディー語、アラビア語、日本語、韓国語、中国語。設定 › 言語 で選ぶか、スマートフォンの言語に合わせると、アプリ全体がその場ですぐに切り替わります。アラビア語は右から左に表示されます。</string>
     <string name="whats_new_v6_15_title">セッション中にタスクを変更</string>
     <string name="whats_new_v6_15_body">セッションを一時停止すれば、最初からやり直さずにタスク名を変えられます。</string>
+    <string name="whats_new_v6_16_title">アカウントなしで Sessions を使う</string>
+    <string name="whats_new_v6_16_body">サインイン画面で「ゲスト」をタップすれば、すぐに集中を始められます。ゲストのデータはすべて端末内にとどまり、クラウドには送られません。ゲストモードを終了すると削除されるので、終了時にエクスポートできます。</string>
+    <string name="whats_new_v6_17_title">バックアップして持ち運ぶ</string>
+    <string name="whats_new_v6_17_body">ゲストは 設定 › バックアップ から、セッション・テンプレート・プロフィールをファイルにエクスポートし、どの端末でもインポートできます。サインイン済みなら、設定からそのファイルをインポートするとアカウントに同期されます。インポートで重複することはありません。</string>
     <string name="whats_new_v51_1_title">テンプレートをアカウントに同期</string>
     <string name="whats_new_v51_1_body">タスクのテンプレートがアカウントに保存されるようになりました。アプリを再インストールしても、別の端末でログインしても、すぐに戻ってきます。</string>
     <string name="whats_new_v51_2_title">ログインと登録を刷新</string>
@@ -754,4 +757,28 @@
     <plurals name="streak_master_message">
         <item quantity="other">%1$d 日連続という見事な記録。その努力は称賛に値します！</item>
     </plurals>
+
+    <!-- Guest mode -->
+    <string name="guest_button">ゲスト</string>
+    <string name="guest_name">ゲスト</string>
+    <string name="guest_exit_title">ゲストモードを終了</string>
+    <string name="guest_exit_subtitle">ゲストのセッションを削除します</string>
+    <string name="guest_exit_message">ゲストとして記録した内容はすべて完全に削除されます。残すには先にエクスポートしてください。ファイルは後でインポートでき、アカウントにサインインした後でも使えます。</string>
+    <string name="guest_exit_confirm">削除して終了</string>
+
+    <string name="guest_backup_section">バックアップ</string>
+    <string name="guest_export_title">データをエクスポート</string>
+    <string name="guest_export_subtitle">セッションとテンプレートをファイルに保存します</string>
+    <string name="guest_import_title">データをインポート</string>
+    <string name="guest_import_subtitle">バックアップファイルからセッションとテンプレートを追加します</string>
+    <string name="guest_export_done_title">バックアップを保存しました</string>
+    <string name="guest_export_done_message">このファイルは安全な場所に保管してください。どの端末でもインポートすればセッションを取り戻せます。</string>
+    <string name="guest_export_failed_title">バックアップを保存できませんでした</string>
+    <string name="guest_export_failed_message">ファイルを書き込めませんでした。もう一度試すか、別の保存先を選んでください。</string>
+    <string name="guest_import_done_title">インポートが完了しました</string>
+    <string name="guest_import_done_message">追加したセッション: %1$d\n追加したテンプレート: %2$d</string>
+    <string name="guest_import_failed_title">インポートできませんでした</string>
+    <string name="guest_import_failed_message">このファイルは Sessions のバックアップではないか、破損しています。</string>
+    <string name="account_import_subtitle">ゲストのときに保存したバックアップを取り込みます。アカウントに同期されます。</string>
+    <string name="guest_export_and_exit">エクスポートして終了</string>
 </resources>

@@ -61,12 +61,14 @@ fun NavGraphBuilder.dashGraph(
         if (currentUserId != null) {
             MainScreen(
                 userId = currentUserId,
+                isGuest = authState.isGuest,
                 onSignOut = {
                     Timber.i("User requested Sign Out")
                     timerViewModel.onLeave()
                     timerViewModel.updateSessionTask("")
                     notificationViewModel.cancelReminders()
-                    authViewModel.signOut()
+                    // A guest has no account to come back to, so leaving removes their data
+                    if (authState.isGuest) authViewModel.exitGuestMode() else authViewModel.signOut()
                 },
                 onExit = {
                     Timber.i("User requested App Exit")

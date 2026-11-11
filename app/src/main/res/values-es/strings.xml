@@ -334,10 +334,10 @@
     <string name="timer_ends_at">Termina a las %1$s</string>
     <string name="timer_paused">En pausa</string>
     <string name="timer_ends">Termina %1$s</string>
-    <string name="plan_summary">%1$s · unos %2$s</string>
+    <string name="plan_chip_total">%1$s en total</string>
+    <string name="plan_chip_finish">Terminas a las %1$s</string>
     <string name="cd_change_length">Cambiar duración de %1$s</string>
     <string name="cd_change">Cambiar %1$s</string>
-    <string name="plan_done_around">Terminas hacia las %1$s  ·  %2$s en total</string>
     <string name="action_start_focus">Empezar a concentrarme</string>
     <string name="cd_change_task">Cambiar tarea</string>
     <string name="duration_focus_title">Duración de la concentración</string>
@@ -493,12 +493,11 @@
     <string name="billing_not_loaded">No se cargaron los detalles del producto. Comprueba tu conexión a internet.</string>
     <string name="billing_thanks">¡Gracias por tu apoyo!</string>
     <string name="credit_design_title">Diseño e ilustraciones</string>
-    <string name="credit_design_subtitle">Ilustraciones de Pablo Stanley</string>
+    <string name="credit_design_subtitle">Ilustraciones de</string>
     <string name="credit_design_body">Las preciosas ilustraciones y dibujos de Sessions son obra de Pablo Stanley. ¡Muchas gracias por sus increíbles aportaciones a la comunidad de diseño abierto!</string>
-    <string name="credit_design_action">Ver portafolio</string>
     <string name="credit_lordicon_title">Iconos animados</string>
     <string name="credit_lordicon_subtitle">Proporcionados por Lordicon</string>
-    <string name="credit_lordicon_body">Los iconos animados de la barra de navegación los proporciona Lordicon, que ofrece una enorme biblioteca de recursos animados de alta calidad para todo tipo de creadores.</string>
+    <string name="credit_lordicon_body">Los iconos animados que verás por toda la app los proporciona Lordicon, que ofrece una enorme biblioteca de recursos animados de alta calidad para todo tipo de creadores.</string>
     <string name="credit_lordicon_action">Visitar Lordicon</string>
     <string name="credit_oss_title">Sessions es de código abierto</string>
     <string name="credit_oss_subtitle">Con licencia GPL-3.0</string>
@@ -537,6 +536,10 @@
     <string name="whats_new_v6_13_body">Sessions ahora habla diez idiomas: inglés, español, portugués, francés, alemán, hindi, árabe, japonés, coreano y chino. Elige el tuyo en Ajustes › Idioma, o sigue el de tu teléfono, y toda la app cambia al instante, justo donde estás. El árabe se lee de derecha a izquierda.</string>
     <string name="whats_new_v6_15_title">Cambia la tarea a mitad de sesión</string>
     <string name="whats_new_v6_15_body">Pausa tu sesión para cambiar el nombre de tu tarea sin empezar de nuevo.</string>
+    <string name="whats_new_v6_16_title">Usa Sessions sin cuenta</string>
+    <string name="whats_new_v6_16_body">Toca Invitado en la pantalla de inicio de sesión para empezar a concentrarte al instante. Como invitado, todo se queda en tu teléfono y nunca va a la nube. Salir del modo invitado lo borra, así que puedes exportarlo al salir.</string>
+    <string name="whats_new_v6_17_title">Haz una copia y llévala contigo</string>
+    <string name="whats_new_v6_17_body">Los invitados pueden exportar sus sesiones, plantillas y perfil a un archivo desde Ajustes › Copia de seguridad, e importarlo en cualquier teléfono. ¿Has iniciado sesión? Importa ese archivo en Ajustes y se sincroniza con tu cuenta. Importar nunca duplica nada.</string>
     <string name="whats_new_v51_1_title">Las plantillas se sincronizan con tu cuenta</string>
     <string name="whats_new_v51_1_body">Tus plantillas de tareas ahora se guardan en tu cuenta. Reinstala la app o inicia sesión en otro teléfono y volverán al instante.</string>
     <string name="whats_new_v51_2_title">Inicio de sesión y registro rediseñados</string>
@@ -784,4 +787,28 @@
         <item quantity="many">Racha extraordinaria de %1$d días. ¡Tu dedicación es admirable!</item>
         <item quantity="other">Racha extraordinaria de %1$d días. ¡Tu dedicación es admirable!</item>
     </plurals>
+
+    <!-- Guest mode -->
+    <string name="guest_button">Invitado</string>
+    <string name="guest_name">Invitado</string>
+    <string name="guest_exit_title">Salir del modo invitado</string>
+    <string name="guest_exit_subtitle">Borra tus sesiones de invitado</string>
+    <string name="guest_exit_message">Todo lo que has registrado como invitado se borrará para siempre. Expórtalo antes para conservarlo: podrás importar el archivo más tarde, también después de iniciar sesión en una cuenta.</string>
+    <string name="guest_exit_confirm">Borrar y salir</string>
+
+    <string name="guest_backup_section">Copia de seguridad</string>
+    <string name="guest_export_title">Exportar datos</string>
+    <string name="guest_export_subtitle">Guarda tus sesiones y plantillas en un archivo</string>
+    <string name="guest_import_title">Importar datos</string>
+    <string name="guest_import_subtitle">Añade sesiones y plantillas desde una copia de seguridad</string>
+    <string name="guest_export_done_title">Copia guardada</string>
+    <string name="guest_export_done_message">Guarda este archivo en un lugar seguro. Impórtalo en cualquier teléfono para recuperar tus sesiones.</string>
+    <string name="guest_export_failed_title">No se pudo guardar la copia</string>
+    <string name="guest_export_failed_message">No se pudo escribir el archivo. Inténtalo de nuevo o elige otro lugar.</string>
+    <string name="guest_import_done_title">Importación completada</string>
+    <string name="guest_import_done_message">Sesiones añadidas: %1$d\nPlantillas añadidas: %2$d</string>
+    <string name="guest_import_failed_title">No se pudo importar</string>
+    <string name="guest_import_failed_message">Este archivo no es una copia de Sessions o está dañado.</string>
+    <string name="account_import_subtitle">Trae una copia que guardaste como invitado. Se sincroniza con tu cuenta.</string>
+    <string name="guest_export_and_exit">Exportar y salir</string>
 </resources>

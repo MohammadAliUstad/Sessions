@@ -24,6 +24,10 @@ class TemplateRepositoryImpl(
     private val currentUserId: String?
         get() = authRepository.currentUser
 
+    // The account to mirror templates to; none for a guest, whose templates stay on this phone
+    private val cloudUserId: String?
+        get() = currentUserId?.takeUnless { authRepository.isGuest }
+
     override fun getAllTemplates(): Flow<List<Template>> =
         templateDao.getAllTemplates().map { list -> list.map { it.toTemplate() } }
 
@@ -36,7 +40,7 @@ class TemplateRepositoryImpl(
         templateDao.upsert(entity)
         Timber.d("Template saved: $name (id=${entity.id})")
 
-        currentUserId?.let { templateService.upload(it, entity.toTemplate()) }
+        cloudUserId?.let { templateService.upload(it, entity.toTemplate()) }
     }
 
     override suspend fun delete(id: Long) {
@@ -45,12 +49,12 @@ class TemplateRepositoryImpl(
         templateDao.deleteById(id)
         Timber.d("Template deleted: id=$id")
 
-        val userId = currentUserId
+        val userId = cloudUserId
         if (userId != null && name != null) templateService.delete(userId, name)
     }
 
     override suspend fun syncTemplates() {
-        val userId = currentUserId ?: return
+        val userId = cloudUserId ?: return
         try {
             val remote = templateService.fetchAll(userId)
             val local = templateDao.getAllOnce()

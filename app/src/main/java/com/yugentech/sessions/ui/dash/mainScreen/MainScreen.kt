@@ -81,6 +81,7 @@ fun MainScreen(
     onSignOut: () -> Unit,
     onExit: () -> Unit,
     onViewInsights: () -> Unit,
+    isGuest: Boolean = false,
     onAbout: () -> Unit,
     onWhatsNew: () -> Unit,
     onMoreApps: () -> Unit,
@@ -251,13 +252,15 @@ fun MainScreen(
                             BottomBarScreen.Profile -> ProfileScreen(
                                 userId = userId,
                                 onViewInsights = onViewInsights,
-                                profileViewModel = profileViewModel
+                                profileViewModel = profileViewModel,
+                                isGuest = isGuest
                             )
 
                             BottomBarScreen.Settings -> SettingsScreen(
                                 alertsViewModel = alertsViewModel,
                                 notificationViewModel = notificationViewModel,
                                 onSignOut = onSignOut,
+                                isGuest = isGuest,
                                 onExit = onExit,
                                 onAbout = onAbout,
                                 onWhatsNew = onWhatsNew,

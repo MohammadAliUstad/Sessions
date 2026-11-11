@@ -76,9 +76,16 @@ fun ProfileScreen(
     userId: String,
     modifier: Modifier = Modifier,
     profileViewModel: ProfileViewModel,
-    onViewInsights: () -> Unit = {}
+    onViewInsights: () -> Unit = {},
+    isGuest: Boolean = false
 ) {
     val profileUiState by profileViewModel.uiState.collectAsStateWithLifecycle()
+
+    // A guest has no name until they pick one, so they're shown as "Guest"
+    val guestName = stringResource(R.string.guest_name)
+    val shownUser = (profileUiState.user ?: UserData(name = EMPTY)).let { user ->
+        if (isGuest && user.name == null) user.copy(name = guestName) else user
+    }
 
     // The name and avatar are edited in sheets right here (there's no Edit Profile screen).
     var showNameSheet by rememberSaveable { mutableStateOf(false) }
@@ -129,7 +136,7 @@ fun ProfileScreen(
             )
 
             ProfileCard(
-                userData = profileUiState.user ?: UserData(name = EMPTY),
+                userData = shownUser,
                 onEditName = { showNameSheet = true },
                 onEditAvatar = { showAvatarSheet = true },
                 onViewInsights = onViewInsights,
@@ -165,7 +172,7 @@ fun ProfileScreen(
 
             item(key = "profile_card") {
                 ProfileCard(
-                    userData = profileUiState.user ?: UserData(name = EMPTY),
+                    userData = shownUser,
                     onEditName = { showNameSheet = true },
                     onEditAvatar = { showAvatarSheet = true },
                     onViewInsights = onViewInsights,

@@ -11,5 +11,7 @@ data class AuthState(
     val error: String? = null,
     val intent: PendingIntent? = null,
     val userData: UserData? = null,
-    val isUserLoggedIn: Boolean = false
+    val isUserLoggedIn: Boolean = false,
+    // Signed in as a guest (an anonymous account): counts as logged in, with no email or Google yet
+    val isGuest: Boolean = false
 )

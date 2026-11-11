@@ -334,10 +334,10 @@
     <string name="timer_ends_at">Endet um %1$s</string>
     <string name="timer_paused">Pausiert</string>
     <string name="timer_ends">Endet %1$s</string>
-    <string name="plan_summary">%1$s · etwa %2$s</string>
+    <string name="plan_chip_total">%1$s insgesamt</string>
+    <string name="plan_chip_finish">Fertig um %1$s</string>
     <string name="cd_change_length">Länge von %1$s ändern</string>
     <string name="cd_change">%1$s ändern</string>
-    <string name="plan_done_around">Fertig gegen %1$s  ·  %2$s insgesamt</string>
     <string name="action_start_focus">Fokus starten</string>
     <string name="cd_change_task">Aufgabe ändern</string>
     <string name="duration_focus_title">Fokusdauer</string>
@@ -493,12 +493,11 @@
     <string name="billing_not_loaded">Produktdetails wurden nicht geladen. Bitte prüfe deine Internetverbindung.</string>
     <string name="billing_thanks">Danke für deine Unterstützung!</string>
     <string name="credit_design_title">Design und Illustrationen</string>
-    <string name="credit_design_subtitle">Illustrationen von Pablo Stanley</string>
+    <string name="credit_design_subtitle">Illustrationen von</string>
     <string name="credit_design_body">Die schönen Illustrationen und Zeichnungen in Sessions stammen von Pablo Stanley. Vielen Dank für seine großartigen Beiträge zur offenen Design-Community!</string>
-    <string name="credit_design_action">Portfolio ansehen</string>
     <string name="credit_lordicon_title">Animierte Symbole</string>
     <string name="credit_lordicon_subtitle">Bereitgestellt von Lordicon</string>
-    <string name="credit_lordicon_body">Die lebendigen animierten Symbole in der Navigationsleiste stammen von Lordicon, das eine riesige Bibliothek hochwertiger animierter Assets für alle Kreativen bietet.</string>
+    <string name="credit_lordicon_body">Die lebendigen animierten Symbole in der ganzen App stammen von Lordicon, das eine riesige Bibliothek hochwertiger animierter Assets für alle Kreativen bietet.</string>
     <string name="credit_lordicon_action">Lordicon besuchen</string>
     <string name="credit_oss_title">Sessions ist Open Source</string>
     <string name="credit_oss_subtitle">Lizenziert unter GPL-3.0</string>
@@ -537,6 +536,10 @@
     <string name="whats_new_v6_13_body">Sessions spricht jetzt zehn Sprachen: Englisch, Spanisch, Portugiesisch, Französisch, Deutsch, Hindi, Arabisch, Japanisch, Koreanisch und Chinesisch. Wähle deine unter Einstellungen › Sprache oder folge der deines Telefons, und die ganze App wechselt sofort, genau dort, wo du bist. Arabisch wird von rechts nach links gelesen.</string>
     <string name="whats_new_v6_15_title">Aufgabe mitten in der Session ändern</string>
     <string name="whats_new_v6_15_body">Pausiere deine Session, um deine Aufgabe umzubenennen, ohne neu anzufangen.</string>
+    <string name="whats_new_v6_16_title">Sessions ohne Konto nutzen</string>
+    <string name="whats_new_v6_16_body">Tippe auf dem Anmeldebildschirm auf Gast und leg sofort los. Als Gast bleibt alles auf deinem Handy und landet nie in der Cloud. Beim Beenden des Gastmodus wird alles gelöscht, du kannst es aber vorher exportieren.</string>
+    <string name="whats_new_v6_17_title">Sichern und mitnehmen</string>
+    <string name="whats_new_v6_17_body">Gäste können ihre Sessions, Vorlagen und ihr Profil unter Einstellungen › Sicherung in eine Datei exportieren und auf jedem Handy importieren. Angemeldet? Importiere die Datei in den Einstellungen, und sie wird mit deinem Konto synchronisiert. Beim Import wird nie etwas doppelt angelegt.</string>
     <string name="whats_new_v51_1_title">Vorlagen werden mit deinem Konto synchronisiert</string>
     <string name="whats_new_v51_1_body">Deine Aufgabenvorlagen werden jetzt in deinem Konto gespeichert. Installiere die App neu oder melde dich auf einem anderen Telefon an, und sie sind sofort wieder da.</string>
     <string name="whats_new_v51_2_title">Neu gestaltete Anmeldung und Registrierung</string>
@@ -769,4 +772,28 @@
         <item quantity="one">Herausragende Serie von %1$d Tag. Deine Hingabe ist bemerkenswert!</item>
         <item quantity="other">Herausragende Serie von %1$d Tagen. Deine Hingabe ist bemerkenswert!</item>
     </plurals>
+
+    <!-- Guest mode -->
+    <string name="guest_button">Gast</string>
+    <string name="guest_name">Gast</string>
+    <string name="guest_exit_title">Gastmodus beenden</string>
+    <string name="guest_exit_subtitle">Löscht deine Gast-Sessions</string>
+    <string name="guest_exit_message">Alles, was du als Gast aufgezeichnet hast, wird endgültig gelöscht. Exportiere es vorher, um es zu behalten: Du kannst die Datei später importieren, auch nachdem du dich bei einem Konto angemeldet hast.</string>
+    <string name="guest_exit_confirm">Löschen und beenden</string>
+
+    <string name="guest_backup_section">Sicherung</string>
+    <string name="guest_export_title">Daten exportieren</string>
+    <string name="guest_export_subtitle">Speichere deine Sessions und Vorlagen in einer Datei</string>
+    <string name="guest_import_title">Daten importieren</string>
+    <string name="guest_import_subtitle">Füge Sessions und Vorlagen aus einer Sicherung hinzu</string>
+    <string name="guest_export_done_title">Sicherung gespeichert</string>
+    <string name="guest_export_done_message">Bewahre diese Datei sicher auf. Importiere sie auf jedem Handy, um deine Sessions zurückzubekommen.</string>
+    <string name="guest_export_failed_title">Sicherung fehlgeschlagen</string>
+    <string name="guest_export_failed_message">Die Datei konnte nicht geschrieben werden. Versuche es erneut oder wähle einen anderen Ort.</string>
+    <string name="guest_import_done_title">Import abgeschlossen</string>
+    <string name="guest_import_done_message">Hinzugefügte Sessions: %1$d\nHinzugefügte Vorlagen: %2$d</string>
+    <string name="guest_import_failed_title">Import fehlgeschlagen</string>
+    <string name="guest_import_failed_message">Diese Datei ist keine Sessions-Sicherung oder beschädigt.</string>
+    <string name="account_import_subtitle">Hole eine Sicherung, die du als Gast gespeichert hast. Sie wird mit deinem Konto synchronisiert.</string>
+    <string name="guest_export_and_exit">Exportieren und beenden</string>
 </resources>

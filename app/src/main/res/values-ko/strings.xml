@@ -334,10 +334,10 @@
     <string name="timer_ends_at">%1$s에 종료</string>
     <string name="timer_paused">일시정지됨</string>
     <string name="timer_ends">종료 %1$s</string>
-    <string name="plan_summary">%1$s · 약 %2$s</string>
+    <string name="plan_chip_total">총 %1$s</string>
+    <string name="plan_chip_finish">%1$s쯤 완료</string>
     <string name="cd_change_length">%1$s 길이 변경</string>
     <string name="cd_change">%1$s 변경</string>
-    <string name="plan_done_around">%1$s쯤 완료  ·  총 %2$s</string>
     <string name="action_start_focus">집중 시작</string>
     <string name="cd_change_task">할 일 변경</string>
     <string name="duration_focus_title">집중 시간</string>
@@ -493,12 +493,11 @@
     <string name="billing_not_loaded">상품 정보를 불러오지 못했어요. 인터넷 연결을 확인해 주세요.</string>
     <string name="billing_thanks">응원해 주셔서 감사합니다!</string>
     <string name="credit_design_title">디자인 및 일러스트</string>
-    <string name="credit_design_subtitle">일러스트: Pablo Stanley</string>
+    <string name="credit_design_subtitle">일러스트</string>
     <string name="credit_design_body">Sessions의 아름다운 일러스트와 낙서는 Pablo Stanley가 만들었어요. 오픈 디자인 커뮤니티에 놀라운 기여를 해 준 그에게 큰 감사를 전합니다!</string>
-    <string name="credit_design_action">포트폴리오 보기</string>
     <string name="credit_lordicon_title">애니메이션 아이콘</string>
     <string name="credit_lordicon_subtitle">Lordicon 제공</string>
-    <string name="credit_lordicon_body">내비게이션 바의 생동감 있는 애니메이션 아이콘은 Lordicon에서 제공해요. 모든 크리에이터를 위한 고품질 애니메이션 에셋을 방대하게 제공합니다.</string>
+    <string name="credit_lordicon_body">앱 곳곳에 쓰인 생동감 있는 애니메이션 아이콘은 Lordicon에서 제공해요. 모든 크리에이터를 위한 고품질 애니메이션 에셋을 방대하게 제공합니다.</string>
     <string name="credit_lordicon_action">Lordicon 방문</string>
     <string name="credit_oss_title">Sessions는 오픈소스예요</string>
     <string name="credit_oss_subtitle">GPL-3.0 라이선스</string>
@@ -537,6 +536,10 @@
     <string name="whats_new_v6_13_body">이제 Sessions가 10개 언어를 지원해요: 영어, 스페인어, 포르투갈어, 프랑스어, 독일어, 힌디어, 아랍어, 일본어, 한국어, 중국어. 설정 › 언어에서 원하는 언어를 고르거나 휴대폰 언어를 따르면, 지금 보던 화면 그대로 앱 전체가 즉시 바뀌어요. 아랍어는 오른쪽에서 왼쪽으로 표시돼요.</string>
     <string name="whats_new_v6_15_title">세션 중에 작업 바꾸기</string>
     <string name="whats_new_v6_15_body">세션을 일시정지하면 처음부터 다시 시작하지 않고 작업 이름을 바꿀 수 있어요.</string>
+    <string name="whats_new_v6_16_title">계정 없이 Sessions 사용하기</string>
+    <string name="whats_new_v6_16_body">로그인 화면에서 게스트를 누르면 바로 집중을 시작할 수 있어요. 게스트로 쓰는 동안 모든 데이터는 휴대폰에만 남고 클라우드로 가지 않아요. 게스트 모드를 종료하면 삭제되니, 나갈 때 내보낼 수 있어요.</string>
+    <string name="whats_new_v6_17_title">백업하고 그대로 옮기기</string>
+    <string name="whats_new_v6_17_body">게스트는 설정 › 백업에서 세션, 템플릿, 프로필을 파일로 내보내고 어느 휴대폰에서든 가져올 수 있어요. 로그인했다면 설정에서 그 파일을 가져오세요. 계정에 동기화돼요. 가져오기로 중복되는 일은 없어요.</string>
     <string name="whats_new_v51_1_title">템플릿이 계정에 동기화</string>
     <string name="whats_new_v51_1_body">할 일 템플릿이 이제 계정에 저장돼요. 앱을 다시 설치하거나 다른 휴대전화에서 로그인해도 바로 돌아와요.</string>
     <string name="whats_new_v51_2_title">새롭게 디자인한 로그인 및 가입</string>
@@ -754,4 +757,28 @@
     <plurals name="streak_master_message">
         <item quantity="other">%1$d일 연속이라는 놀라운 기록. 당신의 노력은 정말 대단해요!</item>
     </plurals>
+
+    <!-- Guest mode -->
+    <string name="guest_button">게스트</string>
+    <string name="guest_name">게스트</string>
+    <string name="guest_exit_title">게스트 모드 종료</string>
+    <string name="guest_exit_subtitle">게스트 세션을 삭제해요</string>
+    <string name="guest_exit_message">게스트로 기록한 모든 내용이 영구적으로 삭제돼요. 보관하려면 먼저 내보내세요. 파일은 나중에 가져올 수 있고, 계정에 로그인한 뒤에도 가져올 수 있어요.</string>
+    <string name="guest_exit_confirm">삭제하고 종료</string>
+
+    <string name="guest_backup_section">백업</string>
+    <string name="guest_export_title">데이터 내보내기</string>
+    <string name="guest_export_subtitle">세션과 템플릿을 파일로 저장해요</string>
+    <string name="guest_import_title">데이터 가져오기</string>
+    <string name="guest_import_subtitle">백업 파일에서 세션과 템플릿을 추가해요</string>
+    <string name="guest_export_done_title">백업을 저장했어요</string>
+    <string name="guest_export_done_message">이 파일을 안전한 곳에 보관하세요. 어느 휴대폰에서든 가져오면 세션을 되찾을 수 있어요.</string>
+    <string name="guest_export_failed_title">백업을 저장하지 못했어요</string>
+    <string name="guest_export_failed_message">파일을 쓸 수 없었어요. 다시 시도하거나 다른 위치를 선택하세요.</string>
+    <string name="guest_import_done_title">가져오기 완료</string>
+    <string name="guest_import_done_message">추가된 세션: %1$d\n추가된 템플릿: %2$d</string>
+    <string name="guest_import_failed_title">가져오지 못했어요</string>
+    <string name="guest_import_failed_message">이 파일은 Sessions 백업이 아니거나 손상되었어요.</string>
+    <string name="account_import_subtitle">게스트일 때 저장한 백업을 가져와요. 계정에 동기화돼요.</string>
+    <string name="guest_export_and_exit">내보내고 종료</string>
 </resources>
