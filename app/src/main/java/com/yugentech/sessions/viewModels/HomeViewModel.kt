@@ -4,7 +4,6 @@ import com.yugentech.sessions.R
 import com.yugentech.sessions.localization.AppStrings
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.yugentech.sessions.sessions.model.Session
 import com.yugentech.sessions.sessions.repository.SessionsRepository
 import com.yugentech.sessions.templates.repository.TemplateRepository
 import com.yugentech.sessions.user.datastore.UserDataStore
@@ -16,9 +15,6 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import timber.log.Timber
-import java.util.Calendar
-import java.util.UUID
-import kotlin.random.Random
 
 data class HomeDataState(
     val isLoading: Boolean = false,
@@ -118,70 +114,6 @@ class HomeViewModel(
             } catch (e: Exception) {
                 Timber.e(e, "Sync failed")
             }
-        }
-    }
-
-    fun injectDummyData() {
-        viewModelScope.launch {
-            // Weighted tasks — Side Hustle & Work dominate
-            val weightedTasks = listOf(
-                "Work" to 25,
-                "Side Hustle" to 22,
-                "Research" to 18,
-                "Project" to 15,
-                "Resume Polish" to 8,
-                "System Design" to 7,
-                "Reading" to 3,
-                "Meditation" to 2,
-            )
-            val taskPool = weightedTasks.flatMap { (task, weight) -> List(weight) { task } }
-
-            // Weighted weekdays — Mon–Thu favoured, weekends light
-            val weightedDays = listOf(
-                Calendar.MONDAY to 20,
-                Calendar.TUESDAY to 20,
-                Calendar.WEDNESDAY to 18,
-                Calendar.THURSDAY to 18,
-                Calendar.FRIDAY to 12,
-                Calendar.SATURDAY to 7,
-                Calendar.SUNDAY to 5,
-            )
-            val dayPool = weightedDays.flatMap { (day, weight) -> List(weight) { day } }
-
-            repeat(300) {
-                val randomDaysAgo = Random.nextInt(0, 365)
-                val targetWeekday = dayPool.random()
-
-                val calendar = Calendar.getInstance().apply {
-                    add(Calendar.DAY_OF_YEAR, -randomDaysAgo)
-                    // Nudge to the nearest target weekday (within ±3 days)
-                    val currentDay = get(Calendar.DAY_OF_WEEK)
-                    var diff = targetWeekday - currentDay
-                    if (diff > 3) diff -= 7
-                    if (diff < -3) diff += 7
-                    add(Calendar.DAY_OF_YEAR, diff)
-
-                    // Bias session times: most work happens 9am–10pm
-                    val hour = when (Random.nextInt(100)) {
-                        in 0..60 -> Random.nextInt(9, 22)   // 60% → productive hours
-                        in 61..80 -> Random.nextInt(22, 24) // 20% → late night
-                        else -> Random.nextInt(6, 9)         // 20% → early morning
-                    }
-                    set(Calendar.HOUR_OF_DAY, hour)
-                    set(Calendar.MINUTE, Random.nextInt(0, 60))
-                }
-
-                val dummySession = Session(
-                    sessionId = UUID.randomUUID().toString(),
-                    duration = Random.nextInt(15, 120) * 60,
-                    timestamp = calendar.timeInMillis,
-                    sessionTask = taskPool.random()
-                )
-
-                sessionsRepository.saveSession(dummySession)
-            }
-
-            Timber.d("Yearly dummy data injection complete!")
         }
     }
 

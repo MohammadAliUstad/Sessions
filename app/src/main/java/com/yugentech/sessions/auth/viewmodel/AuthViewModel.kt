@@ -212,7 +212,7 @@ class AuthViewModel(
         viewModelScope.launch {
             when (val result = authRepository.sendPasswordResetEmail(email)) {
                 is AuthResult.Success -> {
-                    Timber.i("Password reset email sent to $email")
+                    Timber.i("Password reset email sent")
                     _forgotPasswordState.value = ForgotPasswordState.Success
                 }
 

@@ -38,6 +38,8 @@
 
 Sessions transforms the concept of a simple timer into a comprehensive focus tool. Whether you're studying, coding, or writing, the application ensures your environment is optimized for concentration. It features a robust background service and intelligent reminder system that ensures your progress is tracked and your habits are maintained, even when life gets busy.
 
+Sign in to keep your history backed up and synced across devices, or tap **Guest** to start focusing right away, with no account and everything kept on your phone.
+
 ---
 
 ## ✨ Key Features
@@ -58,11 +60,18 @@ Sessions transforms the concept of a simple timer into a comprehensive focus too
 - **Quick Actions:** Skip focus or break periods directly from the notification tray for seamless session control.
 - **Background Stability:** Engineered to resist aggressive battery optimization, ensuring your timer never stops unexpectedly.
 
+### Accounts & Your Data
+- **Sign In or Go Guest:** Sign in with email or Google to back up and sync your sessions, templates and profile, or continue as a guest without an account.
+- **Private Guest Mode:** A guest's data never leaves the phone: no account is created and nothing is sent to the cloud. It works offline from the first launch.
+- **Backup Files:** Guests can export their sessions, templates and profile to a single file and import it later. Signed in? Import a guest backup from Settings and it syncs to your account. Imports merge, so nothing is ever doubled up.
+
 ### Analytics & Personalization
 - **Visual Insights:** Dedicated dashboard featuring heatmaps and metrics (Total Focus Time, Peak Productivity Hours).
 - **Session Management:** Full control over your history: sort sessions by day, week, or month, and delete sessions individually, by period (daily, weekly, or monthly), or all at once.
 - **Deep Theming:** 8 Color Themes (including Dynamic Material You), OLED Black Mode, and 6 Font options.
+- **Home Layouts:** Choose how the timer screen looks: Classic, Refined or Studio.
 - **Identity System:** Choose from a variety of animated avatars and set a custom display name.
+- **10 Languages:** English, Spanish, Portuguese (Brazil), French, German, Hindi, Arabic, Japanese, Korean and Simplified Chinese, switchable in the app.
 
 ---
 
@@ -123,9 +132,10 @@ UI Framework:         Jetpack Compose (Material 3)
 Architecture:         MVVM + Clean Architecture
 Dependency Injection: Koin
 Local Database:       Room
-Backend Services:     Firebase (Auth, Firestore)
+Backend Services:     Firebase (Auth, Firestore, Analytics, Crashlytics)
 Concurrency:          Kotlin Coroutines & Flow
 Background Tasks:     WorkManager
+Animations:           Lottie
 ```
 
 ### Tech Stack
@@ -136,8 +146,9 @@ Background Tasks:     WorkManager
 * **MVVM Architecture** - Separation of concerns for maintainable code.
 * **Room Database** - Robust local data persistence.
 * **WorkManager** - Reliable background task scheduling for smart reminders.
-* **Firebase** - Cloud services for authentication and data sync.
+* **Firebase** - Authentication and cloud sync for signed-in users, plus usage analytics and crash reporting. Guest mode runs entirely on the device.
 * **Coroutines & Flow** - Asynchronous programming made simple.
+* **Lottie** - Animated icons throughout the app.
 
 ---
 
@@ -161,6 +172,8 @@ cd Sessions
 * Create a project in the [Firebase Console](https://console.firebase.google.com/)
 * Download the `google-services.json` file
 * Place the file in the `app/` directory of the project
+* In **Authentication**, enable the **Email/Password** and **Google** sign-in providers (guest mode needs no provider)
+* Create a **Cloud Firestore** database. Each user's data is stored under `users/{uid}`, so set your security rules to allow access only when the signed-in user's ID matches `{uid}`
 
 3. **Build & Run**
 * Open the project in Android Studio

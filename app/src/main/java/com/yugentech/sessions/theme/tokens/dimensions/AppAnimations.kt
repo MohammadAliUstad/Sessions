@@ -1,10 +1,6 @@
 package com.yugentech.sessions.theme.tokens.dimensions
 
 import androidx.compose.animation.ContentTransform
-import androidx.compose.animation.core.CubicBezierEasing
-import androidx.compose.animation.core.EaseInOutCubic
-import androidx.compose.animation.core.Easing
-import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.scaleIn
@@ -36,18 +32,6 @@ object AppAnimations {
         const val Prolonged = 3000
         const val RepeatDelay = 2000
         const val Carousel = 20000
-    }
-
-    // Standard easing curves to define how animations accelerate and decelerate
-    object Easings {
-        val Linear: Easing = LinearEasing
-        val Standard: Easing = CubicBezierEasing(0.2f, 0.0f, 0.0f, 1.0f)
-        val Simple: Easing = EaseInOutCubic
-        val Emphasized: Easing = CubicBezierEasing(0.2f, 0.0f, 0.0f, 1.0f)
-        val EmphasizedDecelerate: Easing = CubicBezierEasing(0.05f, 0.7f, 0.1f, 1.0f)
-        val EmphasizedAccelerate: Easing = CubicBezierEasing(0.3f, 0.0f, 0.8f, 0.15f)
-        val Decelerate: Easing = CubicBezierEasing(0.0f, 0.0f, 0.2f, 1.0f)
-        val Accelerate: Easing = CubicBezierEasing(0.4f, 0.0f, 1.0f, 1.0f)
     }
 
     // Physical constants for motion-based spatial changes

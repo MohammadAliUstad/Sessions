@@ -53,8 +53,6 @@ object AvatarRepository {
         Avatar(27, R.string.avatar_bored_bun, R.drawable.peep_93, AvatarCategory.COFFEE_CONTEMPLATION)
     )
 
-    fun getAllAvatars(): List<Avatar> = avatars
-
     fun getAvatarsByCategory(category: AvatarCategory): List<Avatar> =
         avatars.filter { it.category == category }
 
@@ -64,7 +62,4 @@ object AvatarRepository {
 
     @StringRes
     fun getAvatarName(id: Int?): Int? = getAvatarById(id)?.name
-
-    fun getCategoriesWithAvatars(): Map<AvatarCategory, List<Avatar>> =
-        avatars.groupBy { it.category }
 }

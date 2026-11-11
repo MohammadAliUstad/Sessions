@@ -1,7 +1,6 @@
 package com.yugentech.sessions.localization
 
 import android.content.Context
-import androidx.annotation.PluralsRes
 import androidx.annotation.StringRes
 
 /**
@@ -24,7 +23,4 @@ object AppStrings {
     private val resources get() = AppLocale.wrap(app).resources
 
     fun get(@StringRes id: Int, vararg args: Any): String = resources.getString(id, *args)
-
-    fun plural(@PluralsRes id: Int, count: Int, vararg args: Any): String =
-        resources.getQuantityString(id, count, *args)
 }

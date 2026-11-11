@@ -1,6 +1,5 @@
 package com.yugentech.sessions.ui.dash.profileScreen.components
 
-import com.yugentech.sessions.R
 import androidx.compose.ui.res.stringResource
 import androidx.compose.foundation.MarqueeAnimationMode
 import androidx.compose.foundation.background

@@ -11,10 +11,6 @@ data class TimerState(
     val completedSets: Int = 0,
     val timerConfig: TimerConfig = TimerConfig()
 ) {
-    // Returns true if the timer has started but is currently stopped mid-way.
-    val isPaused: Boolean
-        get() = !isTimerRunning && totalTime > 0 && currentTime > 0 && currentTime < totalTime
-
     // Returns true if the timer hasn't started or has fully reset.
     // currentTime == totalTime covers both the initial state and a clean reset.
     val isIdle: Boolean

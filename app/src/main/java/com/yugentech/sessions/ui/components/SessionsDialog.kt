@@ -20,7 +20,6 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -175,27 +174,5 @@ fun SessionsDialog(
                 }
             }
         }
-    }
-}
-
-/** A highlighted line inside a [SessionsDialog]: the setting to change, or what's being deleted. */
-@Composable
-fun DialogHighlight(text: String) {
-    Surface(
-        color = MaterialTheme.colorScheme.surfaceContainerHigh,
-        shape = RoundedCornerShape(MaterialTheme.corners.medium),
-        modifier = Modifier.fillMaxWidth()
-    ) {
-        Text(
-            text = text,
-            style = MaterialTheme.typography.titleMedium,
-            fontWeight = FontWeight.Bold,
-            color = MaterialTheme.colorScheme.onSurface,
-            textAlign = TextAlign.Center,
-            modifier = Modifier.padding(
-                horizontal = MaterialTheme.spacing.m,
-                vertical = MaterialTheme.spacing.s
-            )
-        )
     }
 }

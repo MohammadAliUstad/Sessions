@@ -20,7 +20,6 @@ import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.LightMode
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Palette
-import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Vibration
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
@@ -54,7 +53,6 @@ import com.yugentech.sessions.ui.dash.homeScreen.components.LogoutConfirmationDi
 import com.yugentech.sessions.ui.dash.homeScreen.components.ExitGuestDialog
 import com.yugentech.sessions.ui.dash.mainScreen.components.SectionHeader
 import com.yugentech.sessions.alerts.viewmodel.AlertsViewModel
-import com.yugentech.sessions.theme.tokens.components
 import com.yugentech.sessions.ui.config.aboutScreen.MoreFromUsSheet
 import com.yugentech.sessions.ui.dash.settingsScreen.components.AlarmPermissionDialog
 import com.yugentech.sessions.ui.dash.settingsScreen.components.NotificationPermissionDialog

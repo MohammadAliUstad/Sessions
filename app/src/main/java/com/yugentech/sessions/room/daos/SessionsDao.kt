@@ -46,14 +46,6 @@ interface SessionsDao {
     @Query("UPDATE sessions SET pendingSync = 0 WHERE userId = :userId AND pendingSync = 1")
     suspend fun syncSessions(userId: String)
 
-    // Retrieves just the IDs of all sessions for a user
-    @Query("SELECT sessionId FROM sessions WHERE userId = :userId")
-    suspend fun getSessionIds(userId: String): List<String>
-
-    // Checks if a session ID already exists in the database
-    @Query("SELECT COUNT(*) FROM sessions WHERE sessionId = :sessionId")
-    suspend fun checkSessionExists(sessionId: String): Int
-
     // A one-off read of every session of a user, for writing a guest's backup file
     @Query("SELECT * FROM sessions WHERE userId = :userId ORDER BY timestamp DESC")
     suspend fun getSessionsOnce(userId: String): List<SessionsEntity>

@@ -7,7 +7,6 @@ import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.emptyPreferences
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
 import timber.log.Timber
 
@@ -33,12 +32,6 @@ class SyncDataStore(
             emit(emptyPreferences())
         }
         .map { prefs -> prefs[sessionsFetchDoneKey] ?: false }
-
-    // Combined check to ensure all initial data syncing is complete
-    val isAllInitialFetchDone: Flow<Boolean> = combine(
-        isUserFetchDone,
-        isSessionsFetchDone
-    ) { userDone, sessionsDone -> userDone && sessionsDone }
 
     // Save flag indicating user profile fetch is complete
     suspend fun setUserFetchDone(done: Boolean) {

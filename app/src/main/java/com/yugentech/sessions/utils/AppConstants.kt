@@ -9,7 +9,6 @@ object AppConstants {
     const val ACTION_PAUSE_SESSION = "PAUSE_SESSION"
     const val ACTION_RESUME_SESSION = "RESUME_SESSION"
     const val ACTION_FINISH_SESSION = "FINISH_SESSION"
-    const val ACTION_UPDATE_SESSION = "UPDATE_SESSION"
     const val GITHUB_URL = "https://github.com/MohammadAliUstad/Sessions"
     const val PRIVACY_POLICY_URL = "https://sites.google.com/view/sessionsprivacypolicy/home"
     const val TERMS_OF_SERVICE_URL = "https://sites.google.com/view/sessionstermsofservice/home"
