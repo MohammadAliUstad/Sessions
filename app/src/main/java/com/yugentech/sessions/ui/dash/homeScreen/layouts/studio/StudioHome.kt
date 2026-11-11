@@ -82,7 +82,8 @@ fun StudioHome(ui: HomeUi, actions: HomeActions, screenHeight: Dp) {
         ) {
             StudioHeader(
                 task = config.sessionTask,
-                canEdit = !ui.isSessionActive,
+                // Renaming is for before starting or while paused, never while the timer runs
+                canEdit = !ui.isRunning,
                 soundId = config.activeBackgroundSoundId,
                 soundOn = config.isAmbientEnabled,
                 soundPlaying = ui.isRunning,

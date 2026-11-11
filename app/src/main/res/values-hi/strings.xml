@@ -101,7 +101,8 @@
     <string name="delete_all_sessions_title">सभी सेशन मिटाएं?</string>
     <string name="delete_all_sessions_message">आपका पूरा फ़ोकस इतिहास हमेशा के लिए मिट जाएगा। यह कार्रवाई वापस नहीं ली जा सकती।</string>
     <string name="delete_all_sessions_confirm">सब मिटाएं</string>
-    <string name="notification_permission_denied">सूचना की अनुमति नहीं मिली। Sessions के अलर्ट देखने के लिए सूचनाएं चालू करें।</string>
+    <string name="notification_permission_setting">सूचनाएं</string>
+    <string name="notification_permission_body">चलता हुआ टाइमर दिखाने और आपके रिमाइंडर भेजने के लिए Sessions को सूचनाओं की ज़रूरत है। अगली स्क्रीन पर Sessions के लिए सूचनाएं चालू करें।</string>
     <string name="tab_profile">प्रोफ़ाइल</string>
     <string name="tab_settings">सेटिंग</string>
     <string name="cd_delete_all_sessions">सभी सेशन मिटाएं</string>
@@ -294,6 +295,8 @@
     <string name="sound_no_sound">कोई आवाज़ नहीं</string>
     <string name="sound_muted">म्यूट</string>
     <string name="sounds_title">एंबिएंट साउंड</string>
+    <string name="cd_unmute_sound">आवाज़ चालू करें</string>
+    <string name="cd_mute_sound">आवाज़ बंद करें</string>
     <string name="sounds_subtitle">सेशन के दौरान फ़ोकस बनाए रखने के लिए कोई सुकून भरा माहौल चुनें।</string>
     <string name="sounds_turn_on">साउंड चालू करें</string>
     <string name="sounds_turn_on_subtitle">नीचे कोई साउंड सुनने और चुनने के लिए चालू करें</string>
@@ -301,8 +304,6 @@
     <string name="cd_edit">बदलें</string>
     <string name="status_active">सक्रिय</string>
     <string name="status_idle">निष्क्रिय</string>
-    <string name="cd_unmute_sound">आवाज़ चालू करें</string>
-    <string name="cd_mute_sound">आवाज़ बंद करें</string>
     <string name="template_summary">%1$d मि फ़ोकस · %2$d मि ब्रेक · %3$s</string>
     <string name="template_long_break_summary">%1$d मि लंबा ब्रेक · %2$s</string>
     <string name="template_long_break_value">%1$d मि %2$s</string>
@@ -313,6 +314,7 @@
     <string name="delete">मिटाएं</string>
     <string name="task_title">सेशन का काम</string>
     <string name="task_subtitle">अपने सेशन को नाम दें या कोई सेव किया टेम्पलेट चुनें।</string>
+    <string name="task_subtitle_session">आप जिस पर काम कर रहे हैं उसका नाम बदलें। सेशन के दौरान टेम्पलेट सिर्फ़ नाम बदलता है।</string>
     <string name="task_hint">जैसे कोडिंग, गणित, पढ़ाई...</string>
     <string name="cd_clear">साफ़ करें</string>
     <string name="task_set">काम सेट करें</string>
@@ -499,8 +501,8 @@
     <string name="credit_lordicon_body">नेविगेशन बार के जीवंत एनिमेटेड आइकन Lordicon से हैं। वे सभी क्रिएटर्स के लिए उच्च गुणवत्ता वाले एनिमेटेड एसेट की विशाल लाइब्रेरी देते हैं।</string>
     <string name="credit_lordicon_action">Lordicon पर जाएं</string>
     <string name="credit_oss_title">Sessions ओपन सोर्स है</string>
-    <string name="credit_oss_subtitle">Apache 2.0 के तहत लाइसेंस प्राप्त</string>
-    <string name="credit_oss_body">सोर्स कोड GitHub पर उपलब्ध है। आप निजी इस्तेमाल के लिए इसे देख सकते हैं, इससे सीख सकते हैं और बदल सकते हैं।</string>
+    <string name="credit_oss_subtitle">GPL-3.0 के तहत लाइसेंस प्राप्त</string>
+    <string name="credit_oss_body">सोर्स कोड GitHub पर उपलब्ध है। आप इसे इस्तेमाल कर सकते हैं, समझ सकते हैं, बदल सकते हैं और शेयर कर सकते हैं, बशर्ते आप जो भी शेयर करें वह इसी लाइसेंस के तहत ओपन सोर्स रहे। Sessions का नाम और लोगो इसमें शामिल नहीं हैं।</string>
     <string name="credit_oss_action">सोर्स कोड देखें</string>
     <string name="whats_new_title">नया क्या है</string>
     <string name="whats_new_current_version">मौजूदा वर्शन %1$s</string>
@@ -533,6 +535,8 @@
     <string name="whats_new_v6_12_body">रंग थीम बदलना, लाइट और डार्क के बीच स्विच करना या AMOLED ब्लैक चालू करना अब पूरी स्क्रीन पर धीरे से फ़ेड होता है।</string>
     <string name="whats_new_v6_13_title">आपकी भाषा में Sessions</string>
     <string name="whats_new_v6_13_body">Sessions अब दस भाषाओं में उपलब्ध है: अंग्रेज़ी, स्पेनिश, पुर्तगाली, फ़्रेंच, जर्मन, हिंदी, अरबी, जापानी, कोरियाई और चीनी। सेटिंग › भाषा में अपनी भाषा चुनें, या फ़ोन की भाषा अपनाएँ, और पूरा ऐप तुरंत बदल जाता है, ठीक वहीं जहाँ आप हैं। अरबी दाएँ से बाएँ पढ़ी जाती है।</string>
+    <string name="whats_new_v6_15_title">सेशन के बीच टास्क बदलें</string>
+    <string name="whats_new_v6_15_body">बिना दोबारा शुरू किए अपने टास्क का नाम बदलने के लिए सेशन को रोकें।</string>
     <string name="whats_new_v51_1_title">टेम्पलेट आपके खाते में सिंक होते हैं</string>
     <string name="whats_new_v51_1_body">आपके काम के टेम्पलेट अब आपके खाते में सेव होते हैं। ऐप दोबारा इंस्टॉल करें या दूसरे फ़ोन पर साइन इन करें, वे तुरंत वापस आ जाएंगे।</string>
     <string name="whats_new_v51_2_title">नया साइन इन और साइन अप</string>

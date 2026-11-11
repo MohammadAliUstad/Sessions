@@ -120,7 +120,8 @@
     <string name="delete_all_sessions_message">This will permanently remove all your focus history. This action cannot be undone.</string>
     <string name="delete_all_sessions_confirm">Delete All</string>
 
-    <string name="notification_permission_denied">Notification permission denied. Please enable notifications to see Session alerts.</string>
+    <string name="notification_permission_setting">Notifications</string>
+    <string name="notification_permission_body">Sessions needs notifications to show your running timer and send your reminders. Turn on notifications for Sessions in the next screen.</string>
 
     <!-- Top bar -->
     <string name="tab_profile">Profile</string>
@@ -405,6 +406,8 @@
     <string name="sound_muted">Muted</string>
 
     <string name="sounds_title">Ambient Sounds</string>
+    <string name="cd_unmute_sound">Unmute sound</string>
+    <string name="cd_mute_sound">Mute sound</string>
     <string name="sounds_subtitle">Choose a soothing ambience to stay focused during your session.</string>
     <string name="sounds_turn_on">Turn On Sounds</string>
     <string name="sounds_turn_on_subtitle">Enable to preview and pick a sound below</string>
@@ -414,8 +417,6 @@
     <string name="status_active">Active</string>
     <string name="status_idle">Idle</string>
 
-    <string name="cd_unmute_sound">Unmute sound</string>
-    <string name="cd_mute_sound">Mute sound</string>
 
     <string name="template_summary">%1$dm focus · %2$dm break · %3$s</string>
     <string name="template_long_break_summary">%1$dm long break · %2$s</string>
@@ -429,6 +430,7 @@
     <string name="delete">Delete</string>
     <string name="task_title">Session Task</string>
     <string name="task_subtitle">Name your session or pick a saved template.</string>
+    <string name="task_subtitle_session">Rename what you\'re working on. Mid-session, a template only sets the name.</string>
     <string name="task_hint">e.g. Coding, Math, Reading...</string>
     <string name="cd_clear">Clear</string>
     <string name="task_set">Set Task</string>
@@ -708,8 +710,8 @@
     <string name="credit_lordicon_action">Visit Lordicon</string>
 
     <string name="credit_oss_title">Sessions is Open Source</string>
-    <string name="credit_oss_subtitle">Licensed under Apache 2.0</string>
-    <string name="credit_oss_body">The source code is available on GitHub. You are free to view, learn from, and modify the code for personal use.</string>
+    <string name="credit_oss_subtitle">Licensed under GPL-3.0</string>
+    <string name="credit_oss_body">The source code is available on GitHub. You are free to use, study, change and share it, as long as anything you share stays open source under the same license. The Sessions name and logo are not included.</string>
     <string name="credit_oss_action">View Source Code</string>
 
     <!-- What's New -->
@@ -746,6 +748,8 @@
     <string name="whats_new_v6_12_body">Changing your colour theme, switching between light and dark, or turning on AMOLED black now fades gently across the whole screen.</string>
     <string name="whats_new_v6_13_title">Sessions in Your Language</string>
     <string name="whats_new_v6_13_body">Sessions now speaks ten languages: English, Spanish, Portuguese, French, German, Hindi, Arabic, Japanese, Korean and Chinese. Pick yours in Settings › Language, or follow your phone\'s, and the whole app switches instantly, right where you are. Arabic reads right to left.</string>
+    <string name="whats_new_v6_15_title">Change Your Task Mid-Session</string>
+    <string name="whats_new_v6_15_body">Pause your session to rename your task, without starting over.</string>
     <string name="whats_new_v51_1_title">Templates Sync to Your Account</string>
     <string name="whats_new_v51_1_body">Your task templates are now saved to your account. Reinstall the app or sign in on another phone and they come right back.</string>
     <string name="whats_new_v51_2_title">Redesigned Sign In &amp; Sign Up</string>

@@ -101,7 +101,8 @@
     <string name="delete_all_sessions_title">Excluir todas as sessões?</string>
     <string name="delete_all_sessions_message">Todo o seu histórico de foco será removido permanentemente. Esta ação não pode ser desfeita.</string>
     <string name="delete_all_sessions_confirm">Excluir tudo</string>
-    <string name="notification_permission_denied">Permissão de notificações negada. Ative as notificações para ver os alertas do Sessions.</string>
+    <string name="notification_permission_setting">Notificações</string>
+    <string name="notification_permission_body">O Sessions precisa das notificações para mostrar seu timer em andamento e enviar seus lembretes. Ative as notificações do Sessions na próxima tela.</string>
     <string name="tab_profile">Perfil</string>
     <string name="tab_settings">Configurações</string>
     <string name="cd_delete_all_sessions">Excluir todas as sessões</string>
@@ -294,6 +295,8 @@
     <string name="sound_no_sound">Sem som</string>
     <string name="sound_muted">Sem som</string>
     <string name="sounds_title">Sons ambientes</string>
+    <string name="cd_unmute_sound">Ativar som</string>
+    <string name="cd_mute_sound">Silenciar</string>
     <string name="sounds_subtitle">Escolha um ambiente relaxante para manter o foco durante a sessão.</string>
     <string name="sounds_turn_on">Ativar sons</string>
     <string name="sounds_turn_on_subtitle">Ative para ouvir e escolher um som abaixo</string>
@@ -301,8 +304,6 @@
     <string name="cd_edit">Editar</string>
     <string name="status_active">Ativo</string>
     <string name="status_idle">Parado</string>
-    <string name="cd_unmute_sound">Ativar som</string>
-    <string name="cd_mute_sound">Silenciar</string>
     <string name="template_summary">%1$d min foco · %2$d min pausa · %3$s</string>
     <string name="template_long_break_summary">%1$d min de pausa longa · %2$s</string>
     <string name="template_long_break_value">%1$d min %2$s</string>
@@ -313,6 +314,7 @@
     <string name="delete">Excluir</string>
     <string name="task_title">Tarefa da sessão</string>
     <string name="task_subtitle">Dê um nome à sessão ou escolha um modelo salvo.</string>
+    <string name="task_subtitle_session">Renomeie o que você está fazendo. Durante a sessão, um modelo só define o nome.</string>
     <string name="task_hint">ex.: Programação, Matemática, Leitura...</string>
     <string name="cd_clear">Limpar</string>
     <string name="task_set">Definir tarefa</string>
@@ -499,8 +501,8 @@
     <string name="credit_lordicon_body">Os ícones animados da barra de navegação são fornecidos pela Lordicon, que oferece uma enorme biblioteca de recursos animados de alta qualidade para todos os criadores.</string>
     <string name="credit_lordicon_action">Visitar a Lordicon</string>
     <string name="credit_oss_title">O Sessions é de código aberto</string>
-    <string name="credit_oss_subtitle">Licenciado sob Apache 2.0</string>
-    <string name="credit_oss_body">O código-fonte está disponível no GitHub. Você pode ver, aprender e modificar o código para uso pessoal.</string>
+    <string name="credit_oss_subtitle">Licenciado sob GPL-3.0</string>
+    <string name="credit_oss_body">O código-fonte está disponível no GitHub. Você pode usar, estudar, modificar e compartilhar o código, desde que tudo o que compartilhar continue de código aberto sob a mesma licença. O nome e o logotipo do Sessions não estão incluídos.</string>
     <string name="credit_oss_action">Ver código-fonte</string>
     <string name="whats_new_title">Novidades</string>
     <string name="whats_new_current_version">Versão atual %1$s</string>
@@ -533,6 +535,8 @@
     <string name="whats_new_v6_12_body">Trocar o tema de cores, alternar entre claro e escuro ou ativar o preto AMOLED agora faz uma transição suave por toda a tela.</string>
     <string name="whats_new_v6_13_title">Sessions no seu idioma</string>
     <string name="whats_new_v6_13_body">O Sessions agora fala dez idiomas: inglês, espanhol, português, francês, alemão, hindi, árabe, japonês, coreano e chinês. Escolha o seu em Configurações › Idioma, ou siga o do seu celular, e o app inteiro muda na hora, sem sair de onde você está. O árabe é lido da direita para a esquerda.</string>
+    <string name="whats_new_v6_15_title">Mude a tarefa no meio da sessão</string>
+    <string name="whats_new_v6_15_body">Pause sua sessão para renomear sua tarefa sem recomeçar.</string>
     <string name="whats_new_v51_1_title">Modelos sincronizados com sua conta</string>
     <string name="whats_new_v51_1_body">Seus modelos de tarefa agora ficam salvos na sua conta. Reinstale o app ou entre em outro celular e eles voltam na hora.</string>
     <string name="whats_new_v51_2_title">Login e cadastro redesenhados</string>

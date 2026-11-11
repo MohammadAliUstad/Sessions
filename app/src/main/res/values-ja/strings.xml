@@ -101,7 +101,8 @@
     <string name="delete_all_sessions_title">すべてのセッションを削除しますか？</string>
     <string name="delete_all_sessions_message">集中の履歴がすべて完全に削除されます。この操作は元に戻せません。</string>
     <string name="delete_all_sessions_confirm">すべて削除</string>
-    <string name="notification_permission_denied">通知の権限が拒否されました。Sessions のお知らせを受け取るには通知を有効にしてください。</string>
+    <string name="notification_permission_setting">通知</string>
+    <string name="notification_permission_body">Sessions は、動作中のタイマーの表示とリマインダーの送信に通知を使います。次の画面で Sessions の通知をオンにしてください。</string>
     <string name="tab_profile">プロフィール</string>
     <string name="tab_settings">設定</string>
     <string name="cd_delete_all_sessions">すべてのセッションを削除</string>
@@ -294,6 +295,8 @@
     <string name="sound_no_sound">サウンドなし</string>
     <string name="sound_muted">ミュート中</string>
     <string name="sounds_title">環境音</string>
+    <string name="cd_unmute_sound">ミュートを解除</string>
+    <string name="cd_mute_sound">ミュート</string>
     <string name="sounds_subtitle">セッション中の集中を保つ、心地よい環境音を選びましょう。</string>
     <string name="sounds_turn_on">サウンドをオンにする</string>
     <string name="sounds_turn_on_subtitle">オンにすると下のサウンドを試聴して選べます</string>
@@ -301,8 +304,6 @@
     <string name="cd_edit">編集</string>
     <string name="status_active">進行中</string>
     <string name="status_idle">待機中</string>
-    <string name="cd_unmute_sound">ミュートを解除</string>
-    <string name="cd_mute_sound">ミュート</string>
     <string name="template_summary">集中 %1$d分 · 休憩 %2$d分 · %3$s</string>
     <string name="template_long_break_summary">長い休憩 %1$d分 · %2$s</string>
     <string name="template_long_break_value">%1$d分 %2$s</string>
@@ -313,6 +314,7 @@
     <string name="delete">削除</string>
     <string name="task_title">セッションのタスク</string>
     <string name="task_subtitle">セッションに名前をつけるか、保存済みのテンプレートを選びましょう。</string>
+    <string name="task_subtitle_session">取り組んでいることの名前を変えられます。セッション中はテンプレートを選んでも名前だけが変わります。</string>
     <string name="task_hint">例：プログラミング、数学、読書...</string>
     <string name="cd_clear">クリア</string>
     <string name="task_set">タスクを設定</string>
@@ -499,8 +501,8 @@
     <string name="credit_lordicon_body">ナビゲーションバーの生き生きとしたアニメーションアイコンは Lordicon が提供しています。あらゆるクリエイター向けに、高品質なアニメーション素材の大規模なライブラリを公開しています。</string>
     <string name="credit_lordicon_action">Lordicon を見る</string>
     <string name="credit_oss_title">Sessions はオープンソースです</string>
-    <string name="credit_oss_subtitle">Apache 2.0 ライセンス</string>
-    <string name="credit_oss_body">ソースコードは GitHub で公開しています。個人利用の範囲で自由に閲覧、学習、改変できます。</string>
+    <string name="credit_oss_subtitle">GPL-3.0 ライセンス</string>
+    <string name="credit_oss_body">ソースコードは GitHub で公開しています。共有するものを同じライセンスのオープンソースとして保つ限り、自由に利用、学習、改変、共有できます。Sessions の名前とロゴは対象外です。</string>
     <string name="credit_oss_action">ソースコードを見る</string>
     <string name="whats_new_title">新機能</string>
     <string name="whats_new_current_version">現在のバージョン %1$s</string>
@@ -533,6 +535,8 @@
     <string name="whats_new_v6_12_body">カラーテーマの変更、ライトとダークの切り替え、AMOLED ブラックのオンが、画面全体でやさしくフェードするようになりました。</string>
     <string name="whats_new_v6_13_title">あなたの言語で Sessions を</string>
     <string name="whats_new_v6_13_body">Sessions が 10 言語に対応しました：英語、スペイン語、ポルトガル語、フランス語、ドイツ語、ヒンディー語、アラビア語、日本語、韓国語、中国語。設定 › 言語 で選ぶか、スマートフォンの言語に合わせると、アプリ全体がその場ですぐに切り替わります。アラビア語は右から左に表示されます。</string>
+    <string name="whats_new_v6_15_title">セッション中にタスクを変更</string>
+    <string name="whats_new_v6_15_body">セッションを一時停止すれば、最初からやり直さずにタスク名を変えられます。</string>
     <string name="whats_new_v51_1_title">テンプレートをアカウントに同期</string>
     <string name="whats_new_v51_1_body">タスクのテンプレートがアカウントに保存されるようになりました。アプリを再インストールしても、別の端末でログインしても、すぐに戻ってきます。</string>
     <string name="whats_new_v51_2_title">ログインと登録を刷新</string>

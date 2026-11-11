@@ -101,7 +101,8 @@
     <string name="delete_all_sessions_title">حذف كل الجلسات؟</string>
     <string name="delete_all_sessions_message">سيُحذف سجل تركيزك بالكامل نهائيًا. لا يمكن التراجع عن هذا الإجراء.</string>
     <string name="delete_all_sessions_confirm">حذف الكل</string>
-    <string name="notification_permission_denied">تم رفض إذن الإشعارات. فعّل الإشعارات لرؤية تنبيهات Sessions.</string>
+    <string name="notification_permission_setting">الإشعارات</string>
+    <string name="notification_permission_body">يحتاج Sessions إلى الإشعارات لعرض المؤقت أثناء عمله وإرسال تذكيراتك. فعّل الإشعارات لتطبيق Sessions في الشاشة التالية.</string>
     <string name="tab_profile">الملف الشخصي</string>
     <string name="tab_settings">الإعدادات</string>
     <string name="cd_delete_all_sessions">حذف كل الجلسات</string>
@@ -294,6 +295,8 @@
     <string name="sound_no_sound">بلا صوت</string>
     <string name="sound_muted">صامت</string>
     <string name="sounds_title">الأصوات المحيطة</string>
+    <string name="cd_unmute_sound">إلغاء كتم الصوت</string>
+    <string name="cd_mute_sound">كتم الصوت</string>
     <string name="sounds_subtitle">اختر أجواء هادئة لتبقى مركّزًا أثناء جلستك.</string>
     <string name="sounds_turn_on">تشغيل الأصوات</string>
     <string name="sounds_turn_on_subtitle">فعّلها لمعاينة صوت واختياره أدناه</string>
@@ -301,8 +304,6 @@
     <string name="cd_edit">تعديل</string>
     <string name="status_active">نشط</string>
     <string name="status_idle">خامل</string>
-    <string name="cd_unmute_sound">إلغاء كتم الصوت</string>
-    <string name="cd_mute_sound">كتم الصوت</string>
     <string name="template_summary">%1$d د تركيز · %2$d د استراحة · %3$s</string>
     <string name="template_long_break_summary">%1$d د استراحة طويلة · %2$s</string>
     <string name="template_long_break_value">%1$d د %2$s</string>
@@ -313,6 +314,7 @@
     <string name="delete">حذف</string>
     <string name="task_title">مهمة الجلسة</string>
     <string name="task_subtitle">سمِّ جلستك أو اختر قالبًا محفوظًا.</string>
+    <string name="task_subtitle_session">غيّر اسم ما تعمل عليه. أثناء الجلسة، يضبط القالب الاسم فقط.</string>
     <string name="task_hint">مثل: برمجة، رياضيات، قراءة...</string>
     <string name="cd_clear">مسح</string>
     <string name="task_set">تعيين المهمة</string>
@@ -499,8 +501,8 @@
     <string name="credit_lordicon_body">الأيقونات المتحركة الحيوية في شريط التنقل مقدَّمة من Lordicon، التي توفّر مكتبة ضخمة من الأصول المتحركة عالية الجودة لكل المبدعين.</string>
     <string name="credit_lordicon_action">زيارة Lordicon</string>
     <string name="credit_oss_title">Sessions مفتوح المصدر</string>
-    <string name="credit_oss_subtitle">مرخَّص بموجب Apache 2.0</string>
-    <string name="credit_oss_body">الشيفرة المصدرية متاحة على GitHub. يمكنك الاطلاع عليها والتعلّم منها وتعديلها للاستخدام الشخصي.</string>
+    <string name="credit_oss_subtitle">مرخَّص بموجب GPL-3.0</string>
+    <string name="credit_oss_body">الشيفرة المصدرية متاحة على GitHub. يمكنك استخدامها ودراستها وتعديلها ومشاركتها، بشرط أن يبقى كل ما تشاركه مفتوح المصدر بموجب الترخيص نفسه. لا يشمل ذلك اسم Sessions وشعاره.</string>
     <string name="credit_oss_action">عرض الشيفرة المصدرية</string>
     <string name="whats_new_title">الجديد</string>
     <string name="whats_new_current_version">الإصدار الحالي %1$s</string>
@@ -533,6 +535,8 @@
     <string name="whats_new_v6_12_body">أصبح تغيير سمة الألوان أو التبديل بين الفاتح والداكن أو تفعيل أسود AMOLED يتلاشى بلطف عبر الشاشة كلها.</string>
     <string name="whats_new_v6_13_title">Sessions بلغتك</string>
     <string name="whats_new_v6_13_body">يتحدث Sessions الآن عشر لغات: الإنجليزية والإسبانية والبرتغالية والفرنسية والألمانية والهندية والعربية واليابانية والكورية والصينية. اختر لغتك من الإعدادات › اللغة، أو اتبع لغة هاتفك، وسيتغيّر التطبيق كله فورًا وأنت في مكانك. وتُقرأ العربية من اليمين إلى اليسار.</string>
+    <string name="whats_new_v6_15_title">غيّر المهمة أثناء الجلسة</string>
+    <string name="whats_new_v6_15_body">أوقف جلستك مؤقتًا لتغيير اسم مهمتك، دون البدء من جديد.</string>
     <string name="whats_new_v51_1_title">مزامنة القوالب مع حسابك</string>
     <string name="whats_new_v51_1_body">تُحفظ قوالب مهامك الآن في حسابك. أعد تثبيت التطبيق أو سجّل الدخول على هاتف آخر وستعود فورًا.</string>
     <string name="whats_new_v51_2_title">تصميم جديد لتسجيل الدخول وإنشاء الحساب</string>

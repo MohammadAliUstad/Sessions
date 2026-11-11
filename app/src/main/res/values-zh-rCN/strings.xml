@@ -101,7 +101,8 @@
     <string name="delete_all_sessions_title">删除所有会话？</string>
     <string name="delete_all_sessions_message">你的全部专注记录将被永久删除。此操作无法撤消。</string>
     <string name="delete_all_sessions_confirm">全部删除</string>
-    <string name="notification_permission_denied">通知权限被拒绝。请开启通知以接收 Sessions 提醒。</string>
+    <string name="notification_permission_setting">通知</string>
+    <string name="notification_permission_body">Sessions 需要通知权限来显示正在运行的计时器并发送提醒。请在下一个页面中为 Sessions 开启通知。</string>
     <string name="tab_profile">个人资料</string>
     <string name="tab_settings">设置</string>
     <string name="cd_delete_all_sessions">删除所有会话</string>
@@ -294,6 +295,8 @@
     <string name="sound_no_sound">无声音</string>
     <string name="sound_muted">已静音</string>
     <string name="sounds_title">环境音</string>
+    <string name="cd_unmute_sound">取消静音</string>
+    <string name="cd_mute_sound">静音</string>
     <string name="sounds_subtitle">选择一种舒缓的环境音，帮助你在会话中保持专注。</string>
     <string name="sounds_turn_on">开启声音</string>
     <string name="sounds_turn_on_subtitle">开启后可在下方试听并选择声音</string>
@@ -301,8 +304,6 @@
     <string name="cd_edit">编辑</string>
     <string name="status_active">进行中</string>
     <string name="status_idle">空闲</string>
-    <string name="cd_unmute_sound">取消静音</string>
-    <string name="cd_mute_sound">静音</string>
     <string name="template_summary">专注 %1$d分 · 休息 %2$d分 · %3$s</string>
     <string name="template_long_break_summary">长休息 %1$d分 · %2$s</string>
     <string name="template_long_break_value">%1$d分 %2$s</string>
@@ -313,6 +314,7 @@
     <string name="delete">删除</string>
     <string name="task_title">会话任务</string>
     <string name="task_subtitle">为会话命名，或选择已保存的模板。</string>
+    <string name="task_subtitle_session">重命名你正在做的事。会话进行中，模板只会设置名称。</string>
     <string name="task_hint">例如：编程、数学、阅读...</string>
     <string name="cd_clear">清除</string>
     <string name="task_set">设置任务</string>
@@ -499,8 +501,8 @@
     <string name="credit_lordicon_body">导航栏中生动的动画图标由 Lordicon 提供，他们为所有创作者提供了海量高质量动画素材。</string>
     <string name="credit_lordicon_action">访问 Lordicon</string>
     <string name="credit_oss_title">Sessions 是开源的</string>
-    <string name="credit_oss_subtitle">基于 Apache 2.0 许可</string>
-    <string name="credit_oss_body">源代码已在 GitHub 上公开。你可以自由查看、学习，并在个人使用范围内修改代码。</string>
+    <string name="credit_oss_subtitle">基于 GPL-3.0 许可</string>
+    <string name="credit_oss_body">源代码已在 GitHub 上公开。你可以自由使用、学习、修改和分享，前提是你分享的内容同样以相同许可证保持开源。Sessions 的名称和标志不在此列。</string>
     <string name="credit_oss_action">查看源代码</string>
     <string name="whats_new_title">新功能</string>
     <string name="whats_new_current_version">当前版本 %1$s</string>
@@ -533,6 +535,8 @@
     <string name="whats_new_v6_12_body">更换颜色主题、切换浅色与深色模式或开启 AMOLED 纯黑时，整个屏幕都会柔和地淡入淡出。</string>
     <string name="whats_new_v6_13_title">用你的语言使用 Sessions</string>
     <string name="whats_new_v6_13_body">Sessions 现已支持十种语言：英语、西班牙语、葡萄牙语、法语、德语、印地语、阿拉伯语、日语、韩语和中文。在 设置 › 语言 中选择你的语言，或跟随手机语言，整个应用会立即切换，停留在原来的位置。阿拉伯语从右向左显示。</string>
+    <string name="whats_new_v6_15_title">会话中更改任务</string>
+    <string name="whats_new_v6_15_body">暂停会话即可重命名任务，无需重新开始。</string>
     <string name="whats_new_v51_1_title">模板同步到你的账号</string>
     <string name="whats_new_v51_1_body">你的任务模板现在会保存到账号中。重新安装应用或在另一部手机上登录，它们都会立即回来。</string>
     <string name="whats_new_v51_2_title">全新设计的登录与注册</string>

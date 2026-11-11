@@ -101,7 +101,8 @@
     <string name="delete_all_sessions_title">¿Eliminar todas las sesiones?</string>
     <string name="delete_all_sessions_message">Se borrará de forma permanente todo tu historial de concentración. Esta acción no se puede deshacer.</string>
     <string name="delete_all_sessions_confirm">Eliminar todo</string>
-    <string name="notification_permission_denied">Permiso de notificaciones denegado. Actívalas para ver las alertas de Sessions.</string>
+    <string name="notification_permission_setting">Notificaciones</string>
+    <string name="notification_permission_body">Sessions necesita las notificaciones para mostrar tu temporizador en marcha y enviarte recordatorios. Activa las notificaciones de Sessions en la siguiente pantalla.</string>
     <string name="tab_profile">Perfil</string>
     <string name="tab_settings">Ajustes</string>
     <string name="cd_delete_all_sessions">Eliminar todas las sesiones</string>
@@ -294,6 +295,8 @@
     <string name="sound_no_sound">Sin sonido</string>
     <string name="sound_muted">Silenciado</string>
     <string name="sounds_title">Sonidos ambientales</string>
+    <string name="cd_unmute_sound">Activar sonido</string>
+    <string name="cd_mute_sound">Silenciar</string>
     <string name="sounds_subtitle">Elige un ambiente relajante para mantener la concentración durante la sesión.</string>
     <string name="sounds_turn_on">Activar sonidos</string>
     <string name="sounds_turn_on_subtitle">Actívalo para escuchar y elegir un sonido</string>
@@ -301,8 +304,6 @@
     <string name="cd_edit">Editar</string>
     <string name="status_active">Activo</string>
     <string name="status_idle">Inactivo</string>
-    <string name="cd_unmute_sound">Activar sonido</string>
-    <string name="cd_mute_sound">Silenciar</string>
     <string name="template_summary">%1$d min concentración · %2$d min descanso · %3$s</string>
     <string name="template_long_break_summary">%1$d min de descanso largo · %2$s</string>
     <string name="template_long_break_value">%1$d min %2$s</string>
@@ -313,6 +314,7 @@
     <string name="delete">Eliminar</string>
     <string name="task_title">Tarea de la sesión</string>
     <string name="task_subtitle">Ponle nombre a tu sesión o elige una plantilla guardada.</string>
+    <string name="task_subtitle_session">Cambia el nombre de lo que estás haciendo. Durante la sesión, una plantilla solo pone el nombre.</string>
     <string name="task_hint">p. ej. Programación, Matemáticas, Lectura...</string>
     <string name="cd_clear">Borrar</string>
     <string name="task_set">Fijar tarea</string>
@@ -499,8 +501,8 @@
     <string name="credit_lordicon_body">Los iconos animados de la barra de navegación los proporciona Lordicon, que ofrece una enorme biblioteca de recursos animados de alta calidad para todo tipo de creadores.</string>
     <string name="credit_lordicon_action">Visitar Lordicon</string>
     <string name="credit_oss_title">Sessions es de código abierto</string>
-    <string name="credit_oss_subtitle">Con licencia Apache 2.0</string>
-    <string name="credit_oss_body">El código fuente está disponible en GitHub. Puedes verlo, aprender de él y modificarlo para uso personal.</string>
+    <string name="credit_oss_subtitle">Con licencia GPL-3.0</string>
+    <string name="credit_oss_body">El código fuente está disponible en GitHub. Puedes usarlo, estudiarlo, modificarlo y compartirlo, siempre que lo que compartas siga siendo de código abierto bajo la misma licencia. El nombre y el logotipo de Sessions no están incluidos.</string>
     <string name="credit_oss_action">Ver código fuente</string>
     <string name="whats_new_title">Novedades</string>
     <string name="whats_new_current_version">Versión actual %1$s</string>
@@ -533,6 +535,8 @@
     <string name="whats_new_v6_12_body">Cambiar el tema de color, alternar entre claro y oscuro o activar el negro AMOLED ahora se funde suavemente en toda la pantalla.</string>
     <string name="whats_new_v6_13_title">Sessions en tu idioma</string>
     <string name="whats_new_v6_13_body">Sessions ahora habla diez idiomas: inglés, español, portugués, francés, alemán, hindi, árabe, japonés, coreano y chino. Elige el tuyo en Ajustes › Idioma, o sigue el de tu teléfono, y toda la app cambia al instante, justo donde estás. El árabe se lee de derecha a izquierda.</string>
+    <string name="whats_new_v6_15_title">Cambia la tarea a mitad de sesión</string>
+    <string name="whats_new_v6_15_body">Pausa tu sesión para cambiar el nombre de tu tarea sin empezar de nuevo.</string>
     <string name="whats_new_v51_1_title">Las plantillas se sincronizan con tu cuenta</string>
     <string name="whats_new_v51_1_body">Tus plantillas de tareas ahora se guardan en tu cuenta. Reinstala la app o inicia sesión en otro teléfono y volverán al instante.</string>
     <string name="whats_new_v51_2_title">Inicio de sesión y registro rediseñados</string>

@@ -85,6 +85,7 @@ fun TaskSelectionSheet(
     targetSets: Int,
     longBreakEnabled: Boolean,
     setsPerLongBreak: Int = 4,
+    sessionActive: Boolean = false,
     onSetTask: (String) -> Unit,
     onApplyTemplate: (Template) -> Unit,
     onSaveTemplate: (String) -> Unit,
@@ -263,7 +264,9 @@ fun TaskSelectionSheet(
                             color = MaterialTheme.colorScheme.onSurface
                         )
                         Text(
-                            text = stringResource(R.string.task_subtitle),
+                            text = stringResource(
+                                if (sessionActive) R.string.task_subtitle_session else R.string.task_subtitle
+                            ),
                             style = MaterialTheme.typography.bodyMedium,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )

@@ -43,7 +43,6 @@ import com.yugentech.sessions.theme.tokens.spacing
 @Composable
 fun SessionHeader(
     isRunning: Boolean,
-    isSessionActive: Boolean,
     sessionTask: String,
     onTaskClick: () -> Unit,
     onSoundBadgeClick: () -> Unit,
@@ -69,7 +68,8 @@ fun SessionHeader(
             modifier = Modifier
                 .weight(1f)
                 .clip(RoundedCornerShape(MaterialTheme.corners.medium))
-                .clickable(enabled = !isSessionActive, onClick = onTaskClick),
+                // The task can be renamed while the timer isn't running (before starting or when paused)
+                .clickable(enabled = !isRunning, onClickLabel = stringResource(R.string.cd_change_task), onClick = onTaskClick),
             color = MaterialTheme.colorScheme.surfaceContainer,
             shape = RoundedCornerShape(MaterialTheme.corners.medium)
         ) {
@@ -100,7 +100,7 @@ fun SessionHeader(
                     )
                 }
 
-                if (!isSessionActive) {
+                if (!isRunning) {
                     Icon(
                         imageVector = Icons.Rounded.Edit,
                         contentDescription = stringResource(R.string.cd_edit),

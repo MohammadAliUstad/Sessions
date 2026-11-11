@@ -93,6 +93,11 @@ fun WhatsNewScreen(
 
     val v6Updates = listOf(
         UpdateItem(
+            stringResource(R.string.whats_new_v6_15_title),
+            stringResource(R.string.whats_new_v6_15_body),
+            Icons.Default.Tune
+        ),
+        UpdateItem(
             stringResource(R.string.whats_new_v6_13_title),
             stringResource(R.string.whats_new_v6_13_body),
             Icons.Default.Translate

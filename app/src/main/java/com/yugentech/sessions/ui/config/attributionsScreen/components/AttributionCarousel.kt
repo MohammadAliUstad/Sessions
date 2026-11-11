@@ -55,10 +55,8 @@ fun AttributionCarousel(contentPadding: PaddingValues = PaddingValues(0.dp)) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(contentPadding)
-                // Nudged in from the cards' edge
-                .padding(start = 16.dp),
-            horizontalArrangement = Arrangement.Start,
+                .padding(contentPadding),
+            horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically
         ) {
             repeat(pagerState.pageCount) { index ->

@@ -43,7 +43,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.zIndex
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.yugentech.sessions.alerts.viewmodel.AlertsViewModel
@@ -57,11 +56,11 @@ import com.yugentech.sessions.ui.dash.homeScreen.components.ExitConfirmationDial
 import com.yugentech.sessions.ui.dash.mainScreen.components.BottomNavBar
 import com.yugentech.sessions.ui.dash.mainScreen.components.LocalBottomBarInset
 import com.yugentech.sessions.ui.dash.mainScreen.components.LocalTopBarInset
-import com.yugentech.sessions.ui.dash.mainScreen.components.ToastMessage
 import com.yugentech.sessions.ui.dash.mainScreen.components.TopAppBar
 import com.yugentech.sessions.ui.dash.mainScreen.components.smoothBottomScrimBrush
 import com.yugentech.sessions.ui.dash.profileScreen.ProfileScreen
 import com.yugentech.sessions.ui.dash.settingsScreen.SettingsScreen
+import com.yugentech.sessions.ui.dash.settingsScreen.components.NotificationPermissionDialog
 import com.yugentech.sessions.ui.dash.util.rememberNavTransitions
 import com.yugentech.sessions.viewModels.HomeViewModel
 import com.yugentech.sessions.viewModels.ProfileViewModel
@@ -106,17 +105,15 @@ fun MainScreen(
         }
     }
 
-    var toastMessage by remember { mutableStateOf<String?>(null) }
+    var showNotificationPermissionDialog by rememberSaveable { mutableStateOf(false) }
     var hasCheckedPermission by rememberSaveable { mutableStateOf(false) }
     var showExitDialog by remember { mutableStateOf(false) }
 
     val notificationPermissionLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestPermission(),
         onResult = { isGranted ->
-            if (!isGranted) {
-                toastMessage =
-                    context.getString(R.string.notification_permission_denied)
-            }
+            // Denied: explain why it matters and point to the app's notification settings
+            if (!isGranted) showNotificationPermissionDialog = true
         }
     )
 
@@ -286,13 +283,8 @@ fun MainScreen(
             }
         }
 
-        if (toastMessage != null) {
-            ToastMessage(
-                message = toastMessage,
-                onDismiss = { toastMessage = null },
-                modifier = Modifier
-                    .zIndex(3f)
-            )
+        if (showNotificationPermissionDialog) {
+            NotificationPermissionDialog(onDismiss = { showNotificationPermissionDialog = false })
         }
 
         // Centralized update announcements & dialogs (shown once per release, when timer is idle)

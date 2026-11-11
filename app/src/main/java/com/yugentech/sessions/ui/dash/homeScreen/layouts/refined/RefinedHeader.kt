@@ -5,11 +5,11 @@ import com.yugentech.sessions.R
 import androidx.compose.ui.res.stringResource
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.scaleIn
 import androidx.compose.animation.scaleOut
+import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -46,13 +46,12 @@ import com.yugentech.sessions.ui.dash.mainScreen.components.pressClickable
 import androidx.compose.ui.unit.sp
 
 /**
- * The top of Home: the task as the heading (tap to change it while nothing is running), and the background sound in a pill on the
- * right (tap to mute or unmute).
+ * The top of Home: the task as the heading (tap to change it while the timer isn't running), and the
+ * background sound in a pill on the right (tap to mute or unmute).
  */
 @Composable
 fun RefinedHeader(
     isRunning: Boolean,
-    isSessionActive: Boolean,
     sessionTask: String,
     onTaskClick: () -> Unit,
     onSoundBadgeClick: () -> Unit,
@@ -83,7 +82,7 @@ fun RefinedHeader(
         Column(
             modifier = Modifier
                 .weight(1f)
-                .taskTapArea(enabled = !isSessionActive, onClick = onTaskClick)
+                .taskTapArea(enabled = !isRunning, onClick = onTaskClick)
         ) {
             // Today's date as a quiet overline, as Studio has it
             Text(
@@ -117,7 +116,7 @@ fun RefinedHeader(
                 }
 
                 AnimatedVisibility(
-                    visible = !isSessionActive,
+                    visible = !isRunning,
                     enter = fadeIn() + scaleIn(initialScale = 0.6f),
                     exit = fadeOut() + scaleOut(targetScale = 0.6f)
                 ) {

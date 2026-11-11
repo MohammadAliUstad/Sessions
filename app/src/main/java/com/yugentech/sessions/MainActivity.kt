@@ -100,7 +100,6 @@ class MainActivity : ComponentActivity() {
                 themeConfiguration = themeConfiguration,
                 hapticsEnabled = hapticsEnabled
             ) {
-                // Outermost, so a light/dark wipe covers the whole screen.
                 ThemeRevealHost {
                     Surface(
                         modifier = Modifier.fillMaxSize(),

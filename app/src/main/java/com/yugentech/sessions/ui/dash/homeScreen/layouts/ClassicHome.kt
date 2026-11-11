@@ -33,7 +33,6 @@ fun ClassicHome(ui: HomeUi, actions: HomeActions, screenHeight: Dp) {
     ) {
         SessionHeader(
             isRunning = ui.isRunning,
-            isSessionActive = ui.isSessionActive,
             sessionTask = config.sessionTask,
             onTaskClick = actions.onTaskClick,
             onSoundBadgeClick = actions.onToggleAmbient,

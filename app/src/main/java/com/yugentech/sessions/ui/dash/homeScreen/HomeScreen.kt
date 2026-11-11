@@ -211,12 +211,18 @@ fun HomeScreen(
                                 targetSets = config.targetSets,
                                 longBreakEnabled = config.longBreakEnabled,
                                 setsPerLongBreak = config.setsPerLongBreak,
+                                // Mid-session only the name can change: a template's timings would restart the timer
+                                sessionActive = isSessionActive,
                                 onSetTask = { newTask ->
                                     timerViewModel.updateSessionTask(newTask)
                                     closeDialog()
                                 },
                                 onApplyTemplate = { template ->
                                     timerViewModel.updateSessionTask(template.name)
+                                    if (isSessionActive) {
+                                        closeDialog()
+                                        return@TaskSelectionSheet
+                                    }
                                     timerViewModel.updateFocusDuration(template.focusDuration)
                                     timerViewModel.updateShortBreakDuration(template.shortBreakDuration)
                                     timerViewModel.updateLongBreakAndTargetSets(

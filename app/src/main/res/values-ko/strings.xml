@@ -101,7 +101,8 @@
     <string name="delete_all_sessions_title">모든 세션을 삭제할까요?</string>
     <string name="delete_all_sessions_message">모든 집중 기록이 영구적으로 삭제됩니다. 이 작업은 되돌릴 수 없어요.</string>
     <string name="delete_all_sessions_confirm">모두 삭제</string>
-    <string name="notification_permission_denied">알림 권한이 거부되었어요. Sessions 알림을 받으려면 알림을 켜 주세요.</string>
+    <string name="notification_permission_setting">알림</string>
+    <string name="notification_permission_body">Sessions가 진행 중인 타이머를 보여주고 리마인더를 보내려면 알림이 필요해요. 다음 화면에서 Sessions 알림을 켜 주세요.</string>
     <string name="tab_profile">프로필</string>
     <string name="tab_settings">설정</string>
     <string name="cd_delete_all_sessions">모든 세션 삭제</string>
@@ -294,6 +295,8 @@
     <string name="sound_no_sound">소리 없음</string>
     <string name="sound_muted">음소거됨</string>
     <string name="sounds_title">주변 소리</string>
+    <string name="cd_unmute_sound">음소거 해제</string>
+    <string name="cd_mute_sound">음소거</string>
     <string name="sounds_subtitle">세션 중 집중을 유지할 수 있도록 편안한 분위기를 골라 보세요.</string>
     <string name="sounds_turn_on">사운드 켜기</string>
     <string name="sounds_turn_on_subtitle">켜면 아래에서 사운드를 미리 듣고 고를 수 있어요</string>
@@ -301,8 +304,6 @@
     <string name="cd_edit">수정</string>
     <string name="status_active">진행 중</string>
     <string name="status_idle">대기 중</string>
-    <string name="cd_unmute_sound">음소거 해제</string>
-    <string name="cd_mute_sound">음소거</string>
     <string name="template_summary">집중 %1$d분 · 휴식 %2$d분 · %3$s</string>
     <string name="template_long_break_summary">긴 휴식 %1$d분 · %2$s</string>
     <string name="template_long_break_value">%1$d분 %2$s</string>
@@ -313,6 +314,7 @@
     <string name="delete">삭제</string>
     <string name="task_title">세션 할 일</string>
     <string name="task_subtitle">세션 이름을 정하거나 저장된 템플릿을 고르세요.</string>
+    <string name="task_subtitle_session">하고 있는 일의 이름을 바꿔 보세요. 세션 중에는 템플릿을 골라도 이름만 바뀌어요.</string>
     <string name="task_hint">예: 코딩, 수학, 독서...</string>
     <string name="cd_clear">지우기</string>
     <string name="task_set">할 일 설정</string>
@@ -499,8 +501,8 @@
     <string name="credit_lordicon_body">내비게이션 바의 생동감 있는 애니메이션 아이콘은 Lordicon에서 제공해요. 모든 크리에이터를 위한 고품질 애니메이션 에셋을 방대하게 제공합니다.</string>
     <string name="credit_lordicon_action">Lordicon 방문</string>
     <string name="credit_oss_title">Sessions는 오픈소스예요</string>
-    <string name="credit_oss_subtitle">Apache 2.0 라이선스</string>
-    <string name="credit_oss_body">소스 코드는 GitHub에 공개되어 있어요. 개인 용도로 자유롭게 보고, 배우고, 수정할 수 있어요.</string>
+    <string name="credit_oss_subtitle">GPL-3.0 라이선스</string>
+    <string name="credit_oss_body">소스 코드는 GitHub에 공개되어 있어요. 공유하는 모든 것을 같은 라이선스의 오픈소스로 유지한다면 자유롭게 사용하고, 배우고, 수정하고, 공유할 수 있어요. Sessions 이름과 로고는 포함되지 않아요.</string>
     <string name="credit_oss_action">소스 코드 보기</string>
     <string name="whats_new_title">새로운 기능</string>
     <string name="whats_new_current_version">현재 버전 %1$s</string>
@@ -533,6 +535,8 @@
     <string name="whats_new_v6_12_body">색상 테마를 바꾸거나, 라이트와 다크를 전환하거나, AMOLED 블랙을 켜면 이제 화면 전체가 부드럽게 페이드돼요.</string>
     <string name="whats_new_v6_13_title">내 언어로 만나는 Sessions</string>
     <string name="whats_new_v6_13_body">이제 Sessions가 10개 언어를 지원해요: 영어, 스페인어, 포르투갈어, 프랑스어, 독일어, 힌디어, 아랍어, 일본어, 한국어, 중국어. 설정 › 언어에서 원하는 언어를 고르거나 휴대폰 언어를 따르면, 지금 보던 화면 그대로 앱 전체가 즉시 바뀌어요. 아랍어는 오른쪽에서 왼쪽으로 표시돼요.</string>
+    <string name="whats_new_v6_15_title">세션 중에 작업 바꾸기</string>
+    <string name="whats_new_v6_15_body">세션을 일시정지하면 처음부터 다시 시작하지 않고 작업 이름을 바꿀 수 있어요.</string>
     <string name="whats_new_v51_1_title">템플릿이 계정에 동기화</string>
     <string name="whats_new_v51_1_body">할 일 템플릿이 이제 계정에 저장돼요. 앱을 다시 설치하거나 다른 휴대전화에서 로그인해도 바로 돌아와요.</string>
     <string name="whats_new_v51_2_title">새롭게 디자인한 로그인 및 가입</string>

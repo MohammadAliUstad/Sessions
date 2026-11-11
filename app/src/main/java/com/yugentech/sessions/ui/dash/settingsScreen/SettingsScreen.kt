@@ -1,5 +1,9 @@
 package com.yugentech.sessions.ui.dash.settingsScreen
 
+import android.Manifest
+import android.os.Build
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import com.yugentech.sessions.ui.dash.mainScreen.components.bottomBarInset
 import com.yugentech.sessions.ui.dash.mainScreen.components.topBarInset
 import androidx.compose.foundation.layout.Arrangement
@@ -44,6 +48,8 @@ import com.yugentech.sessions.alerts.viewmodel.AlertsViewModel
 import com.yugentech.sessions.theme.tokens.components
 import com.yugentech.sessions.ui.config.aboutScreen.MoreFromUsSheet
 import com.yugentech.sessions.ui.dash.settingsScreen.components.AlarmPermissionDialog
+import com.yugentech.sessions.ui.dash.settingsScreen.components.NotificationPermissionDialog
+import com.yugentech.sessions.ui.dash.settingsScreen.components.areNotificationsAllowed
 import com.yugentech.sessions.ui.dash.settingsScreen.components.SettingsListItem
 import com.yugentech.sessions.ui.dash.settingsScreen.components.SettingsSwitchItem
 import com.yugentech.sessions.ui.dash.settingsScreen.components.TimePickerDialog
@@ -69,9 +75,41 @@ fun SettingsScreen(
 
     var showTimePickerDialog by remember { mutableStateOf(false) }
 
+    val context = LocalContext.current
+
+    // Whether Android lets Sessions post notifications. The switch only shows on when both this
+    // and the saved setting are on, so a denied permission never looks enabled.
+    var notificationsAllowed by remember { mutableStateOf(areNotificationsAllowed(context)) }
+    var showNotificationPermissionDialog by rememberSaveable { mutableStateOf(false) }
+    // Set when the user goes to the system settings to allow notifications, so coming back with
+    // them allowed finishes turning the switch on.
+    var awaitingNotificationPermission by rememberSaveable { mutableStateOf(false) }
+    val notificationsOn = notificationConfig.notificationsEnabled && notificationsAllowed
+
+    val haptic = LocalHapticFeedback.current
+
+    val notificationPermissionLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestPermission()
+    ) { granted ->
+        notificationsAllowed = areNotificationsAllowed(context)
+        if (granted && notificationsAllowed) {
+            notificationViewModel.setNotificationsEnabled(true)
+            haptic.performHapticFeedback(HapticFeedbackType.ToggleOn)
+        } else {
+            // Denied, or Android won't ask any more: only the settings screen can allow it now
+            showNotificationPermissionDialog = true
+        }
+    }
+
     // Returning from the exact-alarm settings screen with the permission granted picks up
     // where the user left off (opens the time picker) instead of needing another tap.
+    // Notifications may also have been allowed or blocked from the system settings meanwhile.
     LifecycleEventEffect(Lifecycle.Event.ON_RESUME) {
+        notificationsAllowed = areNotificationsAllowed(context)
+        if (awaitingNotificationPermission) {
+            awaitingNotificationPermission = false
+            if (notificationsAllowed) notificationViewModel.setNotificationsEnabled(true)
+        }
         if (notificationViewModel.onReturnedFromSettings()) {
             showTimePickerDialog = true
         }
@@ -80,9 +118,6 @@ fun SettingsScreen(
     var showLogoutDialog by remember { mutableStateOf(false) }
     var showExitDialog by remember { mutableStateOf(false) }
     var showMoreApps by rememberSaveable { mutableStateOf(false) }
-
-    val haptic = LocalHapticFeedback.current
-    val context = LocalContext.current
 
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
@@ -104,13 +139,26 @@ fun SettingsScreen(
             SettingsSwitchItem(
                 title = stringResource(R.string.settings_enable_notifications),
                 subtitle = stringResource(R.string.settings_enable_notifications_subtitle),
-                checked = notificationConfig.notificationsEnabled,
+                checked = notificationsOn,
                 checkedIcon = Icons.Default.Notifications,
                 index = 0,
                 totalCount = 3,
                 onCheckedChange = { enabled ->
-                    notificationViewModel.setNotificationsEnabled(enabled)
-                    haptic.performHapticFeedback(if (enabled) HapticFeedbackType.ToggleOn else HapticFeedbackType.ToggleOff)
+                    when {
+                        !enabled -> {
+                            notificationViewModel.setNotificationsEnabled(false)
+                            haptic.performHapticFeedback(HapticFeedbackType.ToggleOff)
+                        }
+                        notificationsAllowed -> {
+                            notificationViewModel.setNotificationsEnabled(true)
+                            haptic.performHapticFeedback(HapticFeedbackType.ToggleOn)
+                        }
+                        // Android 13+ can still ask; if it won't, the result shows the settings dialog
+                        Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU ->
+                            notificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+                        // Older versions have no prompt: notifications were turned off in the settings
+                        else -> showNotificationPermissionDialog = true
+                    }
                 }
             )
         }
@@ -119,7 +167,7 @@ fun SettingsScreen(
                 title = stringResource(R.string.settings_daily_reminder),
                 subtitle = notificationViewModel.formatReminderTime(context),
                 checked = notificationConfig.dailyReminderEnabled,
-                enabled = notificationConfig.notificationsEnabled,
+                enabled = notificationsOn,
                 checkedIcon = Icons.Default.Alarm,
                 index = 1,
                 totalCount = 3,
@@ -134,7 +182,7 @@ fun SettingsScreen(
                     }
                 },
                 onClick = {
-                    if (notificationConfig.notificationsEnabled && notificationViewModel.canEnableReminders()) {
+                    if (notificationsOn && notificationViewModel.canEnableReminders()) {
                         showTimePickerDialog = true
                     }
                 }
@@ -145,7 +193,7 @@ fun SettingsScreen(
                 title = stringResource(R.string.settings_playful_reminders),
                 subtitle = stringResource(R.string.settings_playful_reminders_subtitle),
                 checked = notificationConfig.playfulRemindersEnabled,
-                enabled = notificationConfig.notificationsEnabled,
+                enabled = notificationsOn,
                 checkedIcon = Icons.Default.AutoAwesome,
                 index = 2,
                 totalCount = 3,
@@ -346,6 +394,13 @@ fun SettingsScreen(
         ExitConfirmationDialog(
             onConfirm = onExit,
             onDismiss = { showExitDialog = false }
+        )
+    }
+
+    if (showNotificationPermissionDialog) {
+        NotificationPermissionDialog(
+            onDismiss = { showNotificationPermissionDialog = false },
+            onGoToSettings = { awaitingNotificationPermission = true }
         )
     }
 

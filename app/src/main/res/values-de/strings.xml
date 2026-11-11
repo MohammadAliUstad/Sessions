@@ -101,7 +101,8 @@
     <string name="delete_all_sessions_title">Alle Sessions löschen?</string>
     <string name="delete_all_sessions_message">Dein gesamter Fokusverlauf wird dauerhaft gelöscht. Das kann nicht rückgängig gemacht werden.</string>
     <string name="delete_all_sessions_confirm">Alle löschen</string>
-    <string name="notification_permission_denied">Benachrichtigungen wurden abgelehnt. Aktiviere sie, um Hinweise von Sessions zu sehen.</string>
+    <string name="notification_permission_setting">Benachrichtigungen</string>
+    <string name="notification_permission_body">Sessions braucht Benachrichtigungen, um deinen laufenden Timer anzuzeigen und dir Erinnerungen zu senden. Aktiviere im nächsten Bildschirm die Benachrichtigungen für Sessions.</string>
     <string name="tab_profile">Profil</string>
     <string name="tab_settings">Einstellungen</string>
     <string name="cd_delete_all_sessions">Alle Sessions löschen</string>
@@ -294,6 +295,8 @@
     <string name="sound_no_sound">Kein Sound</string>
     <string name="sound_muted">Stumm</string>
     <string name="sounds_title">Umgebungsklänge</string>
+    <string name="cd_unmute_sound">Ton einschalten</string>
+    <string name="cd_mute_sound">Ton ausschalten</string>
     <string name="sounds_subtitle">Wähle eine beruhigende Klangkulisse, um während deiner Session fokussiert zu bleiben.</string>
     <string name="sounds_turn_on">Klänge einschalten</string>
     <string name="sounds_turn_on_subtitle">Einschalten, um unten einen Klang anzuhören und auszuwählen</string>
@@ -301,8 +304,6 @@
     <string name="cd_edit">Bearbeiten</string>
     <string name="status_active">Aktiv</string>
     <string name="status_idle">Inaktiv</string>
-    <string name="cd_unmute_sound">Ton einschalten</string>
-    <string name="cd_mute_sound">Ton ausschalten</string>
     <string name="template_summary">%1$d Min. Fokus · %2$d Min. Pause · %3$s</string>
     <string name="template_long_break_summary">%1$d Min. lange Pause · %2$s</string>
     <string name="template_long_break_value">%1$d Min. %2$s</string>
@@ -313,6 +314,7 @@
     <string name="delete">Löschen</string>
     <string name="task_title">Session-Aufgabe</string>
     <string name="task_subtitle">Benenne deine Session oder wähle eine gespeicherte Vorlage.</string>
+    <string name="task_subtitle_session">Benenne um, woran du arbeitest. Während der Session setzt eine Vorlage nur den Namen.</string>
     <string name="task_hint">z. B. Programmieren, Mathe, Lesen...</string>
     <string name="cd_clear">Leeren</string>
     <string name="task_set">Aufgabe festlegen</string>
@@ -499,8 +501,8 @@
     <string name="credit_lordicon_body">Die lebendigen animierten Symbole in der Navigationsleiste stammen von Lordicon, das eine riesige Bibliothek hochwertiger animierter Assets für alle Kreativen bietet.</string>
     <string name="credit_lordicon_action">Lordicon besuchen</string>
     <string name="credit_oss_title">Sessions ist Open Source</string>
-    <string name="credit_oss_subtitle">Lizenziert unter Apache 2.0</string>
-    <string name="credit_oss_body">Der Quellcode ist auf GitHub verfügbar. Du kannst ihn ansehen, daraus lernen und für den persönlichen Gebrauch anpassen.</string>
+    <string name="credit_oss_subtitle">Lizenziert unter GPL-3.0</string>
+    <string name="credit_oss_body">Der Quellcode ist auf GitHub verfügbar. Du darfst ihn nutzen, studieren, ändern und weitergeben, solange alles, was du weitergibst, unter derselben Lizenz Open Source bleibt. Name und Logo von Sessions sind davon ausgenommen.</string>
     <string name="credit_oss_action">Quellcode ansehen</string>
     <string name="whats_new_title">Neuigkeiten</string>
     <string name="whats_new_current_version">Aktuelle Version %1$s</string>
@@ -533,6 +535,8 @@
     <string name="whats_new_v6_12_body">Ein neues Farbschema, der Wechsel zwischen hell und dunkel oder das Einschalten von AMOLED-Schwarz blenden jetzt sanft über den ganzen Bildschirm.</string>
     <string name="whats_new_v6_13_title">Sessions in deiner Sprache</string>
     <string name="whats_new_v6_13_body">Sessions spricht jetzt zehn Sprachen: Englisch, Spanisch, Portugiesisch, Französisch, Deutsch, Hindi, Arabisch, Japanisch, Koreanisch und Chinesisch. Wähle deine unter Einstellungen › Sprache oder folge der deines Telefons, und die ganze App wechselt sofort, genau dort, wo du bist. Arabisch wird von rechts nach links gelesen.</string>
+    <string name="whats_new_v6_15_title">Aufgabe mitten in der Session ändern</string>
+    <string name="whats_new_v6_15_body">Pausiere deine Session, um deine Aufgabe umzubenennen, ohne neu anzufangen.</string>
     <string name="whats_new_v51_1_title">Vorlagen werden mit deinem Konto synchronisiert</string>
     <string name="whats_new_v51_1_body">Deine Aufgabenvorlagen werden jetzt in deinem Konto gespeichert. Installiere die App neu oder melde dich auf einem anderen Telefon an, und sie sind sofort wieder da.</string>
     <string name="whats_new_v51_2_title">Neu gestaltete Anmeldung und Registrierung</string>
