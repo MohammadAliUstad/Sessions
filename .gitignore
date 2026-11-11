@@ -25,3 +25,8 @@
 keystore.properties
 signing.properties
 .env
+
+# Firebase CLI: local project alias and logs
+.firebaserc
+firebase-debug.log
+.firebase/
