@@ -33,6 +33,7 @@ import androidx.compose.material.icons.automirrored.filled.VolumeUp
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Apps
 import androidx.compose.material.icons.filled.AutoAwesome
+import androidx.compose.material.icons.filled.Backup
 import androidx.compose.material.icons.filled.Bookmark
 import androidx.compose.material.icons.filled.Animation
 import androidx.compose.material.icons.filled.Celebration
@@ -47,6 +48,7 @@ import androidx.compose.material.icons.filled.Explore
 import androidx.compose.material.icons.filled.ExpandMore
 import androidx.compose.material.icons.filled.Flag
 import androidx.compose.material.icons.filled.History
+import androidx.compose.material.icons.filled.NoAccounts
 import androidx.compose.material.icons.filled.NotificationsActive
 import androidx.compose.material.icons.filled.SmartDisplay
 import androidx.compose.material.icons.filled.SwipeLeft
@@ -56,7 +58,6 @@ import androidx.compose.material.icons.filled.Tune
 import androidx.compose.material.icons.filled.Translate
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LargeTopAppBar
@@ -83,7 +84,6 @@ import com.yugentech.sessions.theme.tokens.dimensions.AppAnimations
 import com.yugentech.sessions.theme.tokens.spacing
 import com.yugentech.sessions.ui.dash.mainScreen.components.itemShape
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun WhatsNewScreen(
     onNavigateBack: () -> Unit
@@ -92,6 +92,21 @@ fun WhatsNewScreen(
     val layoutDirection = LocalLayoutDirection.current
 
     val v6Updates = listOf(
+        UpdateItem(
+            stringResource(R.string.whats_new_v6_16_title),
+            stringResource(R.string.whats_new_v6_16_body),
+            Icons.Default.NoAccounts
+        ),
+        UpdateItem(
+            stringResource(R.string.whats_new_v6_17_title),
+            stringResource(R.string.whats_new_v6_17_body),
+            Icons.Default.Backup
+        ),
+        UpdateItem(
+            stringResource(R.string.whats_new_v6_15_title),
+            stringResource(R.string.whats_new_v6_15_body),
+            Icons.Default.Tune
+        ),
         UpdateItem(
             stringResource(R.string.whats_new_v6_13_title),
             stringResource(R.string.whats_new_v6_13_body),

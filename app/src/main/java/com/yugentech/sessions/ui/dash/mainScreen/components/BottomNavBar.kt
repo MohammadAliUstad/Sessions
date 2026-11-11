@@ -21,7 +21,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -43,7 +42,6 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import com.airbnb.lottie.LottieProperty
 import com.airbnb.lottie.compose.LottieAnimation
@@ -102,7 +100,6 @@ fun BottomNavBar(
     }
 }
 
-@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 private fun DockTab(
     screen: BottomBarScreen,
@@ -158,9 +155,9 @@ private fun DockTab(
         AnimatedVisibility(
             visible = isSelected,
             enter = fadeIn(motion.fastEffectsSpec()) +
-                expandHorizontally(motion.fastSpatialSpec<IntSize>(), expandFrom = Alignment.Start),
+                expandHorizontally(motion.fastSpatialSpec(), expandFrom = Alignment.Start),
             exit = fadeOut(motion.fastEffectsSpec()) +
-                shrinkHorizontally(motion.fastSpatialSpec<IntSize>(), shrinkTowards = Alignment.Start)
+                shrinkHorizontally(motion.fastSpatialSpec(), shrinkTowards = Alignment.Start)
         ) {
             Text(
                 text = title,

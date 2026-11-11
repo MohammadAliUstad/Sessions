@@ -104,7 +104,11 @@ fun ThankYouDialog(
                         .height(MaterialTheme.components.buttonLarge),
                     shape = CircleShape
                 ) {
-                    Text(stringResource(R.string.thanks_confirm))
+                    Text(
+                        text = stringResource(R.string.thanks_confirm),
+                        style = MaterialTheme.typography.labelLarge,
+                        fontWeight = FontWeight.SemiBold
+                    )
                 }
             }
         }

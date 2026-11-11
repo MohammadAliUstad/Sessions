@@ -2,58 +2,31 @@
 <resources>
     <string name="app_name" translatable="false">Sessions</string>
     <string name="app_description">Sessions helps you build focus and discipline, one mindful session at a time. Track your time, protect your attention, and grow a little every day.</string>
-    <string name="tagline">Master Time, Master Learning</string>
-    <string name="branding">Made by Yugen Tech</string>
     <string name="version">Version 6.0.0</string>
-    <string name="feedback_sub">Sessions App Feedback</string>
 
-    <string name="mail" translatable="false">mailto:yugentech.kazuki@gmail.com</string>
-    <string name="github" translatable="false">https://github.com/MohammadAliUstad/Sessions</string>
 
     <string name="about">About</string>
     <string name="back">Back</string>
-    <string name="connect">Connect</string>
-    <string name="selected">Selected</string>
+    <string name="state_selected">Selected</string>
 
     <string name="continue_with_google">Continue with Google</string>
-    <string name="welcome_back">Welcome back</string>
     <string name="label_email">Email</string>
     <string name="label_password">Password</string>
-    <string name="email_error">Please enter your email first</string>
-    <string name="forgot_password">Forgot Password?</string>
-    <string name="sign_in">Sign In</string>
-    <string name="create_account">Create Account</string>
-    <string name="full_name">Full Name</string>
-    <string name="password">Password</string>
-    <string name="confirm_password">Confirm Password</string>
-    <string name="sign_in_message">Ready to focus and be productive?</string>
-    <string name="don_t_have_an_account">Don\'t have an account? Sign Up</string>
-    <string name="sign_up_message">Start your productivity journey</string>
-    <string name="have_an_account">Already have an account? Sign In</string>
-    <string name="toggle_password_visibility">Toggle Password Visibility</string>
 
     <string name="visit_github">Visit GitHub</string>
     <string name="view_source_code_and_contribute">View source code and contribute</string>
     <string name="contact_developer">Contact Developer</string>
-    <string name="get_in_touch_for_support_or_feedback">Get in touch for support or feedback</string>
 
     <string name="light">Light</string>
-    <string name="always_use_light_appearance">Always use light appearance</string>
     <string name="dark">Dark</string>
-    <string name="always_use_dark_appearance">Always use dark appearance</string>
     <string name="system">System</string>
-    <string name="match_system_appearance">Match system appearance</string>
     <string name="theme_mode">Theme Mode</string>
     <string name="color_theme">Color Theme</string>
-    <string name="edit_profile">Edit Profile</string>
-    <string name="something_went_wrong">Something went wrong</string>
     <string name="save">Save</string>
     <string name="display_name_is_required">Display name is required</string>
     <string name="at_least_2_characters_please">At least 2 characters please</string>
-    <string name="keep_it_under_20_characters">Keep it under 20 characters</string>
     <string name="letters_numbers_and_basic_symbols_only">Letters, numbers, and basic symbols only</string>
     <string name="a_za_z0_9_s" translatable="false">^[a-zA-Z0-9\\s._-]+$</string>
-    <string name="please_focus_for_at_least_1_minute_to_save_a_session">Please focus for at least 1 minute to save a session</string>
 
     <!-- Language -->
     <string name="language_title">Language</string>
@@ -120,7 +93,8 @@
     <string name="delete_all_sessions_message">This will permanently remove all your focus history. This action cannot be undone.</string>
     <string name="delete_all_sessions_confirm">Delete All</string>
 
-    <string name="notification_permission_denied">Notification permission denied. Please enable notifications to see Session alerts.</string>
+    <string name="notification_permission_setting">Notifications</string>
+    <string name="notification_permission_body">Sessions needs notifications to show your running timer and send your reminders. Turn on notifications for Sessions in the next screen.</string>
 
     <!-- Top bar -->
     <string name="tab_profile">Profile</string>
@@ -405,17 +379,17 @@
     <string name="sound_muted">Muted</string>
 
     <string name="sounds_title">Ambient Sounds</string>
+    <string name="cd_unmute_sound">Unmute sound</string>
+    <string name="cd_mute_sound">Mute sound</string>
     <string name="sounds_subtitle">Choose a soothing ambience to stay focused during your session.</string>
     <string name="sounds_turn_on">Turn On Sounds</string>
     <string name="sounds_turn_on_subtitle">Enable to preview and pick a sound below</string>
 
-    <string name="task_placeholder_enter">Enter a name...</string>
+    <string name="task_placeholder_enter">Enter a name…</string>
     <string name="cd_edit">Edit</string>
     <string name="status_active">Active</string>
     <string name="status_idle">Idle</string>
 
-    <string name="cd_unmute_sound">Unmute sound</string>
-    <string name="cd_mute_sound">Mute sound</string>
 
     <string name="template_summary">%1$dm focus · %2$dm break · %3$s</string>
     <string name="template_long_break_summary">%1$dm long break · %2$s</string>
@@ -429,7 +403,8 @@
     <string name="delete">Delete</string>
     <string name="task_title">Session Task</string>
     <string name="task_subtitle">Name your session or pick a saved template.</string>
-    <string name="task_hint">e.g. Coding, Math, Reading...</string>
+    <string name="task_subtitle_session">Rename what you\'re working on. Mid-session, a template only sets the name.</string>
+    <string name="task_hint">e.g. Coding, Math, Reading…</string>
     <string name="cd_clear">Clear</string>
     <string name="task_set">Set Task</string>
     <string name="templates_title">Saved Templates</string>
@@ -453,10 +428,10 @@
     <string name="timer_paused">Paused</string>
     <string name="timer_ends">Ends %1$s</string>
 
-    <string name="plan_summary">%1$s · about %2$s</string>
+    <string name="plan_chip_total">%1$s in all</string>
+    <string name="plan_chip_finish">Done by %1$s</string>
     <string name="cd_change_length">Change %1$s length</string>
     <string name="cd_change">Change %1$s</string>
-    <string name="plan_done_around">Done around %1$s  ·  %2$s in all</string>
 
     <string name="action_start_focus">Start focus</string>
 
@@ -522,15 +497,6 @@
     <string name="cd_change_name">Change name</string>
     <string name="profile_insights">Insights</string>
 
-    <string name="study_label_in_the_zone">In the zone for</string>
-    <string name="study_label_locked_in">Locked in for</string>
-    <string name="study_label_deep_work">Deep work</string>
-    <string name="study_label_invested">Time invested</string>
-    <string name="study_label_grinded">Time grinded</string>
-    <string name="study_label_well_spent">Time well spent</string>
-    <string name="study_label_committed">Committed</string>
-    <string name="study_label_logged">Time logged</string>
-    <string name="study_label_none">No sessions yet</string>
 
     <string name="avatar_sheet_title">Choose Your Avatar</string>
     <string name="name_sheet_title">Change Your Name</string>
@@ -698,18 +664,18 @@
     <string name="billing_thanks">Thank you for your support!</string>
 
     <string name="credit_design_title">Design &amp; Illustrations</string>
-    <string name="credit_design_subtitle">Artwork by Pablo Stanley</string>
+    <string name="credit_design_subtitle">Artwork by</string>
+    <string name="credit_design_artist" translatable="false">Pablo Stanley</string>
     <string name="credit_design_body">The beautiful illustrations and doodles used throughout Sessions are created by Pablo Stanley. Big thanks for his amazing contributions to the open design community!</string>
-    <string name="credit_design_action">Visit Portfolio</string>
 
     <string name="credit_lordicon_title">Animated Icons</string>
     <string name="credit_lordicon_subtitle">Provided by Lordicon</string>
-    <string name="credit_lordicon_body">The lively animated icons used in the navigation bar are provided by Lordicon. They offer a massive library of high-quality animated assets for all creators.</string>
+    <string name="credit_lordicon_body">The lively animated icons used throughout Sessions are provided by Lordicon. They offer a massive library of high-quality animated assets for all creators.</string>
     <string name="credit_lordicon_action">Visit Lordicon</string>
 
     <string name="credit_oss_title">Sessions is Open Source</string>
-    <string name="credit_oss_subtitle">Licensed under Apache 2.0</string>
-    <string name="credit_oss_body">The source code is available on GitHub. You are free to view, learn from, and modify the code for personal use.</string>
+    <string name="credit_oss_subtitle">Licensed under GPL-3.0</string>
+    <string name="credit_oss_body">The source code is available on GitHub. You are free to use, study, change and share it, as long as anything you share stays open source under the same license. The Sessions name and logo are not included.</string>
     <string name="credit_oss_action">View Source Code</string>
 
     <!-- What's New -->
@@ -746,6 +712,12 @@
     <string name="whats_new_v6_12_body">Changing your colour theme, switching between light and dark, or turning on AMOLED black now fades gently across the whole screen.</string>
     <string name="whats_new_v6_13_title">Sessions in Your Language</string>
     <string name="whats_new_v6_13_body">Sessions now speaks ten languages: English, Spanish, Portuguese, French, German, Hindi, Arabic, Japanese, Korean and Chinese. Pick yours in Settings › Language, or follow your phone\'s, and the whole app switches instantly, right where you are. Arabic reads right to left.</string>
+    <string name="whats_new_v6_15_title">Change Your Task Mid-Session</string>
+    <string name="whats_new_v6_15_body">Pause your session to rename your task, without starting over.</string>
+    <string name="whats_new_v6_16_title">Use Sessions Without an Account</string>
+    <string name="whats_new_v6_16_body">Tap Guest on the sign-in screen to start focusing right away. As a guest, everything stays on your phone and never goes to the cloud. Leaving guest mode deletes it, so you can export it on the way out.</string>
+    <string name="whats_new_v6_17_title">Back Up and Bring It Along</string>
+    <string name="whats_new_v6_17_body">Guests can export their sessions, templates and profile to a file from Settings › Backup, and import it on any phone. Signed in? Import that file in Settings and it syncs to your account. Importing never doubles anything up.</string>
     <string name="whats_new_v51_1_title">Templates Sync to Your Account</string>
     <string name="whats_new_v51_1_body">Your task templates are now saved to your account. Reinstall the app or sign in on another phone and they come right back.</string>
     <string name="whats_new_v51_2_title">Redesigned Sign In &amp; Sign Up</string>
@@ -938,4 +910,29 @@
     <string name="sets_target">Target Sets</string>
 
     <string name="alarm_permission_body">To ensure your study reminder rings at the exact time you set, please allow this permission in the next screen.</string>
+
+    <!-- Guest mode -->
+    <string name="guest_button">Guest</string>
+    <string name="google_short" translatable="false">Google</string>
+    <string name="guest_name">Guest</string>
+    <string name="guest_exit_title">Exit Guest Mode</string>
+    <string name="guest_exit_subtitle">Deletes your guest sessions</string>
+    <string name="guest_exit_message">Everything you\'ve recorded as a guest will be deleted permanently. Export it first to keep it: you can import the file later, including after signing in to an account.</string>
+    <string name="guest_exit_confirm">Delete and exit</string>
+
+    <string name="guest_backup_section">Backup</string>
+    <string name="guest_export_title">Export data</string>
+    <string name="guest_export_subtitle">Save your sessions and templates to a file</string>
+    <string name="guest_import_title">Import data</string>
+    <string name="guest_import_subtitle">Add sessions and templates from a backup file</string>
+    <string name="guest_export_done_title">Backup saved</string>
+    <string name="guest_export_done_message">Keep this file somewhere safe. Import it on any phone to get your sessions back.</string>
+    <string name="guest_export_failed_title">Couldn\'t save the backup</string>
+    <string name="guest_export_failed_message">The file couldn\'t be written. Try again, or pick another place to save it.</string>
+    <string name="guest_import_done_title">Import complete</string>
+    <string name="guest_import_done_message">Sessions added: %1$d\nTemplates added: %2$d</string>
+    <string name="guest_import_failed_title">Couldn\'t import</string>
+    <string name="guest_import_failed_message">This file isn\'t a Sessions backup, or it\'s damaged.</string>
+    <string name="account_import_subtitle">Bring in a backup you saved as a guest. It syncs to your account.</string>
+    <string name="guest_export_and_exit">Export and exit</string>
 </resources>

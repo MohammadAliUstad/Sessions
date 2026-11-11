@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -36,7 +35,6 @@ import com.yugentech.sessions.theme.tokens.spacing
 import com.yugentech.sessions.utils.AppConstants
 
 /** Hajime's AppTextField, line for line. */
-@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun AppTextField(
     value: String,

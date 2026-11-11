@@ -23,10 +23,13 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Coffee
+import androidx.compose.material.icons.outlined.Edit
 import androidx.compose.material.icons.outlined.Layers
+import androidx.compose.material.icons.outlined.Schedule
 import androidx.compose.material.icons.outlined.Timer
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -37,19 +40,23 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
+import androidx.compose.ui.text.style.TextOverflow
 import com.yugentech.sessions.theme.tokens.components
 import com.yugentech.sessions.theme.tokens.corners
 import com.yugentech.sessions.theme.tokens.icons
 import com.yugentech.sessions.theme.tokens.spacing
+import com.yugentech.sessions.ui.dash.homeScreen.layouts.shared.PlanChip
+import com.yugentech.sessions.ui.dash.homeScreen.layouts.shared.PlanSummaryChips
 import com.yugentech.sessions.ui.dash.homeScreen.layouts.shared.formatMinutes
 import com.yugentech.sessions.ui.dash.homeScreen.layouts.shared.planMinutes
 import com.yugentech.sessions.ui.dash.mainScreen.components.pressClickable
 
 /**
- * The plan before a session starts, as one card: focus and break lengths side by side (tap
- * either to change it), and underneath how many sets that makes and roughly how long it all runs.
- * The same height as the progress card that replaces it, so the swap doesn't jump.
+ * The plan before a session starts: focus and break as two tiles side by side, each laid out like
+ * the progress card that replaces it (a labelled badge on top, the number large at the bottom),
+ * with a pencil saying it can be tapped to change. Under them, one quiet line with how many sets
+ * that makes and roughly how long it all runs. The same height as the progress card, so the swap
+ * doesn't jump.
  */
 @Composable
 fun RefinedPlanCard(
@@ -62,7 +69,6 @@ fun RefinedPlanCard(
     setsPerLongBreak: Int = 0,
     longBreakEnabled: Boolean = false
 ) {
-    val shape = RoundedCornerShape(MaterialTheme.corners.large)
     val totalMinutes = planMinutes(
         focusDurationMinutes, shortBreakDurationMinutes, longBreakDurationMinutes,
         targetSets, setsPerLongBreak, longBreakEnabled
@@ -72,105 +78,115 @@ fun RefinedPlanCard(
         modifier = Modifier
             .fillMaxWidth()
             .height(MaterialTheme.components.imageSizeLarge)
-            .padding(horizontal = MaterialTheme.spacing.m)
-            .background(MaterialTheme.colorScheme.surfaceContainer, shape)
-            .padding(MaterialTheme.spacing.s)
+            .padding(horizontal = MaterialTheme.spacing.m),
+        verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.s)
     ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
                 .weight(1f),
-            verticalAlignment = Alignment.CenterVertically
+            horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.s)
         ) {
-            PlanItem(
+            PlanTile(
                 label = stringResource(R.string.mode_focus),
                 minutes = focusDurationMinutes,
                 icon = Icons.Outlined.Timer,
-                accent = MaterialTheme.colorScheme.primary,
+                badgeColor = MaterialTheme.colorScheme.primaryContainer,
+                badgeContent = MaterialTheme.colorScheme.onPrimaryContainer,
                 onClick = onFocusClick,
                 modifier = Modifier.weight(1f)
             )
-            Box(
-                modifier = Modifier
-                    .width(1.dp)
-                    .fillMaxHeight(0.6f)
-                    .background(MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.6f))
-            )
-            PlanItem(
+            PlanTile(
                 label = stringResource(R.string.plan_break),
                 minutes = shortBreakDurationMinutes,
                 icon = Icons.Outlined.Coffee,
-                accent = MaterialTheme.colorScheme.tertiary,
+                badgeColor = MaterialTheme.colorScheme.tertiaryContainer,
+                badgeContent = MaterialTheme.colorScheme.onTertiaryContainer,
                 onClick = onShortBreakClick,
                 modifier = Modifier.weight(1f)
             )
         }
 
-        // The whole plan at a glance
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .background(MaterialTheme.colorScheme.surfaceContainerHigh, RoundedCornerShape(MaterialTheme.corners.medium))
-                .padding(horizontal = MaterialTheme.spacing.sm, vertical = MaterialTheme.spacing.s),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.Center
-        ) {
-            Icon(
-                imageVector = Icons.Outlined.Layers,
-                contentDescription = null,
-                modifier = Modifier.size(MaterialTheme.icons.small),
-                tint = MaterialTheme.colorScheme.onSurfaceVariant
-            )
-            Spacer(Modifier.width(MaterialTheme.spacing.xs))
-            Text(
-                text = stringResource(
-                    R.string.plan_summary,
-                    pluralStringResource(R.plurals.sets_count, targetSets, targetSets),
-                    formatMinutes(totalMinutes)
+        // The whole plan at a glance: how many sets, and how long it all runs
+        val total = formatMinutes(totalMinutes)
+        PlanSummaryChips(
+            listOf(
+                PlanChip(
+                    icon = Icons.Outlined.Layers,
+                    text = pluralStringResource(R.plurals.sets_count, targetSets, targetSets),
+                    value = "$targetSets",
+                    accent = MaterialTheme.colorScheme.secondary
                 ),
-                style = MaterialTheme.typography.labelLarge,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
+                PlanChip(
+                    icon = Icons.Outlined.Schedule,
+                    text = stringResource(R.string.plan_chip_total, total),
+                    value = total,
+                    accent = MaterialTheme.colorScheme.primary
+                )
             )
-        }
+        )
     }
 }
 
-/** One length in the plan: a small labelled icon, then the minutes in large type. */
+/**
+ * One length in the plan, as its own tile: a round badge with the mode's icon and its name on
+ * top, a pencil in the corner, and the minutes large at the bottom.
+ */
 @Composable
-private fun PlanItem(
+private fun PlanTile(
     label: String,
     minutes: Int,
     icon: ImageVector,
-    accent: Color,
+    badgeColor: Color,
+    badgeContent: Color,
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val shape = RoundedCornerShape(MaterialTheme.corners.large)
     Column(
         modifier = modifier
             .fillMaxHeight()
-            .padding(horizontal = MaterialTheme.spacing.xs)
             .pressClickable(
-                shape = RoundedCornerShape(MaterialTheme.corners.medium),
+                shape = shape,
                 onClickLabel = stringResource(R.string.cd_change_length, label),
                 onClick = onClick
             )
-            .padding(MaterialTheme.spacing.xs),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
+            .background(MaterialTheme.colorScheme.surfaceContainer, shape)
+            .padding(MaterialTheme.spacing.m),
+        verticalArrangement = Arrangement.SpaceBetween
     ) {
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            Icon(
-                imageVector = icon,
-                contentDescription = null,
-                modifier = Modifier.size(MaterialTheme.icons.small),
-                tint = accent
-            )
-            Spacer(Modifier.width(MaterialTheme.spacing.xs))
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Box(
+                modifier = Modifier
+                    .size(MaterialTheme.components.buttonSmall)
+                    .background(badgeColor, CircleShape),
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(
+                    imageVector = icon,
+                    contentDescription = null,
+                    modifier = Modifier.size(MaterialTheme.icons.small),
+                    tint = badgeContent
+                )
+            }
+            Spacer(Modifier.width(MaterialTheme.spacing.s))
             Text(
                 text = label,
                 style = MaterialTheme.typography.labelLarge,
-                fontWeight = FontWeight.Medium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
+                fontWeight = FontWeight.SemiBold,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+                modifier = Modifier.weight(1f)
+            )
+            Icon(
+                imageVector = Icons.Outlined.Edit,
+                contentDescription = null,
+                modifier = Modifier.size(MaterialTheme.icons.small),
+                tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f)
             )
         }
         Row(verticalAlignment = Alignment.Bottom) {
@@ -187,7 +203,7 @@ private fun PlanItem(
                 Text(
                     text = "$value",
                     style = MaterialTheme.typography.displaySmall,
-                    fontWeight = FontWeight.SemiBold,
+                    fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.onSurface
                 )
             }

@@ -5,7 +5,6 @@ import com.yugentech.sessions.R
 import androidx.compose.ui.res.stringResource
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.animateColorAsState
-import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -46,7 +45,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
-import androidx.compose.material3.SheetValue
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -85,6 +83,7 @@ fun TaskSelectionSheet(
     targetSets: Int,
     longBreakEnabled: Boolean,
     setsPerLongBreak: Int = 4,
+    sessionActive: Boolean = false,
     onSetTask: (String) -> Unit,
     onApplyTemplate: (Template) -> Unit,
     onSaveTemplate: (String) -> Unit,
@@ -116,15 +115,13 @@ fun TaskSelectionSheet(
         longBreakEnabled,
         setsPerLongBreak
     ) {
-        if (matchedTemplate == null) true
-        else {
-            matchedTemplate.focusDuration != focusDuration ||
-                    matchedTemplate.shortBreakDuration != shortBreakDuration ||
-                    matchedTemplate.longBreakDuration != longBreakDuration ||
-                    matchedTemplate.targetSets != targetSets ||
-                    matchedTemplate.longBreakEnabled != longBreakEnabled ||
-                    matchedTemplate.setsPerLongBreak != setsPerLongBreak
-        }
+        matchedTemplate == null ||
+                matchedTemplate.focusDuration != focusDuration ||
+                matchedTemplate.shortBreakDuration != shortBreakDuration ||
+                matchedTemplate.longBreakDuration != longBreakDuration ||
+                matchedTemplate.targetSets != targetSets ||
+                matchedTemplate.longBreakEnabled != longBreakEnabled ||
+                matchedTemplate.setsPerLongBreak != setsPerLongBreak
     }
 
     val setTaskContainerColor by animateColorAsState(
@@ -263,7 +260,9 @@ fun TaskSelectionSheet(
                             color = MaterialTheme.colorScheme.onSurface
                         )
                         Text(
-                            text = stringResource(R.string.task_subtitle),
+                            text = stringResource(
+                                if (sessionActive) R.string.task_subtitle_session else R.string.task_subtitle
+                            ),
                             style = MaterialTheme.typography.bodyMedium,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
@@ -444,7 +443,7 @@ fun TaskSelectionSheet(
                     Button(
                         shape = CircleShape,
                         modifier = Modifier.fillMaxWidth().height(58.dp),
-                        enabled = if (isExistingTemplate && !isConfigChanged) true else hasTask,
+                        enabled = (isExistingTemplate && !isConfigChanged) || hasTask,
                         colors = ButtonDefaults.buttonColors(
                             containerColor = saveContainerColor,
                             contentColor = saveContentColor,

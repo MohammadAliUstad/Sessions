@@ -31,11 +31,9 @@ fun RefinedHome(ui: HomeUi, actions: HomeActions, screenHeight: Dp) {
     ) {
         RefinedHeader(
             isRunning = ui.isRunning,
-            isSessionActive = ui.isSessionActive,
             sessionTask = config.sessionTask,
             onTaskClick = actions.onTaskClick,
             onSoundBadgeClick = actions.onToggleAmbient,
-            mode = ui.mode,
             isAmbientEnabled = config.isAmbientEnabled,
             activeBackgroundSoundId = config.activeBackgroundSoundId
         )

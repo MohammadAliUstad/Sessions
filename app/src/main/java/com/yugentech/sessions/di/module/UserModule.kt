@@ -27,7 +27,8 @@ val userModule = module {
         UserRepositoryImpl(
             userDao = get(),
             userService = get(),
-            syncDataStore = get()
+            syncDataStore = get(),
+            authRepository = get()
         )
     }
 }

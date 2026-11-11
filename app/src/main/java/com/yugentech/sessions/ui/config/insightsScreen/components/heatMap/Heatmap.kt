@@ -2,7 +2,6 @@ package com.yugentech.sessions.ui.config.insightsScreen.components.heatMap
 
 import com.yugentech.sessions.R
 import androidx.compose.ui.res.stringResource
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.layout.Arrangement
@@ -46,7 +45,6 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.filter
 import java.time.LocalDate
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun Heatmap(
     data: Map<LocalDate, Int>,

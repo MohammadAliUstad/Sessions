@@ -10,14 +10,8 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.asPaddingValues
-import androidx.compose.foundation.layout.calculateEndPadding
-import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
@@ -28,8 +22,6 @@ import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
-import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -43,12 +35,8 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalLayoutDirection
-import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.withStyle
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
@@ -70,15 +58,21 @@ import com.yugentech.sessions.viewModels.ProfileViewModel
 import com.yugentech.sessions.viewModels.SessionSortOption
 import androidx.compose.ui.unit.dp
 
-@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun ProfileScreen(
     userId: String,
     modifier: Modifier = Modifier,
     profileViewModel: ProfileViewModel,
-    onViewInsights: () -> Unit = {}
+    onViewInsights: () -> Unit = {},
+    isGuest: Boolean = false
 ) {
     val profileUiState by profileViewModel.uiState.collectAsStateWithLifecycle()
+
+    // A guest has no name until they pick one, so they're shown as "Guest"
+    val guestName = stringResource(R.string.guest_name)
+    val shownUser = (profileUiState.user ?: UserData(name = EMPTY)).let { user ->
+        if (isGuest && user.name == null) user.copy(name = guestName) else user
+    }
 
     // The name and avatar are edited in sheets right here (there's no Edit Profile screen).
     var showNameSheet by rememberSaveable { mutableStateOf(false) }
@@ -91,8 +85,6 @@ fun ProfileScreen(
     var groupDeleteTitle by remember { mutableStateOf("") }
     var sessionsToGroupDelete by remember { mutableStateOf<List<String>>(emptyList()) }
 
-    val layoutDirection = LocalLayoutDirection.current
-    val navBarPadding = WindowInsets.navigationBars.asPaddingValues()
     val haptic = LocalHapticFeedback.current
 
     LaunchedEffect(userId) {
@@ -129,7 +121,7 @@ fun ProfileScreen(
             )
 
             ProfileCard(
-                userData = profileUiState.user ?: UserData(name = EMPTY),
+                userData = shownUser,
                 onEditName = { showNameSheet = true },
                 onEditAvatar = { showAvatarSheet = true },
                 onViewInsights = onViewInsights,
@@ -165,7 +157,7 @@ fun ProfileScreen(
 
             item(key = "profile_card") {
                 ProfileCard(
-                    userData = profileUiState.user ?: UserData(name = EMPTY),
+                    userData = shownUser,
                     onEditName = { showNameSheet = true },
                     onEditAvatar = { showAvatarSheet = true },
                     onViewInsights = onViewInsights,
@@ -328,7 +320,7 @@ fun ProfileScreen(
             confirmButton = {
                 Button(
                     onClick = {
-                        profileViewModel.deleteSession(userId, sessionToDeleteId!!)
+                        profileViewModel.deleteSession(sessionToDeleteId!!)
                         haptic.performHapticFeedback(HapticFeedbackType.Confirm)
                         showDeleteDialog = false
                         sessionToDeleteId = null

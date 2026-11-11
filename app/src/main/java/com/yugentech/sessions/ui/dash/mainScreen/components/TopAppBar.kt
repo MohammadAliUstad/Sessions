@@ -22,13 +22,10 @@ import androidx.compose.material.icons.automirrored.filled.Sort
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Settings
-import androidx.compose.material.icons.filled.Sort
 import androidx.compose.material.icons.filled.Timer
-import androidx.compose.material.icons.rounded.DeleteSweep
 import androidx.compose.material.icons.rounded.FolderDelete
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -59,12 +56,9 @@ import com.yugentech.sessions.theme.tokens.spacing
 import com.yugentech.sessions.viewModels.ProfileViewModel
 import com.yugentech.sessions.viewModels.SessionSortOption
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TopAppBar(
     currentScreen: BottomBarScreen,
-    onLogout: () -> Unit,
-    onSettings: () -> Unit = {},
     profileViewModel: ProfileViewModel? = null,
     onDeleteAllSessions: (() -> Unit)? = null,
     scrollBehavior: TopAppBarScrollBehavior? = null

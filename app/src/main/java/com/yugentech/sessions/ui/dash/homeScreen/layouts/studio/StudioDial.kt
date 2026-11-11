@@ -2,7 +2,6 @@ package com.yugentech.sessions.ui.dash.homeScreen.layouts.studio
 
 import com.yugentech.sessions.R
 import androidx.compose.ui.res.stringResource
-import android.text.format.DateFormat
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.SizeTransform
 import androidx.compose.animation.core.FastOutSlowInEasing
@@ -39,7 +38,6 @@ import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.lerp
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -48,7 +46,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.yugentech.sessions.timer.state.TimerMode
 import com.yugentech.sessions.ui.dash.homeScreen.layouts.shared.modeColor
-import java.util.Date
+import com.yugentech.sessions.ui.dash.homeScreen.layouts.shared.sessionEndTime
 import kotlin.math.PI
 import kotlin.math.cos
 import kotlin.math.sin
@@ -139,7 +137,7 @@ fun StudioDial(
 
             val line = when {
                 errorMessage != null -> errorMessage
-                isRunning -> stringResource(R.string.timer_ends, clockTime(seconds))
+                isRunning -> stringResource(R.string.timer_ends, sessionEndTime(seconds))
                 isSessionActive -> stringResource(R.string.timer_paused)
                 else -> stringResource(R.string.onboarding_focus_idle)
             }
@@ -257,11 +255,4 @@ private fun RollingClock(seconds: Int, style: TextStyle, color: Color) {
             }
         }
     }
-}
-
-/** The clock time [secondsFromNow] ahead, in the phone's 12 or 24 hour format. */
-@Composable
-internal fun clockTime(secondsFromNow: Int): String {
-    val context = LocalContext.current
-    return DateFormat.getTimeFormat(context).format(Date(System.currentTimeMillis() + secondsFromNow * 1000L))
 }

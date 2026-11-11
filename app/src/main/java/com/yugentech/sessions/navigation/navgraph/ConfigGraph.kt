@@ -8,7 +8,6 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import com.yugentech.sessions.auth.state.AuthState
-import com.yugentech.sessions.auth.viewmodel.AuthViewModel
 import com.yugentech.sessions.navigation.screen.AppScreen
 import com.yugentech.sessions.theme.viewmodel.ThemeViewModel
 import com.yugentech.sessions.ui.config.aboutScreen.AboutScreen
@@ -25,7 +24,6 @@ import org.koin.androidx.compose.koinViewModel
 
 fun NavGraphBuilder.configGraph(
     navController: NavHostController,
-    authViewModel: AuthViewModel,
     authState: AuthState
 ) {
     // Defines the appearance settings screen

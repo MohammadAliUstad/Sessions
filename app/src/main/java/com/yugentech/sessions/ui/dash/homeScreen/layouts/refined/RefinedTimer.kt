@@ -2,7 +2,6 @@ package com.yugentech.sessions.ui.dash.homeScreen.layouts.refined
 
 import com.yugentech.sessions.R
 import androidx.compose.ui.res.stringResource
-import android.text.format.DateFormat
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.SizeTransform
 import androidx.compose.animation.core.FastOutSlowInEasing
@@ -41,7 +40,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.CircularWavyProgressIndicator
-import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -50,7 +48,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -62,7 +59,7 @@ import com.yugentech.sessions.theme.tokens.spacing
 import com.yugentech.sessions.timer.state.TimerMode
 import com.yugentech.sessions.ui.dash.homeScreen.layouts.shared.modeColor
 import com.yugentech.sessions.ui.dash.homeScreen.layouts.shared.modeOnColor
-import java.util.Date
+import com.yugentech.sessions.ui.dash.homeScreen.layouts.shared.sessionEndTime
 
 /**
  * The timer as the centre of Home: a wavy ring in the current mode's colour with a soft glow
@@ -73,7 +70,6 @@ import java.util.Date
  * timelapse), a smaller size and a lighter track, and a ring that follows the time directly.
  * [isComplete] swaps the time for a check and [completeTitle] once a block has run out.
  */
-@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun RefinedTimer(
     displayTime: Int,
@@ -225,7 +221,7 @@ fun RefinedTimer(
 
             val hint = when {
                 errorMessage != null -> errorMessage
-                isStudying && showEndTime -> stringResource(R.string.timer_ends_at, endTime(displayTime))
+                isStudying && showEndTime -> stringResource(R.string.timer_ends_at, sessionEndTime(displayTime))
                 isStudying -> stringResource(R.string.timer_hint_focusing)
                 isSessionActive -> stringResource(R.string.timer_paused)
                 else -> idleHint
@@ -282,11 +278,4 @@ private fun RollingTime(seconds: Int, style: TextStyle, color: Color) {
             }
         }
     }
-}
-
-/** The clock time [secondsLeft] from now, in the phone's own 12 or 24 hour format. */
-@Composable
-private fun endTime(secondsLeft: Int): String {
-    val context = LocalContext.current
-    return DateFormat.getTimeFormat(context).format(Date(System.currentTimeMillis() + secondsLeft * 1000L))
 }

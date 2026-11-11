@@ -114,8 +114,8 @@ object SessionDashboardCalculator {
                     1 -> text(R.string.card_final_push_main) to text(R.string.card_final_push_stay_focused)
                     else -> {
                         if (isBreakMode) {
-                            val breakType = if (isLongBreakMode) R.string.mode_long_break else R.string.mode_short_break
-                            text(breakType) to text(tagline)
+                            // Long breaks are handled above, so this is always a short one
+                            text(R.string.mode_short_break) to text(tagline)
                         } else {
                             UiText.Plural(R.plurals.card_sets_to_go, setsLeft, setsLeft) to text(tagline)
                         }

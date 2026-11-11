@@ -116,7 +116,7 @@ class AlertsRepositoryImpl(
     }
 
     // cleans up resources when leaving the screen
-    override fun onLeave(view: View?) {
+    override fun onLeave() {
         Timber.d("onLeave triggered")
         stop()
     }

@@ -19,4 +19,8 @@ interface UserDao {
     // Observes changes to a user profile in real-time
     @Query("SELECT * FROM users WHERE userId = :userId")
     fun getUserFlow(userId: String): Flow<UserEntity?>
+
+    // Removes a user profile (a guest's, when they leave or move to a real account)
+    @Query("DELETE FROM users WHERE userId = :userId")
+    suspend fun deleteUser(userId: String)
 }

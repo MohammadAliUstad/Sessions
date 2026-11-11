@@ -1,7 +1,5 @@
 package com.yugentech.sessions.ui.config.insightsScreen.components
 
-import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.runtime.remember
 import com.yugentech.sessions.R
 import androidx.compose.ui.res.stringResource
 import androidx.compose.foundation.layout.Arrangement

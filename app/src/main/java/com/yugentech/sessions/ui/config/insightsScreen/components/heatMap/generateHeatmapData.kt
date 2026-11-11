@@ -16,7 +16,6 @@ fun generateHeatmapData(
     val weeks = mutableListOf<HeatmapWeek>()
     val daysBetween = ChronoUnit.DAYS.between(startDate, endDate)
 
-    var currentWeekIndex = 0
     var currentWeekDays = mutableListOf<HeatmapDay>()
 
     for (i in 0..daysBetween) {
@@ -30,13 +29,11 @@ fun generateHeatmapData(
 
             weeks.add(
                 HeatmapWeek(
-                    currentWeekIndex,
                     ArrayList(currentWeekDays),
                     firstDayOfMonthLabel
                 )
             )
 
-            currentWeekIndex++
             currentWeekDays = mutableListOf()
         }
     }

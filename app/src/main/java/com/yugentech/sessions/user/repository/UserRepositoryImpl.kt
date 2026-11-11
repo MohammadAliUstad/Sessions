@@ -1,5 +1,6 @@
 package com.yugentech.sessions.user.repository
 
+import com.yugentech.sessions.auth.repository.AuthRepository
 import com.yugentech.sessions.user.model.UserData
 import com.yugentech.sessions.room.daos.UserDao
 import com.yugentech.sessions.room.entities.UserEntity
@@ -14,8 +15,13 @@ import timber.log.Timber
 class UserRepositoryImpl(
     private val userDao: UserDao,
     private val userService: UserService,
-    private val syncDataStore: SyncDataStore
+    private val syncDataStore: SyncDataStore,
+    private val authRepository: AuthRepository
 ) : UserRepository {
+
+    // A guest's profile stays on this phone: it's never uploaded
+    private val isGuest: Boolean
+        get() = authRepository.isGuest
 
     override fun getUserFlow(userId: String): Flow<UserData?> {
         return userDao.getUserFlow(userId)
@@ -38,11 +44,17 @@ class UserRepositoryImpl(
     }
 
     override suspend fun syncUser(userData: UserData): UserResult<Unit> {
+        if (isGuest) return UserResult.Success(Unit)
         Timber.i("Syncing user data to cloud: ${userData.userId}")
         return userService.uploadUser(userData)
     }
 
     override suspend fun fetchUserOnce(userId: String): UserResult<Unit> {
+        // A guest has no cloud profile: the one on this phone, or none yet (then it's created)
+        if (isGuest) {
+            return if (userDao.getUser(userId) != null) UserResult.Success(Unit)
+            else UserResult.Error("No guest profile on this device yet")
+        }
         return try {
             val alreadyFetched = syncDataStore.isUserFetchDone.first()
 

@@ -29,6 +29,9 @@ class BackgroundService(private val context: Context) {
     private var isStopping = false
     private var pendingOnComplete: (() -> Unit)? = null
 
+    // A preview's scheduled fade-out. Kept so only it is cancelled, never other queued work
+    private var previewEndRunnable: Runnable? = null
+
     private val handler = Handler(Looper.getMainLooper())
 
     companion object {
@@ -102,7 +105,8 @@ class BackgroundService(private val context: Context) {
     fun playPreview(sound: BackgroundSound) {
         handler.post {
             Timber.d("playPreview() called with sound: ${sound.id}")
-            handler.removeCallbacksAndMessages(null)
+            // Only this player's own work is cancelled (releaseInternal): clearing the whole
+            // queue here used to drop a play() posted just after, such as the sound just saved
             releaseInternal()
 
             if (sound == BackgroundSound.NONE) return@post
@@ -126,11 +130,14 @@ class BackgroundService(private val context: Context) {
                     fadeVolumeInternal(0f, FOCUS_VOLUME, PREVIEW_FADE_DURATION)
 
                     // Schedule fade out and cleanup
-                    handler.postDelayed({
+                    val end = Runnable {
+                        previewEndRunnable = null
                         fadeVolumeInternal(activePlayer?.volume ?: FOCUS_VOLUME, 0f, PREVIEW_FADE_DURATION) {
                             releaseInternal()
                         }
-                    }, PREVIEW_DURATION - PREVIEW_FADE_DURATION)
+                    }
+                    previewEndRunnable = end
+                    handler.postDelayed(end, PREVIEW_DURATION - PREVIEW_FADE_DURATION)
 
                 } catch (e: Exception) {
                     Timber.e(e, "Preview failed")
@@ -346,6 +353,9 @@ class BackgroundService(private val context: Context) {
 
             crossfadeRunnable?.let { handler.removeCallbacks(it) }
             crossfadeRunnable = null
+
+            previewEndRunnable?.let { handler.removeCallbacks(it) }
+            previewEndRunnable = null
 
             isLooping = false
             isStopping = false

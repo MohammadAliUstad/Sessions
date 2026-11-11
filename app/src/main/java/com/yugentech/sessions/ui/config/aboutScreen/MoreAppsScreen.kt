@@ -41,7 +41,6 @@ import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.Image
 import androidx.compose.material.icons.outlined.Insights
 import androidx.compose.material.icons.outlined.KeyboardVoice
-import androidx.compose.material.icons.outlined.Kitchen
 import androidx.compose.material.icons.outlined.LocalBar
 import androidx.compose.material.icons.outlined.LocalLibrary
 import androidx.compose.material.icons.outlined.LunchDining
@@ -98,7 +97,6 @@ import kotlin.time.Duration.Companion.milliseconds
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MoreAppsScreen(
     onNavigateBack: () -> Unit
@@ -272,7 +270,6 @@ private fun QuillHeroSection(onDownloadClick: () -> Unit) {
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun QuillCapabilitiesCarousel() {
     CapabilitiesCarousel(
@@ -637,7 +634,6 @@ private fun ComingSoonLabel() {
 
 // colorOffset shifts where the primary / secondary / tertiary cycle starts, so two carousels on
 // the same screen don't repeat the same colour order.
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun CapabilitiesCarousel(items: List<CapabilityItem>, colorOffset: Int = 0) {
     val containerColors = listOf(

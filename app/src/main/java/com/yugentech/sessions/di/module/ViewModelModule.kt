@@ -2,6 +2,7 @@ package com.yugentech.sessions.di.module
 
 import com.yugentech.sessions.viewModels.HomeViewModel
 import com.yugentech.sessions.auth.viewmodel.AuthViewModel
+import com.yugentech.sessions.auth.guest.GuestBackupViewModel
 import com.yugentech.sessions.viewModels.ProfileViewModel
 import com.yugentech.sessions.alerts.viewmodel.AlertsViewModel
 import com.yugentech.sessions.notification.viewmodel.NotificationViewModel
@@ -41,7 +42,8 @@ val viewModelModule = module {
             userRepository = get(),
             syncDataStore = get(),
             userDataStore = get(),
-            templateRepository = get()
+            templateRepository = get(),
+            guestDataManager = get()
         )
     }
 
@@ -50,6 +52,17 @@ val viewModelModule = module {
         Timber.v("Initializing SettingsViewModel")
         AlertsViewModel(
             alertsRepository = get()
+        )
+    }
+
+    // Export and import of a guest's data, in Settings
+    viewModel {
+        GuestBackupViewModel(
+            authRepository = get(),
+            backupManager = get(),
+            sessionsRepository = get(),
+            templateRepository = get(),
+            userRepository = get()
         )
     }
 

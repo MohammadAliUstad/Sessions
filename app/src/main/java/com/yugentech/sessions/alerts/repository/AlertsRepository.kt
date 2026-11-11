@@ -12,7 +12,7 @@ interface AlertsRepository {
     fun onFocusStart(view: View? = null)
     fun onFocusPause(view: View? = null)
     fun onBreakStart(view: View? = null)
-    fun onLeave(view: View? = null)
+    fun onLeave()
     fun onFocusStop(view: View? = null)
     fun onGoalReached(view: View? = null)
 

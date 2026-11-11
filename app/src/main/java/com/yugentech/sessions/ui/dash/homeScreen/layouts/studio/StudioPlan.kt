@@ -25,6 +25,9 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Flag
+import androidx.compose.material.icons.outlined.Schedule
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -38,9 +41,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.yugentech.sessions.timer.config.TimerConfig
+import com.yugentech.sessions.ui.dash.homeScreen.layouts.shared.PlanChip
+import com.yugentech.sessions.ui.dash.homeScreen.layouts.shared.PlanSummaryChips
 import com.yugentech.sessions.ui.dash.homeScreen.layouts.shared.formatMinutes
 import com.yugentech.sessions.ui.dash.homeScreen.layouts.shared.planMinutes
 import com.yugentech.sessions.ui.dash.mainScreen.components.pressClickable
@@ -94,12 +98,23 @@ fun StudioPlan(
             PlanTile(stringResource(R.string.action_sets), config.targetSets, pluralStringResource(R.plurals.unit_sets, config.targetSets), scheme.secondary, onSets, Modifier.weight(1f))
         }
         Spacer(Modifier.height(10.dp))
-        Text(
-            text = stringResource(R.string.plan_done_around, finish, formatMinutes(total)),
-            style = MaterialTheme.typography.bodyMedium,
-            color = scheme.onSurfaceVariant,
-            textAlign = TextAlign.Center,
-            modifier = Modifier.fillMaxWidth()
+        // When you'd be done if you started now, and how long that is all told
+        val totalText = formatMinutes(total)
+        PlanSummaryChips(
+            listOf(
+                PlanChip(
+                    icon = Icons.Outlined.Flag,
+                    text = stringResource(R.string.plan_chip_finish, finish),
+                    value = finish,
+                    accent = scheme.tertiary
+                ),
+                PlanChip(
+                    icon = Icons.Outlined.Schedule,
+                    text = stringResource(R.string.plan_chip_total, totalText),
+                    value = totalText,
+                    accent = scheme.primary
+                )
+            )
         )
     }
 }

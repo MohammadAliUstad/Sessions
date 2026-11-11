@@ -32,7 +32,7 @@ import kotlin.math.PI
 import kotlin.math.floor
 import kotlin.math.sin
 
-private val TAU = (2 * PI).toFloat()
+private const val TAU = (2 * PI).toFloat()
 
 /** Thin vertical slices the fade is built from, so its lower edge can roll like a horizon. */
 private const val SLICES = 64

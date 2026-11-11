@@ -22,7 +22,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.CircularWavyProgressIndicator
-import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -35,7 +34,6 @@ import com.yugentech.sessions.theme.tokens.components
 import com.yugentech.sessions.theme.tokens.spacing
 import com.yugentech.sessions.timer.state.TimerMode
 
-@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun TimerDisplay(
     displayTime: Int,

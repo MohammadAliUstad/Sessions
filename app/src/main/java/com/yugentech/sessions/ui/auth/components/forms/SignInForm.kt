@@ -6,6 +6,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -32,11 +33,12 @@ import com.yugentech.sessions.ui.auth.components.AppTextField
 import com.yugentech.sessions.ui.auth.components.AuthDivider
 import com.yugentech.sessions.ui.auth.components.buttons.ActionButton
 import com.yugentech.sessions.ui.auth.components.buttons.GoogleSignInButton
+import com.yugentech.sessions.ui.auth.components.buttons.GuestSignInButton
 import com.yugentech.sessions.ui.auth.state.SignInFormState
 import com.yugentech.sessions.ui.auth.util.FormValidator
 import kotlinx.coroutines.launch
 
-/** Email and password, then Google underneath, as on Hajime's sign-in. */
+/** Email and password, then Google and Guest side by side underneath. */
 @Composable
 fun SignInForm(
     isLoading: Boolean,
@@ -44,19 +46,24 @@ fun SignInForm(
     onGoogleSignIn: () -> Unit,
     onForgotPassword: (email: String) -> Unit,
     onClearError: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onContinueAsGuest: () -> Unit = {}
 ) {
     var formState by remember { mutableStateOf(SignInFormState()) }
     // Errors are worked out in callbacks, so read from resources (in the app's language)
     val resources = LocalContext.current.resources
     val scope = rememberCoroutineScope()
-    // isLoading is shared by both sign-in paths; remember which button started it so only
-    // that one shows the spinner while the other is just disabled.
-    var isGoogleSignIn by rememberSaveable { mutableStateOf(false) }
+    // isLoading is shared by every sign-in path; remember which button started it so only
+    // that one shows the spinner while the others are just disabled.
+    var loadingFrom by rememberSaveable { mutableStateOf(LOADING_EMAIL) }
 
     LaunchedEffect(formState.email, formState.password) {
         onClearError()
     }
+
+    // Starting guest mode is instant, so while it does the other buttons keep their look rather
+    // than greying out for a split second before the app opens; taps are ignored instead
+    val dimForLoading = isLoading && loadingFrom != LOADING_GUEST
 
     Column(
         modifier = modifier.fillMaxWidth(),
@@ -119,10 +126,11 @@ fun SignInForm(
 
         ActionButton(
             text = stringResource(R.string.sign_in_action),
-            isLoading = isLoading && !isGoogleSignIn,
-            enabled = !isLoading,
+            isLoading = isLoading && loadingFrom == LOADING_EMAIL,
+            enabled = !dimForLoading,
             onClick = {
-                isGoogleSignIn = false
+                if (isLoading) return@ActionButton
+                loadingFrom = LOADING_EMAIL
                 val isValid = FormValidator.validateSignInForm(
                     res = resources,
                     email = formState.email,
@@ -145,13 +153,39 @@ fun SignInForm(
 
         AuthDivider(text = stringResource(R.string.auth_divider_or))
 
-        GoogleSignInButton(
-            isLoading = isLoading && isGoogleSignIn,
-            enabled = !isLoading,
-            onClick = {
-                isGoogleSignIn = true
-                scope.launch { onGoogleSignIn() }
-            }
-        )
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.s)
+        ) {
+            GoogleSignInButton(
+                isLoading = isLoading && loadingFrom == LOADING_GOOGLE,
+                enabled = !dimForLoading,
+                label = stringResource(R.string.google_short),
+                onClick = {
+                    if (isLoading) return@GoogleSignInButton
+                    loadingFrom = LOADING_GOOGLE
+                    scope.launch { onGoogleSignIn() }
+                },
+                modifier = Modifier.weight(1f)
+            )
+
+            // Use the app without an account; the data stays on this phone (Settings can export it)
+            GuestSignInButton(
+                // Guest mode starts instantly on the phone, so no spinner: the ghost's flight
+                // is the wait, and the button stays as it is until the app opens
+                isLoading = false,
+                enabled = !dimForLoading,
+                onClick = {
+                    if (isLoading) return@GuestSignInButton
+                    loadingFrom = LOADING_GUEST
+                    onContinueAsGuest()
+                },
+                modifier = Modifier.weight(1f)
+            )
+        }
     }
 }
+
+private const val LOADING_EMAIL = "email"
+private const val LOADING_GOOGLE = "google"
+private const val LOADING_GUEST = "guest"

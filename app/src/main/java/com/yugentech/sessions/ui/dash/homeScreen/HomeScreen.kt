@@ -5,7 +5,6 @@ import androidx.compose.ui.res.stringResource
 import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
-import android.net.Uri
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -14,7 +13,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
@@ -53,7 +51,6 @@ import com.yugentech.sessions.utils.AppConstants
 import com.yugentech.sessions.viewModels.HomeViewModel
 import org.koin.androidx.compose.koinViewModel
 
-@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun HomeScreen(
     homeViewModel: HomeViewModel,
@@ -132,9 +129,9 @@ fun HomeScreen(
                     onStartStop = {
                         if (timerState.isTimerRunning) timerViewModel.stopTimer(view) else timerViewModel.startTimer(view)
                     },
-                    onDiscard = { timerViewModel.stopAndDiscardSession(view) },
-                    onFinish = { timerViewModel.stopAndSaveSession(view) },
-                    onSkip = { timerViewModel.skipToNextMode(view) }
+                    onDiscard = { timerViewModel.stopAndDiscardSession() },
+                    onFinish = { timerViewModel.stopAndSaveSession() },
+                    onSkip = { timerViewModel.skipToNextMode() }
                 )
 
                 // The chosen design; every one draws the same session and opens the same sheets
@@ -211,12 +208,18 @@ fun HomeScreen(
                                 targetSets = config.targetSets,
                                 longBreakEnabled = config.longBreakEnabled,
                                 setsPerLongBreak = config.setsPerLongBreak,
+                                // Mid-session only the name can change: a template's timings would restart the timer
+                                sessionActive = isSessionActive,
                                 onSetTask = { newTask ->
                                     timerViewModel.updateSessionTask(newTask)
                                     closeDialog()
                                 },
                                 onApplyTemplate = { template ->
                                     timerViewModel.updateSessionTask(template.name)
+                                    if (isSessionActive) {
+                                        closeDialog()
+                                        return@TaskSelectionSheet
+                                    }
                                     timerViewModel.updateFocusDuration(template.focusDuration)
                                     timerViewModel.updateShortBreakDuration(template.shortBreakDuration)
                                     timerViewModel.updateLongBreakAndTargetSets(
@@ -286,7 +289,7 @@ fun HomeScreen(
             setsRemainingToConfirm?.let { setsLeft ->
                 FinishConfirmationDialog(
                     setsRemaining = setsLeft,
-                    onConfirm = { timerViewModel.confirmFinishSession(view) },
+                    onConfirm = { timerViewModel.confirmFinishSession() },
                     onDismiss = { timerViewModel.dismissFinishConfirmation() }
                 )
             }

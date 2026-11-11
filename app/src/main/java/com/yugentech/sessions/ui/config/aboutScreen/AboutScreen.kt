@@ -2,7 +2,6 @@ package com.yugentech.sessions.ui.config.aboutScreen
 
 import com.yugentech.sessions.R
 import androidx.compose.ui.res.stringResource
-import com.yugentech.sessions.localization.asString
 import android.app.Activity
 import android.content.Intent
 import androidx.compose.foundation.layout.Arrangement
@@ -20,11 +19,9 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.Apps
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.ThumbUp
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LargeTopAppBar
@@ -60,7 +57,6 @@ import com.yugentech.sessions.utils.BillingManager
 import org.koin.compose.koinInject
 import androidx.compose.ui.unit.dp
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AboutScreen(
     onNavigateBack: () -> Unit,

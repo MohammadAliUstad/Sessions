@@ -14,12 +14,10 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -43,7 +41,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.zIndex
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.yugentech.sessions.alerts.viewmodel.AlertsViewModel
@@ -57,11 +54,11 @@ import com.yugentech.sessions.ui.dash.homeScreen.components.ExitConfirmationDial
 import com.yugentech.sessions.ui.dash.mainScreen.components.BottomNavBar
 import com.yugentech.sessions.ui.dash.mainScreen.components.LocalBottomBarInset
 import com.yugentech.sessions.ui.dash.mainScreen.components.LocalTopBarInset
-import com.yugentech.sessions.ui.dash.mainScreen.components.ToastMessage
 import com.yugentech.sessions.ui.dash.mainScreen.components.TopAppBar
 import com.yugentech.sessions.ui.dash.mainScreen.components.smoothBottomScrimBrush
 import com.yugentech.sessions.ui.dash.profileScreen.ProfileScreen
 import com.yugentech.sessions.ui.dash.settingsScreen.SettingsScreen
+import com.yugentech.sessions.ui.dash.settingsScreen.components.NotificationPermissionDialog
 import com.yugentech.sessions.ui.dash.util.rememberNavTransitions
 import com.yugentech.sessions.viewModels.HomeViewModel
 import com.yugentech.sessions.viewModels.ProfileViewModel
@@ -70,7 +67,6 @@ import org.koin.androidx.compose.koinViewModel
 
 private val bottomNavItems = listOf(BottomBarScreen.Profile, BottomBarScreen.Home, BottomBarScreen.Settings)
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainScreen(
     userId: String,
@@ -82,6 +78,7 @@ fun MainScreen(
     onSignOut: () -> Unit,
     onExit: () -> Unit,
     onViewInsights: () -> Unit,
+    isGuest: Boolean = false,
     onAbout: () -> Unit,
     onWhatsNew: () -> Unit,
     onMoreApps: () -> Unit,
@@ -106,17 +103,15 @@ fun MainScreen(
         }
     }
 
-    var toastMessage by remember { mutableStateOf<String?>(null) }
+    var showNotificationPermissionDialog by rememberSaveable { mutableStateOf(false) }
     var hasCheckedPermission by rememberSaveable { mutableStateOf(false) }
     var showExitDialog by remember { mutableStateOf(false) }
 
     val notificationPermissionLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestPermission(),
         onResult = { isGranted ->
-            if (!isGranted) {
-                toastMessage =
-                    context.getString(R.string.notification_permission_denied)
-            }
+            // Denied: explain why it matters and point to the app's notification settings
+            if (!isGranted) showNotificationPermissionDialog = true
         }
     )
 
@@ -204,10 +199,6 @@ fun MainScreen(
         topBar = {
             TopAppBar(
                 currentScreen = currentScreen,
-                onLogout = {},
-                onSettings = {
-                    currentScreen = BottomBarScreen.Settings
-                },
                 profileViewModel = profileViewModel,
                 onDeleteAllSessions = { showDeleteAllDialog = true },
                 scrollBehavior = scrollBehavior
@@ -254,13 +245,15 @@ fun MainScreen(
                             BottomBarScreen.Profile -> ProfileScreen(
                                 userId = userId,
                                 onViewInsights = onViewInsights,
-                                profileViewModel = profileViewModel
+                                profileViewModel = profileViewModel,
+                                isGuest = isGuest
                             )
 
                             BottomBarScreen.Settings -> SettingsScreen(
                                 alertsViewModel = alertsViewModel,
                                 notificationViewModel = notificationViewModel,
                                 onSignOut = onSignOut,
+                                isGuest = isGuest,
                                 onExit = onExit,
                                 onAbout = onAbout,
                                 onWhatsNew = onWhatsNew,
@@ -286,13 +279,8 @@ fun MainScreen(
             }
         }
 
-        if (toastMessage != null) {
-            ToastMessage(
-                message = toastMessage,
-                onDismiss = { toastMessage = null },
-                modifier = Modifier
-                    .zIndex(3f)
-            )
+        if (showNotificationPermissionDialog) {
+            NotificationPermissionDialog(onDismiss = { showNotificationPermissionDialog = false })
         }
 
         // Centralized update announcements & dialogs (shown once per release, when timer is idle)

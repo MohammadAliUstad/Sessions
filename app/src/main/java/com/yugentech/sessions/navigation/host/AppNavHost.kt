@@ -5,7 +5,6 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.IntentSenderRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -35,7 +34,6 @@ import com.yugentech.sessions.ui.auth.components.SessionsAuraBackground
 import com.yugentech.sessions.ui.dash.util.rememberNavTransitions
 import timber.log.Timber
 
-@OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun AppNavHost(
     navController: NavHostController,
@@ -76,7 +74,7 @@ fun AppNavHost(
         }
     }
 
-    // Manages auth-driven navigation
+    // Manages auth-driven navigation. A guest counts as logged in.
     LaunchedEffect(authState.isUserLoggedIn, authState.userId, showOnboarding) {
         if (!authState.isLoading && !authState.isInitializing) {
             val currentRoute = navController.currentDestination?.route
@@ -143,21 +141,18 @@ fun AppNavHost(
                 authGraph(
                     navController = navController,
                     authViewModel = authViewModel,
-                    authState = authState,
                     webClientId = webClientId,
                     context = context
                 )
                 dashGraph(
                     navController = navController,
                     authViewModel = authViewModel,
-                    authState = authState,
                     onOnboardingComplete = onOnboardingComplete,
                     context = context
                 )
                 configGraph(
                     navController = navController,
-                    authState = authState,
-                    authViewModel = authViewModel
+                    authState = authState
                 )
             }
         }

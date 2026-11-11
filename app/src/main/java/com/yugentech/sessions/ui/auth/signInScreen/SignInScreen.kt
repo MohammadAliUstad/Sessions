@@ -34,6 +34,7 @@ fun SignInScreen(
     onGoogleSignIn: () -> Unit,
     onNavigateToSignUp: () -> Unit,
     onForgotPassword: (email: String) -> Unit,
+    onContinueAsGuest: () -> Unit = {},
 ) {
     val authState by authViewModel.authState.collectAsStateWithLifecycle()
     val forgotPasswordState by authViewModel.forgotPasswordState.collectAsStateWithLifecycle()
@@ -74,7 +75,8 @@ fun SignInScreen(
             onClearError = { authViewModel.clearError() },
             onSignIn = onSignIn,
             onGoogleSignIn = onGoogleSignIn,
-            onForgotPassword = onForgotPassword
+            onForgotPassword = onForgotPassword,
+            onContinueAsGuest = onContinueAsGuest
         )
 
         // Matches the card's bottom padding, so the link sits evenly between form and edge

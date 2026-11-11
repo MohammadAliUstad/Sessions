@@ -1,6 +1,5 @@
 package com.yugentech.sessions.notification.service
 
-import com.yugentech.sessions.localization.asString
 import android.Manifest
 import android.app.NotificationChannel
 import android.app.NotificationManager

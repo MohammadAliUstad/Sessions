@@ -55,7 +55,7 @@ import kotlin.math.floor
 import kotlin.math.hypot
 import kotlin.math.sin
 
-private val TAU = (2 * PI).toFloat()
+private const val TAU = (2 * PI).toFloat()
 private const val STARS = 26
 // The turn-off easing played backwards in time, for turning on
 private val NightFallEasing = Easing { 1f - FastOutSlowInEasing.transform(1f - it) }

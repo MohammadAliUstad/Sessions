@@ -47,7 +47,7 @@ class SessionsApp : Application(), Configuration.Provider {
         AppStrings.init(this)
 
         // Configure logging: DebugTree for development, ReleaseTree for production
-        Timber.plant(ReleaseTree())
+        Timber.plant(if (BuildConfig.DEBUG) Timber.DebugTree() else ReleaseTree())
 
         // Initialize Firebase SDK
         FirebaseApp.initializeApp(this)

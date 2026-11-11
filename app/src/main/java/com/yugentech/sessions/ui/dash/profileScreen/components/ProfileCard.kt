@@ -37,7 +37,6 @@ import androidx.compose.material.icons.automirrored.filled.ShowChart
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.LocalFireDepartment
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -64,7 +63,6 @@ import com.yugentech.sessions.theme.tokens.spacing
 
 // Compact profile card: avatar on the left (tap it or its badge to change it),
 // name and avatar title beside it with a pencil to rename, then Insights and the streak.
-@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun ProfileCard(
     userData: UserData,

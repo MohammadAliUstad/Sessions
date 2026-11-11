@@ -24,6 +24,10 @@ class SessionsRepositoryImpl(
     private val currentUserId: String?
         get() = authRepository.currentUser
 
+    // A guest's sessions stay on this phone: Firestore is never touched in guest mode
+    private val isGuest: Boolean
+        get() = authRepository.isGuest
+
     override suspend fun saveSession(session: Session): SessionResult<Unit> {
         // Ensure user is logged in before saving
         val userId = currentUserId ?: return SessionResult.Error("User not logged in")
@@ -66,7 +70,7 @@ class SessionsRepositoryImpl(
             // Delete from local database first
             sessionsDao.deleteSession(sessionId)
             // Then attempt to delete from the server
-            sessionService.deleteSession(userId, sessionId)
+            if (!isGuest) sessionService.deleteSession(userId, sessionId)
             SessionResult.Success(Unit)
         } catch (e: Exception) {
             Timber.e(e, "Failed to delete session")
@@ -80,7 +84,7 @@ class SessionsRepositoryImpl(
         return try {
             Timber.i("Deleting ${sessionIds.size} sessions")
             sessionsDao.deleteSessions(sessionIds)
-            sessionService.deleteSessions(userId, sessionIds)
+            if (!isGuest) sessionService.deleteSessions(userId, sessionIds)
             SessionResult.Success(Unit)
         } catch (e: Exception) {
             Timber.e(e, "Failed to delete sessions batch")
@@ -94,7 +98,7 @@ class SessionsRepositoryImpl(
         return try {
             Timber.i("Deleting all sessions for user: $userId")
             sessionsDao.deleteAllSessions(userId)
-            sessionService.deleteAllSessions(userId)
+            if (!isGuest) sessionService.deleteAllSessions(userId)
             SessionResult.Success(Unit)
         } catch (e: Exception) {
             Timber.e(e, "Failed to delete all sessions")
@@ -104,6 +108,7 @@ class SessionsRepositoryImpl(
 
     override suspend fun syncSessions(): SessionResult<Unit> {
         val userId = currentUserId ?: return SessionResult.Error("User not logged in")
+        if (isGuest) return SessionResult.Success(Unit)
 
         return try {
             // Find sessions that haven't been uploaded yet
@@ -140,6 +145,7 @@ class SessionsRepositoryImpl(
 
     override suspend fun fetchSessionsOnce(): SessionResult<Unit> {
         val userId = currentUserId ?: return SessionResult.Error("User not logged in")
+        if (isGuest) return SessionResult.Success(Unit)
 
         return try {
             // Check preferences to see if we already downloaded the initial data

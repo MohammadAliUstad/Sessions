@@ -10,7 +10,6 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
-import com.yugentech.sessions.auth.state.AuthState
 import com.yugentech.sessions.navigation.screen.AppScreen
 import com.yugentech.sessions.notification.viewmodel.NotificationViewModel
 import com.yugentech.sessions.timer.viewmodel.TimerViewModel
@@ -26,7 +25,6 @@ import timber.log.Timber
 fun NavGraphBuilder.dashGraph(
     navController: NavHostController,
     authViewModel: AuthViewModel,
-    authState: AuthState,
     onOnboardingComplete: () -> Unit,
     context: Context
 ) {
@@ -61,12 +59,14 @@ fun NavGraphBuilder.dashGraph(
         if (currentUserId != null) {
             MainScreen(
                 userId = currentUserId,
+                isGuest = authState.isGuest,
                 onSignOut = {
                     Timber.i("User requested Sign Out")
                     timerViewModel.onLeave()
                     timerViewModel.updateSessionTask("")
                     notificationViewModel.cancelReminders()
-                    authViewModel.signOut()
+                    // A guest has no account to come back to, so leaving removes their data
+                    if (authState.isGuest) authViewModel.exitGuestMode() else authViewModel.signOut()
                 },
                 onExit = {
                     Timber.i("User requested App Exit")

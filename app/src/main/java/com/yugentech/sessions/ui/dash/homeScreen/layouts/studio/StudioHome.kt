@@ -27,15 +27,9 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.drawBehind
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.geometry.Size
-import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
@@ -49,7 +43,6 @@ import com.yugentech.sessions.ui.dash.homeScreen.layouts.shared.HomeUi
 import com.yugentech.sessions.ui.dash.homeScreen.layouts.shared.TaskTapInset
 import com.yugentech.sessions.ui.dash.homeScreen.layouts.shared.modeColor
 import com.yugentech.sessions.ui.dash.homeScreen.layouts.shared.taskTapArea
-import com.yugentech.sessions.ui.dash.mainScreen.components.topBarInset
 
 /**
  * Studio: Home as one calm composition. The day and the task set the scene at the top; the dial
@@ -82,11 +75,11 @@ fun StudioHome(ui: HomeUi, actions: HomeActions, screenHeight: Dp) {
         ) {
             StudioHeader(
                 task = config.sessionTask,
-                canEdit = !ui.isSessionActive,
+                // Renaming is for before starting or while paused, never while the timer runs
+                canEdit = !ui.isRunning,
                 soundId = config.activeBackgroundSoundId,
                 soundOn = config.isAmbientEnabled,
                 soundPlaying = ui.isRunning,
-                accent = accent,
                 onTask = actions.onTaskClick,
                 onToggleSound = actions.onToggleAmbient
             )
@@ -144,7 +137,6 @@ fun StudioHome(ui: HomeUi, actions: HomeActions, screenHeight: Dp) {
             StudioDock(
                 isRunning = ui.isRunning,
                 isSessionActive = ui.isSessionActive,
-                mode = ui.mode,
                 onStartStop = actions.onStartStop,
                 onSound = actions.onSoundClick,
                 onSets = actions.onSetsClick,
@@ -167,7 +159,6 @@ private fun StudioHeader(
     soundId: String?,
     soundOn: Boolean,
     soundPlaying: Boolean,
-    accent: Color,
     onTask: () -> Unit,
     onToggleSound: () -> Unit
 ) {

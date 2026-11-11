@@ -41,7 +41,7 @@ class AuthService(
     // Creates a new account with email and password and updates the display name
     suspend fun signUp(name: String, email: String, password: String): AuthResult<FirebaseUser> {
         return try {
-            Timber.d("Attempting sign up for email: $email")
+            Timber.d("Attempting sign up")
             val result = auth.createUserWithEmailAndPassword(email, password).await()
             val user = result.user!!
 
@@ -60,7 +60,7 @@ class AuthService(
     // Authenticates an existing user using email and password
     suspend fun signIn(email: String, password: String): AuthResult<FirebaseUser> {
         return try {
-            Timber.d("Attempting sign in for email: $email")
+            Timber.d("Attempting sign in")
             val result = auth.signInWithEmailAndPassword(email, password).await()
             Timber.i("User signed in successfully: ${result.user?.uid}")
             AuthResult.Success(result.user!!)
@@ -73,7 +73,7 @@ class AuthService(
     // Sends a password recovery email to the specified address
     suspend fun sendPasswordResetEmail(email: String): AuthResult<Unit> {
         return try {
-            Timber.d("Sending password reset email to: $email")
+            Timber.d("Sending password reset email")
             auth.sendPasswordResetEmail(email).await()
             AuthResult.Success(Unit)
         } catch (e: Exception) {

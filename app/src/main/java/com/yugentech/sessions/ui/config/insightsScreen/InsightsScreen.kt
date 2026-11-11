@@ -29,8 +29,6 @@ import androidx.compose.material.icons.filled.AutoAwesome
 import androidx.compose.material.icons.filled.Timer
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LargeTopAppBar
@@ -59,7 +57,6 @@ import com.yugentech.sessions.ui.config.insightsScreen.components.WeeklyRhythmCh
 import com.yugentech.sessions.ui.config.insightsScreen.components.heatMap.Heatmap
 import java.time.LocalDate
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun InsightsScreen(
     totalTime: String,

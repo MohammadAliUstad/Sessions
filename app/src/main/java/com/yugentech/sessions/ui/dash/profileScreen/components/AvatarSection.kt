@@ -1,8 +1,6 @@
 package com.yugentech.sessions.ui.dash.profileScreen.components
 
-import com.yugentech.sessions.R
 import androidx.compose.ui.res.stringResource
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -14,8 +12,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MotionScheme
@@ -37,7 +33,6 @@ import kotlinx.coroutines.launch
 
 // Category tabs over a grid of avatars (tap a tab to switch), drawn straight on the avatar sheet
 // (no card around it): the tabs run edge to edge and the grid lines up with the sheet title.
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun AvatarSection(
     selectedAvatarId: Int,

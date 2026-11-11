@@ -6,7 +6,6 @@ import android.app.PendingIntent
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import android.os.Build
 import androidx.core.app.NotificationCompat
 import com.yugentech.sessions.R
 
@@ -53,27 +52,25 @@ class ReminderReceiver : BroadcastReceiver() {
             val notificationManager =
                 context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                notificationManager.deleteNotificationChannel(OLD_CHANNEL_ID)
-                notificationManager.createNotificationChannel(
-                    NotificationChannel(
-                        DAILY_CHANNEL_ID,
-                        context.getString(R.string.reminder_channel_daily),
-                        NotificationManager.IMPORTANCE_DEFAULT
-                    ).apply {
-                        description = context.getString(R.string.reminder_channel_daily_description)
-                    }
-                )
-                notificationManager.createNotificationChannel(
-                    NotificationChannel(
-                        NUDGE_CHANNEL_ID,
-                        context.getString(R.string.reminder_channel_nudges),
-                        NotificationManager.IMPORTANCE_LOW
-                    ).apply {
-                        description = context.getString(R.string.reminder_channel_nudges_description)
-                    }
-                )
-            }
+            notificationManager.deleteNotificationChannel(OLD_CHANNEL_ID)
+            notificationManager.createNotificationChannel(
+                NotificationChannel(
+                    DAILY_CHANNEL_ID,
+                    context.getString(R.string.reminder_channel_daily),
+                    NotificationManager.IMPORTANCE_DEFAULT
+                ).apply {
+                    description = context.getString(R.string.reminder_channel_daily_description)
+                }
+            )
+            notificationManager.createNotificationChannel(
+                NotificationChannel(
+                    NUDGE_CHANNEL_ID,
+                    context.getString(R.string.reminder_channel_nudges),
+                    NotificationManager.IMPORTANCE_LOW
+                ).apply {
+                    description = context.getString(R.string.reminder_channel_nudges_description)
+                }
+            )
 
             // Tapping the reminder opens the app.
             val openApp = context.packageManager.getLaunchIntentForPackage(context.packageName)?.let { launch ->
