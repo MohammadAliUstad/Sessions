@@ -42,6 +42,10 @@ class GuestBackupViewModel(
     }
 
     fun import(uri: Uri) = launchBackup { userId ->
+        // Signed in: bring the account's templates down first, so the import's name check sees
+        // them. Otherwise, on a fresh install, a backup template sharing a cloud template's name
+        // is added here and the two never reconcile. Offline this does nothing and moves on.
+        if (!authRepository.isGuest) templateRepository.syncTemplates()
         val summary = backupManager.import(userId, uri)
         if (summary == null) {
             Result.ImportFailed

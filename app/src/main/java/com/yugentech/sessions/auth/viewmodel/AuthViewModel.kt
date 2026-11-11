@@ -18,6 +18,7 @@ import com.yugentech.sessions.user.datastore.UserDataStore
 import com.yugentech.sessions.user.model.UserData
 import com.yugentech.sessions.user.repository.UserRepository
 import com.yugentech.sessions.user.result.UserResult
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -189,8 +190,20 @@ class AuthViewModel(
         Timber.i("User requested to exit guest mode")
         _authState.update { it.copy(isLoading = true) }
         viewModelScope.launch {
-            guestDataManager.deleteLocalData(guestId)
-            syncDataStore.clearSyncFlags()
+            try {
+                guestDataManager.deleteLocalData(guestId)
+                syncDataStore.clearSyncFlags()
+            } catch (e: CancellationException) {
+                throw e
+            } catch (e: Exception) {
+                // Stay in guest mode rather than leave data behind for the next account (the
+                // templates table isn't per account). Clearing isLoading lets them try again.
+                Timber.e(e, "Couldn't remove guest data; staying in guest mode")
+                _authState.update {
+                    it.copy(isLoading = false, error = AppStrings.get(R.string.error_generic))
+                }
+                return@launch
+            }
             authRepository.endGuest()
         }
     }
