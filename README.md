@@ -82,37 +82,37 @@ Sign in to keep your history backed up and synced across devices, or tap **Guest
 <table width="100%">
   <tr>
     <td align="center" width="25%">
-      <img src="screenshots/Timer.png" alt="Timer" width="100%"/>
+      <img src="screenshots/Timer.png" alt="Timer: Achieve deep focus" width="100%"/>
       <br/><sub><b>Timer</b></sub>
     </td>
     <td align="center" width="25%">
-      <img src="screenshots/Insights.png" alt="Insights" width="100%"/>
-      <br/><sub><b>Insights</b></sub>
-    </td>
-    <td align="center" width="25%">
-      <img src="screenshots/Dashboard.png" alt="Dashboard" width="100%"/>
+      <img src="screenshots/Dashboard.png" alt="Dashboard: Your daily dashboard" width="100%"/>
       <br/><sub><b>Dashboard</b></sub>
     </td>
     <td align="center" width="25%">
-       <img src="screenshots/Appearance.png" alt="Appearance" width="100%"/>
-      <br/><sub><b>Appearance</b></sub>
+      <img src="screenshots/Insights.png" alt="Insights: Track your growth" width="100%"/>
+      <br/><sub><b>Insights</b></sub>
+    </td>
+    <td align="center" width="25%">
+      <img src="screenshots/Home%20Layouts.png" alt="Home Layouts: Customize your home" width="100%"/>
+      <br/><sub><b>Home Layouts</b></sub>
     </td>
   </tr>
   <tr>
     <td align="center" width="25%">
-      <img src="screenshots/Settings.png" alt="Settings" width="100%"/>
+      <img src="screenshots/Appearance.png" alt="Appearance: Designed for you" width="100%"/>
+      <br/><sub><b>Appearance</b></sub>
+    </td>
+    <td align="center" width="25%">
+      <img src="screenshots/Settings.png" alt="Settings: Manage your preferences" width="100%"/>
       <br/><sub><b>Settings</b></sub>
     </td>
     <td align="center" width="25%">
-      <img src="screenshots/Notification.png" alt="Notification" width="100%"/>
-      <br/><sub><b>Notification</b></sub>
+      <img src="screenshots/Language.png" alt="Language: Choose your language" width="100%"/>
+      <br/><sub><b>Language</b></sub>
     </td>
     <td align="center" width="25%">
-      <img src="screenshots/Edit Profile.png" alt="Edit Profile" width="100%"/>
-      <br/><sub><b>Edit Profile</b></sub>
-    </td>
-    <td align="center" width="25%">
-      <img src="screenshots/About.png" alt="About" width="100%"/>
+      <img src="screenshots/About.png" alt="About: Crafted with care" width="100%"/>
       <br/><sub><b>About</b></sub>
     </td>
   </tr>
