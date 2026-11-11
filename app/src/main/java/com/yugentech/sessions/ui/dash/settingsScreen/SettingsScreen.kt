@@ -128,8 +128,10 @@ fun SettingsScreen(
     // (file managers don't all call .json files JSON, hence the wider list)
     val backupState by guestBackupViewModel.state.collectAsStateWithLifecycle()
     // Set by "Export and exit" in the exit-guest dialog: once the file is saved, guest mode ends.
-    // Cancelling the save or a failed export keeps them in guest mode.
-    var exitAfterExport by rememberSaveable { mutableStateOf(false) }
+    // Cancelling the save or a failed export keeps them in guest mode. Plain remember, not
+    // rememberSaveable: the tabs restore saved state, so leaving Settings mid-export would bring
+    // this back later and sign them out by surprise. Dropping it there just shows "Backup saved".
+    var exitAfterExport by remember { mutableStateOf(false) }
     val exportLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.CreateDocument("application/json")
     ) { uri ->
