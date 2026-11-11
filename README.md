@@ -44,34 +44,53 @@ Sign in to keep your history backed up and synced across devices, or tap **Guest
 
 ## ✨ Key Features
 
-### Intelligent Focus Engine
-- **Focus Reminders:** Intelligent check-ins that trigger if you've been away too long, helping you stay on track.
-- **Playful Nudges:** Smart, personalised reminders crafted around your actual task history and focus habits, distinct from focus reminders and designed to feel less like a notification and more like a friend checking in.
-- **Customisable Cycles:** Define your exact Focus Duration, Short Break Duration, and Target Set count.
-- **Flexible Long Breaks:** Opt into long breaks, set their duration, and choose the interval: every set, every 2 sets, every 3 sets, and so on up to your full target count. Long breaks can also be turned off entirely.
+### Focus Timer
+- **Customisable Cycles:** Set your focus length, short break length and how many sets you're aiming for.
+- **Flexible Long Breaks:** Choose the long break's length and how often it comes (every set, every 2 sets, and so on up to your target), or turn long breaks off.
+- **Session Goal:** A progress card tracks your sets, shows how many are left and when your long break is due, and lets you skip ahead. Reach your goal and you get a small celebration.
+- **Name Your Session:** Give each session a task, like *Coding* or *Reading*, so your history and insights show where your time went. You can rename it mid-session.
+- **Templates:** Save a timer setup as a template and switch to it in one tap.
+- **End Time at a Glance:** The timer shows the clock time your session will finish.
+- **Keep Screen On:** Optionally stops the screen sleeping while a session runs.
 
-### Immersive Audio Environment
-- **Curated Ambience:** Includes 6 high-quality background sounds: Rain, Brown Noise, Fireplace, Library, Riverside, and Forest.
-- **Adaptive Audio Ducking:** Background volume intelligently lowers during breaks and rises during focus sessions.
-- **Sensory Feedback:** Integrated haptic feedback and sound effects confirm interactions without needing to look at the screen.
+### Sound & Feel
+- **Background Ambience:** 6 sounds to focus to: Rain, Brown Noise, Fireplace, Library, Riverside and Forest.
+- **Adaptive Volume:** Background sound gets quieter during breaks and comes back up when focus starts.
+- **Sound Effects & Haptics:** Start, stop and goal sounds plus vibration, so you know what happened without looking. Each can be turned off.
 
-### Reliability & System Integration
-- **Live Activity Support:** Persistent notification on the lock screen and status bar allows you to track progress at a glance.
-- **Quick Actions:** Skip focus or break periods directly from the notification tray for seamless session control.
-- **Background Stability:** Engineered to resist aggressive battery optimization, ensuring your timer never stops unexpectedly.
+### Reminders
+- **Daily Focus Reminder:** One reminder a day at the time you pick.
+- **Playful Reminders:** Friendly nudges when you've been away for a few days, never more than one a day and never on a day you've already focused. They have their own quiet notification channel, separate from the daily reminder.
+
+### Notifications & Reliability
+- **Live Notification:** A persistent notification on the lock screen and status bar shows your progress at a glance.
+- **Quick Actions:** Pause, resume, skip or finish a session straight from the notification.
+- **Background Stability:** Built to survive aggressive battery optimisation, so your timer doesn't stop unexpectedly.
+
+### Insights & History
+- **Insights:** Total focus time, your primary focus, your most productive hour, your consistency streak, your weekly rhythm and how your time splits between tasks.
+- **Year in Pixels:** A heatmap of every day you've focused.
+- **Streaks:** Your profile shows how many days in a row you've focused.
+- **Session History:** Browse your sessions grouped by day, week or month. Delete them one at a time, a whole period at once, or all of them.
+
+### Make It Yours
+- **3 Home Layouts:** *Classic*, the original layout. *Refined*, which is calmer with the ring up front. *Studio*, with a dial and a floating dock. Refined and Studio can add a colour gradient at the top of the screen.
+- **Session Card Styles:** Filled, Outlined or Glass, with an optional animated background: Desert crossing, Lo-fi rain, Candle & embers, Aurora or Mesh gradient.
+- **8 Colour Themes:** Dynamic (Material You), Sessions, Twilight, Grove, Sakura, Lagoon, Harvest and Alpine, each in Light, Dark or System mode.
+- **AMOLED Black:** Pure black backgrounds for OLED screens.
+- **6 Fonts:** Google Sans, Outfit, Manrope, Urbanist, Figtree and Garamond.
+- **Profile:** Pick one of the illustrated avatars and set your display name.
+- **10 Languages:** English, Spanish, Portuguese (Brazil), French, German, Hindi, Arabic, Japanese, Korean and Simplified Chinese. Follow your phone's language or choose one in the app.
 
 ### Accounts & Your Data
-- **Sign In or Go Guest:** Sign in with email or Google to back up and sync your sessions, templates and profile, or continue as a guest without an account.
-- **Private Guest Mode:** A guest's data never leaves the phone: no account is created and nothing is sent to the cloud. It works offline from the first launch.
+- **Sign In or Go Guest:** Sign in with email or Google to back up and sync your sessions, templates and profile across devices, or continue as a guest with no account.
+- **Private Guest Mode:** A guest's data never leaves the phone. No account is created, nothing is sent to the cloud, and it works offline from the first launch.
 - **Backup Files:** Guests can export their sessions, templates and profile to a single file and import it later. Signed in? Import a guest backup from Settings and it syncs to your account. Imports merge, so nothing is ever doubled up.
 
-### Analytics & Personalization
-- **Visual Insights:** Dedicated dashboard featuring heatmaps and metrics (Total Focus Time, Peak Productivity Hours).
-- **Session Management:** Full control over your history: sort sessions by day, week, or month, and delete sessions individually, by period (daily, weekly, or monthly), or all at once.
-- **Deep Theming:** 8 Color Themes (including Dynamic Material You), OLED Black Mode, and 6 Font options.
-- **Home Layouts:** Choose how the timer screen looks: Classic, Refined or Studio.
-- **Identity System:** Choose from a variety of animated avatars and set a custom display name.
-- **10 Languages:** English, Spanish, Portuguese (Brazil), French, German, Hindi, Arabic, Japanese, Korean and Simplified Chinese, switchable in the app.
+### And More
+- **Guided Onboarding:** A short tour on first launch that you can replay from Settings.
+- **What's New:** See what changed in each update.
+- **Support the Developer:** Leave an optional tip from the About screen.
 
 ---
 
@@ -132,10 +151,13 @@ UI Framework:         Jetpack Compose (Material 3)
 Architecture:         MVVM + Clean Architecture
 Dependency Injection: Koin
 Local Database:       Room
+Preferences:          DataStore
 Backend Services:     Firebase (Auth, Firestore, Analytics, Crashlytics)
 Concurrency:          Kotlin Coroutines & Flow
 Background Tasks:     WorkManager
 Animations:           Lottie
+In-App Purchases:     Google Play Billing
+Min / Target SDK:     26 (Android 8.0) / 37
 ```
 
 ### Tech Stack
@@ -145,10 +167,12 @@ Animations:           Lottie
 * **Material 3** - Latest Material Design system for beautiful, accessible UIs.
 * **MVVM Architecture** - Separation of concerns for maintainable code.
 * **Room Database** - Robust local data persistence.
+* **DataStore** - Settings and preferences, stored on the device.
 * **WorkManager** - Reliable background task scheduling for smart reminders.
 * **Firebase** - Authentication and cloud sync for signed-in users, plus usage analytics and crash reporting. Guest mode runs entirely on the device.
 * **Coroutines & Flow** - Asynchronous programming made simple.
 * **Lottie** - Animated icons throughout the app.
+* **Google Play Billing** - Optional tips to support development.
 
 ---
 
@@ -173,7 +197,7 @@ cd Sessions
 * Download the `google-services.json` file
 * Place the file in the `app/` directory of the project
 * In **Authentication**, enable the **Email/Password** and **Google** sign-in providers (guest mode needs no provider)
-* Create a **Cloud Firestore** database. Each user's data is stored under `users/{uid}`, so set your security rules to allow access only when the signed-in user's ID matches `{uid}`
+* Create a **Cloud Firestore** database. Each user's data is stored under `users/{uid}`, and the repo's [`firestore.rules`](firestore.rules) lets each signed-in user reach only their own data. Deploy them with the [Firebase CLI](https://firebase.google.com/docs/cli): `firebase deploy --only firestore:rules --project <your-project-id>`
 
 3. **Build & Run**
 * Open the project in Android Studio
