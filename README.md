@@ -79,7 +79,7 @@ Sign in to keep your history backed up and synced across devices, or tap **Guest
 - **8 Colour Themes:** Dynamic (Material You), Sessions, Twilight, Grove, Sakura, Lagoon, Harvest and Alpine, each in Light, Dark or System mode.
 - **AMOLED Black:** Pure black backgrounds for OLED screens.
 - **6 Fonts:** Google Sans, Outfit, Manrope, Urbanist, Figtree and Garamond.
-- **Profile:** Pick one of the illustrated avatars and set your display name.
+- **Profile:** Pick one of the illustrated avatars, drawn by Pablo Stanley, and set your display name.
 - **10 Languages:** English, Spanish, Portuguese (Brazil), French, German, Hindi, Arabic, Japanese, Korean and Simplified Chinese. Follow your phone's language or choose one in the app.
 
 ### Accounts & Your Data
@@ -133,6 +133,24 @@ Sign in to keep your history backed up and synced across devices, or tap **Guest
     <td align="center" width="25%">
       <img src="screenshots/About.png" alt="About: Crafted with care" width="100%"/>
       <br/><sub><b>About</b></sub>
+    </td>
+  </tr>
+  <tr>
+    <td align="center" width="25%">
+      <img src="screenshots/Onboarding.png" alt="Onboarding: See onboarding steps" width="100%"/>
+      <br/><sub><b>Onboarding</b></sub>
+    </td>
+    <td align="center" width="25%">
+      <img src="screenshots/Sign%20Up.png" alt="Sign Up: Create your account" width="100%"/>
+      <br/><sub><b>Sign Up</b></sub>
+    </td>
+    <td align="center" width="25%">
+      <img src="screenshots/Sign%20In.png" alt="Sign In: Log in or be a guest" width="100%"/>
+      <br/><sub><b>Sign In</b></sub>
+    </td>
+    <td align="center" width="25%">
+      <img src="screenshots/Attributions.png" alt="Attributions: Built open source" width="100%"/>
+      <br/><sub><b>Attributions</b></sub>
     </td>
   </tr>
 </table>
