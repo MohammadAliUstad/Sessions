@@ -72,6 +72,7 @@ import com.yugentech.sessions.theme.tokens.corners
 import com.yugentech.sessions.theme.tokens.dimensions.AppAnimations
 import com.yugentech.sessions.theme.tokens.spacing
 import com.yugentech.sessions.theme.SheetTheme
+import com.yugentech.sessions.theme.sheetEdge
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -217,6 +218,7 @@ fun TaskSelectionSheet(
         ModalBottomSheet(
             onDismissRequest = onDismiss,
             sheetState = sheetState,
+            modifier = Modifier.sheetEdge(sheetState),
             shape = RoundedCornerShape(topStart = 28.dp, topEnd = 28.dp),
             contentWindowInsets = { WindowInsets.systemBars.only(WindowInsetsSides.Top) },
             dragHandle = {

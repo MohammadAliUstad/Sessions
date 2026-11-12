@@ -97,6 +97,7 @@ import kotlin.time.Duration.Companion.milliseconds
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import com.yugentech.sessions.theme.SheetTheme
+import com.yugentech.sessions.theme.sheetEdge
 
 @Composable
 fun MoreAppsScreen(
@@ -803,6 +804,7 @@ fun MoreFromUsSheet(onDismiss: () -> Unit, onSeeAll: () -> Unit) {
         ModalBottomSheet(
             onDismissRequest = onDismiss,
             sheetState = sheetState,
+            modifier = Modifier.sheetEdge(sheetState),
             containerColor = MaterialTheme.colorScheme.surfaceContainerLow,
             // Sessions' sheet handle: a small pill with roomy padding, so it's easy to grab.
             dragHandle = {

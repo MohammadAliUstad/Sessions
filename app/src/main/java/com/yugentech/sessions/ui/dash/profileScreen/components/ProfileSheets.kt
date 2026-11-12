@@ -57,6 +57,7 @@ import com.yugentech.sessions.theme.tokens.corners
 import com.yugentech.sessions.theme.tokens.spacing
 import kotlinx.coroutines.flow.first
 import com.yugentech.sessions.theme.SheetTheme
+import com.yugentech.sessions.theme.sheetEdge
 
 // The two profile edits, each in its own sheet (they replaced the Edit Profile screen).
 // Same sheet style as the task sheet: roomy drag handle, bold title, content below.
@@ -81,6 +82,7 @@ fun AvatarPickerSheet(
         ModalBottomSheet(
             onDismissRequest = onDismiss,
             sheetState = sheetState,
+            modifier = Modifier.sheetEdge(sheetState),
             containerColor = MaterialTheme.colorScheme.surfaceContainerLow,
             dragHandle = { SheetHandle() }
         ) {
@@ -177,6 +179,7 @@ fun EditNameSheet(
         ModalBottomSheet(
             onDismissRequest = onDismiss,
             sheetState = sheetState,
+            modifier = Modifier.sheetEdge(sheetState),
             containerColor = MaterialTheme.colorScheme.surfaceContainerLow,
             dragHandle = { SheetHandle() }
         ) {

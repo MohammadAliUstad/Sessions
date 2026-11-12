@@ -60,6 +60,7 @@ import com.yugentech.sessions.alerts.model.BackgroundSound
 import com.yugentech.sessions.theme.tokens.spacing
 import com.yugentech.sessions.ui.dash.util.models.SoundOption
 import com.yugentech.sessions.theme.SheetTheme
+import com.yugentech.sessions.theme.sheetEdge
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -99,6 +100,7 @@ fun SoundSelectionSheet(
         ModalBottomSheet(
             onDismissRequest = onDismiss,
             sheetState = sheetState,
+            modifier = Modifier.sheetEdge(sheetState),
             shape = RoundedCornerShape(topStart = 28.dp, topEnd = 28.dp),
             dragHandle = {
                 Box(

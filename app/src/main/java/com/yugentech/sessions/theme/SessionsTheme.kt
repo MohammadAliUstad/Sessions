@@ -1,5 +1,6 @@
 package com.yugentech.sessions.theme
 
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MotionScheme
 import androidx.compose.runtime.Composable
@@ -10,6 +11,7 @@ import com.yugentech.sessions.theme.builder.getColorScheme
 import com.yugentech.sessions.theme.builder.getFontFamily
 import com.yugentech.sessions.theme.builder.getTypography
 import com.yugentech.sessions.theme.config.ThemeConfiguration
+import com.yugentech.sessions.theme.config.ThemeMode
 import com.yugentech.sessions.theme.tokens.LocalDesignTokens
 import com.yugentech.sessions.theme.tokens.TokensCompact
 
@@ -21,12 +23,13 @@ fun SessionsTheme(
 ) {
     // Generate the color scheme based on user settings (Dark/Light, Dynamic, etc.)
     val colorScheme = getColorScheme(themeConfiguration = themeConfiguration)
-    // The same scheme with AMOLED black off, for sheets (see SheetTheme)
-    val sheetColorScheme = if (themeConfiguration.isAmoledMode) {
-        getColorScheme(themeConfiguration = themeConfiguration.copy(isAmoledMode = false))
-    } else {
-        colorScheme
+    // AMOLED only applies in dark mode, so it's showing only when both hold (see SheetTheme)
+    val isDark = when (themeConfiguration.themeMode) {
+        ThemeMode.LIGHT -> false
+        ThemeMode.DARK -> true
+        ThemeMode.SYSTEM -> isSystemInDarkTheme()
     }
+    val amoledActive = isDark && themeConfiguration.isAmoledMode
 
     // Reconstruct typography only when the selected font changes
     val currentTypography = remember(themeConfiguration.appFont) {
@@ -40,7 +43,7 @@ fun SessionsTheme(
     CompositionLocalProvider(
         LocalDesignTokens provides tokens,
         LocalHapticFeedback provides rememberGatedHaptics(hapticsEnabled),
-        LocalSheetColorScheme provides sheetColorScheme
+        LocalAmoledActive provides amoledActive
     ) {
         MaterialTheme(
             colorScheme = colorScheme,

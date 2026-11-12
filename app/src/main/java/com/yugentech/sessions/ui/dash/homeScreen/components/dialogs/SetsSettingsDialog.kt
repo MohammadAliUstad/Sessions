@@ -73,6 +73,7 @@ import com.yugentech.sessions.theme.tokens.icons
 import com.yugentech.sessions.theme.tokens.spacing
 import kotlin.math.roundToInt
 import com.yugentech.sessions.theme.SheetTheme
+import com.yugentech.sessions.theme.sheetEdge
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -101,6 +102,7 @@ fun SetsSettingsSheet(
         ModalBottomSheet(
             onDismissRequest = onDismiss,
             sheetState = sheetState,
+            modifier = Modifier.sheetEdge(sheetState),
             shape = RoundedCornerShape(topStart = 28.dp, topEnd = 28.dp),
             dragHandle = {
                 Box(
