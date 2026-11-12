@@ -71,6 +71,7 @@ import com.yugentech.sessions.templates.model.Template
 import com.yugentech.sessions.theme.tokens.corners
 import com.yugentech.sessions.theme.tokens.dimensions.AppAnimations
 import com.yugentech.sessions.theme.tokens.spacing
+import com.yugentech.sessions.theme.SheetTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -212,271 +213,273 @@ fun TaskSelectionSheet(
         )
     }
 
-    ModalBottomSheet(
-        onDismissRequest = onDismiss,
-        sheetState = sheetState,
-        shape = RoundedCornerShape(topStart = 28.dp, topEnd = 28.dp),
-        contentWindowInsets = { WindowInsets.systemBars.only(WindowInsetsSides.Top) },
-        dragHandle = {
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clickable(
-                        interactionSource = remember { MutableInteractionSource() },
-                        indication = null,
-                        onClick = {}
-                    )
-                    .padding(vertical = 22.dp),
-                contentAlignment = Alignment.Center
-            ) {
+    SheetTheme {
+        ModalBottomSheet(
+            onDismissRequest = onDismiss,
+            sheetState = sheetState,
+            shape = RoundedCornerShape(topStart = 28.dp, topEnd = 28.dp),
+            contentWindowInsets = { WindowInsets.systemBars.only(WindowInsetsSides.Top) },
+            dragHandle = {
                 Box(
                     modifier = Modifier
-                        .size(width = 32.dp, height = 6.dp)
-                        .background(
-                            color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.4f),
-                            shape = CircleShape
+                        .fillMaxWidth()
+                        .clickable(
+                            interactionSource = remember { MutableInteractionSource() },
+                            indication = null,
+                            onClick = {}
                         )
-                )
+                        .padding(vertical = 22.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .size(width = 32.dp, height = 6.dp)
+                            .background(
+                                color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.4f),
+                                shape = CircleShape
+                            )
+                    )
+                }
             }
-        }
-    ) {
-        Column(modifier = Modifier.fillMaxSize()) {
-            // Scrollable section — header, task input, template list
-            LazyColumn(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .weight(1f),
-                contentPadding = PaddingValues(start = 24.dp, end = 24.dp, bottom = 0.dp)
-            ) {
-                item(key = "header") {
-                    Column(
-                        modifier = Modifier.padding(bottom = MaterialTheme.spacing.l),
-                        verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.xs)
-                    ) {
-                        Text(
-                            text = stringResource(R.string.task_title),
-                            style = MaterialTheme.typography.titleLarge,
-                            fontWeight = FontWeight.Bold,
-                            color = MaterialTheme.colorScheme.onSurface
-                        )
-                        Text(
-                            text = stringResource(
-                                if (sessionActive) R.string.task_subtitle_session else R.string.task_subtitle
-                            ),
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
-                        )
-                    }
-                }
-
-                item(key = "task_section") {
-                    Column(
-                        modifier = Modifier.padding(bottom = MaterialTheme.spacing.l),
-                        verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.s)
-                    ) {
-                        Surface(
-                            color = MaterialTheme.colorScheme.surfaceContainer,
-                            shape = RoundedCornerShape(MaterialTheme.corners.medium)
-                        ) {
-                            Row(
-                                modifier = Modifier.padding(
-                                    horizontal = MaterialTheme.spacing.m,
-                                    vertical = MaterialTheme.spacing.m
-                                ),
-                                verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.xs)
-                            ) {
-                                BasicTextField(
-                                    value = taskName,
-                                    onValueChange = { taskName = it },
-                                    modifier = Modifier.weight(1f),
-                                    textStyle = MaterialTheme.typography.titleMedium.copy(
-                                        color = MaterialTheme.colorScheme.onSurface,
-                                        fontWeight = FontWeight.SemiBold
-                                    ),
-                                    cursorBrush = SolidColor(MaterialTheme.colorScheme.primary),
-                                    singleLine = true,
-                                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
-                                    keyboardActions = KeyboardActions(onDone = { focusManager.clearFocus() }),
-                                    decorationBox = { innerTextField ->
-                                        if (taskName.isEmpty()) {
-                                            Text(
-                                                text = stringResource(R.string.task_hint),
-                                                style = MaterialTheme.typography.titleMedium,
-                                                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                                                fontWeight = FontWeight.Normal
-                                            )
-                                        }
-                                        innerTextField()
-                                    }
-                                )
-                                if (taskName.isNotEmpty()) {
-                                    IconButton(
-                                        onClick = { taskName = "" },
-                                        modifier = Modifier.size(20.dp)
-                                    ) {
-                                        Icon(
-                                            imageVector = Icons.Rounded.Close,
-                                            contentDescription = stringResource(R.string.cd_clear),
-                                            tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                                            modifier = Modifier.size(16.dp)
-                                        )
-                                    }
-                                }
-                            }
-                        }
-
-                        FilledTonalButton(
-                            modifier = Modifier.fillMaxWidth(),
-                            colors = ButtonDefaults.filledTonalButtonColors(
-                                containerColor = setTaskContainerColor,
-                                contentColor = setTaskContentColor,
-                                disabledContainerColor = setTaskContainerColor,
-                                disabledContentColor = setTaskContentColor
-                            ),
-                            onClick = {
-                                haptic.performHapticFeedback(HapticFeedbackType.Confirm)
-                                scope.launch {
-                                    sheetState.hide()
-                                    onSetTask(taskName.trim())
-                                }
-                            }
-                        ) {
-                            Text(stringResource(R.string.task_set))
-                        }
-                    }
-                }
-
-                item(key = "templates_header") {
-                    Column(modifier = Modifier.padding(bottom = MaterialTheme.spacing.s)) {
-                        HorizontalDivider(
-                            color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f)
-                        )
-                        Spacer(Modifier.height(MaterialTheme.spacing.l))
-                        Text(
-                            text = stringResource(R.string.templates_title),
-                            style = MaterialTheme.typography.labelLarge,
-                            color = MaterialTheme.colorScheme.primary,
-                            fontWeight = FontWeight.SemiBold
-                        )
-                    }
-                }
-
-                if (templates.isEmpty()) {
-                    item(key = "empty_state") {
+        ) {
+            Column(modifier = Modifier.fillMaxSize()) {
+                // Scrollable section — header, task input, template list
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .weight(1f),
+                    contentPadding = PaddingValues(start = 24.dp, end = 24.dp, bottom = 0.dp)
+                ) {
+                    item(key = "header") {
                         Column(
-                            modifier = Modifier
-                                .animateItem()
-                                .fillMaxWidth()
-                                .padding(vertical = MaterialTheme.spacing.xl),
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                            verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.s)
+                            modifier = Modifier.padding(bottom = MaterialTheme.spacing.l),
+                            verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.xs)
                         ) {
-                            Icon(
-                                imageVector = Icons.Outlined.BookmarkBorder,
-                                contentDescription = null,
-                                tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.4f),
-                                modifier = Modifier.size(40.dp)
+                            Text(
+                                text = stringResource(R.string.task_title),
+                                style = MaterialTheme.typography.titleLarge,
+                                fontWeight = FontWeight.Bold,
+                                color = MaterialTheme.colorScheme.onSurface
                             )
                             Text(
-                                text = stringResource(R.string.templates_empty),
-                                style = MaterialTheme.typography.titleSmall,
-                                fontWeight = FontWeight.SemiBold,
+                                text = stringResource(
+                                    if (sessionActive) R.string.task_subtitle_session else R.string.task_subtitle
+                                ),
+                                style = MaterialTheme.typography.bodyMedium,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant
                             )
+                        }
+                    }
+
+                    item(key = "task_section") {
+                        Column(
+                            modifier = Modifier.padding(bottom = MaterialTheme.spacing.l),
+                            verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.s)
+                        ) {
+                            Surface(
+                                color = MaterialTheme.colorScheme.surfaceContainer,
+                                shape = RoundedCornerShape(MaterialTheme.corners.medium)
+                            ) {
+                                Row(
+                                    modifier = Modifier.padding(
+                                        horizontal = MaterialTheme.spacing.m,
+                                        vertical = MaterialTheme.spacing.m
+                                    ),
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.xs)
+                                ) {
+                                    BasicTextField(
+                                        value = taskName,
+                                        onValueChange = { taskName = it },
+                                        modifier = Modifier.weight(1f),
+                                        textStyle = MaterialTheme.typography.titleMedium.copy(
+                                            color = MaterialTheme.colorScheme.onSurface,
+                                            fontWeight = FontWeight.SemiBold
+                                        ),
+                                        cursorBrush = SolidColor(MaterialTheme.colorScheme.primary),
+                                        singleLine = true,
+                                        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+                                        keyboardActions = KeyboardActions(onDone = { focusManager.clearFocus() }),
+                                        decorationBox = { innerTextField ->
+                                            if (taskName.isEmpty()) {
+                                                Text(
+                                                    text = stringResource(R.string.task_hint),
+                                                    style = MaterialTheme.typography.titleMedium,
+                                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                                    fontWeight = FontWeight.Normal
+                                                )
+                                            }
+                                            innerTextField()
+                                        }
+                                    )
+                                    if (taskName.isNotEmpty()) {
+                                        IconButton(
+                                            onClick = { taskName = "" },
+                                            modifier = Modifier.size(20.dp)
+                                        ) {
+                                            Icon(
+                                                imageVector = Icons.Rounded.Close,
+                                                contentDescription = stringResource(R.string.cd_clear),
+                                                tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                                                modifier = Modifier.size(16.dp)
+                                            )
+                                        }
+                                    }
+                                }
+                            }
+
+                            FilledTonalButton(
+                                modifier = Modifier.fillMaxWidth(),
+                                colors = ButtonDefaults.filledTonalButtonColors(
+                                    containerColor = setTaskContainerColor,
+                                    contentColor = setTaskContentColor,
+                                    disabledContainerColor = setTaskContainerColor,
+                                    disabledContentColor = setTaskContentColor
+                                ),
+                                onClick = {
+                                    haptic.performHapticFeedback(HapticFeedbackType.Confirm)
+                                    scope.launch {
+                                        sheetState.hide()
+                                        onSetTask(taskName.trim())
+                                    }
+                                }
+                            ) {
+                                Text(stringResource(R.string.task_set))
+                            }
+                        }
+                    }
+
+                    item(key = "templates_header") {
+                        Column(modifier = Modifier.padding(bottom = MaterialTheme.spacing.s)) {
+                            HorizontalDivider(
+                                color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f)
+                            )
+                            Spacer(Modifier.height(MaterialTheme.spacing.l))
                             Text(
-                                text = stringResource(R.string.templates_empty_message),
-                                style = MaterialTheme.typography.bodySmall,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f),
-                                textAlign = TextAlign.Center
+                                text = stringResource(R.string.templates_title),
+                                style = MaterialTheme.typography.labelLarge,
+                                color = MaterialTheme.colorScheme.primary,
+                                fontWeight = FontWeight.SemiBold
                             )
                         }
                     }
-                } else {
-                    items(templates, key = { it.id }) { template ->
-                        TemplateCard(
-                            template = template,
-                            modifier = Modifier
-                                .animateItem()
-                                .padding(bottom = MaterialTheme.spacing.xs),
-                            onClick = {
-                                onHaptic()
-                                scope.launch {
-                                    sheetState.hide()
-                                    onApplyTemplate(template)
-                                }
-                            },
-                            onDeleteRequest = {
-                                onHaptic()
-                                templateToDelete = template
+
+                    if (templates.isEmpty()) {
+                        item(key = "empty_state") {
+                            Column(
+                                modifier = Modifier
+                                    .animateItem()
+                                    .fillMaxWidth()
+                                    .padding(vertical = MaterialTheme.spacing.xl),
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.s)
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Outlined.BookmarkBorder,
+                                    contentDescription = null,
+                                    tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.4f),
+                                    modifier = Modifier.size(40.dp)
+                                )
+                                Text(
+                                    text = stringResource(R.string.templates_empty),
+                                    style = MaterialTheme.typography.titleSmall,
+                                    fontWeight = FontWeight.SemiBold,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                                )
+                                Text(
+                                    text = stringResource(R.string.templates_empty_message),
+                                    style = MaterialTheme.typography.bodySmall,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f),
+                                    textAlign = TextAlign.Center
+                                )
                             }
-                        )
+                        }
+                    } else {
+                        items(templates, key = { it.id }) { template ->
+                            TemplateCard(
+                                template = template,
+                                modifier = Modifier
+                                    .animateItem()
+                                    .padding(bottom = MaterialTheme.spacing.xs),
+                                onClick = {
+                                    onHaptic()
+                                    scope.launch {
+                                        sheetState.hide()
+                                        onApplyTemplate(template)
+                                    }
+                                },
+                                onDeleteRequest = {
+                                    onHaptic()
+                                    templateToDelete = template
+                                }
+                            )
+                        }
                     }
                 }
-            }
 
-            // Pinned bottom section — never moves
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 32.dp),
-                verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.l)
-            ) {
-                HorizontalDivider(
-                    modifier = Modifier.fillMaxWidth(),
-                    color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f)
-                )
+                // Pinned bottom section — never moves
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 24.dp),
+                        .padding(bottom = 32.dp),
                     verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.l)
                 ) {
-                    CurrentConfigCard(
-                        focusDuration = focusDuration,
-                        shortBreakDuration = shortBreakDuration,
-                        longBreakDuration = longBreakDuration,
-                        targetSets = targetSets,
-                        setsPerLongBreak = setsPerLongBreak,
-                        longBreakEnabled = longBreakEnabled
+                    HorizontalDivider(
+                        modifier = Modifier.fillMaxWidth(),
+                        color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f)
                     )
-                    Button(
-                        shape = CircleShape,
-                        modifier = Modifier.fillMaxWidth().height(58.dp),
-                        enabled = (isExistingTemplate && !isConfigChanged) || hasTask,
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = saveContainerColor,
-                            contentColor = saveContentColor,
-                            disabledContainerColor = saveContainerColor,
-                            disabledContentColor = saveContentColor
-                        ),
-                        onClick = {
-                            haptic.performHapticFeedback(HapticFeedbackType.Confirm)
-                            if (isExistingTemplate && !isConfigChanged) {
-                                scope.launch {
-                                    sheetState.hide()
-                                    onDismiss()
-                                }
-                            } else {
-                                onSaveTemplate(taskName.trim())
-                            }
-                        }
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 24.dp),
+                        verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.l)
                     ) {
-                        AnimatedContent(
-                            targetState = when {
-                                isExistingTemplate && isConfigChanged -> stringResource(R.string.template_update)
-                                isExistingTemplate && !isConfigChanged -> stringResource(R.string.close)
-                                else -> stringResource(R.string.template_save)
-                            },
-                            transitionSpec = { fadeThrough() },
-                            label = "saveButtonLabel"
-                        ) { label ->
-                            Text(
-                                text = label,
-                                style = MaterialTheme.typography.titleMedium,
-                                fontWeight = FontWeight.SemiBold,
-                                maxLines = 1
-                            )
+                        CurrentConfigCard(
+                            focusDuration = focusDuration,
+                            shortBreakDuration = shortBreakDuration,
+                            longBreakDuration = longBreakDuration,
+                            targetSets = targetSets,
+                            setsPerLongBreak = setsPerLongBreak,
+                            longBreakEnabled = longBreakEnabled
+                        )
+                        Button(
+                            shape = CircleShape,
+                            modifier = Modifier.fillMaxWidth().height(58.dp),
+                            enabled = (isExistingTemplate && !isConfigChanged) || hasTask,
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = saveContainerColor,
+                                contentColor = saveContentColor,
+                                disabledContainerColor = saveContainerColor,
+                                disabledContentColor = saveContentColor
+                            ),
+                            onClick = {
+                                haptic.performHapticFeedback(HapticFeedbackType.Confirm)
+                                if (isExistingTemplate && !isConfigChanged) {
+                                    scope.launch {
+                                        sheetState.hide()
+                                        onDismiss()
+                                    }
+                                } else {
+                                    onSaveTemplate(taskName.trim())
+                                }
+                            }
+                        ) {
+                            AnimatedContent(
+                                targetState = when {
+                                    isExistingTemplate && isConfigChanged -> stringResource(R.string.template_update)
+                                    isExistingTemplate && !isConfigChanged -> stringResource(R.string.close)
+                                    else -> stringResource(R.string.template_save)
+                                },
+                                transitionSpec = { fadeThrough() },
+                                label = "saveButtonLabel"
+                            ) { label ->
+                                Text(
+                                    text = label,
+                                    style = MaterialTheme.typography.titleMedium,
+                                    fontWeight = FontWeight.SemiBold,
+                                    maxLines = 1
+                                )
+                            }
                         }
                     }
                 }

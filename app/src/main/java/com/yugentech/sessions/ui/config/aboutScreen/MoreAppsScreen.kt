@@ -96,6 +96,7 @@ import com.yugentech.sessions.ui.config.aboutScreen.components.AnimatedRyoriIcon
 import kotlin.time.Duration.Companion.milliseconds
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import com.yugentech.sessions.theme.SheetTheme
 
 @Composable
 fun MoreAppsScreen(
@@ -798,86 +799,88 @@ fun MoreFromUsSheet(onDismiss: () -> Unit, onSeeAll: () -> Unit) {
         }
     )
 
-    ModalBottomSheet(
-        onDismissRequest = onDismiss,
-        sheetState = sheetState,
-        containerColor = MaterialTheme.colorScheme.surfaceContainerLow,
-        // Sessions' sheet handle: a small pill with roomy padding, so it's easy to grab.
-        dragHandle = {
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clickable(
-                        interactionSource = remember { MutableInteractionSource() },
-                        indication = null,
-                        onClick = {}
-                    )
-                    .padding(vertical = 22.dp),
-                contentAlignment = Alignment.Center
-            ) {
+    SheetTheme {
+        ModalBottomSheet(
+            onDismissRequest = onDismiss,
+            sheetState = sheetState,
+            containerColor = MaterialTheme.colorScheme.surfaceContainerLow,
+            // Sessions' sheet handle: a small pill with roomy padding, so it's easy to grab.
+            dragHandle = {
                 Box(
                     modifier = Modifier
-                        .size(width = 32.dp, height = 6.dp)
-                        .background(
-                            color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.4f),
-                            shape = CircleShape
+                        .fillMaxWidth()
+                        .clickable(
+                            interactionSource = remember { MutableInteractionSource() },
+                            indication = null,
+                            onClick = {}
                         )
-                )
-            }
-        }
-    ) {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 20.dp)
-                .padding(bottom = 16.dp)
-        ) {
-            Text(
-                text = stringResource(R.string.more_from_us),
-                style = MaterialTheme.typography.headlineSmall,
-                fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.onSurface
-            )
-            Text(
-                text = stringResource(R.string.more_apps_sheet_subtitle),
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                modifier = Modifier.padding(top = 4.dp)
-            )
-
-            Column(
-                modifier = Modifier.padding(top = 20.dp),
-                verticalArrangement = Arrangement.spacedBy(2.dp)
-            ) {
-                apps.forEachIndexed { index, app ->
-                    SheetAppRow(
-                        app = app,
-                        index = index,
-                        count = apps.size,
-                        onGetApp = app.packageName?.let { pkg -> { openPlayStore(context, pkg) } }
+                        .padding(vertical = 22.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .size(width = 32.dp, height = 6.dp)
+                            .background(
+                                color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.4f),
+                                shape = CircleShape
+                            )
                     )
                 }
             }
-
-            TextButton(
-                onClick = {
-                    // Slides the sheet away first, so it doesn't vanish under the new screen.
-                    scope.launch { sheetState.hide() }.invokeOnCompletion {
-                        onDismiss()
-                        onSeeAll()
-                    }
-                },
+        ) {
+            Column(
                 modifier = Modifier
-                    .align(Alignment.CenterHorizontally)
-                    .padding(top = 12.dp)
+                    .fillMaxWidth()
+                    .padding(horizontal = 20.dp)
+                    .padding(bottom = 16.dp)
             ) {
-                Text(stringResource(R.string.more_apps_see_all))
-                Spacer(modifier = Modifier.width(8.dp))
-                Icon(
-                    imageVector = Icons.AutoMirrored.Filled.ArrowForward,
-                    contentDescription = null,
-                    modifier = Modifier.size(18.dp)
+                Text(
+                    text = stringResource(R.string.more_from_us),
+                    style = MaterialTheme.typography.headlineSmall,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.onSurface
                 )
+                Text(
+                    text = stringResource(R.string.more_apps_sheet_subtitle),
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.padding(top = 4.dp)
+                )
+
+                Column(
+                    modifier = Modifier.padding(top = 20.dp),
+                    verticalArrangement = Arrangement.spacedBy(2.dp)
+                ) {
+                    apps.forEachIndexed { index, app ->
+                        SheetAppRow(
+                            app = app,
+                            index = index,
+                            count = apps.size,
+                            onGetApp = app.packageName?.let { pkg -> { openPlayStore(context, pkg) } }
+                        )
+                    }
+                }
+
+                TextButton(
+                    onClick = {
+                        // Slides the sheet away first, so it doesn't vanish under the new screen.
+                        scope.launch { sheetState.hide() }.invokeOnCompletion {
+                            onDismiss()
+                            onSeeAll()
+                        }
+                    },
+                    modifier = Modifier
+                        .align(Alignment.CenterHorizontally)
+                        .padding(top = 12.dp)
+                ) {
+                    Text(stringResource(R.string.more_apps_see_all))
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Filled.ArrowForward,
+                        contentDescription = null,
+                        modifier = Modifier.size(18.dp)
+                    )
+                }
             }
         }
     }

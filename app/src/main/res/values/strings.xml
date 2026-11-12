@@ -686,24 +686,16 @@
     <string name="expand">Expand</string>
 
     <!-- Release notes -->
-    <string name="whats_new_v6_1_title">Home Gradient Toggle</string>
-    <string name="whats_new_v6_1_body">You can now turn the living colour-wash gradient at the top of the home screen on or off from Home &amp; Cards in Settings. Applies to Refined and Studio layouts; the toggle card previews the glow right on itself.</string>
-    <string name="whats_new_v6_2_title">Animated Studio Sound Button</string>
-    <string name="whats_new_v6_2_body">The sound button in Studio now breathes gently while your ambient sound plays, pulsing in and out to show it\'s active. The icon also fades through when you mute or unmute, rather than snapping.</string>
     <string name="whats_new_v6_3_title">Unique Settings Toggle Icons</string>
     <string name="whats_new_v6_3_body">Each toggle in Settings now carries its own icon: a bell for notifications, an alarm for your daily reminder, a spark for playful reminders, a wave for sound effects, a vibration for haptics, and a sun for keeping the screen on.</string>
-    <string name="whats_new_v6_4_title">Avatar Ring Fix</string>
-    <string name="whats_new_v6_4_body">The selection ring on avatar items now wraps around the outside of each avatar as intended, instead of drawing over the edges of the image.</string>
     <string name="whats_new_v6_5_title">Choose Your Home Layout</string>
-    <string name="whats_new_v6_5_body">Pick how your Home screen looks from the new Home &amp; Cards screen in Settings: Classic, the original layout; Refined, a calmer take with the date above your task; or Studio, an all-new design.</string>
-    <string name="whats_new_v6_6_title">Meet Studio</string>
-    <string name="whats_new_v6_6_body">A watch-style dial whose ticks fill as you focus, with a dot riding the rim. Before you start, three tiles show your plan and when you\'d be done. During a session, a card shows each block on a timeline, and a floating dock holds every control.</string>
+    <string name="whats_new_v6_5_body">Your Home screen now comes in three layouts, picked in Settings › Home &amp; Cards. Classic keeps the familiar look. Refined is a calmer take, with the date above your task. Studio is all new: a watch-style dial whose ticks fill as you focus, with a dot riding the rim; three tiles that show your plan and when you\'d be done; and, during a session, a card with each block on a timeline and a floating dock that holds every control.</string>
     <string name="whats_new_v6_7_title">A Living Glow</string>
-    <string name="whats_new_v6_7_body">Refined and Studio have a soft, moving glow across the top of the screen in your theme\'s colours. It follows your session, leaning towards focus or break colours and flowing faster and brighter while the timer runs.</string>
+    <string name="whats_new_v6_7_body">Refined and Studio have a soft, moving glow across the top of the screen in your theme\'s colours. It follows your session, leaning towards focus or break colours and flowing faster and brighter while the timer runs. Prefer it off? Switch it off in Settings › Home &amp; Cards.</string>
     <string name="whats_new_v6_8_title">A Floating Navigation Bar</string>
     <string name="whats_new_v6_8_body">The bottom bar is now a floating pill. Each tab is just its icon, and the one you\'re on opens into a capsule with its name, while your pages run softly underneath it.</string>
-    <string name="whats_new_v6_9_title">Aurora &amp; Mesh Card Animations</string>
-    <string name="whats_new_v6_9_body">Two new animations for your session card: Aurora, soft light drifting over the card, and Mesh gradient, your theme\'s colours blending as they move. Like the others, they move only while the timer runs.</string>
+    <string name="whats_new_v6_9_title">Card Animations</string>
+    <string name="whats_new_v6_9_body">Your session card can now have a moving background, picked in Settings › Home &amp; Cards: Desert crossing, dunes and a sun that arcs across as your block runs; Lo-fi rain, drops sliding down a window; Candle &amp; embers, a flickering glow with rising embers; Aurora, soft light drifting over the card; and Mesh gradient, your theme\'s colours blending as they move. Each moves only while the timer runs.</string>
     <string name="whats_new_v6_10_title">A New Welcome</string>
     <string name="whats_new_v6_10_body">Sign in and sign up now sit on a slowly drifting glow, each with its own little animation: a focus dial still counting down where you left off, or a week of focus building up bar by bar.</string>
     <string name="whats_new_v6_11_title">New Colour Theme Cards</string>
@@ -718,6 +710,12 @@
     <string name="whats_new_v6_16_body">Tap Guest on the sign-in screen to start focusing right away. As a guest, everything stays on your phone and never goes to the cloud. Leaving guest mode deletes it, so you can export it on the way out.</string>
     <string name="whats_new_v6_17_title">Back Up and Bring It Along</string>
     <string name="whats_new_v6_17_body">Guests can export their sessions, templates and profile to a file from Settings › Backup, and import it on any phone. Signed in? Import that file in Settings and it syncs to your account. Importing never doubles anything up.</string>
+    <string name="whats_new_v6_18_title">Keep Screen On</string>
+    <string name="whats_new_v6_18_body">Turn on Keep Screen On in Settings and your screen stays awake for as long as a session is going, running or paused, so the timer is always in view. Once the session ends, your phone sleeps as usual.</string>
+    <string name="whats_new_v6_19_title">A New Welcome Tour</string>
+    <string name="whats_new_v6_19_body">The first-run tour is all new: five short scenes on focusing, sets with breaks, ambient sounds, themes and your progress, and you can play with them as you go. Tap the dial to run a quick focus, or tap a tile to try a theme. Want to see it again? Tap Replay Onboarding in Settings.</string>
+    <string name="whats_new_v6_20_title">A Livelier Avatar Picker</string>
+    <string name="whats_new_v6_20_body">Picking an avatar now has a little flourish: its circle turns into a playful Material shape, a different one each time, and its name lights up. The sheet stays open, so you can try a few before you swipe it away.</string>
     <string name="whats_new_v51_1_title">Templates Sync to Your Account</string>
     <string name="whats_new_v51_1_body">Your task templates are now saved to your account. Reinstall the app or sign in on another phone and they come right back.</string>
     <string name="whats_new_v51_2_title">Redesigned Sign In &amp; Sign Up</string>

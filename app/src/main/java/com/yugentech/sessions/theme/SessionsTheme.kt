@@ -21,6 +21,12 @@ fun SessionsTheme(
 ) {
     // Generate the color scheme based on user settings (Dark/Light, Dynamic, etc.)
     val colorScheme = getColorScheme(themeConfiguration = themeConfiguration)
+    // The same scheme with AMOLED black off, for sheets (see SheetTheme)
+    val sheetColorScheme = if (themeConfiguration.isAmoledMode) {
+        getColorScheme(themeConfiguration = themeConfiguration.copy(isAmoledMode = false))
+    } else {
+        colorScheme
+    }
 
     // Reconstruct typography only when the selected font changes
     val currentTypography = remember(themeConfiguration.appFont) {
@@ -33,7 +39,8 @@ fun SessionsTheme(
     // Provide the tokens, haptics and theme data to the entire UI tree
     CompositionLocalProvider(
         LocalDesignTokens provides tokens,
-        LocalHapticFeedback provides rememberGatedHaptics(hapticsEnabled)
+        LocalHapticFeedback provides rememberGatedHaptics(hapticsEnabled),
+        LocalSheetColorScheme provides sheetColorScheme
     ) {
         MaterialTheme(
             colorScheme = colorScheme,

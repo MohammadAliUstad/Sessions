@@ -72,6 +72,7 @@ import com.yugentech.sessions.theme.tokens.dimensions.AppAnimations
 import com.yugentech.sessions.theme.tokens.icons
 import com.yugentech.sessions.theme.tokens.spacing
 import kotlin.math.roundToInt
+import com.yugentech.sessions.theme.SheetTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -96,174 +97,176 @@ fun SetsSettingsSheet(
 
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
 
-    ModalBottomSheet(
-        onDismissRequest = onDismiss,
-        sheetState = sheetState,
-        shape = RoundedCornerShape(topStart = 28.dp, topEnd = 28.dp),
-        dragHandle = {
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clickable(
-                        interactionSource = remember { MutableInteractionSource() },
-                        indication = null,
-                        onClick = {}
-                    )
-                    .padding(vertical = 22.dp),
-                contentAlignment = Alignment.Center
-            ) {
+    SheetTheme {
+        ModalBottomSheet(
+            onDismissRequest = onDismiss,
+            sheetState = sheetState,
+            shape = RoundedCornerShape(topStart = 28.dp, topEnd = 28.dp),
+            dragHandle = {
                 Box(
                     modifier = Modifier
-                        .size(width = 32.dp, height = 6.dp)
-                        .background(
-                            color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.4f),
-                            shape = CircleShape
+                        .fillMaxWidth()
+                        .clickable(
+                            interactionSource = remember { MutableInteractionSource() },
+                            indication = null,
+                            onClick = {}
                         )
-                )
-            }
-        }
-    ) {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .verticalScroll(rememberScrollState())
-                .padding(start = 24.dp, end = 24.dp, bottom = 40.dp),
-            verticalArrangement = Arrangement.spacedBy(24.dp)
-        ) {
-            Column(verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.xs)) {
-                Text(
-                    text = stringResource(R.string.sets_title),
-                    style = MaterialTheme.typography.titleLarge,
-                    fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.onSurface
-                )
-                Text(
-                    text = stringResource(R.string.sets_subtitle),
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-            }
-
-            SettingSliderRow(
-                label = stringResource(R.string.sets_target),
-                valueDisplay = "$sets",
-                icon = Icons.Outlined.Flag,
-                value = sets.toFloat(),
-                valueRange = 1f..12f,
-                steps = 10,
-                onValueChange = {
-                    val newSets = it.roundToInt()
-                    if (newSets != sets) onHaptic()
-                    sets = newSets
-                    setsPerLongBreak = setsPerLongBreak.coerceIn(1, (sets - 1).coerceAtLeast(1))
+                        .padding(vertical = 22.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .size(width = 32.dp, height = 6.dp)
+                            .background(
+                                color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.4f),
+                                shape = CircleShape
+                            )
+                    )
                 }
-            )
-
+            }
+        ) {
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .animateContentSize(
-                        animationSpec = spring(
-                            stiffness = Spring.StiffnessMediumLow,
-                            dampingRatio = Spring.DampingRatioNoBouncy
-                        )
-                    ),
-                verticalArrangement = Arrangement.spacedBy(16.dp)
+                    .verticalScroll(rememberScrollState())
+                    .padding(start = 24.dp, end = 24.dp, bottom = 40.dp),
+                verticalArrangement = Arrangement.spacedBy(24.dp)
             ) {
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier.weight(1f)
-                    ) {
-                        Icon(
-                            imageVector = Icons.Outlined.Timer,
-                            contentDescription = null,
-                            modifier = Modifier.size(MaterialTheme.icons.mediumSmall),
-                            tint = MaterialTheme.colorScheme.onSurfaceVariant
-                        )
-                        Spacer(modifier = Modifier.width(MaterialTheme.spacing.s))
-                        Text(
-                            text = stringResource(R.string.mode_long_break),
-                            style = MaterialTheme.typography.titleMedium,
-                            fontWeight = FontWeight.Medium,
-                            color = MaterialTheme.colorScheme.onSurface
-                        )
-                    }
-                    Switch(
-                        checked = longBreakEnabled,
-                        onCheckedChange = {
-                            haptic.performHapticFeedback(if (it) HapticFeedbackType.ToggleOn else HapticFeedbackType.ToggleOff)
-                            longBreakEnabled = it
-                        },
-                        colors = SwitchDefaults.colors(
-                            checkedThumbColor = MaterialTheme.colorScheme.onPrimaryContainer,
-                            checkedTrackColor = MaterialTheme.colorScheme.primaryContainer,
-                            uncheckedThumbColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                            uncheckedTrackColor = MaterialTheme.colorScheme.surfaceVariant,
-                            checkedIconColor = MaterialTheme.colorScheme.primaryContainer,
-                            uncheckedIconColor = MaterialTheme.colorScheme.surfaceVariant
-                        ),
-                        thumbContent = {
-                            Icon(
-                                imageVector = if (longBreakEnabled) Icons.Filled.Timer else Icons.Filled.Close,
-                                contentDescription = null,
-                                modifier = Modifier.size(SwitchDefaults.IconSize)
-                            )
-                        }
+                Column(verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.xs)) {
+                    Text(
+                        text = stringResource(R.string.sets_title),
+                        style = MaterialTheme.typography.titleLarge,
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
+                    Text(
+                        text = stringResource(R.string.sets_subtitle),
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
 
-                AnimatedVisibility(
-                    visible = longBreakEnabled,
-                    enter = fadeIn(tween(250)),
-                    exit = fadeOut(tween(200))
+                SettingSliderRow(
+                    label = stringResource(R.string.sets_target),
+                    valueDisplay = "$sets",
+                    icon = Icons.Outlined.Flag,
+                    value = sets.toFloat(),
+                    valueRange = 1f..12f,
+                    steps = 10,
+                    onValueChange = {
+                        val newSets = it.roundToInt()
+                        if (newSets != sets) onHaptic()
+                        sets = newSets
+                        setsPerLongBreak = setsPerLongBreak.coerceIn(1, (sets - 1).coerceAtLeast(1))
+                    }
+                )
+
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .animateContentSize(
+                            animationSpec = spring(
+                                stiffness = Spring.StiffnessMediumLow,
+                                dampingRatio = Spring.DampingRatioNoBouncy
+                            )
+                        ),
+                    verticalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
-                    Column(verticalArrangement = Arrangement.spacedBy(24.dp)) {
-                        SettingSliderRow(
-                            label = stringResource(R.string.sets_duration),
-                            valueDisplay = stringResource(R.string.duration_minutes_short, longBreak.roundToInt()),
-                            icon = Icons.Outlined.HourglassEmpty,
-                            value = longBreak,
-                            valueRange = 15f..45f,
-                            steps = 5,
-                            onValueChange = {
-                                val newLongBreak = (it / 5).roundToInt() * 5f
-                                if (newLongBreak != longBreak) onHaptic()
-                                longBreak = newLongBreak
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            modifier = Modifier.weight(1f)
+                        ) {
+                            Icon(
+                                imageVector = Icons.Outlined.Timer,
+                                contentDescription = null,
+                                modifier = Modifier.size(MaterialTheme.icons.mediumSmall),
+                                tint = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                            Spacer(modifier = Modifier.width(MaterialTheme.spacing.s))
+                            Text(
+                                text = stringResource(R.string.mode_long_break),
+                                style = MaterialTheme.typography.titleMedium,
+                                fontWeight = FontWeight.Medium,
+                                color = MaterialTheme.colorScheme.onSurface
+                            )
+                        }
+                        Switch(
+                            checked = longBreakEnabled,
+                            onCheckedChange = {
+                                haptic.performHapticFeedback(if (it) HapticFeedbackType.ToggleOn else HapticFeedbackType.ToggleOff)
+                                longBreakEnabled = it
+                            },
+                            colors = SwitchDefaults.colors(
+                                checkedThumbColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                                checkedTrackColor = MaterialTheme.colorScheme.primaryContainer,
+                                uncheckedThumbColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                                uncheckedTrackColor = MaterialTheme.colorScheme.surfaceVariant,
+                                checkedIconColor = MaterialTheme.colorScheme.primaryContainer,
+                                uncheckedIconColor = MaterialTheme.colorScheme.surfaceVariant
+                            ),
+                            thumbContent = {
+                                Icon(
+                                    imageVector = if (longBreakEnabled) Icons.Filled.Timer else Icons.Filled.Close,
+                                    contentDescription = null,
+                                    modifier = Modifier.size(SwitchDefaults.IconSize)
+                                )
                             }
                         )
+                    }
 
-                        LongBreakPatternControl(
-                            sets = sets,
-                            setsPerLongBreak = setsPerLongBreak,
-                            onValueChange = { setsPerLongBreak = it },
-                            onHaptic = onHaptic
-                        )
+                    AnimatedVisibility(
+                        visible = longBreakEnabled,
+                        enter = fadeIn(tween(250)),
+                        exit = fadeOut(tween(200))
+                    ) {
+                        Column(verticalArrangement = Arrangement.spacedBy(24.dp)) {
+                            SettingSliderRow(
+                                label = stringResource(R.string.sets_duration),
+                                valueDisplay = stringResource(R.string.duration_minutes_short, longBreak.roundToInt()),
+                                icon = Icons.Outlined.HourglassEmpty,
+                                value = longBreak,
+                                valueRange = 15f..45f,
+                                steps = 5,
+                                onValueChange = {
+                                    val newLongBreak = (it / 5).roundToInt() * 5f
+                                    if (newLongBreak != longBreak) onHaptic()
+                                    longBreak = newLongBreak
+                                }
+                            )
+
+                            LongBreakPatternControl(
+                                sets = sets,
+                                setsPerLongBreak = setsPerLongBreak,
+                                onValueChange = { setsPerLongBreak = it },
+                                onHaptic = onHaptic
+                            )
+                        }
                     }
                 }
-            }
 
-            Button(
-                shape = CircleShape,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(58.dp),
-                onClick = {
-                    haptic.performHapticFeedback(HapticFeedbackType.Confirm)
-                    onSave(sets, longBreak.roundToInt(), setsPerLongBreak, longBreakEnabled)
-                    scope.launch { sheetState.hide() }
+                Button(
+                    shape = CircleShape,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(58.dp),
+                    onClick = {
+                        haptic.performHapticFeedback(HapticFeedbackType.Confirm)
+                        onSave(sets, longBreak.roundToInt(), setsPerLongBreak, longBreakEnabled)
+                        scope.launch { sheetState.hide() }
+                    }
+                ) {
+                    Text(
+                        text = stringResource(R.string.save),
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.SemiBold,
+                        maxLines = 1
+                    )
                 }
-            ) {
-                Text(
-                    text = stringResource(R.string.save),
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.SemiBold,
-                    maxLines = 1
-                )
             }
         }
     }

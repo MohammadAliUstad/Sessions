@@ -42,9 +42,11 @@ import androidx.compose.material.icons.filled.Contrast
 import androidx.compose.material.icons.filled.Gradient
 import androidx.compose.material.icons.filled.Palette
 import androidx.compose.material.icons.filled.SpaceDashboard
-import androidx.compose.material.icons.filled.Timer
 import androidx.compose.material.icons.filled.EmojiEvents
 import androidx.compose.material.icons.filled.Explore
+import androidx.compose.material.icons.filled.Face
+import androidx.compose.material.icons.filled.LightMode
+import androidx.compose.material.icons.filled.Replay
 import androidx.compose.material.icons.filled.ExpandMore
 import androidx.compose.material.icons.filled.Flag
 import androidx.compose.material.icons.filled.History
@@ -113,34 +115,19 @@ fun WhatsNewScreen(
             Icons.Default.Translate
         ),
         UpdateItem(
-            stringResource(R.string.whats_new_v6_1_title),
-            stringResource(R.string.whats_new_v6_1_body),
-            Icons.Default.Gradient
-        ),
-        UpdateItem(
-            stringResource(R.string.whats_new_v6_2_title),
-            stringResource(R.string.whats_new_v6_2_body),
-            Icons.AutoMirrored.Filled.VolumeUp
-        ),
-        UpdateItem(
             stringResource(R.string.whats_new_v6_3_title),
             stringResource(R.string.whats_new_v6_3_body),
             Icons.Default.Tune
         ),
         UpdateItem(
-            stringResource(R.string.whats_new_v6_4_title),
-            stringResource(R.string.whats_new_v6_4_body),
-            Icons.Default.AccountCircle
+            stringResource(R.string.whats_new_v6_18_title),
+            stringResource(R.string.whats_new_v6_18_body),
+            Icons.Default.LightMode
         ),
         UpdateItem(
             stringResource(R.string.whats_new_v6_5_title),
             stringResource(R.string.whats_new_v6_5_body),
             Icons.Default.SpaceDashboard
-        ),
-        UpdateItem(
-            stringResource(R.string.whats_new_v6_6_title),
-            stringResource(R.string.whats_new_v6_6_body),
-            Icons.Default.Timer
         ),
         UpdateItem(
             stringResource(R.string.whats_new_v6_7_title),
@@ -161,6 +148,16 @@ fun WhatsNewScreen(
             stringResource(R.string.whats_new_v6_10_title),
             stringResource(R.string.whats_new_v6_10_body),
             Icons.AutoMirrored.Filled.Login
+        ),
+        UpdateItem(
+            stringResource(R.string.whats_new_v6_19_title),
+            stringResource(R.string.whats_new_v6_19_body),
+            Icons.Default.Replay
+        ),
+        UpdateItem(
+            stringResource(R.string.whats_new_v6_20_title),
+            stringResource(R.string.whats_new_v6_20_body),
+            Icons.Default.Face
         ),
         UpdateItem(
             stringResource(R.string.whats_new_v6_11_title),
