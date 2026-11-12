@@ -26,11 +26,12 @@ object AnnouncementsCatalog {
      * ones matching the current app version that haven't been seen yet.
      */
     val ALL_ANNOUNCEMENTS: List<Announcement> = listOf(
-        // Version 6.0.0 (versionCode 27)
+        // Version 6.0.0 (versionCodes 27 and 28: 28 is a rebuild of 6.0.0, and anyone who
+        // already saw these on 27 has them marked seen, so they never show twice)
         Announcement(
             id = "v6_0_0_whats_new",
             minVersionCode = 27,
-            maxVersionCode = 27,
+            maxVersionCode = 28,
             priority = 100,
             style = AnnouncementStyle.DIALOG,
             title = R.string.announcement_v6_title,
@@ -43,7 +44,7 @@ object AnnouncementsCatalog {
         Announcement(
             id = "v6_0_0_layouts_tip",
             minVersionCode = 27,
-            maxVersionCode = 27,
+            maxVersionCode = 28,
             priority = 50,
             style = AnnouncementStyle.DIALOG,
             title = R.string.announcement_layouts_title,
