@@ -33,7 +33,6 @@
     <string name="language_name_french">Francês</string>
     <string name="language_name_german">Alemão</string>
     <string name="language_name_hindi">Hindi</string>
-    <string name="language_name_arabic">Árabe</string>
     <string name="language_name_japanese">Japonês</string>
     <string name="language_name_korean">Coreano</string>
     <string name="language_name_chinese">Chinês</string>
@@ -492,7 +491,7 @@
     <string name="whats_new_v6_12_title">Mudanças de tema mais suaves</string>
     <string name="whats_new_v6_12_body">Trocar o tema de cores, alternar entre claro e escuro ou ativar o preto AMOLED agora faz uma transição suave por toda a tela.</string>
     <string name="whats_new_v6_13_title">Sessions no seu idioma</string>
-    <string name="whats_new_v6_13_body">O Sessions agora fala dez idiomas: inglês, espanhol, português, francês, alemão, hindi, árabe, japonês, coreano e chinês. Escolha o seu em Configurações › Idioma, ou siga o do seu celular, e o app inteiro muda na hora, sem sair de onde você está. O árabe é lido da direita para a esquerda.</string>
+    <string name="whats_new_v6_13_body">O Sessions agora fala nove idiomas: inglês, espanhol, português, francês, alemão, hindi, japonês, coreano e chinês. Escolha o seu em Configurações › Idioma, ou siga o do seu celular, e o app inteiro muda na hora, sem sair de onde você está.</string>
     <string name="whats_new_v6_15_title">Mude a tarefa no meio da sessão</string>
     <string name="whats_new_v6_15_body">Pause sua sessão para renomear sua tarefa sem recomeçar.</string>
     <string name="whats_new_v6_16_title">Use o Sessions sem conta</string>
@@ -506,7 +505,7 @@
     <string name="whats_new_v6_20_title">Um seletor de avatar mais vivo</string>
     <string name="whats_new_v6_20_body">Escolher um avatar agora tem um charme a mais: o círculo vira uma forma Material divertida, diferente a cada vez, e o nome se destaca. A folha continua aberta, então você pode testar vários antes de fechá-la.</string>
     <string name="whats_new_v61_1_title">Sessions em russo</string>
-    <string name="whats_new_v61_1_body">O Sessions agora também fala russo, somando onze idiomas. Escolha em Configurações › Idioma. E, ao trocar de idioma, cada linha da lista se ajusta suavemente ao novo tamanho em vez de pular.</string>
+    <string name="whats_new_v61_1_body">O Sessions agora também fala russo, somando dez idiomas. Escolha em Configurações › Idioma. E, ao trocar de idioma, cada linha da lista se ajusta suavemente ao novo tamanho em vez de pular.</string>
     <string name="whats_new_v61_2_title">Um ícone mais caprichado</string>
     <string name="whats_new_v61_2_body">O ícone do Sessions foi redesenhado com formas mais suaves e limpas. Você vai vê-lo na tela inicial, ao abrir o app, quicando na tela Sobre e em um novo ícone de notificação combinando.</string>
     <string name="whats_new_v61_3_title">Painéis pretos no AMOLED</string>

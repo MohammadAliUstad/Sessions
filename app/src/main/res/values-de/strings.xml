@@ -33,7 +33,6 @@
     <string name="language_name_french">Französisch</string>
     <string name="language_name_german">Deutsch</string>
     <string name="language_name_hindi">Hindi</string>
-    <string name="language_name_arabic">Arabisch</string>
     <string name="language_name_japanese">Japanisch</string>
     <string name="language_name_korean">Koreanisch</string>
     <string name="language_name_chinese">Chinesisch</string>
@@ -492,7 +491,7 @@
     <string name="whats_new_v6_12_title">Sanftere Designwechsel</string>
     <string name="whats_new_v6_12_body">Ein neues Farbschema, der Wechsel zwischen hell und dunkel oder das Einschalten von AMOLED-Schwarz blenden jetzt sanft über den ganzen Bildschirm.</string>
     <string name="whats_new_v6_13_title">Sessions in deiner Sprache</string>
-    <string name="whats_new_v6_13_body">Sessions spricht jetzt zehn Sprachen: Englisch, Spanisch, Portugiesisch, Französisch, Deutsch, Hindi, Arabisch, Japanisch, Koreanisch und Chinesisch. Wähle deine unter Einstellungen › Sprache oder folge der deines Telefons, und die ganze App wechselt sofort, genau dort, wo du bist. Arabisch wird von rechts nach links gelesen.</string>
+    <string name="whats_new_v6_13_body">Sessions spricht jetzt neun Sprachen: Englisch, Spanisch, Portugiesisch, Französisch, Deutsch, Hindi, Japanisch, Koreanisch und Chinesisch. Wähle deine unter Einstellungen › Sprache oder folge der deines Telefons, und die ganze App wechselt sofort, genau dort, wo du bist.</string>
     <string name="whats_new_v6_15_title">Aufgabe mitten in der Session ändern</string>
     <string name="whats_new_v6_15_body">Pausiere deine Session, um deine Aufgabe umzubenennen, ohne neu anzufangen.</string>
     <string name="whats_new_v6_16_title">Sessions ohne Konto nutzen</string>
@@ -506,7 +505,7 @@
     <string name="whats_new_v6_20_title">Eine lebendigere Avatar-Auswahl</string>
     <string name="whats_new_v6_20_body">Einen Avatar zu wählen hat jetzt einen kleinen Auftritt: Sein Kreis wird zu einer verspielten Material-Form, jedes Mal einer anderen, und sein Name leuchtet auf. Das Blatt bleibt offen, sodass du ein paar ausprobieren kannst, bevor du es wegwischst.</string>
     <string name="whats_new_v61_1_title">Sessions auf Russisch</string>
-    <string name="whats_new_v61_1_body">Sessions spricht jetzt auch Russisch, damit sind es elf Sprachen. Wähle es unter Einstellungen › Sprache. Und beim Sprachwechsel passt sich jede Zeile der Liste sanft ihrer neuen Größe an, statt zu springen.</string>
+    <string name="whats_new_v61_1_body">Sessions spricht jetzt auch Russisch, damit sind es zehn Sprachen. Wähle es unter Einstellungen › Sprache. Und beim Sprachwechsel passt sich jede Zeile der Liste sanft ihrer neuen Größe an, statt zu springen.</string>
     <string name="whats_new_v61_2_title">Ein aufpoliertes Icon</string>
     <string name="whats_new_v61_2_body">Das Sessions-Icon wurde mit weicheren, saubereren Formen neu gezeichnet. Du siehst es auf deinem Startbildschirm, beim Öffnen der App, hüpfend auf dem Über-Bildschirm und als passendes neues Benachrichtigungssymbol.</string>
     <string name="whats_new_v61_3_title">Schwarze Panels mit AMOLED</string>

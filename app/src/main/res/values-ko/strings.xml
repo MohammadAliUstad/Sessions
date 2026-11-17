@@ -33,7 +33,6 @@
     <string name="language_name_french">프랑스어</string>
     <string name="language_name_german">독일어</string>
     <string name="language_name_hindi">힌디어</string>
-    <string name="language_name_arabic">아랍어</string>
     <string name="language_name_japanese">일본어</string>
     <string name="language_name_korean">한국어</string>
     <string name="language_name_chinese">중국어</string>
@@ -492,7 +491,7 @@
     <string name="whats_new_v6_12_title">더 부드러운 테마 변경</string>
     <string name="whats_new_v6_12_body">색상 테마를 바꾸거나, 라이트와 다크를 전환하거나, AMOLED 블랙을 켜면 이제 화면 전체가 부드럽게 페이드돼요.</string>
     <string name="whats_new_v6_13_title">내 언어로 만나는 Sessions</string>
-    <string name="whats_new_v6_13_body">이제 Sessions가 10개 언어를 지원해요: 영어, 스페인어, 포르투갈어, 프랑스어, 독일어, 힌디어, 아랍어, 일본어, 한국어, 중국어. 설정 › 언어에서 원하는 언어를 고르거나 휴대폰 언어를 따르면, 지금 보던 화면 그대로 앱 전체가 즉시 바뀌어요. 아랍어는 오른쪽에서 왼쪽으로 표시돼요.</string>
+    <string name="whats_new_v6_13_body">이제 Sessions가 9개 언어를 지원해요: 영어, 스페인어, 포르투갈어, 프랑스어, 독일어, 힌디어, 일본어, 한국어, 중국어. 설정 › 언어에서 원하는 언어를 고르거나 휴대폰 언어를 따르면, 지금 보던 화면 그대로 앱 전체가 즉시 바뀌어요.</string>
     <string name="whats_new_v6_15_title">세션 중에 작업 바꾸기</string>
     <string name="whats_new_v6_15_body">세션을 일시정지하면 처음부터 다시 시작하지 않고 작업 이름을 바꿀 수 있어요.</string>
     <string name="whats_new_v6_16_title">계정 없이 Sessions 사용하기</string>
@@ -506,7 +505,7 @@
     <string name="whats_new_v6_20_title">더 생기 있는 아바타 선택</string>
     <string name="whats_new_v6_20_body">이제 아바타를 고르면 작은 연출이 더해져요. 원이 매번 다른 재미있는 Material 모양으로 바뀌고 이름이 강조돼요. 시트는 열린 채로 있어서 닫기 전에 여러 개를 써 볼 수 있어요.</string>
     <string name="whats_new_v61_1_title">러시아어 지원</string>
-    <string name="whats_new_v61_1_body">이제 Sessions가 러시아어도 지원해서 11개 언어가 되었어요. 설정 › 언어에서 고를 수 있어요. 그리고 언어를 바꾸면 목록의 각 줄이 갑자기 튀지 않고 새 크기로 부드럽게 바뀌어요.</string>
+    <string name="whats_new_v61_1_body">이제 Sessions가 러시아어도 지원해서 10개 언어가 되었어요. 설정 › 언어에서 고를 수 있어요. 그리고 언어를 바꾸면 목록의 각 줄이 갑자기 튀지 않고 새 크기로 부드럽게 바뀌어요.</string>
     <string name="whats_new_v61_2_title">다듬어진 새 아이콘</string>
     <string name="whats_new_v61_2_body">Sessions 아이콘을 더 부드럽고 깔끔한 모양으로 다시 그렸어요. 홈 화면, 앱을 열 때, 앱 정보 화면에서 통통 튀는 아이콘, 그리고 이에 맞춘 새 알림 아이콘에서 볼 수 있어요.</string>
     <string name="whats_new_v61_3_title">AMOLED에서 검은 시트</string>

@@ -41,7 +41,6 @@
     <string name="language_name_french">French</string>
     <string name="language_name_german">German</string>
     <string name="language_name_hindi">Hindi</string>
-    <string name="language_name_arabic">Arabic</string>
     <string name="language_name_japanese">Japanese</string>
     <string name="language_name_korean">Korean</string>
     <string name="language_name_chinese">Chinese</string>
@@ -704,7 +703,7 @@
     <string name="whats_new_v6_12_title">Smoother Theme Changes</string>
     <string name="whats_new_v6_12_body">Changing your colour theme, switching between light and dark, or turning on AMOLED black now fades gently across the whole screen.</string>
     <string name="whats_new_v6_13_title">Sessions in Your Language</string>
-    <string name="whats_new_v6_13_body">Sessions now speaks ten languages: English, Spanish, Portuguese, French, German, Hindi, Arabic, Japanese, Korean and Chinese. Pick yours in Settings › Language, or follow your phone\'s, and the whole app switches instantly, right where you are. Arabic reads right to left.</string>
+    <string name="whats_new_v6_13_body">Sessions now speaks nine languages: English, Spanish, Portuguese, French, German, Hindi, Japanese, Korean and Chinese. Pick yours in Settings › Language, or follow your phone\'s, and the whole app switches instantly, right where you are.</string>
     <string name="whats_new_v6_15_title">Change Your Task Mid-Session</string>
     <string name="whats_new_v6_15_body">Pause your session to rename your task, without starting over.</string>
     <string name="whats_new_v6_16_title">Use Sessions Without an Account</string>
@@ -718,7 +717,7 @@
     <string name="whats_new_v6_20_title">A Livelier Avatar Picker</string>
     <string name="whats_new_v6_20_body">Picking an avatar now has a little flourish: its circle turns into a playful Material shape, a different one each time, and its name lights up. The sheet stays open, so you can try a few before you swipe it away.</string>
     <string name="whats_new_v61_1_title">Sessions in Russian</string>
-    <string name="whats_new_v61_1_body">Sessions now speaks Russian too, making eleven languages. Pick it in Settings › Language. And when you switch languages, each row in the list now eases to its new size instead of jumping.</string>
+    <string name="whats_new_v61_1_body">Sessions now speaks Russian too, making ten languages. Pick it in Settings › Language. And when you switch languages, each row in the list now eases to its new size instead of jumping.</string>
     <string name="whats_new_v61_2_title">A Polished New Icon</string>
     <string name="whats_new_v61_2_body">The Sessions icon has been redrawn with smoother, cleaner shapes. You\'ll see it on your home screen, when the app opens, bouncing on the About screen, and in a matching new notification icon.</string>
     <string name="whats_new_v61_3_title">Black Sheets in AMOLED</string>

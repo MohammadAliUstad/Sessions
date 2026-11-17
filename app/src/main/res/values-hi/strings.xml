@@ -33,7 +33,6 @@
     <string name="language_name_french">फ़्रेंच</string>
     <string name="language_name_german">जर्मन</string>
     <string name="language_name_hindi">हिन्दी</string>
-    <string name="language_name_arabic">अरबी</string>
     <string name="language_name_japanese">जापानी</string>
     <string name="language_name_korean">कोरियाई</string>
     <string name="language_name_chinese">चीनी</string>
@@ -492,7 +491,7 @@
     <string name="whats_new_v6_12_title">थीम में सहज बदलाव</string>
     <string name="whats_new_v6_12_body">रंग थीम बदलना, लाइट और डार्क के बीच स्विच करना या AMOLED ब्लैक चालू करना अब पूरी स्क्रीन पर धीरे से फ़ेड होता है।</string>
     <string name="whats_new_v6_13_title">आपकी भाषा में Sessions</string>
-    <string name="whats_new_v6_13_body">Sessions अब दस भाषाओं में उपलब्ध है: अंग्रेज़ी, स्पेनिश, पुर्तगाली, फ़्रेंच, जर्मन, हिंदी, अरबी, जापानी, कोरियाई और चीनी। सेटिंग › भाषा में अपनी भाषा चुनें, या फ़ोन की भाषा अपनाएँ, और पूरा ऐप तुरंत बदल जाता है, ठीक वहीं जहाँ आप हैं। अरबी दाएँ से बाएँ पढ़ी जाती है।</string>
+    <string name="whats_new_v6_13_body">Sessions अब नौ भाषाओं में उपलब्ध है: अंग्रेज़ी, स्पेनिश, पुर्तगाली, फ़्रेंच, जर्मन, हिंदी, जापानी, कोरियाई और चीनी। सेटिंग › भाषा में अपनी भाषा चुनें, या फ़ोन की भाषा अपनाएँ, और पूरा ऐप तुरंत बदल जाता है, ठीक वहीं जहाँ आप हैं।</string>
     <string name="whats_new_v6_15_title">सेशन के बीच टास्क बदलें</string>
     <string name="whats_new_v6_15_body">बिना दोबारा शुरू किए अपने टास्क का नाम बदलने के लिए सेशन को रोकें।</string>
     <string name="whats_new_v6_16_title">बिना खाते के Sessions इस्तेमाल करें</string>
@@ -506,7 +505,7 @@
     <string name="whats_new_v6_20_title">ज़्यादा जीवंत अवतार चयन</string>
     <string name="whats_new_v6_20_body">अवतार चुनने में अब थोड़ा मज़ा है: उसका गोला एक मज़ेदार Material आकार में बदल जाता है, हर बार अलग, और उसका नाम चमक उठता है। शीट खुली रहती है, ताकि आप उसे बंद करने से पहले कुछ अवतार आज़मा सकें।</string>
     <string name="whats_new_v61_1_title">Sessions अब रूसी में</string>
-    <string name="whats_new_v61_1_body">Sessions अब रूसी भी बोलता है, यानी कुल ग्यारह भाषाएँ। इसे सेटिंग › भाषा में चुनें। और भाषा बदलने पर सूची की हर पंक्ति अचानक कूदने के बजाय धीरे से अपने नए आकार में आ जाती है।</string>
+    <string name="whats_new_v61_1_body">Sessions अब रूसी भी बोलता है, यानी कुल दस भाषाएँ। इसे सेटिंग › भाषा में चुनें। और भाषा बदलने पर सूची की हर पंक्ति अचानक कूदने के बजाय धीरे से अपने नए आकार में आ जाती है।</string>
     <string name="whats_new_v61_2_title">नया निखरा हुआ आइकॉन</string>
     <string name="whats_new_v61_2_body">Sessions का आइकॉन ज़्यादा मुलायम और साफ़ आकारों के साथ फिर से बनाया गया है। आप इसे होम स्क्रीन पर, ऐप खुलते समय, ऐप की जानकारी वाले कार्ड पर उछलते हुए, और मेल खाते नए नोटिफ़िकेशन आइकॉन में देखेंगे।</string>
     <string name="whats_new_v61_3_title">AMOLED में काली शीट्स</string>

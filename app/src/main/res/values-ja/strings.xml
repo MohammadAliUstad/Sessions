@@ -33,7 +33,6 @@
     <string name="language_name_french">フランス語</string>
     <string name="language_name_german">ドイツ語</string>
     <string name="language_name_hindi">ヒンディー語</string>
-    <string name="language_name_arabic">アラビア語</string>
     <string name="language_name_japanese">日本語</string>
     <string name="language_name_korean">韓国語</string>
     <string name="language_name_chinese">中国語</string>
@@ -492,7 +491,7 @@
     <string name="whats_new_v6_12_title">テーマ切り替えがなめらかに</string>
     <string name="whats_new_v6_12_body">カラーテーマの変更、ライトとダークの切り替え、AMOLED ブラックのオンが、画面全体でやさしくフェードするようになりました。</string>
     <string name="whats_new_v6_13_title">あなたの言語で Sessions を</string>
-    <string name="whats_new_v6_13_body">Sessions が 10 言語に対応しました：英語、スペイン語、ポルトガル語、フランス語、ドイツ語、ヒンディー語、アラビア語、日本語、韓国語、中国語。設定 › 言語 で選ぶか、スマートフォンの言語に合わせると、アプリ全体がその場ですぐに切り替わります。アラビア語は右から左に表示されます。</string>
+    <string name="whats_new_v6_13_body">Sessions が 9 言語に対応しました：英語、スペイン語、ポルトガル語、フランス語、ドイツ語、ヒンディー語、日本語、韓国語、中国語。設定 › 言語 で選ぶか、スマートフォンの言語に合わせると、アプリ全体がその場ですぐに切り替わります。</string>
     <string name="whats_new_v6_15_title">セッション中にタスクを変更</string>
     <string name="whats_new_v6_15_body">セッションを一時停止すれば、最初からやり直さずにタスク名を変えられます。</string>
     <string name="whats_new_v6_16_title">アカウントなしで Sessions を使う</string>
@@ -506,7 +505,7 @@
     <string name="whats_new_v6_20_title">楽しくなったアバター選び</string>
     <string name="whats_new_v6_20_body">アバターを選ぶと、ちょっとした演出が加わりました。円が遊び心のある Material シェイプに変わり（毎回違う形です）、名前が色づきます。シートは開いたままなので、閉じる前にいくつか試せます。</string>
     <string name="whats_new_v61_1_title">ロシア語に対応</string>
-    <string name="whats_new_v61_1_body">Sessions がロシア語にも対応し、11 言語になりました。設定 › 言語 で選べます。また言語を切り替えると、リストの各行が跳ねるのではなく、新しい大きさへなめらかに変わります。</string>
+    <string name="whats_new_v61_1_body">Sessions がロシア語にも対応し、10 言語になりました。設定 › 言語 で選べます。また言語を切り替えると、リストの各行が跳ねるのではなく、新しい大きさへなめらかに変わります。</string>
     <string name="whats_new_v61_2_title">磨きをかけた新アイコン</string>
     <string name="whats_new_v61_2_body">Sessions のアイコンを、よりなめらかですっきりした形に描き直しました。ホーム画面、アプリの起動時、アプリ情報画面で弾むアイコン、そしてそれに合わせた新しい通知アイコンで見られます。</string>
     <string name="whats_new_v61_3_title">AMOLED でシートも黒に</string>

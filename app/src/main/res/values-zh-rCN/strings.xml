@@ -33,7 +33,6 @@
     <string name="language_name_french">法语</string>
     <string name="language_name_german">德语</string>
     <string name="language_name_hindi">印地语</string>
-    <string name="language_name_arabic">阿拉伯语</string>
     <string name="language_name_japanese">日语</string>
     <string name="language_name_korean">韩语</string>
     <string name="language_name_chinese">中文</string>
@@ -492,7 +491,7 @@
     <string name="whats_new_v6_12_title">更顺滑的主题切换</string>
     <string name="whats_new_v6_12_body">更换颜色主题、切换浅色与深色模式或开启 AMOLED 纯黑时，整个屏幕都会柔和地淡入淡出。</string>
     <string name="whats_new_v6_13_title">用你的语言使用 Sessions</string>
-    <string name="whats_new_v6_13_body">Sessions 现已支持十种语言：英语、西班牙语、葡萄牙语、法语、德语、印地语、阿拉伯语、日语、韩语和中文。在 设置 › 语言 中选择你的语言，或跟随手机语言，整个应用会立即切换，停留在原来的位置。阿拉伯语从右向左显示。</string>
+    <string name="whats_new_v6_13_body">Sessions 现已支持九种语言：英语、西班牙语、葡萄牙语、法语、德语、印地语、日语、韩语和中文。在 设置 › 语言 中选择你的语言，或跟随手机语言，整个应用会立即切换，停留在原来的位置。</string>
     <string name="whats_new_v6_15_title">会话中更改任务</string>
     <string name="whats_new_v6_15_body">暂停会话即可重命名任务，无需重新开始。</string>
     <string name="whats_new_v6_16_title">无需账号即可使用 Sessions</string>
@@ -506,7 +505,7 @@
     <string name="whats_new_v6_20_title">更生动的头像选择</string>
     <string name="whats_new_v6_20_body">现在选择头像会有一点小惊喜：圆形会变成一个俏皮的 Material 形状，每次都不一样，名字也会随之亮起。面板会保持打开，你可以多试几个再关闭。</string>
     <string name="whats_new_v61_1_title">支持俄语</string>
-    <string name="whats_new_v61_1_body">Sessions 现在也支持俄语，共十一种语言。可在 设置 › 语言 中选择。切换语言时，列表中的每一行会平滑地调整到新的大小，而不是突然跳变。</string>
+    <string name="whats_new_v61_1_body">Sessions 现在也支持俄语，共十种语言。可在 设置 › 语言 中选择。切换语言时，列表中的每一行会平滑地调整到新的大小，而不是突然跳变。</string>
     <string name="whats_new_v61_2_title">更精致的新图标</string>
     <string name="whats_new_v61_2_body">Sessions 图标已用更圆润、更干净的形状重新绘制。你会在主屏幕、应用启动时、关于页面中跳动的图标，以及与之匹配的新通知图标中看到它。</string>
     <string name="whats_new_v61_3_title">AMOLED 下的黑色面板</string>

@@ -214,7 +214,7 @@ private fun LanguageRow(
         headlineContent = {
             Text(
                 text = title,
-                // A name in its own script reads in its own direction (Arabic right to left)
+                // A name in its own script reads in its own direction
                 // whatever direction the app is laid out in
                 style = MaterialTheme.typography.titleMedium.copy(textDirection = TextDirection.Content),
                 modifier = Modifier.padding(start = MaterialTheme.spacing.s, top = MaterialTheme.spacing.s)

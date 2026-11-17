@@ -20,7 +20,6 @@ enum class AppLanguage(
     French("fr", "Français", R.string.language_name_french),
     German("de", "Deutsch", R.string.language_name_german),
     Hindi("hi", "हिन्दी", R.string.language_name_hindi),
-    Arabic("ar", "العربية", R.string.language_name_arabic),
     Japanese("ja", "日本語", R.string.language_name_japanese),
     Korean("ko", "한국어", R.string.language_name_korean),
     Chinese("zh-CN", "中文", R.string.language_name_chinese),

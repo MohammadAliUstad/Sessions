@@ -74,7 +74,6 @@ object AppLocale {
         Locale.setDefault(locale)
         val configuration = Configuration(base.resources.configuration).apply {
             setLocales(LocaleList(locale))
-            setLayoutDirection(locale)
         }
         return base.createConfigurationContext(configuration)
     }
@@ -101,7 +100,8 @@ object AppLocale {
     /**
      * Below Android 13: points the activity's and the app's resources at [locale] and tells the
      * views, the same way the system does for a handled configuration change. Compose sees a new
-     * LocalConfiguration and recomposes every string; a switch to or from Arabic flips the layout.
+     * LocalConfiguration and recomposes every string. The layout never flips: the app stays
+     * left-to-right in every language (see MainActivity).
      */
     @Suppress("DEPRECATION")
     private fun applyInPlace(activity: Activity, locale: Locale) {
@@ -110,15 +110,10 @@ object AppLocale {
         listOf(activity.resources, activity.applicationContext.resources).distinct().forEach { res ->
             val updated = Configuration(res.configuration).apply {
                 setLocales(LocaleList(locale))
-                setLayoutDirection(locale)
             }
             res.updateConfiguration(updated, res.displayMetrics)
         }
-        val configuration = activity.resources.configuration
-        activity.window.decorView.apply {
-            layoutDirection = configuration.layoutDirection
-            dispatchConfigurationChanged(Configuration(configuration))
-        }
+        activity.window.decorView.dispatchConfigurationChanged(Configuration(activity.resources.configuration))
     }
 
     private fun storedTag(context: Context): String? = prefs(context).getString(KEY_TAG, null)
