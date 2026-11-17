@@ -159,7 +159,8 @@ fun MoreAppsScreen(
             item { SectionDivider() }
 
             // --- Mynt ---
-            item { MyntHeroSection(onDownloadClick = { openPlayStore(context, "com.yugentech.mynt") }) }
+            // Not on the Play Store yet, so it shows Coming soon
+            item { MyntHeroSection(onDownloadClick = null) }
 
             item {
                 Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
@@ -394,7 +395,7 @@ private fun RyoriCapabilitiesCarousel() {
 // ============================== Mynt ==============================
 
 @Composable
-private fun MyntHeroSection(onDownloadClick: () -> Unit) {
+private fun MyntHeroSection(onDownloadClick: (() -> Unit)?) {
     AppHeroSection(
         name = "Mynt",
         tagline = stringResource(R.string.mynt_tagline),
@@ -870,7 +871,7 @@ fun MoreFromUsSheet(onDismiss: () -> Unit, onSeeAll: () -> Unit) {
         SheetEntry("Quill", stringResource(R.string.quill_tagline), "com.yugentech.quill", QuillIconBackground, 1900) {
             AnimatedQuillIcon(isAnimating = it, modifier = Modifier.requiredSize(41.dp))
         },
-        SheetEntry("Mynt", stringResource(R.string.mynt_tagline), "com.yugentech.mynt", MyntIconBackground, 1300) {
+        SheetEntry("Mynt", stringResource(R.string.mynt_tagline), null, MyntIconBackground, 1300) {
             AnimatedMyntIcon(isAnimating = it, modifier = Modifier.requiredSize(84.dp))
         },
         SheetEntry("Hajime", stringResource(R.string.hajime_tagline), null, HajimeIconBackground, 1660) {
