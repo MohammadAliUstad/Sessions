@@ -34,6 +34,10 @@ interface SessionsDao {
     @Query("DELETE FROM sessions WHERE userId = :userId")
     suspend fun deleteAllSessions(userId: String)
 
+    // Removes a user's sessions that are already in the cloud, keeping any still waiting to upload
+    @Query("DELETE FROM sessions WHERE userId = :userId AND pendingSync = 0")
+    suspend fun deleteSyncedSessions(userId: String)
+
     // Observes the sum of all session durations for a user
     @Query("SELECT IFNULL(SUM(duration), 0) FROM sessions WHERE userId = :userId")
     fun getTotalDuration(userId: String): Flow<Long>

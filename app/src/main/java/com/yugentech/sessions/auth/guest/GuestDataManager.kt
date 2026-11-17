@@ -6,8 +6,9 @@ import com.yugentech.sessions.templates.repository.TemplateRepository
 import timber.log.Timber
 
 /**
- * Removes a guest's data. A guest is a Firebase anonymous account whose data lives only on this
- * phone (nothing goes to Firestore), so leaving guest mode clears it here.
+ * Clears this phone's data when someone leaves. A guest's sessions and templates live only on this
+ * phone (nothing goes to Firestore), so leaving guest mode deletes them. A signed-in account's
+ * synced sessions are a copy of the cloud's, so signing out drops them too.
  */
 class GuestDataManager(
     private val sessionsDao: SessionsDao,
@@ -21,5 +22,17 @@ class GuestDataManager(
         userDao.deleteUser(guestId)
         templateRepository.clearLocal()
         Timber.i("Guest local data deleted")
+    }
+
+    /**
+     * Drops a signing-out account's synced sessions from this phone. They're a copy of the cloud's
+     * and come back at the account's next sign-in (sign-out resets the one-time fetch). Without
+     * this they'd stay under the account's ID, and since a session's ID is unique on the phone, a
+     * guest importing this account's backup here would have every session skipped. Sessions not
+     * yet uploaded stay, so nothing is lost; they sync when the account signs in again.
+     */
+    suspend fun clearSignedOutAccount(userId: String) {
+        sessionsDao.deleteSyncedSessions(userId)
+        Timber.i("Signed-out account's synced sessions removed from this phone")
     }
 }

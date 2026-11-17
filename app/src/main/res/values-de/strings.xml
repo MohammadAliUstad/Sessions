@@ -2,7 +2,7 @@
 <!-- Machine-written translation; have a native speaker review before release. -->
 <resources>
     <string name="app_description">Sessions hilft dir, Fokus und Disziplin aufzubauen – eine achtsame Session nach der anderen. Behalte deine Zeit im Blick, schütze deine Aufmerksamkeit und wachse jeden Tag ein bisschen.</string>
-    <string name="version">Version 6.0.0</string>
+    <string name="version">Version 6.1.0</string>
     <string name="about">Über</string>
     <string name="back">Zurück</string>
     <string name="state_selected">Ausgewählt</string>
@@ -29,14 +29,15 @@
     <string name="language_footer">Sessions wechselt sofort. Ab Android 13 kannst du die Sprache auch in den Einstellungen deines Telefons unter Apps › Sessions › Sprache ändern.</string>
     <string name="language_name_english">Englisch</string>
     <string name="language_name_spanish">Spanisch</string>
-    <string name="language_name_portuguese">Portugiesisch (Brasilien)</string>
+    <string name="language_name_portuguese">Portugiesisch</string>
     <string name="language_name_french">Französisch</string>
     <string name="language_name_german">Deutsch</string>
     <string name="language_name_hindi">Hindi</string>
     <string name="language_name_arabic">Arabisch</string>
     <string name="language_name_japanese">Japanisch</string>
     <string name="language_name_korean">Koreanisch</string>
-    <string name="language_name_chinese">Chinesisch (vereinfacht)</string>
+    <string name="language_name_chinese">Chinesisch</string>
+    <string name="language_name_russian">Russisch</string>
     <string name="settings_section_notifications">Benachrichtigungen</string>
     <string name="settings_enable_notifications">Benachrichtigungen aktivieren</string>
     <string name="settings_enable_notifications_subtitle">Sessions darf dir Benachrichtigungen senden</string>
@@ -504,6 +505,20 @@
     <string name="whats_new_v6_19_body">Die Einführung ist komplett neu: fünf kurze Szenen über Fokus, Sätze mit Pausen, Umgebungsklänge, Designs und deinen Fortschritt, mit denen du unterwegs spielen kannst. Tippe auf das Ziffernblatt für einen kurzen Fokus oder auf eine Kachel, um ein Design auszuprobieren. Noch einmal ansehen? Tippe in den Einstellungen auf Einführung wiederholen.</string>
     <string name="whats_new_v6_20_title">Eine lebendigere Avatar-Auswahl</string>
     <string name="whats_new_v6_20_body">Einen Avatar zu wählen hat jetzt einen kleinen Auftritt: Sein Kreis wird zu einer verspielten Material-Form, jedes Mal einer anderen, und sein Name leuchtet auf. Das Blatt bleibt offen, sodass du ein paar ausprobieren kannst, bevor du es wegwischst.</string>
+    <string name="whats_new_v61_1_title">Sessions auf Russisch</string>
+    <string name="whats_new_v61_1_body">Sessions spricht jetzt auch Russisch, damit sind es elf Sprachen. Wähle es unter Einstellungen › Sprache. Und beim Sprachwechsel passt sich jede Zeile der Liste sanft ihrer neuen Größe an, statt zu springen.</string>
+    <string name="whats_new_v61_2_title">Ein aufpoliertes Icon</string>
+    <string name="whats_new_v61_2_body">Das Sessions-Icon wurde mit weicheren, saubereren Formen neu gezeichnet. Du siehst es auf deinem Startbildschirm, beim Öffnen der App, hüpfend auf dem Über-Bildschirm und als passendes neues Benachrichtigungssymbol.</string>
+    <string name="whats_new_v61_3_title">Schwarze Panels mit AMOLED</string>
+    <string name="whats_new_v61_3_body">Mit AMOLED-Schwarz werden jetzt auch die unteren Panels tiefschwarz, passend zum Bildschirm dahinter.</string>
+    <string name="whats_new_v61_4_title">Korrekturen im Gastmodus</string>
+    <string name="whats_new_v61_4_body">Das Verlassen des Gastmodus bleibt nicht mehr hängen, wenn etwas schiefgeht. Wer die Einstellungen während „Exportieren und beenden“ verlässt, wird später nicht mehr überraschend abgemeldet. Und eine Sicherung zu importieren, während du angemeldet bist, verdoppelt keine Vorlagen mehr.</string>
+    <string name="whats_new_v61_5_title">Ein frischer Look für diesen Bildschirm</string>
+    <string name="whats_new_v61_5_body">Jede Neuerung hier sitzt jetzt auf ihrer eigenen verspielten Material-Form, so lässt sich die Liste leichter überfliegen.</string>
+    <string name="whats_new_v61_6_title">Nimm die Daten deines Kontos mit</string>
+    <string name="whats_new_v61_6_body">Angemeldet? Du kannst deine Sessions, Vorlagen und dein Profil jetzt auch unter Einstellungen › Sicherung exportieren. Lieber als Gast weitermachen? Exportieren, abmelden, auf Gast tippen und die Datei importieren – alles kommt mit.</string>
+    <string name="whats_new_v61_7_title">Lebendigere Statistiken</string>
+    <string name="whats_new_v61_7_body">Schwung zeigt deine Serie jetzt auf einem Abzeichen mit Meilensteinen bei 3, 7, 14 und 30 Tagen. Wochenrhythmus ist ein Balkendiagramm, das du Tag für Tag antippen kannst, mit dem Wochenbeginn deiner Region, und Aufgabenverteilung zeigt als Ringdiagramm, wohin deine Zeit geht.</string>
     <string name="whats_new_v51_1_title">Vorlagen werden mit deinem Konto synchronisiert</string>
     <string name="whats_new_v51_1_body">Deine Aufgabenvorlagen werden jetzt in deinem Konto gespeichert. Installiere die App neu oder melde dich auf einem anderen Telefon an, und sie sind sofort wieder da.</string>
     <string name="whats_new_v51_2_title">Neu gestaltete Anmeldung und Registrierung</string>
@@ -570,6 +585,8 @@
     <string name="mynt_tagline">Dein Sprachassistent für Finanzen</string>
     <string name="hajime_tagline">Japanisch lesen lernen</string>
     <string name="more_apps_get_on_play">Im Play Store holen</string>
+    <string name="more_apps_fact_reviews_quill">20+ Bewertungen</string>
+    <string name="more_apps_fact_downloads">Downloads</string>
     <string name="more_apps_coming_soon">Demnächst</string>
     <string name="more_apps_overview_title">Fokussieren. Lesen. Erfassen. Lernen. Kochen.</string>
     <string name="more_apps_overview_body">Sessions, Quill, Mynt, Hajime und Ryori stammen von YugenTech: kleine, durchdachte Apps, die alltägliche Momente ein wenig ruhiger machen.</string>
@@ -759,5 +776,6 @@
     <string name="guest_import_failed_title">Import fehlgeschlagen</string>
     <string name="guest_import_failed_message">Diese Datei ist keine Sessions-Sicherung oder beschädigt.</string>
     <string name="account_import_subtitle">Hole eine Sicherung, die du als Gast gespeichert hast. Sie wird mit deinem Konto synchronisiert.</string>
+    <string name="account_export_subtitle">Speichere eine Kopie deiner Sessions und Vorlagen in einer Datei. Du kannst sie überall importieren, auch als Gast.</string>
     <string name="guest_export_and_exit">Exportieren und beenden</string>
 </resources>

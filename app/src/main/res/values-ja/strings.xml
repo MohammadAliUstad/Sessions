@@ -2,7 +2,7 @@
 <!-- Machine-written translation; have a native speaker review before release. -->
 <resources>
     <string name="app_description">Sessions は、意識的なセッションを一つずつ重ねて、集中力と習慣づくりを後押しします。時間を記録し、集中を守り、毎日少しずつ成長しましょう。</string>
-    <string name="version">バージョン 6.0.0</string>
+    <string name="version">バージョン 6.1.0</string>
     <string name="about">アプリについて</string>
     <string name="back">戻る</string>
     <string name="state_selected">選択中</string>
@@ -29,14 +29,15 @@
     <string name="language_footer">Sessions はすぐに切り替わります。Android 13 以降では、端末の設定の［アプリ］›［Sessions］›［言語］からも変更できます。</string>
     <string name="language_name_english">英語</string>
     <string name="language_name_spanish">スペイン語</string>
-    <string name="language_name_portuguese">ポルトガル語（ブラジル）</string>
+    <string name="language_name_portuguese">ポルトガル語</string>
     <string name="language_name_french">フランス語</string>
     <string name="language_name_german">ドイツ語</string>
     <string name="language_name_hindi">ヒンディー語</string>
     <string name="language_name_arabic">アラビア語</string>
     <string name="language_name_japanese">日本語</string>
     <string name="language_name_korean">韓国語</string>
-    <string name="language_name_chinese">中国語（簡体字）</string>
+    <string name="language_name_chinese">中国語</string>
+    <string name="language_name_russian">ロシア語</string>
     <string name="settings_section_notifications">通知</string>
     <string name="settings_enable_notifications">通知を有効にする</string>
     <string name="settings_enable_notifications_subtitle">Sessions からの通知を許可します</string>
@@ -504,6 +505,20 @@
     <string name="whats_new_v6_19_body">はじめのガイドが一新されました。集中、休憩つきのセット、環境音、テーマ、そして進捗についての 5 つの短いシーンを、触りながら進められます。ダイヤルをタップすれば短い集中を体験でき、タイルをタップすればテーマを試せます。もう一度見たいときは、設定の［はじめのガイドを再表示］をタップしてください。</string>
     <string name="whats_new_v6_20_title">楽しくなったアバター選び</string>
     <string name="whats_new_v6_20_body">アバターを選ぶと、ちょっとした演出が加わりました。円が遊び心のある Material シェイプに変わり（毎回違う形です）、名前が色づきます。シートは開いたままなので、閉じる前にいくつか試せます。</string>
+    <string name="whats_new_v61_1_title">ロシア語に対応</string>
+    <string name="whats_new_v61_1_body">Sessions がロシア語にも対応し、11 言語になりました。設定 › 言語 で選べます。また言語を切り替えると、リストの各行が跳ねるのではなく、新しい大きさへなめらかに変わります。</string>
+    <string name="whats_new_v61_2_title">磨きをかけた新アイコン</string>
+    <string name="whats_new_v61_2_body">Sessions のアイコンを、よりなめらかですっきりした形に描き直しました。ホーム画面、アプリの起動時、アプリ情報画面で弾むアイコン、そしてそれに合わせた新しい通知アイコンで見られます。</string>
+    <string name="whats_new_v61_3_title">AMOLED でシートも黒に</string>
+    <string name="whats_new_v61_3_body">AMOLED ブラックをオンにすると、ボトムシートも背景の画面と同じ真っ黒になりました。</string>
+    <string name="whats_new_v61_4_title">ゲストモードの修正</string>
+    <string name="whats_new_v61_4_body">問題が起きてもゲストモードの終了で止まらなくなりました。「エクスポートして終了」の途中で設定を離れても、あとで突然サインアウトされなくなりました。サインイン中にバックアップをインポートしても、テンプレートが重複しなくなりました。</string>
+    <string name="whats_new_v61_5_title">この画面を新しいデザインに</string>
+    <string name="whats_new_v61_5_body">ここに並ぶ変更点が、それぞれ遊び心のある Material シェイプの上に表示されるようになり、一覧が見やすくなりました。</string>
+    <string name="whats_new_v61_6_title">アカウントのデータを持ち出せるように</string>
+    <string name="whats_new_v61_6_body">サインイン中でも、設定 › バックアップ からセッション、テンプレート、プロフィールをエクスポートできるようになりました。ゲストモードに切り替えたいときは、エクスポートしてサインアウトし、ゲストをタップしてファイルをインポートすれば、すべて引き継げます。</string>
+    <string name="whats_new_v61_7_title">もっと見やすいインサイト</string>
+    <string name="whats_new_v61_7_body">「勢い」では、連続記録がバッジで表示され、3・7・14・30日のマイルストーンも確認できます。「1 週間のリズム」は日ごとにタップできる棒グラフになり、週の始まりは地域に合わせます。「タスクの配分」は、時間の使い道がわかるドーナツグラフになりました。</string>
     <string name="whats_new_v51_1_title">テンプレートをアカウントに同期</string>
     <string name="whats_new_v51_1_body">タスクのテンプレートがアカウントに保存されるようになりました。アプリを再インストールしても、別の端末でログインしても、すぐに戻ってきます。</string>
     <string name="whats_new_v51_2_title">ログインと登録を刷新</string>
@@ -570,6 +585,8 @@
     <string name="mynt_tagline">声で使えるお金のアシスタント</string>
     <string name="hajime_tagline">日本語を読めるようになろう</string>
     <string name="more_apps_get_on_play">Play ストアで入手</string>
+    <string name="more_apps_fact_reviews_quill">20 件以上のレビュー</string>
+    <string name="more_apps_fact_downloads">ダウンロード</string>
     <string name="more_apps_coming_soon">近日公開</string>
     <string name="more_apps_overview_title">集中する。読む。記録する。学ぶ。料理する。</string>
     <string name="more_apps_overview_body">Sessions、Quill、Mynt、Hajime、Ryori は YugenTech が手がける、毎日のひとときを少し穏やかにするための、小さくて丁寧なアプリです。</string>
@@ -744,5 +761,6 @@
     <string name="guest_import_failed_title">インポートできませんでした</string>
     <string name="guest_import_failed_message">このファイルは Sessions のバックアップではないか、破損しています。</string>
     <string name="account_import_subtitle">ゲストのときに保存したバックアップを取り込みます。アカウントに同期されます。</string>
+    <string name="account_export_subtitle">セッションとテンプレートのコピーをファイルに保存します。ゲストとしても、どこでもインポートできます。</string>
     <string name="guest_export_and_exit">エクスポートして終了</string>
 </resources>

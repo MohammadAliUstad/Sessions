@@ -2,7 +2,7 @@
 <!-- Machine-written translation; have a native speaker review before release. -->
 <resources>
     <string name="app_description">Sessions आपको एक-एक सजग सेशन के ज़रिए फ़ोकस और अनुशासन बनाने में मदद करता है। अपना समय ट्रैक करें, अपने ध्यान की रक्षा करें और हर दिन थोड़ा आगे बढ़ें।</string>
-    <string name="version">वर्शन 6.0.0</string>
+    <string name="version">वर्शन 6.1.0</string>
     <string name="about">जानकारी</string>
     <string name="back">वापस</string>
     <string name="state_selected">चुना गया</string>
@@ -29,14 +29,15 @@
     <string name="language_footer">Sessions तुरंत बदल जाता है। Android 13 और उसके बाद के वर्शन पर आप इसे फ़ोन की सेटिंग में ऐप्स › Sessions › भाषा से भी बदल सकते हैं।</string>
     <string name="language_name_english">अंग्रेज़ी</string>
     <string name="language_name_spanish">स्पेनिश</string>
-    <string name="language_name_portuguese">पुर्तगाली (ब्राज़ील)</string>
+    <string name="language_name_portuguese">पुर्तगाली</string>
     <string name="language_name_french">फ़्रेंच</string>
     <string name="language_name_german">जर्मन</string>
     <string name="language_name_hindi">हिन्दी</string>
     <string name="language_name_arabic">अरबी</string>
     <string name="language_name_japanese">जापानी</string>
     <string name="language_name_korean">कोरियाई</string>
-    <string name="language_name_chinese">चीनी (सरलीकृत)</string>
+    <string name="language_name_chinese">चीनी</string>
+    <string name="language_name_russian">रूसी</string>
     <string name="settings_section_notifications">सूचनाएं</string>
     <string name="settings_enable_notifications">सूचनाएं चालू करें</string>
     <string name="settings_enable_notifications_subtitle">Sessions को सूचनाएं भेजने दें</string>
@@ -504,6 +505,20 @@
     <string name="whats_new_v6_19_body">पहली बार दिखने वाला परिचय बिल्कुल नया है: फ़ोकस, ब्रेक वाले सेट, एम्बिएंट साउंड, थीम और आपकी प्रगति पर पाँच छोटे दृश्य, जिनसे आप साथ-साथ खेल सकते हैं। एक छोटे फ़ोकस के लिए डायल पर टैप करें, या कोई थीम आज़माने के लिए टाइल पर टैप करें। फिर से देखना है? सेटिंग्स में परिचय फिर से देखें पर टैप करें।</string>
     <string name="whats_new_v6_20_title">ज़्यादा जीवंत अवतार चयन</string>
     <string name="whats_new_v6_20_body">अवतार चुनने में अब थोड़ा मज़ा है: उसका गोला एक मज़ेदार Material आकार में बदल जाता है, हर बार अलग, और उसका नाम चमक उठता है। शीट खुली रहती है, ताकि आप उसे बंद करने से पहले कुछ अवतार आज़मा सकें।</string>
+    <string name="whats_new_v61_1_title">Sessions अब रूसी में</string>
+    <string name="whats_new_v61_1_body">Sessions अब रूसी भी बोलता है, यानी कुल ग्यारह भाषाएँ। इसे सेटिंग › भाषा में चुनें। और भाषा बदलने पर सूची की हर पंक्ति अचानक कूदने के बजाय धीरे से अपने नए आकार में आ जाती है।</string>
+    <string name="whats_new_v61_2_title">नया निखरा हुआ आइकॉन</string>
+    <string name="whats_new_v61_2_body">Sessions का आइकॉन ज़्यादा मुलायम और साफ़ आकारों के साथ फिर से बनाया गया है। आप इसे होम स्क्रीन पर, ऐप खुलते समय, ऐप की जानकारी वाले कार्ड पर उछलते हुए, और मेल खाते नए नोटिफ़िकेशन आइकॉन में देखेंगे।</string>
+    <string name="whats_new_v61_3_title">AMOLED में काली शीट्स</string>
+    <string name="whats_new_v61_3_body">AMOLED ब्लैक चालू होने पर, नीचे से खुलने वाली शीट्स भी अब पूरी तरह काली होती हैं, ठीक पीछे की स्क्रीन की तरह।</string>
+    <string name="whats_new_v61_4_title">गेस्ट मोड सुधार</string>
+    <string name="whats_new_v61_4_body">कुछ गड़बड़ होने पर गेस्ट मोड से बाहर निकलना अब अटकता नहीं। एक्सपोर्ट करें और बाहर निकलें के दौरान सेटिंग छोड़ने पर अब बाद में अचानक साइन आउट नहीं होता। और साइन इन रहते हुए बैकअप इम्पोर्ट करने पर अब आपके टेम्पलेट दोहराए नहीं जाते।</string>
+    <string name="whats_new_v61_5_title">इस स्क्रीन का नया रूप</string>
+    <string name="whats_new_v61_5_body">यहाँ हर बदलाव अब अपने खुद के मज़ेदार Material आकार पर दिखता है, ताकि सूची पर नज़र डालना आसान हो।</string>
+    <string name="whats_new_v61_6_title">अपने अकाउंट का डेटा साथ ले जाएँ</string>
+    <string name="whats_new_v61_6_body">साइन इन हैं? अब आप सेटिंग › बैकअप से अपने सेशन, टेम्पलेट और प्रोफ़ाइल भी एक्सपोर्ट कर सकते हैं। गेस्ट मोड में जाना चाहते हैं? एक्सपोर्ट करें, साइन आउट करें, गेस्ट पर टैप करें और फ़ाइल इम्पोर्ट करें, सब कुछ आपके साथ आ जाएगा।</string>
+    <string name="whats_new_v61_7_title">और जीवंत इनसाइट्स</string>
+    <string name="whats_new_v61_7_body">रफ़्तार अब आपकी स्ट्रीक को एक बैज पर दिखाता है, 3, 7, 14 और 30 दिनों के माइलस्टोन के साथ। साप्ताहिक लय अब एक बार चार्ट है जिसे आप दिन-ब-दिन टैप कर सकते हैं, और हफ़्ता आपके क्षेत्र के हिसाब से शुरू होता है। काम का बंटवारा एक डोनट चार्ट है जो दिखाता है कि आपका समय कहाँ जाता है।</string>
     <string name="whats_new_v51_1_title">टेम्पलेट आपके खाते में सिंक होते हैं</string>
     <string name="whats_new_v51_1_body">आपके काम के टेम्पलेट अब आपके खाते में सेव होते हैं। ऐप दोबारा इंस्टॉल करें या दूसरे फ़ोन पर साइन इन करें, वे तुरंत वापस आ जाएंगे।</string>
     <string name="whats_new_v51_2_title">नया साइन इन और साइन अप</string>
@@ -570,6 +585,8 @@
     <string name="mynt_tagline">आपका वॉइस मनी असिस्टेंट</string>
     <string name="hajime_tagline">जापानी पढ़ना सीखें</string>
     <string name="more_apps_get_on_play">Play Store से पाएं</string>
+    <string name="more_apps_fact_reviews_quill">20+ समीक्षाएँ</string>
+    <string name="more_apps_fact_downloads">डाउनलोड</string>
     <string name="more_apps_coming_soon">जल्द आ रहा है</string>
     <string name="more_apps_overview_title">फ़ोकस। पढ़ें। हिसाब रखें। सीखें। पकाएं।</string>
     <string name="more_apps_overview_body">Sessions, Quill, Mynt, Hajime और Ryori को YugenTech ने बनाया है: छोटे, सोच-समझकर बनाए ऐप्स जो रोज़ के पलों को थोड़ा शांत बनाते हैं।</string>
@@ -759,5 +776,6 @@
     <string name="guest_import_failed_title">इंपोर्ट नहीं हो सका</string>
     <string name="guest_import_failed_message">यह फ़ाइल Sessions का बैकअप नहीं है, या खराब हो गई है।</string>
     <string name="account_import_subtitle">गेस्ट के रूप में सेव किया गया बैकअप लाएं। यह आपके खाते से सिंक हो जाएगा।</string>
+    <string name="account_export_subtitle">अपने सेशन और टेम्पलेट की एक कॉपी फ़ाइल में सेव करें। आप इसे कहीं भी इम्पोर्ट कर सकते हैं, गेस्ट के रूप में भी।</string>
     <string name="guest_export_and_exit">एक्सपोर्ट करें और बाहर निकलें</string>
 </resources>

@@ -2,7 +2,7 @@
 <!-- Machine-written translation; have a native speaker review before release. -->
 <resources>
     <string name="app_description">يساعدك Sessions على بناء التركيز والانضباط، جلسة واعية تلو الأخرى. تتبّع وقتك، واحمِ انتباهك، وتطوّر قليلًا كل يوم.</string>
-    <string name="version">الإصدار 6.0.0</string>
+    <string name="version">الإصدار 6.1.0</string>
     <string name="about">حول</string>
     <string name="back">رجوع</string>
     <string name="state_selected">محدَّد</string>
@@ -29,14 +29,15 @@
     <string name="language_footer">يتغيّر Sessions فورًا. وفي Android 13 والإصدارات الأحدث، يمكنك تغييرها أيضًا من إعدادات الهاتف ضمن التطبيقات › Sessions › اللغة.</string>
     <string name="language_name_english">الإنجليزية</string>
     <string name="language_name_spanish">الإسبانية</string>
-    <string name="language_name_portuguese">البرتغالية (البرازيل)</string>
+    <string name="language_name_portuguese">البرتغالية</string>
     <string name="language_name_french">الفرنسية</string>
     <string name="language_name_german">الألمانية</string>
     <string name="language_name_hindi">الهندية</string>
     <string name="language_name_arabic">العربية</string>
     <string name="language_name_japanese">اليابانية</string>
     <string name="language_name_korean">الكورية</string>
-    <string name="language_name_chinese">الصينية (المبسّطة)</string>
+    <string name="language_name_chinese">الصينية</string>
+    <string name="language_name_russian">الروسية</string>
     <string name="settings_section_notifications">الإشعارات</string>
     <string name="settings_enable_notifications">تفعيل الإشعارات</string>
     <string name="settings_enable_notifications_subtitle">السماح لـ Sessions بإرسال الإشعارات إليك</string>
@@ -504,6 +505,20 @@
     <string name="whats_new_v6_19_body">الجولة التعريفية جديدة كليًا: خمسة مشاهد قصيرة عن التركيز والمجموعات مع الاستراحات والأصوات المحيطة والسمات وتقدّمك، ويمكنك التفاعل معها وأنت تتنقل. اضغط على القرص لجلسة تركيز سريعة، أو على مربع لتجربة سمة. تريد رؤيتها مجددًا؟ اضغط إعادة عرض الجولة التعريفية في الإعدادات.</string>
     <string name="whats_new_v6_20_title">اختيار أفاتار أكثر حيوية</string>
     <string name="whats_new_v6_20_body">صار لاختيار الأفاتار لمسة مميزة: تتحول دائرته إلى شكل Material مرح، مختلف في كل مرة، ويتوهّج اسمه. وتبقى اللوحة مفتوحة، فيمكنك تجربة عدة أفاتارات قبل إغلاقها.</string>
+    <string name="whats_new_v61_1_title">Sessions بالروسية</string>
+    <string name="whats_new_v61_1_body">أصبح Sessions يتحدث الروسية أيضًا، ليصل عدد اللغات إلى إحدى عشرة لغة. اخترها من الإعدادات › اللغة. وعند تبديل اللغة، يتغيّر حجم كل صف في القائمة بسلاسة بدلًا من أن يقفز.</string>
+    <string name="whats_new_v61_2_title">أيقونة مصقولة جديدة</string>
+    <string name="whats_new_v61_2_body">أُعيد رسم أيقونة Sessions بأشكال أنعم وأنظف. ستراها على شاشتك الرئيسية، وعند فتح التطبيق، وهي تقفز في شاشة حول التطبيق، وفي أيقونة إشعارات جديدة مطابقة.</string>
+    <string name="whats_new_v61_3_title">لوحات سوداء في وضع AMOLED</string>
+    <string name="whats_new_v61_3_body">عند تفعيل أسود AMOLED، تصبح اللوحات السفلية أيضًا سوداء تمامًا، لتطابق الشاشة التي خلفها.</string>
+    <string name="whats_new_v61_4_title">إصلاحات وضع الضيف</string>
+    <string name="whats_new_v61_4_body">لم يعد الخروج من وضع الضيف يتعطّل إذا حدث خطأ. ولم تعد مغادرة الإعدادات أثناء «تصدير وخروج» تسجّل خروجك لاحقًا على نحو مفاجئ. ولم يعد استيراد نسخة احتياطية وأنت مسجّل الدخول يكرّر قوالبك.</string>
+    <string name="whats_new_v61_5_title">مظهر جديد لهذه الشاشة</string>
+    <string name="whats_new_v61_5_body">يظهر كل تغيير هنا الآن على شكل Material خاص به، لتسهل قراءة القائمة بنظرة سريعة.</string>
+    <string name="whats_new_v61_6_title">خذ بيانات حسابك معك</string>
+    <string name="whats_new_v61_6_body">هل سجّلت الدخول؟ يمكنك الآن أيضًا تصدير جلساتك وقوالبك وملفك الشخصي من الإعدادات › النسخ الاحتياطي. تريد الانتقال إلى وضع الضيف؟ صدّر، ثم سجّل الخروج، واضغط على ضيف واستورد الملف، وسيأتي كل شيء معك.</string>
+    <string name="whats_new_v61_7_title">إحصاءات أكثر حيوية</string>
+    <string name="whats_new_v61_7_body">يعرض الزخم الآن سلسلتك على شارة مع محطات عند 3 و7 و14 و30 يومًا. أصبح الإيقاع الأسبوعي مخططًا شريطيًا يمكنك لمسه يومًا بيوم، ويبدأ الأسبوع كما في منطقتك، ويعرض توزيع المهام مخططًا دائريًا يوضح أين يذهب وقتك.</string>
     <string name="whats_new_v51_1_title">مزامنة القوالب مع حسابك</string>
     <string name="whats_new_v51_1_body">تُحفظ قوالب مهامك الآن في حسابك. أعد تثبيت التطبيق أو سجّل الدخول على هاتف آخر وستعود فورًا.</string>
     <string name="whats_new_v51_2_title">تصميم جديد لتسجيل الدخول وإنشاء الحساب</string>
@@ -570,6 +585,8 @@
     <string name="mynt_tagline">مساعدك المالي الصوتي</string>
     <string name="hajime_tagline">تعلّم قراءة اليابانية</string>
     <string name="more_apps_get_on_play">احصل عليه من Play Store</string>
+    <string name="more_apps_fact_reviews_quill">أكثر من 20 مراجعة</string>
+    <string name="more_apps_fact_downloads">التنزيلات</string>
     <string name="more_apps_coming_soon">قريبًا</string>
     <string name="more_apps_overview_title">ركّز. اقرأ. تتبّع. تعلّم. اطبخ.</string>
     <string name="more_apps_overview_body">Sessions وQuill وMynt وHajime وRyori من صنع YugenTech: تطبيقات صغيرة ومدروسة لتجعل لحظات يومك أكثر هدوءًا.</string>
@@ -819,5 +836,6 @@
     <string name="guest_import_failed_title">تعذّر الاستيراد</string>
     <string name="guest_import_failed_message">هذا الملف ليس نسخة احتياطية من Sessions أو أنه تالف.</string>
     <string name="account_import_subtitle">استورد نسخة احتياطية حفظتها كضيف. ستتم مزامنتها مع حسابك.</string>
+    <string name="account_export_subtitle">احفظ نسخة من جلساتك وقوالبك في ملف. يمكنك استيرادها في أي مكان، حتى كضيف.</string>
     <string name="guest_export_and_exit">تصدير وخروج</string>
 </resources>

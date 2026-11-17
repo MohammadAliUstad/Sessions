@@ -2,7 +2,7 @@
 <resources>
     <string name="app_name" translatable="false">Sessions</string>
     <string name="app_description">Sessions helps you build focus and discipline, one mindful session at a time. Track your time, protect your attention, and grow a little every day.</string>
-    <string name="version">Version 6.0.0</string>
+    <string name="version">Version 6.1.0</string>
 
 
     <string name="about">About</string>
@@ -37,14 +37,15 @@
     <string name="language_footer">Sessions switches straight away. On Android 13 and later you can also change it from your phone\'s settings under Apps › Sessions › Language.</string>
     <string name="language_name_english">English</string>
     <string name="language_name_spanish">Spanish</string>
-    <string name="language_name_portuguese">Portuguese (Brazil)</string>
+    <string name="language_name_portuguese">Portuguese</string>
     <string name="language_name_french">French</string>
     <string name="language_name_german">German</string>
     <string name="language_name_hindi">Hindi</string>
     <string name="language_name_arabic">Arabic</string>
     <string name="language_name_japanese">Japanese</string>
     <string name="language_name_korean">Korean</string>
-    <string name="language_name_chinese">Chinese (Simplified)</string>
+    <string name="language_name_chinese">Chinese</string>
+    <string name="language_name_russian">Russian</string>
 
     <!-- Settings -->
     <string name="settings_section_notifications">Notifications</string>
@@ -716,6 +717,20 @@
     <string name="whats_new_v6_19_body">The first-run tour is all new: five short scenes on focusing, sets with breaks, ambient sounds, themes and your progress, and you can play with them as you go. Tap the dial to run a quick focus, or tap a tile to try a theme. Want to see it again? Tap Replay Onboarding in Settings.</string>
     <string name="whats_new_v6_20_title">A Livelier Avatar Picker</string>
     <string name="whats_new_v6_20_body">Picking an avatar now has a little flourish: its circle turns into a playful Material shape, a different one each time, and its name lights up. The sheet stays open, so you can try a few before you swipe it away.</string>
+    <string name="whats_new_v61_1_title">Sessions in Russian</string>
+    <string name="whats_new_v61_1_body">Sessions now speaks Russian too, making eleven languages. Pick it in Settings › Language. And when you switch languages, each row in the list now eases to its new size instead of jumping.</string>
+    <string name="whats_new_v61_2_title">A Polished New Icon</string>
+    <string name="whats_new_v61_2_body">The Sessions icon has been redrawn with smoother, cleaner shapes. You\'ll see it on your home screen, when the app opens, bouncing on the About screen, and in a matching new notification icon.</string>
+    <string name="whats_new_v61_3_title">Black Sheets in AMOLED</string>
+    <string name="whats_new_v61_3_body">With AMOLED Black on, bottom sheets now go true black too, matching the screen behind them.</string>
+    <string name="whats_new_v61_4_title">Guest Mode Fixes</string>
+    <string name="whats_new_v61_4_body">Leaving guest mode no longer gets stuck if something goes wrong. Leaving Settings during Export and exit no longer signs you out later by surprise. And importing a backup while signed in no longer duplicates your templates.</string>
+    <string name="whats_new_v61_5_title">A Fresh Look for This Screen</string>
+    <string name="whats_new_v61_5_body">Each change here now sits on its own playful Material shape, so the list is easier to scan.</string>
+    <string name="whats_new_v61_6_title">Take Your Account\'s Data With You</string>
+    <string name="whats_new_v61_6_body">Signed in? You can now export your sessions, templates and profile from Settings › Backup too. Want to switch to guest mode? Export, sign out, tap Guest and import the file, and everything comes with you.</string>
+    <string name="whats_new_v61_7_title">Livelier Insights</string>
+    <string name="whats_new_v61_7_body">Momentum now shows your streak on a badge with milestones at 3, 7, 14 and 30 days. Weekly Rhythm is a bar chart you can tap day by day, starting the week where your region does, and Task Allocation is a donut chart of where your time goes.</string>
     <string name="whats_new_v51_1_title">Templates Sync to Your Account</string>
     <string name="whats_new_v51_1_body">Your task templates are now saved to your account. Reinstall the app or sign in on another phone and they come right back.</string>
     <string name="whats_new_v51_2_title">Redesigned Sign In &amp; Sign Up</string>
@@ -784,6 +799,8 @@
     <string name="mynt_tagline">Your Voice Money Assistant</string>
     <string name="hajime_tagline">Learn to Read Japanese</string>
     <string name="more_apps_get_on_play">Get on Play Store</string>
+    <string name="more_apps_fact_reviews_quill">20+ reviews</string>
+    <string name="more_apps_fact_downloads">Downloads</string>
     <string name="more_apps_coming_soon">Coming soon</string>
     <string name="more_apps_overview_title">Focus. Read. Track. Learn. Cook.</string>
     <string name="more_apps_overview_body">Sessions, Quill, Mynt, Hajime and Ryori are made by YugenTech: small, thoughtful apps built to make everyday moments a little calmer.</string>
@@ -932,5 +949,6 @@
     <string name="guest_import_failed_title">Couldn\'t import</string>
     <string name="guest_import_failed_message">This file isn\'t a Sessions backup, or it\'s damaged.</string>
     <string name="account_import_subtitle">Bring in a backup you saved as a guest. It syncs to your account.</string>
+    <string name="account_export_subtitle">Save a copy of your sessions and templates to a file. You can import it anywhere, even as a guest.</string>
     <string name="guest_export_and_exit">Export and exit</string>
 </resources>

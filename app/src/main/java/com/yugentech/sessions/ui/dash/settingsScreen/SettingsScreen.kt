@@ -124,7 +124,7 @@ fun SettingsScreen(
         }
     }
 
-    // A guest's backup file: saved where they choose, and read back from any file they pick
+    // A backup file (a guest's or an account's): saved where they choose, and read back from any file they pick
     // (file managers don't all call .json files JSON, hence the wider list)
     val backupState by guestBackupViewModel.state.collectAsStateWithLifecycle()
     // Set by "Export and exit" in the exit-guest dialog: once the file is saved, guest mode ends.
@@ -152,6 +152,13 @@ fun SettingsScreen(
     val importLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.OpenDocument()
     ) { uri -> uri?.let(guestBackupViewModel::import) }
+    fun launchExport() {
+        val date = SimpleDateFormat("yyyy-MM-dd", Locale.US).format(Date())
+        exportLauncher.launch("sessions-backup-$date.json")
+    }
+    fun launchImport() {
+        importLauncher.launch(arrayOf("application/json", "text/plain", "application/octet-stream"))
+    }
 
     var showLogoutDialog by remember { mutableStateOf(false) }
     var showExitDialog by remember { mutableStateOf(false) }
@@ -182,12 +189,7 @@ fun SettingsScreen(
                     subtitle = stringResource(R.string.guest_export_subtitle),
                     index = 0,
                     totalCount = 2,
-                    onClick = {
-                        if (!backupState.busy) {
-                            val date = SimpleDateFormat("yyyy-MM-dd", Locale.US).format(Date())
-                            exportLauncher.launch("sessions-backup-$date.json")
-                        }
-                    }
+                    onClick = { if (!backupState.busy) launchExport() }
                 )
             }
             item {
@@ -196,11 +198,7 @@ fun SettingsScreen(
                     subtitle = stringResource(R.string.guest_import_subtitle),
                     index = 1,
                     totalCount = 2,
-                    onClick = {
-                        if (!backupState.busy) {
-                            importLauncher.launch(arrayOf("application/json", "text/plain", "application/octet-stream"))
-                        }
-                    }
+                    onClick = { if (!backupState.busy) launchImport() }
                 )
             }
         }
@@ -413,7 +411,8 @@ fun SettingsScreen(
             )
         }
 
-        // A signed-in user can bring in a backup they saved as a guest; it then syncs to their account
+        // A signed-in user can save their account's data to a file (to keep, or to carry into
+        // guest mode) and bring in a backup they saved as a guest, which then syncs to the account
         if (!isGuest) {
             item {
                 SectionHeader(
@@ -423,15 +422,20 @@ fun SettingsScreen(
             }
             item {
                 SettingsListItem(
+                    title = stringResource(R.string.guest_export_title),
+                    subtitle = stringResource(R.string.account_export_subtitle),
+                    index = 0,
+                    totalCount = 2,
+                    onClick = { if (!backupState.busy) launchExport() }
+                )
+            }
+            item {
+                SettingsListItem(
                     title = stringResource(R.string.guest_import_title),
                     subtitle = stringResource(R.string.account_import_subtitle),
-                    index = 0,
-                    totalCount = 1,
-                    onClick = {
-                        if (!backupState.busy) {
-                            importLauncher.launch(arrayOf("application/json", "text/plain", "application/octet-stream"))
-                        }
-                    }
+                    index = 1,
+                    totalCount = 2,
+                    onClick = { if (!backupState.busy) launchImport() }
                 )
             }
         }
@@ -486,8 +490,7 @@ fun SettingsScreen(
                 showLogoutDialog = false
                 if (!backupState.busy) {
                     exitAfterExport = true
-                    val date = SimpleDateFormat("yyyy-MM-dd", Locale.US).format(Date())
-                    exportLauncher.launch("sessions-backup-$date.json")
+                    launchExport()
                 }
             },
             onDismiss = { showLogoutDialog = false }

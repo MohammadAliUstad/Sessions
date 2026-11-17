@@ -2,7 +2,7 @@
 <!-- Machine-written translation; have a native speaker review before release. -->
 <resources>
     <string name="app_description">O Sessions ajuda você a criar foco e disciplina, uma sessão consciente de cada vez. Acompanhe seu tempo, proteja sua atenção e evolua um pouco a cada dia.</string>
-    <string name="version">Versão 6.0.0</string>
+    <string name="version">Versão 6.1.0</string>
     <string name="about">Sobre</string>
     <string name="back">Voltar</string>
     <string name="state_selected">Selecionado</string>
@@ -29,14 +29,15 @@
     <string name="language_footer">O Sessions muda na hora. No Android 13 ou mais recente, você também pode alterar nas configurações do celular, em Apps › Sessions › Idioma.</string>
     <string name="language_name_english">Inglês</string>
     <string name="language_name_spanish">Espanhol</string>
-    <string name="language_name_portuguese">Português (Brasil)</string>
+    <string name="language_name_portuguese">Português</string>
     <string name="language_name_french">Francês</string>
     <string name="language_name_german">Alemão</string>
     <string name="language_name_hindi">Hindi</string>
     <string name="language_name_arabic">Árabe</string>
     <string name="language_name_japanese">Japonês</string>
     <string name="language_name_korean">Coreano</string>
-    <string name="language_name_chinese">Chinês (simplificado)</string>
+    <string name="language_name_chinese">Chinês</string>
+    <string name="language_name_russian">Russo</string>
     <string name="settings_section_notifications">Notificações</string>
     <string name="settings_enable_notifications">Ativar notificações</string>
     <string name="settings_enable_notifications_subtitle">Permitir que o Sessions envie notificações</string>
@@ -504,6 +505,20 @@
     <string name="whats_new_v6_19_body">A introdução é totalmente nova: cinco cenas curtas sobre foco, séries com pausas, sons ambientes, temas e o seu progresso, e você pode brincar com elas enquanto avança. Toque no mostrador para um foco rápido ou toque em um bloco para testar um tema. Quer ver de novo? Toque em Rever a introdução nos Ajustes.</string>
     <string name="whats_new_v6_20_title">Um seletor de avatar mais vivo</string>
     <string name="whats_new_v6_20_body">Escolher um avatar agora tem um charme a mais: o círculo vira uma forma Material divertida, diferente a cada vez, e o nome se destaca. A folha continua aberta, então você pode testar vários antes de fechá-la.</string>
+    <string name="whats_new_v61_1_title">Sessions em russo</string>
+    <string name="whats_new_v61_1_body">O Sessions agora também fala russo, somando onze idiomas. Escolha em Configurações › Idioma. E, ao trocar de idioma, cada linha da lista se ajusta suavemente ao novo tamanho em vez de pular.</string>
+    <string name="whats_new_v61_2_title">Um ícone mais caprichado</string>
+    <string name="whats_new_v61_2_body">O ícone do Sessions foi redesenhado com formas mais suaves e limpas. Você vai vê-lo na tela inicial, ao abrir o app, quicando na tela Sobre e em um novo ícone de notificação combinando.</string>
+    <string name="whats_new_v61_3_title">Painéis pretos no AMOLED</string>
+    <string name="whats_new_v61_3_body">Com o Preto AMOLED ativado, os painéis inferiores agora também ficam totalmente pretos, combinando com a tela atrás deles.</string>
+    <string name="whats_new_v61_4_title">Correções no modo convidado</string>
+    <string name="whats_new_v61_4_body">Sair do modo convidado não trava mais se algo der errado. Sair das Configurações durante Exportar e sair não desconecta mais você depois, de surpresa. E importar um backup com a conta conectada não duplica mais seus modelos.</string>
+    <string name="whats_new_v61_5_title">Um visual novo para esta tela</string>
+    <string name="whats_new_v61_5_body">Cada novidade aqui agora fica sobre sua própria forma do Material, deixando a lista mais fácil de percorrer.</string>
+    <string name="whats_new_v61_6_title">Leve os dados da sua conta com você</string>
+    <string name="whats_new_v61_6_body">Conectado? Agora você também pode exportar suas sessões, modelos e perfil em Configurações › Backup. Quer mudar para o modo convidado? Exporte, saia da conta, toque em Convidado e importe o arquivo, e tudo vem junto.</string>
+    <string name="whats_new_v61_7_title">Estatísticas mais vivas</string>
+    <string name="whats_new_v61_7_body">Ritmo agora mostra sua sequência em um selo com marcos de 3, 7, 14 e 30 dias. Ritmo semanal virou um gráfico de barras que você pode tocar dia a dia, começando a semana como na sua região, e Distribuição de tarefas é um gráfico de rosca de para onde vai o seu tempo.</string>
     <string name="whats_new_v51_1_title">Modelos sincronizados com sua conta</string>
     <string name="whats_new_v51_1_body">Seus modelos de tarefa agora ficam salvos na sua conta. Reinstale o app ou entre em outro celular e eles voltam na hora.</string>
     <string name="whats_new_v51_2_title">Login e cadastro redesenhados</string>
@@ -570,6 +585,8 @@
     <string name="mynt_tagline">Seu assistente financeiro por voz</string>
     <string name="hajime_tagline">Aprenda a ler japonês</string>
     <string name="more_apps_get_on_play">Baixar na Play Store</string>
+    <string name="more_apps_fact_reviews_quill">Mais de 20 avaliações</string>
+    <string name="more_apps_fact_downloads">Downloads</string>
     <string name="more_apps_coming_soon">Em breve</string>
     <string name="more_apps_overview_title">Foque. Leia. Controle. Aprenda. Cozinhe.</string>
     <string name="more_apps_overview_body">Sessions, Quill, Mynt, Hajime e Ryori são feitos pela YugenTech: apps pequenos e cuidadosos, criados para deixar o dia a dia um pouco mais calmo.</string>
@@ -774,5 +791,6 @@
     <string name="guest_import_failed_title">Não foi possível importar</string>
     <string name="guest_import_failed_message">Este arquivo não é um backup do Sessions ou está danificado.</string>
     <string name="account_import_subtitle">Traga um backup que você salvou como convidado. Ele será sincronizado com sua conta.</string>
+    <string name="account_export_subtitle">Salve uma cópia das suas sessões e modelos em um arquivo. Você pode importá-la em qualquer lugar, até como convidado.</string>
     <string name="guest_export_and_exit">Exportar e sair</string>
 </resources>

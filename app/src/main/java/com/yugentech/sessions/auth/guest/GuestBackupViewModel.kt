@@ -14,8 +14,10 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 /**
- * The Backup rows in Settings. A guest can export and import; a signed-in user can import, which is
- * how a guest's saved file comes into a new account, and what's added then syncs to that account.
+ * The Backup rows in Settings. Anyone can export and import. A guest's import is how they carry
+ * their progress to another phone; a signed-in user's import is how a guest's saved file comes into
+ * an account (what's added then syncs to it), and a signed-in user's export is how an account's
+ * progress goes the other way, into guest mode.
  */
 class GuestBackupViewModel(
     private val authRepository: AuthRepository,
@@ -38,6 +40,9 @@ class GuestBackupViewModel(
     val state: StateFlow<State> = _state.asStateFlow()
 
     fun export(uri: Uri) = launchBackup { userId ->
+        // Signed in: the file is written from this phone's copy, so make sure the account's
+        // sessions have been brought down first (a no-op once they have; offline it moves on).
+        if (!authRepository.isGuest) sessionsRepository.fetchSessionsOnce()
         if (backupManager.export(userId, uri)) Result.Exported else Result.ExportFailed
     }
 

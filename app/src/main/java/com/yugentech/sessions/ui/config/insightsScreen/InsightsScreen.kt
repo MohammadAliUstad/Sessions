@@ -27,9 +27,14 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.AutoAwesome
 import androidx.compose.material.icons.filled.Timer
+import androidx.compose.material.icons.rounded.BarChart
+import androidx.compose.material.icons.rounded.DonutLarge
+import androidx.compose.material.icons.rounded.LocalFireDepartment
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialShapes
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LargeTopAppBar
 import androidx.compose.material3.MaterialTheme
@@ -57,6 +62,7 @@ import com.yugentech.sessions.ui.config.insightsScreen.components.WeeklyRhythmCh
 import com.yugentech.sessions.ui.config.insightsScreen.components.heatMap.Heatmap
 import java.time.LocalDate
 
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun InsightsScreen(
     totalTime: String,
@@ -202,7 +208,9 @@ fun InsightsScreen(
                         ) {
                             InsightSectionHeader(
                                 title = stringResource(R.string.insights_momentum),
-                                subtitle = stringResource(R.string.insights_momentum_subtitle)
+                                subtitle = stringResource(R.string.insights_momentum_subtitle),
+                                icon = Icons.Rounded.LocalFireDepartment,
+                                shape = MaterialShapes.Cookie9Sided
                             )
 
                             Spacer(Modifier.height(MaterialTheme.spacing.s))
@@ -227,7 +235,9 @@ fun InsightsScreen(
                         ) {
                             InsightSectionHeader(
                                 title = stringResource(R.string.insights_weekly),
-                                subtitle = stringResource(R.string.insights_weekly_subtitle)
+                                subtitle = stringResource(R.string.insights_weekly_subtitle),
+                                icon = Icons.Rounded.BarChart,
+                                shape = MaterialShapes.Clover4Leaf
                             )
 
                             Spacer(Modifier.height(MaterialTheme.spacing.m))
@@ -258,7 +268,9 @@ fun InsightsScreen(
                         ) {
                             InsightSectionHeader(
                                 title = stringResource(R.string.insights_tasks),
-                                subtitle = stringResource(R.string.insights_tasks_subtitle)
+                                subtitle = stringResource(R.string.insights_tasks_subtitle),
+                                icon = Icons.Rounded.DonutLarge,
+                                shape = MaterialShapes.Sunny
                             )
 
                             Spacer(Modifier.height(MaterialTheme.spacing.s))

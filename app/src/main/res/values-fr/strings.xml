@@ -2,7 +2,7 @@
 <!-- Machine-written translation; have a native speaker review before release. -->
 <resources>
     <string name="app_description">Sessions vous aide à développer votre concentration et votre discipline, une session consciente à la fois. Suivez votre temps, protégez votre attention et progressez un peu chaque jour.</string>
-    <string name="version">Version 6.0.0</string>
+    <string name="version">Version 6.1.0</string>
     <string name="about">À propos</string>
     <string name="back">Retour</string>
     <string name="state_selected">Sélectionné</string>
@@ -29,14 +29,15 @@
     <string name="language_footer">Sessions change de langue immédiatement. Sur Android 13 et versions ultérieures, vous pouvez aussi la modifier dans les paramètres du téléphone, sous Applications › Sessions › Langue.</string>
     <string name="language_name_english">Anglais</string>
     <string name="language_name_spanish">Espagnol</string>
-    <string name="language_name_portuguese">Portugais (Brésil)</string>
+    <string name="language_name_portuguese">Portugais</string>
     <string name="language_name_french">Français</string>
     <string name="language_name_german">Allemand</string>
     <string name="language_name_hindi">Hindi</string>
     <string name="language_name_arabic">Arabe</string>
     <string name="language_name_japanese">Japonais</string>
     <string name="language_name_korean">Coréen</string>
-    <string name="language_name_chinese">Chinois (simplifié)</string>
+    <string name="language_name_chinese">Chinois</string>
+    <string name="language_name_russian">Russe</string>
     <string name="settings_section_notifications">Notifications</string>
     <string name="settings_enable_notifications">Activer les notifications</string>
     <string name="settings_enable_notifications_subtitle">Autoriser Sessions à vous envoyer des notifications</string>
@@ -504,6 +505,20 @@
     <string name="whats_new_v6_19_body">La présentation est entièrement nouvelle : cinq courtes scènes sur la concentration, les séries avec pauses, les sons d\'ambiance, les thèmes et vos progrès, avec lesquelles vous pouvez jouer au fil de l\'eau. Touchez le cadran pour une concentration rapide, ou une tuile pour essayer un thème. Envie de la revoir ? Touchez Revoir la présentation dans les réglages.</string>
     <string name="whats_new_v6_20_title">Un choix d\'avatar plus vivant</string>
     <string name="whats_new_v6_20_body">Choisir un avatar a désormais un petit côté festif : son cercle se change en une forme Material ludique, différente à chaque fois, et son nom s\'illumine. La feuille reste ouverte, pour en essayer plusieurs avant de la fermer.</string>
+    <string name="whats_new_v61_1_title">Sessions en russe</string>
+    <string name="whats_new_v61_1_body">Sessions parle désormais aussi russe, soit onze langues. Choisissez-le dans Paramètres › Langue. Et quand vous changez de langue, chaque ligne de la liste prend doucement sa nouvelle taille au lieu de sauter.</string>
+    <string name="whats_new_v61_2_title">Une icône peaufinée</string>
+    <string name="whats_new_v61_2_body">L\'icône de Sessions a été redessinée avec des formes plus douces et plus nettes. Vous la verrez sur votre écran d\'accueil, à l\'ouverture de l\'appli, rebondissant sur l\'écran À propos, et dans une nouvelle icône de notification assortie.</string>
+    <string name="whats_new_v61_3_title">Des panneaux noirs en AMOLED</string>
+    <string name="whats_new_v61_3_body">Avec le Noir AMOLED activé, les panneaux du bas deviennent eux aussi d\'un noir profond, assortis à l\'écran derrière eux.</string>
+    <string name="whats_new_v61_4_title">Corrections du mode invité</string>
+    <string name="whats_new_v61_4_body">Quitter le mode invité ne bloque plus si quelque chose se passe mal. Quitter les Paramètres pendant Exporter et quitter ne vous déconnecte plus à l\'improviste un peu plus tard. Et importer une sauvegarde en étant connecté ne duplique plus vos modèles.</string>
+    <string name="whats_new_v61_5_title">Un nouveau look pour cet écran</string>
+    <string name="whats_new_v61_5_body">Chaque nouveauté repose désormais sur sa propre forme Material, pour une liste plus facile à parcourir.</string>
+    <string name="whats_new_v61_6_title">Emportez les données de votre compte</string>
+    <string name="whats_new_v61_6_body">Connecté ? Vous pouvez désormais aussi exporter vos sessions, modèles et profil depuis Paramètres › Sauvegarde. Envie de passer en mode invité ? Exportez, déconnectez-vous, touchez Invité et importez le fichier : tout vous suit.</string>
+    <string name="whats_new_v61_7_title">Des statistiques plus vivantes</string>
+    <string name="whats_new_v61_7_body">Élan affiche désormais votre série sur un badge, avec des paliers à 3, 7, 14 et 30 jours. Rythme hebdomadaire devient un graphique en barres à toucher jour par jour, avec la semaine qui commence comme dans votre région, et Répartition des tâches est un graphique en anneau qui montre où va votre temps.</string>
     <string name="whats_new_v51_1_title">Les modèles se synchronisent avec votre compte</string>
     <string name="whats_new_v51_1_body">Vos modèles de tâches sont désormais enregistrés dans votre compte. Réinstallez l\'app ou connectez-vous sur un autre téléphone et ils reviennent aussitôt.</string>
     <string name="whats_new_v51_2_title">Connexion et inscription repensées</string>
@@ -570,6 +585,8 @@
     <string name="mynt_tagline">Votre assistant financier vocal</string>
     <string name="hajime_tagline">Apprenez à lire le japonais</string>
     <string name="more_apps_get_on_play">Disponible sur le Play Store</string>
+    <string name="more_apps_fact_reviews_quill">Plus de 20 avis</string>
+    <string name="more_apps_fact_downloads">Téléchargements</string>
     <string name="more_apps_coming_soon">Bientôt disponible</string>
     <string name="more_apps_overview_title">Concentrez-vous. Lisez. Suivez. Apprenez. Cuisinez.</string>
     <string name="more_apps_overview_body">Sessions, Quill, Mynt, Hajime et Ryori sont créées par YugenTech : de petites apps soignées pour rendre le quotidien un peu plus serein.</string>
@@ -774,5 +791,6 @@
     <string name="guest_import_failed_title">Échec de l\'importation</string>
     <string name="guest_import_failed_message">Ce fichier n\'est pas une sauvegarde Sessions, ou il est endommagé.</string>
     <string name="account_import_subtitle">Importez une sauvegarde faite en tant qu\'invité. Elle sera synchronisée avec votre compte.</string>
+    <string name="account_export_subtitle">Enregistrez une copie de vos sessions et modèles dans un fichier. Vous pourrez l\'importer n\'importe où, même en tant qu\'invité.</string>
     <string name="guest_export_and_exit">Exporter et quitter</string>
 </resources>
