@@ -641,6 +641,8 @@
     <string name="announcement_got_it">Verstanden</string>
     <string name="announcement_v6_title">Neu in Sessions 6.0</string>
     <string name="announcement_v6_message">Neu sind das Studio-Layout mit Ziffernblatt im Uhrenstil, lebendig schimmernde Hintergründe, Mesh-Animationen und flüssigere Übergänge in der ganzen App.</string>
+    <string name="announcement_v61_title">Neu in Sessions 6.1</string>
+    <string name="announcement_v61_message">Sessions spricht jetzt Russisch, hat ein überarbeitetes Icon und lebendigere Statistiken, und angemeldet kannst du deine Daten exportieren, sogar um sie in den Gastmodus mitzunehmen.</string>
     <string name="announcement_see_whats_new">Neuigkeiten ansehen</string>
     <string name="announcement_maybe_later">Vielleicht später</string>
     <string name="announcement_layouts_title">Probier die neuen Layouts aus</string>

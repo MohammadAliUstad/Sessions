@@ -731,6 +731,8 @@
     <string name="announcement_got_it">Понятно</string>
     <string name="announcement_v6_title">Что нового в Sessions 6.0</string>
     <string name="announcement_v6_message">Мы добавили новый макет «Студия» с циферблатом в стиле часов, живое свечение на фоне, сетчатые анимации и более плавные переходы по всему приложению.</string>
+    <string name="announcement_v61_title">Что нового в Sessions 6.1</string>
+    <string name="announcement_v61_message">Sessions теперь говорит по-русски, получил обновлённую иконку и более живые графики статистики, а если ты вошёл в аккаунт, можешь экспортировать свои данные – даже чтобы перенести их в гостевой режим.</string>
     <string name="announcement_see_whats_new">Что нового</string>
     <string name="announcement_maybe_later">Может, позже</string>
     <string name="announcement_layouts_title">Попробуй новые макеты</string>

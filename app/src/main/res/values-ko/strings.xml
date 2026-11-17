@@ -641,6 +641,8 @@
     <string name="announcement_got_it">확인</string>
     <string name="announcement_v6_title">Sessions 6.0의 새로운 기능</string>
     <string name="announcement_v6_message">시계 스타일 다이얼의 새 스튜디오 레이아웃, 살아 있는 빛 배경, 메시 애니메이션, 앱 전반의 더 부드러운 전환 효과를 추가했어요.</string>
+    <string name="announcement_v61_title">Sessions 6.1의 새로운 기능</string>
+    <string name="announcement_v61_message">Sessions가 이제 러시아어를 지원하고, 더 다듬어진 아이콘과 더 생생한 인사이트 차트를 갖췄어요. 로그인한 상태에서도 데이터를 내보낼 수 있어 게스트 모드로 옮겨 갈 수도 있어요.</string>
     <string name="announcement_see_whats_new">새로운 기능 보기</string>
     <string name="announcement_maybe_later">나중에</string>
     <string name="announcement_layouts_title">새 레이아웃을 사용해 보세요</string>

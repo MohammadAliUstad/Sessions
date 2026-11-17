@@ -26,6 +26,20 @@ object AnnouncementsCatalog {
      * ones matching the current app version that haven't been seen yet.
      */
     val ALL_ANNOUNCEMENTS: List<Announcement> = listOf(
+        // Version 6.1.0 (versionCodes 29 and 30, both 6.1.0 builds; seen on one means seen)
+        Announcement(
+            id = "v6_1_0_whats_new",
+            minVersionCode = 29,
+            maxVersionCode = 30,
+            priority = 100,
+            style = AnnouncementStyle.DIALOG,
+            title = R.string.announcement_v61_title,
+            message = R.string.announcement_v61_message,
+            icon = Icons.Default.AutoAwesome,
+            primaryAction = AnnouncementAction.OpenWhatsNew,
+            primaryActionLabel = R.string.announcement_see_whats_new,
+            dismissLabel = R.string.announcement_maybe_later
+        ),
         // Version 6.0.0 (versionCodes 27 and 28: 28 is a rebuild of 6.0.0, and anyone who
         // already saw these on 27 has them marked seen, so they never show twice)
         Announcement(

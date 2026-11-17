@@ -641,6 +641,8 @@
     <string name="announcement_got_it">知道了</string>
     <string name="announcement_v6_title">Sessions 6.0 新功能</string>
     <string name="announcement_v6_message">我们新增了配有手表风格表盘的工作室布局、灵动光晕背景、网格动画，并让整个应用的过渡更加顺滑。</string>
+    <string name="announcement_v61_title">Sessions 6.1 新功能</string>
+    <string name="announcement_v61_message">Sessions 现已支持俄语，图标更加精致，统计图表也更生动；已登录用户还可以导出数据，甚至带到访客模式中继续使用。</string>
     <string name="announcement_see_whats_new">查看新功能</string>
     <string name="announcement_maybe_later">以后再说</string>
     <string name="announcement_layouts_title">试试新布局</string>

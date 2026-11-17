@@ -641,6 +641,8 @@
     <string name="announcement_got_it">OK</string>
     <string name="announcement_v6_title">Sessions 6.0 の新機能</string>
     <string name="announcement_v6_message">時計風のダイヤルを備えた新しいスタジオレイアウト、生きた光の背景、メッシュアニメーション、アプリ全体のよりなめらかなトランジションを追加しました。</string>
+    <string name="announcement_v61_title">Sessions 6.1 の新機能</string>
+    <string name="announcement_v61_message">Sessions がロシア語に対応し、アイコンがより洗練され、インサイトのグラフもいきいきとしました。サインイン中でもデータをエクスポートでき、ゲストモードへの引き継ぎにも使えます。</string>
     <string name="announcement_see_whats_new">新機能を見る</string>
     <string name="announcement_maybe_later">あとで</string>
     <string name="announcement_layouts_title">新しいレイアウトを試そう</string>

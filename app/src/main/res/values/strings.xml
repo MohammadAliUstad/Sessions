@@ -859,6 +859,8 @@
 
     <string name="announcement_v6_title">What\'s New in Sessions 6.0</string>
     <string name="announcement_v6_message">We\'ve added the new Studio layout with a watch-style dial, living glow backgrounds, mesh animations, and smoother transitions throughout the app.</string>
+    <string name="announcement_v61_title">What\'s New in Sessions 6.1</string>
+    <string name="announcement_v61_message">Sessions now speaks Russian, has a polished new icon and livelier Insights charts, and signed-in users can export their data, even to carry it into guest mode.</string>
     <string name="announcement_see_whats_new">See What\'s New</string>
     <string name="announcement_maybe_later">Maybe Later</string>
     <string name="announcement_layouts_title">Try the New Layouts</string>

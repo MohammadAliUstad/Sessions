@@ -641,6 +641,8 @@
     <string name="announcement_got_it">فهمت</string>
     <string name="announcement_v6_title">الجديد في Sessions 6.0</string>
     <string name="announcement_v6_message">أضفنا تخطيط ستوديو الجديد بقرص بنمط الساعة، وخلفيات بتوهّج حيّ، وحركات شبكية، وانتقالات أكثر سلاسة في أنحاء التطبيق.</string>
+    <string name="announcement_v61_title">ما الجديد في Sessions 6.1</string>
+    <string name="announcement_v61_message">أصبح Sessions يتحدث الروسية، وله أيقونة أكثر أناقة ومخططات إحصاءات أكثر حيوية، ويمكن للمستخدمين المسجّلين تصدير بياناتهم، حتى لنقلها إلى وضع الضيف.</string>
     <string name="announcement_see_whats_new">اطّلع على الجديد</string>
     <string name="announcement_maybe_later">ربما لاحقًا</string>
     <string name="announcement_layouts_title">جرّب التخطيطات الجديدة</string>

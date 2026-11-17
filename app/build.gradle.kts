@@ -28,7 +28,7 @@ android {
         applicationId = "com.yugentech.sessions"
         minSdk = 26
         targetSdk = 37
-        versionCode = 29
+        versionCode = 30
         versionName = "6.1.0"
 
         val webClientId = localProperties.getProperty("WEB_CLIENT_ID") ?: ""

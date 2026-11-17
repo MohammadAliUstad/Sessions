@@ -641,6 +641,8 @@
     <string name="announcement_got_it">Compris</string>
     <string name="announcement_v6_title">Nouveautés de Sessions 6.0</string>
     <string name="announcement_v6_message">Nous avons ajouté la nouvelle disposition Studio avec un cadran façon montre, des fonds à lueur vivante, des animations maillées et des transitions plus fluides dans toute l\'app.</string>
+    <string name="announcement_v61_title">Les nouveautés de Sessions 6.1</string>
+    <string name="announcement_v61_message">Sessions parle désormais russe, arbore une icône plus soignée et des statistiques plus vivantes, et si vous êtes connecté, vous pouvez exporter vos données, même pour les emporter en mode invité.</string>
     <string name="announcement_see_whats_new">Voir les nouveautés</string>
     <string name="announcement_maybe_later">Plus tard</string>
     <string name="announcement_layouts_title">Essayez les nouvelles dispositions</string>
