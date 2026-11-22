@@ -158,12 +158,6 @@
     <string name="onboarding_sets_title">Séries, com pausas\nincluídas</string>
     <string name="onboarding_ambience_title">Crie o clima</string>
     <string name="onboarding_ambience_body">Chuva na janela, uma lareira crepitando, uma biblioteca silenciosa. Escolha um som ambiente para suas sessões ou fique no silêncio.</string>
-    <string name="onboarding_theme_tap">Toque em uma opção para testar</string>
-    <string name="onboarding_theme_title">Deixe do seu jeito</string>
-    <string name="onboarding_theme_body">Escolha uma paleta ou as cores do seu papel de parede, e vá de claro, escuro ou preto puro AMOLED. Todas as telas acompanham.</string>
-    <string name="onboarding_mini_greeting">Boa noite</string>
-    <string name="onboarding_mini_subtitle">Pronto para focar?</string>
-    <string name="onboarding_mini_start">Começar</string>
     <string name="onboarding_growth_title">Veja crescer</string>
     <string name="onboarding_growth_body">Cada minuto de foco conta. Estatísticas, um mapa de calor anual e lembretes diários gentis fazem você voltar.</string>
     <string name="onboarding_growth_caption">de foco nesta temporada</string>
@@ -780,9 +774,9 @@
 
     <string name="guest_backup_section">Backup</string>
     <string name="guest_export_title">Exportar dados</string>
-    <string name="guest_export_subtitle">Salve suas sessões e modelos em um arquivo</string>
+    <string name="guest_export_subtitle">Crie um arquivo de backup. Abra-o em qualquer celular, ou depois de entrar na sua conta.</string>
     <string name="guest_import_title">Importar dados</string>
-    <string name="guest_import_subtitle">Adicione sessões e modelos de um arquivo de backup</string>
+    <string name="guest_import_subtitle">Restaure a partir de um arquivo de backup. O que você já tem não é duplicado.</string>
     <string name="guest_export_done_title">Backup salvo</string>
     <string name="guest_export_done_message">Guarde este arquivo em um lugar seguro. Importe-o em qualquer celular para recuperar suas sessões.</string>
     <string name="guest_export_failed_title">Não foi possível salvar o backup</string>
@@ -791,7 +785,7 @@
     <string name="guest_import_done_message">Sessões adicionadas: %1$d\nModelos adicionados: %2$d</string>
     <string name="guest_import_failed_title">Não foi possível importar</string>
     <string name="guest_import_failed_message">Este arquivo não é um backup do Sessions ou está danificado.</string>
-    <string name="account_import_subtitle">Traga um backup que você salvou como convidado. Ele será sincronizado com sua conta.</string>
-    <string name="account_export_subtitle">Salve uma cópia das suas sessões e modelos em um arquivo. Você pode importá-la em qualquer lugar, até como convidado.</string>
+    <string name="account_import_subtitle">Restaure a partir de um arquivo de backup, mesmo um criado como convidado. Ele será sincronizado com sua conta.</string>
+    <string name="account_export_subtitle">Crie um arquivo de backup. Abra-o em qualquer lugar, até como convidado.</string>
     <string name="guest_export_and_exit">Exportar e sair</string>
 </resources>

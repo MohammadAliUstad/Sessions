@@ -158,12 +158,6 @@
     <string name="onboarding_sets_title">组次，内置\n休息</string>
     <string name="onboarding_ambience_title">营造氛围</string>
     <string name="onboarding_ambience_body">窗外的雨声、噼啪作响的炉火、安静的图书馆。为会话挑选一种环境音，或享受安静。</string>
-    <string name="onboarding_theme_tap">点按方块试试看</string>
-    <string name="onboarding_theme_title">打造专属风格</string>
-    <string name="onboarding_theme_body">选择调色板或壁纸颜色，并选用浅色、深色或纯黑 AMOLED。所有页面都会随之变化。</string>
-    <string name="onboarding_mini_greeting">晚上好</string>
-    <string name="onboarding_mini_subtitle">准备好专注了吗？</string>
-    <string name="onboarding_mini_start">开始</string>
     <string name="onboarding_growth_title">见证成长</string>
     <string name="onboarding_growth_body">每一分钟的专注都算数。数据洞察、全年热力图和温和的每日提醒，让你一次次回来。</string>
     <string name="onboarding_growth_caption">本季专注时长</string>
@@ -750,9 +744,9 @@
 
     <string name="guest_backup_section">备份</string>
     <string name="guest_export_title">导出数据</string>
-    <string name="guest_export_subtitle">将你的专注记录和模板保存到文件</string>
+    <string name="guest_export_subtitle">创建备份文件。可在任何手机上打开，登录后也可以。</string>
     <string name="guest_import_title">导入数据</string>
-    <string name="guest_import_subtitle">从备份文件添加专注记录和模板</string>
+    <string name="guest_import_subtitle">从备份文件恢复。已有的内容不会重复。</string>
     <string name="guest_export_done_title">备份已保存</string>
     <string name="guest_export_done_message">请把这个文件存放在安全的地方。在任何手机上导入即可找回你的记录。</string>
     <string name="guest_export_failed_title">无法保存备份</string>
@@ -761,7 +755,7 @@
     <string name="guest_import_done_message">新增记录：%1$d\n新增模板：%2$d</string>
     <string name="guest_import_failed_title">无法导入</string>
     <string name="guest_import_failed_message">这个文件不是 Sessions 备份，或者已损坏。</string>
-    <string name="account_import_subtitle">导入你以访客身份保存的备份，它会同步到你的账号。</string>
-    <string name="account_export_subtitle">将你的专注记录和模板保存为文件副本。可在任何地方导入，访客模式下也可以。</string>
+    <string name="account_import_subtitle">从备份文件恢复，包括以访客身份创建的备份。它会同步到你的账号。</string>
+    <string name="account_export_subtitle">创建备份文件。可在任何地方打开，访客模式下也可以。</string>
     <string name="guest_export_and_exit">导出并退出</string>
 </resources>

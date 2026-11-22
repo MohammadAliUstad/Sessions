@@ -158,12 +158,6 @@
     <string name="onboarding_sets_title">休憩込みの\nセット</string>
     <string name="onboarding_ambience_title">雰囲気をつくる</string>
     <string name="onboarding_ambience_body">窓を打つ雨、はぜる暖炉、静かな図書館。セッション中に流すサウンドを選ぶか、静けさを楽しみましょう。</string>
-    <string name="onboarding_theme_tap">タイルをタップして試す</string>
-    <string name="onboarding_theme_title">自分らしく</string>
-    <string name="onboarding_theme_body">パレットや壁紙の色を選び、ライト、ダーク、真っ黒な AMOLED から好みのモードに。すべての画面が合わせて変わります。</string>
-    <string name="onboarding_mini_greeting">こんばんは</string>
-    <string name="onboarding_mini_subtitle">集中の準備はできましたか？</string>
-    <string name="onboarding_mini_start">開始</string>
     <string name="onboarding_growth_title">成長を見守る</string>
     <string name="onboarding_growth_body">集中した一分一分が積み重なります。インサイト、1 年分のヒートマップ、やさしい毎日のリマインダーが、また戻ってくるきっかけに。</string>
     <string name="onboarding_growth_caption">今シーズンの集中時間</string>
@@ -750,9 +744,9 @@
 
     <string name="guest_backup_section">バックアップ</string>
     <string name="guest_export_title">データをエクスポート</string>
-    <string name="guest_export_subtitle">セッションとテンプレートをファイルに保存します</string>
+    <string name="guest_export_subtitle">バックアップファイルを作成します。どの端末でも、サインイン後でも開けます。</string>
     <string name="guest_import_title">データをインポート</string>
-    <string name="guest_import_subtitle">バックアップファイルからセッションとテンプレートを追加します</string>
+    <string name="guest_import_subtitle">バックアップファイルから復元します。すでにあるものが重複することはありません。</string>
     <string name="guest_export_done_title">バックアップを保存しました</string>
     <string name="guest_export_done_message">このファイルは安全な場所に保管してください。どの端末でもインポートすればセッションを取り戻せます。</string>
     <string name="guest_export_failed_title">バックアップを保存できませんでした</string>
@@ -761,7 +755,7 @@
     <string name="guest_import_done_message">追加したセッション: %1$d\n追加したテンプレート: %2$d</string>
     <string name="guest_import_failed_title">インポートできませんでした</string>
     <string name="guest_import_failed_message">このファイルは Sessions のバックアップではないか、破損しています。</string>
-    <string name="account_import_subtitle">ゲストのときに保存したバックアップを取り込みます。アカウントに同期されます。</string>
-    <string name="account_export_subtitle">セッションとテンプレートのコピーをファイルに保存します。ゲストとしても、どこでもインポートできます。</string>
+    <string name="account_import_subtitle">バックアップファイルから復元します。ゲストのときに作成したものも使えます。アカウントに同期されます。</string>
+    <string name="account_export_subtitle">バックアップファイルを作成します。ゲストとしても、どこでも開けます。</string>
     <string name="guest_export_and_exit">エクスポートして終了</string>
 </resources>

@@ -8,7 +8,6 @@ import androidx.compose.animation.expandHorizontally
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkHorizontally
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
@@ -80,8 +79,7 @@ fun BottomNavBar(
         Surface(
             modifier = Modifier.height(DockHeight),
             shape = CircleShape,
-            color = MaterialTheme.colorScheme.surfaceContainerHigh,
-            border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.35f))
+            color = MaterialTheme.colorScheme.surfaceContainerHigh
         ) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,

@@ -158,12 +158,6 @@
     <string name="onboarding_sets_title">Sätze, mit Pausen\ninklusive</string>
     <string name="onboarding_ambience_title">Schaff die richtige Stimmung</string>
     <string name="onboarding_ambience_body">Regen am Fenster, ein knisterndes Feuer, eine stille Bibliothek. Wähle eine Klangkulisse für deine Sessions oder genieße die Stille.</string>
-    <string name="onboarding_theme_tap">Tippe auf eine Kachel zum Ausprobieren</string>
-    <string name="onboarding_theme_title">Mach es zu deinem</string>
-    <string name="onboarding_theme_body">Wähle eine Palette oder die Farben deines Hintergrundbilds, hell, dunkel oder echtes AMOLED-Schwarz. Jeder Bildschirm zieht mit.</string>
-    <string name="onboarding_mini_greeting">Guten Abend</string>
-    <string name="onboarding_mini_subtitle">Bereit für Fokus?</string>
-    <string name="onboarding_mini_start">Start</string>
     <string name="onboarding_growth_title">Sieh zu, wie es wächst</string>
     <string name="onboarding_growth_body">Jede fokussierte Minute zählt. Statistiken, eine Jahres-Heatmap und sanfte tägliche Erinnerungen bringen dich immer wieder zurück.</string>
     <string name="onboarding_growth_caption">Fokus in dieser Saison</string>
@@ -765,9 +759,9 @@
 
     <string name="guest_backup_section">Sicherung</string>
     <string name="guest_export_title">Daten exportieren</string>
-    <string name="guest_export_subtitle">Speichere deine Sessions und Vorlagen in einer Datei</string>
+    <string name="guest_export_subtitle">Erstelle eine Sicherungsdatei. Öffne sie auf jedem Handy, auch nach der Anmeldung.</string>
     <string name="guest_import_title">Daten importieren</string>
-    <string name="guest_import_subtitle">Füge Sessions und Vorlagen aus einer Sicherung hinzu</string>
+    <string name="guest_import_subtitle">Stelle aus einer Sicherungsdatei wieder her. Was du schon hast, wird nicht doppelt hinzugefügt.</string>
     <string name="guest_export_done_title">Sicherung gespeichert</string>
     <string name="guest_export_done_message">Bewahre diese Datei sicher auf. Importiere sie auf jedem Handy, um deine Sessions zurückzubekommen.</string>
     <string name="guest_export_failed_title">Sicherung fehlgeschlagen</string>
@@ -776,7 +770,7 @@
     <string name="guest_import_done_message">Hinzugefügte Sessions: %1$d\nHinzugefügte Vorlagen: %2$d</string>
     <string name="guest_import_failed_title">Import fehlgeschlagen</string>
     <string name="guest_import_failed_message">Diese Datei ist keine Sessions-Sicherung oder beschädigt.</string>
-    <string name="account_import_subtitle">Hole eine Sicherung, die du als Gast gespeichert hast. Sie wird mit deinem Konto synchronisiert.</string>
-    <string name="account_export_subtitle">Speichere eine Kopie deiner Sessions und Vorlagen in einer Datei. Du kannst sie überall importieren, auch als Gast.</string>
+    <string name="account_import_subtitle">Stelle aus einer Sicherungsdatei wieder her, auch aus einer, die du als Gast erstellt hast. Sie wird mit deinem Konto synchronisiert.</string>
+    <string name="account_export_subtitle">Erstelle eine Sicherungsdatei. Öffne sie überall, auch als Gast.</string>
     <string name="guest_export_and_exit">Exportieren und beenden</string>
 </resources>

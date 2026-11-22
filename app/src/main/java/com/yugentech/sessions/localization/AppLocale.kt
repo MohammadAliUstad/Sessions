@@ -14,8 +14,9 @@ import java.util.Locale
  * The app's own language, apart from the phone's.
  *
  * Switching never restarts the app or recreates the screen. MainActivity declares
- * `configChanges="locale|layoutDirection|screenLayout"` (a language switch can also flip screenLayout
- * bits; without it the system rebuilds the screen), so a language change reaches the running screen as a
+ * `configChanges="locale|layoutDirection|screenLayout"` (Android reports every language switch as
+ * a layoutDirection change too, even between two left-to-right languages, and it can also flip
+ * screenLayout bits; leave any of them out and the system rebuilds the screen), so a language change reaches the running screen as a
  * configuration change and Compose redraws in place: same back stack, same state, no blink.
  *
  * On Android 13 and up this is the system's per-app language: the choice is stored by the system,
@@ -79,6 +80,31 @@ object AppLocale {
     }
 
     /**
+     * [app] in the picked language, for strings looked up away from any screen (AppStrings).
+     * Unlike [wrap] it changes nothing (the default locale is set by [wrap] and by a switch), and
+     * below Android 13 the wrapped context is built once and reused until the pick or the app's
+     * configuration changes, so a lookup doesn't create a new one every time.
+     */
+    fun localized(app: Context): Context {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) return app
+        val tag = storedTag(app) ?: return app
+        val current = app.resources.configuration
+        cachedLocalized?.let { if (it.tag == tag && it.base == current) return it.context }
+        val configuration = Configuration(current).apply {
+            setLocales(LocaleList(Locale.forLanguageTag(tag)))
+        }
+        return app.createConfigurationContext(configuration).also {
+            cachedLocalized = LocalizedContext(tag, Configuration(current), it)
+        }
+    }
+
+    /** The last [localized] context, with the pick and the configuration it was made from. */
+    private class LocalizedContext(val tag: String, val base: Configuration, val context: Context)
+
+    @Volatile
+    private var cachedLocalized: LocalizedContext? = null
+
+    /**
      * The phone's own language, for the "System default" row.
      *
      * From Android 13 this asks [LocaleManager.getSystemLocales]: once a per-app language is set,
@@ -100,8 +126,7 @@ object AppLocale {
     /**
      * Below Android 13: points the activity's and the app's resources at [locale] and tells the
      * views, the same way the system does for a handled configuration change. Compose sees a new
-     * LocalConfiguration and recomposes every string. The layout never flips: the app stays
-     * left-to-right in every language (see MainActivity).
+     * LocalConfiguration and recomposes every string.
      */
     @Suppress("DEPRECATION")
     private fun applyInPlace(activity: Activity, locale: Locale) {

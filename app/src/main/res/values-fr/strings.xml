@@ -158,12 +158,6 @@
     <string name="onboarding_sets_title">Des séries, avec pauses\nincluses</string>
     <string name="onboarding_ambience_title">Créez l\'ambiance</string>
     <string name="onboarding_ambience_body">La pluie à la fenêtre, un feu qui crépite, une bibliothèque silencieuse. Choisissez une ambiance sonore pour vos sessions, ou restez au calme.</string>
-    <string name="onboarding_theme_tap">Touchez une option pour l\'essayer</string>
-    <string name="onboarding_theme_title">Faites-la vôtre</string>
-    <string name="onboarding_theme_body">Choisissez une palette ou les couleurs de votre fond d\'écran, en clair, sombre ou noir pur AMOLED. Tous les écrans suivent.</string>
-    <string name="onboarding_mini_greeting">Bonsoir</string>
-    <string name="onboarding_mini_subtitle">Prêt à vous concentrer ?</string>
-    <string name="onboarding_mini_start">Démarrer</string>
     <string name="onboarding_growth_title">Regardez-la grandir</string>
     <string name="onboarding_growth_body">Chaque minute de concentration compte. Statistiques, carte thermique annuelle et rappels quotidiens bienveillants vous donnent envie de revenir.</string>
     <string name="onboarding_growth_caption">de concentration cette saison</string>
@@ -780,9 +774,9 @@
 
     <string name="guest_backup_section">Sauvegarde</string>
     <string name="guest_export_title">Exporter les données</string>
-    <string name="guest_export_subtitle">Enregistrez vos sessions et modèles dans un fichier</string>
+    <string name="guest_export_subtitle">Créez un fichier de sauvegarde. Ouvrez-le sur n\'importe quel téléphone, ou après vous être connecté.</string>
     <string name="guest_import_title">Importer des données</string>
-    <string name="guest_import_subtitle">Ajoutez des sessions et modèles depuis une sauvegarde</string>
+    <string name="guest_import_subtitle">Restaurez à partir d\'un fichier de sauvegarde. Ce que vous avez déjà n\'est pas dupliqué.</string>
     <string name="guest_export_done_title">Sauvegarde enregistrée</string>
     <string name="guest_export_done_message">Gardez ce fichier en lieu sûr. Importez-le sur n\'importe quel téléphone pour retrouver vos sessions.</string>
     <string name="guest_export_failed_title">Échec de la sauvegarde</string>
@@ -791,7 +785,7 @@
     <string name="guest_import_done_message">Sessions ajoutées : %1$d\nModèles ajoutés : %2$d</string>
     <string name="guest_import_failed_title">Échec de l\'importation</string>
     <string name="guest_import_failed_message">Ce fichier n\'est pas une sauvegarde Sessions, ou il est endommagé.</string>
-    <string name="account_import_subtitle">Importez une sauvegarde faite en tant qu\'invité. Elle sera synchronisée avec votre compte.</string>
-    <string name="account_export_subtitle">Enregistrez une copie de vos sessions et modèles dans un fichier. Vous pourrez l\'importer n\'importe où, même en tant qu\'invité.</string>
+    <string name="account_import_subtitle">Restaurez à partir d\'un fichier de sauvegarde, même créé en tant qu\'invité. Il sera synchronisé avec votre compte.</string>
+    <string name="account_export_subtitle">Créez un fichier de sauvegarde. Ouvrez-le n\'importe où, même en tant qu\'invité.</string>
     <string name="guest_export_and_exit">Exporter et quitter</string>
 </resources>

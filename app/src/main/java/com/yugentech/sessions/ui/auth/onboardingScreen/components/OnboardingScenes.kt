@@ -3,9 +3,7 @@ package com.yugentech.sessions.ui.auth.onboardingScreen.components
 import com.yugentech.sessions.R
 import androidx.compose.ui.res.stringResource
 import androidx.annotation.StringRes
-import android.os.Build
 import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.LinearEasing
@@ -16,7 +14,6 @@ import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.togetherWith
-import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -34,19 +31,14 @@ import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Contrast
-import androidx.compose.material.icons.filled.DarkMode
 import androidx.compose.material.icons.filled.Forest
 import androidx.compose.material.icons.filled.GraphicEq
 import androidx.compose.material.icons.filled.LocalFireDepartment
-import androidx.compose.material.icons.filled.LightMode
 import androidx.compose.material.icons.filled.LocalLibrary
-import androidx.compose.material.icons.filled.Palette
 import androidx.compose.material.icons.filled.SkipNext
 import androidx.compose.material.icons.filled.TouchApp
 import androidx.compose.material.icons.filled.WaterDrop
 import androidx.compose.material.icons.filled.Waves
-import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -64,25 +56,16 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.geometry.Size
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.yugentech.sessions.theme.builder.getColorScheme
-import com.yugentech.sessions.theme.config.ColorTheme
-import com.yugentech.sessions.theme.config.ThemeConfiguration
-import com.yugentech.sessions.theme.config.ThemeMode
 import com.yugentech.sessions.ui.auth.components.OnPaper
 import com.yugentech.sessions.ui.auth.components.paperColors
 import com.yugentech.sessions.timer.state.TimerMode
@@ -525,279 +508,7 @@ private fun SoundTile(
     }
 }
 
-// ---------------------------------------------------------------- 4. Make it yours
-
-private enum class LookMode(@param:StringRes val label: Int, val icon: ImageVector) {
-    Light(R.string.theme_mode_light, Icons.Default.LightMode),
-    Dark(R.string.theme_mode_dark, Icons.Default.DarkMode),
-    Amoled(R.string.theme_mode_amoled, Icons.Default.Contrast)
-}
-
-private class PaletteOption(val theme: ColorTheme, @param:StringRes val name: Int)
-
-/**
- * The palettes in Appearance's order. Dynamic (the wallpaper's colours) only joins on Android 12
- * and up, where the app can offer it.
- */
-private val PaletteOptions: List<PaletteOption> = buildList {
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) add(PaletteOption(ColorTheme.DYNAMIC, R.string.theme_name_dynamic))
-    add(PaletteOption(ColorTheme.SESSIONS, R.string.theme_name_sessions))
-    add(PaletteOption(ColorTheme.LAGOON, R.string.theme_name_lagoon))
-    add(PaletteOption(ColorTheme.GROVE, R.string.theme_name_grove))
-    add(PaletteOption(ColorTheme.HARVEST, R.string.theme_name_harvest))
-    add(PaletteOption(ColorTheme.SAKURA, R.string.theme_name_sakura))
-    add(PaletteOption(ColorTheme.ALPINE, R.string.theme_name_alpine))
-    add(PaletteOption(ColorTheme.TWILIGHT, R.string.theme_name_twilight))
-}
-
-private enum class Facets { Palette, Mode }
-
-/**
- * A little phone showing the app, built the way Appearance builds it (the same colour schemes,
- * deepened dark surfaces and AMOLED black). The two tiles under it are buttons: each tap steps
- * that part of the look on (the next palette, or Light → Dark → AMOLED) and the
- * phone follows along, with the tile just tapped lit in the accent colour.
- */
-@Composable
-internal fun ThemeScene(active: Boolean) {
-    val haptic = LocalHapticFeedback.current
-    val phoneIn = rememberEntrance(active, 150)
-    val facetsIn = rememberEntrance(active, 450)
-    val hintIn = rememberEntrance(active, 1400)
-    var paletteIndex by remember { mutableIntStateOf(0) }
-    var mode by remember { mutableStateOf(LookMode.Light) }
-    var lastTapped by remember { mutableStateOf<Facets?>(null) }
-
-    val palette = PaletteOptions[paletteIndex]
-    val scheme = getColorScheme(
-        themeConfiguration = ThemeConfiguration(
-            themeMode = if (mode == LookMode.Light) ThemeMode.LIGHT else ThemeMode.DARK,
-            colorTheme = palette.theme,
-            isAmoledMode = mode == LookMode.Amoled
-        )
-    )
-
-    fun tap(facet: Facets) {
-        haptic.performHapticFeedback(HapticFeedbackType.GestureEnd)
-        lastTapped = facet
-        when (facet) {
-            Facets.Palette -> paletteIndex = (paletteIndex + 1) % PaletteOptions.size
-            Facets.Mode -> mode = LookMode.entries[(mode.ordinal + 1) % LookMode.entries.size]
-        }
-    }
-
-    SceneColumn {
-        MiniApp(
-            scheme = scheme,
-            modifier = Modifier.rise({ phoneIn.value }, 36.dp)
-        )
-        Spacer(Modifier.height(24.dp))
-        Row(
-            horizontalArrangement = Arrangement.spacedBy(10.dp),
-            modifier = Modifier
-                .fillMaxWidth()
-                .rise({ facetsIn.value }, 16.dp)
-        ) {
-            Facet(
-                icon = Icons.Default.Palette,
-                value = stringResource(palette.name),
-                lit = lastTapped == Facets.Palette,
-                onClick = { tap(Facets.Palette) },
-                modifier = Modifier.weight(1f)
-            )
-            Facet(
-                icon = mode.icon,
-                value = stringResource(mode.label),
-                lit = lastTapped == Facets.Mode,
-                onClick = { tap(Facets.Mode) },
-                modifier = Modifier.weight(1f)
-            )
-        }
-        Spacer(Modifier.height(4.dp))
-        Pill(
-            text = stringResource(R.string.onboarding_theme_tap),
-            icon = Icons.Default.TouchApp,
-            modifier = Modifier.rise({ hintIn.value }, 12.dp)
-        )
-        Spacer(Modifier.height(24.dp))
-        SceneText(
-            title = stringResource(R.string.onboarding_theme_title),
-            body = stringResource(R.string.onboarding_theme_body),
-            active = active,
-            delayMs = 800
-        )
-    }
-}
-
-/**
- * A pocket version of the app in [scheme]: a greeting, the timer ring with the time, a Start
- * button and the bottom bar. Colours glide to each new look.
- */
-@Composable
-private fun MiniApp(scheme: ColorScheme, modifier: Modifier = Modifier) {
-    val spec = tween<Color>(500)
-    val background by animateColorAsState(scheme.background, spec, label = "miniBackground")
-    val container by animateColorAsState(scheme.surfaceContainer, spec, label = "miniContainer")
-    val track by animateColorAsState(scheme.surfaceContainerHighest, spec, label = "miniTrack")
-    val primary by animateColorAsState(scheme.primary, spec, label = "miniPrimary")
-    val onPrimary by animateColorAsState(scheme.onPrimary, spec, label = "miniOnPrimary")
-    val ink by animateColorAsState(scheme.onSurface, spec, label = "miniInk")
-    val softInk by animateColorAsState(scheme.onSurfaceVariant, spec, label = "miniSoftInk")
-    val selected by animateColorAsState(scheme.secondaryContainer, spec, label = "miniSelected")
-    val onSelected by animateColorAsState(scheme.onSecondaryContainer, spec, label = "miniOnSelected")
-
-    val typography = MaterialTheme.typography
-    // A dark bezel, as a phone has, so the screen's edge reads in every look (AMOLED black too)
-    Box(
-        modifier = modifier
-            .size(width = 152.dp, height = 296.dp)
-            .clip(RoundedCornerShape(30.dp))
-            .background(Color(0xFF16161A))
-            .padding(5.dp)
-            .clip(RoundedCornerShape(25.dp))
-            .background(background)
-    ) {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(top = 18.dp)
-        ) {
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 14.dp)
-            ) {
-                MiniText(stringResource(R.string.onboarding_mini_greeting), typography.titleSmall, FontWeight.SemiBold, ink)
-                MiniText(stringResource(R.string.onboarding_mini_subtitle), typography.labelSmall, FontWeight.Normal, softInk)
-            }
-            Spacer(Modifier.weight(1f))
-            Box(contentAlignment = Alignment.Center, modifier = Modifier.size(104.dp)) {
-                Canvas(modifier = Modifier.fillMaxSize()) {
-                    val stroke = 7.dp.toPx()
-                    val topLeft = Offset(stroke / 2f, stroke / 2f)
-                    val arcSize = Size(size.width - stroke, size.height - stroke)
-                    drawArc(
-                        color = track, startAngle = 0f, sweepAngle = 360f, useCenter = false,
-                        topLeft = topLeft, size = arcSize, style = Stroke(stroke)
-                    )
-                    drawArc(
-                        color = primary, startAngle = -90f, sweepAngle = 250f, useCenter = false,
-                        topLeft = topLeft, size = arcSize, style = Stroke(stroke, cap = StrokeCap.Round)
-                    )
-                }
-                MiniText("25:00", typography.headlineSmall, FontWeight.Bold, ink)
-            }
-            Spacer(Modifier.height(14.dp))
-            Box(
-                contentAlignment = Alignment.Center,
-                modifier = Modifier
-                    .clip(CircleShape)
-                    .background(primary)
-                    .padding(horizontal = 20.dp, vertical = 7.dp)
-            ) {
-                MiniText(stringResource(R.string.onboarding_mini_start), typography.labelMedium, FontWeight.SemiBold, onPrimary)
-            }
-            Spacer(Modifier.weight(1f))
-            // The bottom bar: home picked, two more tabs beside it
-            Row(
-                horizontalArrangement = Arrangement.SpaceEvenly,
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .background(container)
-                    .padding(vertical = 10.dp)
-            ) {
-                Box(
-                    contentAlignment = Alignment.Center,
-                    modifier = Modifier
-                        .size(width = 32.dp, height = 18.dp)
-                        .clip(CircleShape)
-                        .background(selected)
-                ) {
-                    Box(
-                        Modifier
-                            .size(7.dp)
-                            .clip(CircleShape)
-                            .background(onSelected)
-                    )
-                }
-                repeat(2) {
-                    Box(
-                        Modifier
-                            .size(7.dp)
-                            .clip(CircleShape)
-                            .background(softInk.copy(alpha = 0.6f))
-                    )
-                }
-            }
-        }
-    }
-}
-
-/** One line of the mini app's text. */
-@Composable
-private fun MiniText(text: String, style: TextStyle, weight: FontWeight, color: Color) {
-    Text(text = text, style = style, fontWeight = weight, color = color, maxLines = 1)
-}
-
-/**
- * A button for one part of the look (palette or mode), glassy like the sound tiles: a faint wash
- * with a hairline edge, which takes on the accent colour when it was just tapped.
- */
-@Composable
-private fun Facet(
-    icon: ImageVector,
-    value: String,
-    lit: Boolean,
-    onClick: () -> Unit,
-    modifier: Modifier = Modifier
-) {
-    val colors = MaterialTheme.colorScheme
-    val container by animateColorAsState(
-        if (lit) colors.primary.copy(alpha = 0.16f) else colors.onBackground.copy(alpha = 0.06f),
-        tween(400),
-        label = "facet"
-    )
-    val content by animateColorAsState(
-        if (lit) colors.primary else colors.onBackground.copy(alpha = 0.85f),
-        tween(400),
-        label = "facetContent"
-    )
-    val outline by animateColorAsState(
-        if (lit) colors.primary.copy(alpha = 0.35f) else colors.onBackground.copy(alpha = 0.10f),
-        tween(400),
-        label = "facetOutline"
-    )
-    val shape = RoundedCornerShape(18.dp)
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = modifier
-            .pressClickable(shape = shape, onClick = onClick)
-            .clip(shape)
-            .background(container)
-            .border(1.dp, outline, shape)
-            .padding(vertical = 10.dp, horizontal = 6.dp)
-    ) {
-        Icon(icon, contentDescription = null, tint = content, modifier = Modifier.size(20.dp))
-        Spacer(Modifier.height(6.dp))
-        AnimatedContent(
-            targetState = value,
-            transitionSpec = { fadeIn(tween(220)).togetherWith(fadeOut(tween(120))) },
-            label = "facetValue"
-        ) { shown ->
-            Text(
-                text = shown,
-                style = MaterialTheme.typography.labelMedium,
-                fontWeight = FontWeight.SemiBold,
-                color = content,
-                maxLines = 1
-            )
-        }
-    }
-}
-
-// ---------------------------------------------------------------- 5. Watch it grow
+// ---------------------------------------------------------------- 4. Watch it grow
 
 private const val HEAT_WEEKS = 12
 private const val DEMO_HOURS = 48

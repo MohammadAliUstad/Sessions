@@ -158,12 +158,6 @@
     <string name="onboarding_sets_title">Подходы со встроенными\nперерывами</string>
     <string name="onboarding_ambience_title">Создай настроение</string>
     <string name="onboarding_ambience_body">Дождь за окном, треск камина, тихая библиотека. Выбери звуковой фон для своих сессий или работай в тишине.</string>
-    <string name="onboarding_theme_tap">Нажми на плитку, чтобы попробовать</string>
-    <string name="onboarding_theme_title">Сделай по-своему</string>
-    <string name="onboarding_theme_body">Выбери палитру или цвета обоев, светлую, тёмную или чисто чёрную AMOLED-тему. Все экраны подстроятся.</string>
-    <string name="onboarding_mini_greeting">Добрый вечер</string>
-    <string name="onboarding_mini_subtitle">Готов сосредоточиться?</string>
-    <string name="onboarding_mini_start">Старт</string>
     <string name="onboarding_growth_title">Наблюдай за ростом</string>
     <string name="onboarding_growth_body">Каждая минута фокуса на счету. Статистика, тепловая карта за год и мягкие ежедневные напоминания помогут не сбиться.</string>
     <string name="onboarding_growth_caption">фокуса за этот сезон</string>
@@ -792,9 +786,9 @@
     <string name="guest_exit_confirm">Удалить и выйти</string>
     <string name="guest_backup_section">Резервная копия</string>
     <string name="guest_export_title">Экспорт данных</string>
-    <string name="guest_export_subtitle">Сохранить сессии и шаблоны в файл</string>
+    <string name="guest_export_subtitle">Создай файл резервной копии. Открой его на любом телефоне или после входа в аккаунт.</string>
     <string name="guest_import_title">Импорт данных</string>
-    <string name="guest_import_subtitle">Добавить сессии и шаблоны из резервной копии</string>
+    <string name="guest_import_subtitle">Восстанови из файла резервной копии. То, что уже есть, не продублируется.</string>
     <string name="guest_export_done_title">Копия сохранена</string>
     <string name="guest_export_done_message">Храни этот файл в надёжном месте. Импортируй его на любом телефоне, чтобы вернуть свои сессии.</string>
     <string name="guest_export_failed_title">Не удалось сохранить копию</string>
@@ -803,7 +797,7 @@
     <string name="guest_import_done_message">Добавлено сессий: %1$d\nДобавлено шаблонов: %2$d</string>
     <string name="guest_import_failed_title">Не удалось импортировать</string>
     <string name="guest_import_failed_message">Этот файл не является резервной копией Sessions или повреждён.</string>
-    <string name="account_import_subtitle">Загрузи копию, сохранённую в гостевом режиме. Она синхронизируется с аккаунтом.</string>
-    <string name="account_export_subtitle">Сохрани копию своих сессий и шаблонов в файл. Её можно импортировать где угодно, даже в гостевом режиме.</string>
+    <string name="account_import_subtitle">Восстанови из файла резервной копии, даже созданного в гостевом режиме. Данные синхронизируются с аккаунтом.</string>
+    <string name="account_export_subtitle">Создай файл резервной копии. Открой его где угодно, даже в гостевом режиме.</string>
     <string name="guest_export_and_exit">Экспортировать и выйти</string>
 </resources>

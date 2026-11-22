@@ -328,8 +328,12 @@ fun TaskSelectionSheet(
                                 }
                             }
 
+                            // Sized like the sound sheet's Save button; its own colours stay
                             FilledTonalButton(
-                                modifier = Modifier.fillMaxWidth(),
+                                shape = CircleShape,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(58.dp),
                                 colors = ButtonDefaults.filledTonalButtonColors(
                                     containerColor = setTaskContainerColor,
                                     contentColor = setTaskContentColor,
@@ -344,7 +348,12 @@ fun TaskSelectionSheet(
                                     }
                                 }
                             ) {
-                                Text(stringResource(R.string.task_set))
+                                Text(
+                                    text = stringResource(R.string.task_set),
+                                    style = MaterialTheme.typography.titleMedium,
+                                    fontWeight = FontWeight.SemiBold,
+                                    maxLines = 1
+                                )
                             }
                         }
                     }

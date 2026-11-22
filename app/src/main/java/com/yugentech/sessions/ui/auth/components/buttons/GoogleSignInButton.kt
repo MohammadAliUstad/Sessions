@@ -77,7 +77,7 @@ private const val GOOGLE_BUTTON_MOTION_MS = 350
 private val EmphasizedEasing = CubicBezierEasing(0.2f, 0f, 0f, 1f)
 
 /**
- * "Continue with Google", with Google's "G". While [isLoading] the label swaps to a spinner with
+ * "Continue with Google", with Google's "G", in the theme's secondary colours. While [isLoading] the label swaps to a spinner with
  * Amatyaa's vertical swap: the label moves up and fades out while the spinner rises in from below
  * and fades in (the other way round when loading ends). They travel 20 dp, about half the
  * button's height, and the button's own shape clips them, so they pass through its edge rather
@@ -105,16 +105,21 @@ fun GoogleSignInButton(
         isLoading = isLoading,
         enabled = enabled,
         onClick = onClick,
-        modifier = modifier
+        modifier = modifier,
+        // The theme's secondary pair, as Guest has the tertiary one: two colourful buttons that
+        // sit together but read as different choices, both following the palette
+        containerColor = MaterialTheme.colorScheme.secondaryContainer,
+        contentColor = MaterialTheme.colorScheme.onSecondaryContainer
     )
 }
 
 /**
- * "Guest": starts Sessions without an account. Same look as [GoogleSignInButton], to sit beside it,
- * with a little ghost that keeps looping its hover-and-pinch, tinted to match the label.
+ * "Guest": starts Sessions without an account. Same shape as [GoogleSignInButton], to sit beside it,
+ * but in the theme's tertiary colours, with a little ghost that keeps looping its hover-and-pinch,
+ * tinted to match the label.
  *
  * Tapping it sets the ghost free: it pops out of the button, swoops up the screen in a wobbly
- * zig-zag, growing and turning to the primary colour with two fading after-images behind it, and
+ * zig-zag, growing and turning to the tertiary colour with two fading after-images behind it, and
  * vanishes off the top. Only then does [onClick] run and the app open.
  */
 @Composable
@@ -154,12 +159,17 @@ fun GuestSignInButton(
     // One box around the button and the flight: a Popup leaves an empty anchor where it's
     // declared, and as a second child of the caller's Row it would take a gap of its own and
     // squeeze the buttons while the ghost is away
+    // Its own colours, the theme's tertiary pair, so it stands apart from Google's secondary
+    // button while still following the palette and light/dark mode
+    val container = MaterialTheme.colorScheme.tertiaryContainer
+    val content = MaterialTheme.colorScheme.onTertiaryContainer
+
     Box(modifier = modifier) {
     AuthOptionButton(
         icon = { size ->
             TintedLottieIcon(
                 animation = R.raw.guest_ghost,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                color = content,
                 modifier = Modifier
                     .size(size)
                     .onGloballyPositioned {
@@ -181,11 +191,13 @@ fun GuestSignInButton(
                 flying = true
             }
         },
-        modifier = Modifier
+        modifier = Modifier,
+        containerColor = container,
+        contentColor = content
     )
 
     if (flying && iconSize != IntSize.Zero) {
-        GhostFlight(progress = { flight.value }, origin = origin, iconSize = iconSize)
+        GhostFlight(progress = { flight.value }, origin = origin, iconSize = iconSize, startColor = content)
     }
     }
 }
@@ -201,15 +213,16 @@ private const val GHOST_RETURN_GRACE_MS = 1500L
  * [progress] runs 0 to 1: a quick pop in place, then the swoop up and away.
  */
 @Composable
-private fun GhostFlight(progress: () -> Float, origin: Offset, iconSize: IntSize) {
+private fun GhostFlight(progress: () -> Float, origin: Offset, iconSize: IntSize, startColor: Color) {
     val density = LocalDensity.current
     val sizeDp = with(density) { iconSize.width.toDp() }
     val swing = with(density) { 56.dp.toPx() }
     val hop = with(density) { 10.dp.toPx() }
     // Far enough up to clear the top of the screen even at full size
     val rise = origin.y + with(density) { 160.dp.toPx() }
-    val start = MaterialTheme.colorScheme.onSurfaceVariant
-    val end = MaterialTheme.colorScheme.primary
+    // From the button's ghost colour to the tertiary accent as it flies off
+    val start = startColor
+    val end = MaterialTheme.colorScheme.tertiary
 
     Popup(
         popupPositionProvider = WindowOriginPosition,
@@ -288,7 +301,9 @@ private fun AuthOptionButton(
     isLoading: Boolean,
     enabled: Boolean,
     onClick: () -> Unit,
-    modifier: Modifier
+    modifier: Modifier,
+    containerColor: Color = MaterialTheme.colorScheme.surfaceContainerHighest,
+    contentColor: Color = MaterialTheme.colorScheme.onSurfaceVariant
 ) {
     val travel = with(LocalDensity.current) { 20.dp.roundToPx() }
 
@@ -299,8 +314,8 @@ private fun AuthOptionButton(
             .fillMaxWidth()
             .height(MaterialTheme.components.buttonMedium),
         shape = RoundedCornerShape(MaterialTheme.corners.extraLarge),
-        color = MaterialTheme.colorScheme.surfaceContainerHighest,
-        contentColor = MaterialTheme.colorScheme.onSurfaceVariant
+        color = containerColor,
+        contentColor = contentColor
     ) {
         Box(contentAlignment = Alignment.Center) {
             AnimatedContent(
@@ -320,7 +335,7 @@ private fun AuthOptionButton(
                 if (loading) {
                     CircularProgressIndicator(
                         modifier = Modifier.size(MaterialTheme.icons.mediumSmall),
-                        color = MaterialTheme.colorScheme.onSurface,
+                        color = contentColor,
                         strokeWidth = MaterialTheme.strokes.medium
                     )
                 } else {

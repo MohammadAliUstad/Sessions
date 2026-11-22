@@ -174,34 +174,6 @@ fun SettingsScreen(
         ),
         verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.xxs)
     ) {
-        // A guest's sessions live only on this phone, so the way to keep them comes first:
-        // a backup file they can export and import
-        if (isGuest) {
-            item {
-                SectionHeader(
-                    icon = Icons.Default.Backup,
-                    title = stringResource(R.string.guest_backup_section)
-                )
-            }
-            item {
-                SettingsListItem(
-                    title = stringResource(R.string.guest_export_title),
-                    subtitle = stringResource(R.string.guest_export_subtitle),
-                    index = 0,
-                    totalCount = 2,
-                    onClick = { if (!backupState.busy) launchExport() }
-                )
-            }
-            item {
-                SettingsListItem(
-                    title = stringResource(R.string.guest_import_title),
-                    subtitle = stringResource(R.string.guest_import_subtitle),
-                    index = 1,
-                    totalCount = 2,
-                    onClick = { if (!backupState.busy) launchImport() }
-                )
-            }
-        }
         item {
             SectionHeader(
                 icon = Icons.Default.Notifications,
@@ -411,33 +383,32 @@ fun SettingsScreen(
             )
         }
 
-        // A signed-in user can save their account's data to a file (to keep, or to carry into
-        // guest mode) and bring in a backup they saved as a guest, which then syncs to the account
-        if (!isGuest) {
-            item {
-                SectionHeader(
-                    icon = Icons.Default.Backup,
-                    title = stringResource(R.string.guest_backup_section)
-                )
-            }
-            item {
-                SettingsListItem(
-                    title = stringResource(R.string.guest_export_title),
-                    subtitle = stringResource(R.string.account_export_subtitle),
-                    index = 0,
-                    totalCount = 2,
-                    onClick = { if (!backupState.busy) launchExport() }
-                )
-            }
-            item {
-                SettingsListItem(
-                    title = stringResource(R.string.guest_import_title),
-                    subtitle = stringResource(R.string.account_import_subtitle),
-                    index = 1,
-                    totalCount = 2,
-                    onClick = { if (!backupState.busy) launchImport() }
-                )
-            }
+        // Backup, in the same place in both modes. A guest's sessions live only on this phone,
+        // so it's their way to keep them; a signed-in user can save their account's data to a
+        // file (to keep, or to carry into guest mode) and bring in a backup, which then syncs
+        item {
+            SectionHeader(
+                icon = Icons.Default.Backup,
+                title = stringResource(R.string.guest_backup_section)
+            )
+        }
+        item {
+            SettingsListItem(
+                title = stringResource(R.string.guest_export_title),
+                subtitle = stringResource(if (isGuest) R.string.guest_export_subtitle else R.string.account_export_subtitle),
+                index = 0,
+                totalCount = 2,
+                onClick = { if (!backupState.busy) launchExport() }
+            )
+        }
+        item {
+            SettingsListItem(
+                title = stringResource(R.string.guest_import_title),
+                subtitle = stringResource(if (isGuest) R.string.guest_import_subtitle else R.string.account_import_subtitle),
+                index = 1,
+                totalCount = 2,
+                onClick = { if (!backupState.busy) launchImport() }
+            )
         }
 
         item {

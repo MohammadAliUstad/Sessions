@@ -158,12 +158,6 @@
     <string name="onboarding_sets_title">휴식이 포함된\n세트</string>
     <string name="onboarding_ambience_title">분위기를 만들어요</string>
     <string name="onboarding_ambience_body">창밖의 빗소리, 타닥이는 모닥불, 조용한 도서관. 세션에 깔릴 사운드를 고르거나 고요함을 즐기세요.</string>
-    <string name="onboarding_theme_tap">타일을 탭해서 미리 보기</string>
-    <string name="onboarding_theme_title">나만의 스타일로</string>
-    <string name="onboarding_theme_body">팔레트나 배경화면 색상을 고르고, 라이트, 다크, 완전한 블랙 AMOLED 중에서 선택하세요. 모든 화면이 함께 바뀌어요.</string>
-    <string name="onboarding_mini_greeting">좋은 저녁이에요</string>
-    <string name="onboarding_mini_subtitle">집중할 준비 됐나요?</string>
-    <string name="onboarding_mini_start">시작</string>
     <string name="onboarding_growth_title">성장을 지켜보세요</string>
     <string name="onboarding_growth_body">집중한 1분 1분이 쌓여요. 인사이트, 1년 히트맵, 다정한 매일 알림이 다시 돌아오게 해 줘요.</string>
     <string name="onboarding_growth_caption">이번 시즌 집중 시간</string>
@@ -750,9 +744,9 @@
 
     <string name="guest_backup_section">백업</string>
     <string name="guest_export_title">데이터 내보내기</string>
-    <string name="guest_export_subtitle">세션과 템플릿을 파일로 저장해요</string>
+    <string name="guest_export_subtitle">백업 파일을 만들어요. 어떤 폰에서든, 로그인한 뒤에도 열 수 있어요.</string>
     <string name="guest_import_title">데이터 가져오기</string>
-    <string name="guest_import_subtitle">백업 파일에서 세션과 템플릿을 추가해요</string>
+    <string name="guest_import_subtitle">백업 파일에서 복원해요. 이미 있는 항목은 중복되지 않아요.</string>
     <string name="guest_export_done_title">백업을 저장했어요</string>
     <string name="guest_export_done_message">이 파일을 안전한 곳에 보관하세요. 어느 휴대폰에서든 가져오면 세션을 되찾을 수 있어요.</string>
     <string name="guest_export_failed_title">백업을 저장하지 못했어요</string>
@@ -761,7 +755,7 @@
     <string name="guest_import_done_message">추가된 세션: %1$d\n추가된 템플릿: %2$d</string>
     <string name="guest_import_failed_title">가져오지 못했어요</string>
     <string name="guest_import_failed_message">이 파일은 Sessions 백업이 아니거나 손상되었어요.</string>
-    <string name="account_import_subtitle">게스트일 때 저장한 백업을 가져와요. 계정에 동기화돼요.</string>
-    <string name="account_export_subtitle">세션과 템플릿의 사본을 파일로 저장해요. 게스트로도 어디서든 가져올 수 있어요.</string>
+    <string name="account_import_subtitle">백업 파일에서 복원해요. 게스트일 때 만든 파일도 괜찮아요. 계정에 동기화돼요.</string>
+    <string name="account_export_subtitle">백업 파일을 만들어요. 게스트로도 어디서든 열 수 있어요.</string>
     <string name="guest_export_and_exit">내보내고 종료</string>
 </resources>

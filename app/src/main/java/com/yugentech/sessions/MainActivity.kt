@@ -11,11 +11,8 @@ import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalLayoutDirection
-import androidx.compose.ui.unit.LayoutDirection
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.lifecycleScope
@@ -99,29 +96,25 @@ class MainActivity : ComponentActivity() {
                 }
             )
 
-            // Always left-to-right, even when the phone is set to a right-to-left language:
-            // the layout and the auto-mirrored icons never flip
-            CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Ltr) {
-                SessionsTheme(
-                    themeConfiguration = themeConfiguration,
-                    hapticsEnabled = hapticsEnabled
-                ) {
-                    ThemeRevealHost {
-                        Surface(
-                            modifier = Modifier.fillMaxSize(),
-                            color = MaterialTheme.colorScheme.background
-                        ) {
-                            if (showOnboarding != null && !authState.isInitializing) {
-                                AppNavHost(
-                                    navController = navController,
-                                    webClientId = getString(R.string.web_client_id),
-                                    authViewModel = authViewModel,
-                                    showOnboarding = showOnboarding!!,
-                                    onOnboardingComplete = {
-                                        authViewModel.completeOnboarding()
-                                    }
-                                )
-                            }
+            SessionsTheme(
+                themeConfiguration = themeConfiguration,
+                hapticsEnabled = hapticsEnabled
+            ) {
+                ThemeRevealHost {
+                    Surface(
+                        modifier = Modifier.fillMaxSize(),
+                        color = MaterialTheme.colorScheme.background
+                    ) {
+                        if (showOnboarding != null && !authState.isInitializing) {
+                            AppNavHost(
+                                navController = navController,
+                                webClientId = getString(R.string.web_client_id),
+                                authViewModel = authViewModel,
+                                showOnboarding = showOnboarding!!,
+                                onOnboardingComplete = {
+                                    authViewModel.completeOnboarding()
+                                }
+                            )
                         }
                     }
                 }

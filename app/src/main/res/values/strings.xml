@@ -201,12 +201,6 @@
     <string name="onboarding_sets_title">Sets, with breaks\nbuilt in</string>
     <string name="onboarding_ambience_title">Set the mood</string>
     <string name="onboarding_ambience_body">Rain on the window, a crackling fire, a quiet library. Pick a soundscape to play under your sessions, or keep it silent.</string>
-    <string name="onboarding_theme_tap">Tap a tile to try it</string>
-    <string name="onboarding_theme_title">Make it yours</string>
-    <string name="onboarding_theme_body">Pick a palette or your wallpaper\'s colours, and go light, dark or true-black AMOLED. Every screen follows along.</string>
-    <string name="onboarding_mini_greeting">Good evening</string>
-    <string name="onboarding_mini_subtitle">Ready to focus?</string>
-    <string name="onboarding_mini_start">Start</string>
     <string name="onboarding_growth_title">Watch it grow</string>
     <string name="onboarding_growth_body">Every focused minute counts. Insights, a year-long heatmap and gentle daily reminders keep you coming back.</string>
     <string name="onboarding_growth_caption">focused this season</string>
@@ -938,9 +932,9 @@
 
     <string name="guest_backup_section">Backup</string>
     <string name="guest_export_title">Export data</string>
-    <string name="guest_export_subtitle">Save your sessions and templates to a file</string>
+    <string name="guest_export_subtitle">Create a backup file. Open it on any phone, or after you sign in.</string>
     <string name="guest_import_title">Import data</string>
-    <string name="guest_import_subtitle">Add sessions and templates from a backup file</string>
+    <string name="guest_import_subtitle">Restore from a backup file. Nothing you already have is duplicated.</string>
     <string name="guest_export_done_title">Backup saved</string>
     <string name="guest_export_done_message">Keep this file somewhere safe. Import it on any phone to get your sessions back.</string>
     <string name="guest_export_failed_title">Couldn\'t save the backup</string>
@@ -949,7 +943,7 @@
     <string name="guest_import_done_message">Sessions added: %1$d\nTemplates added: %2$d</string>
     <string name="guest_import_failed_title">Couldn\'t import</string>
     <string name="guest_import_failed_message">This file isn\'t a Sessions backup, or it\'s damaged.</string>
-    <string name="account_import_subtitle">Bring in a backup you saved as a guest. It syncs to your account.</string>
-    <string name="account_export_subtitle">Save a copy of your sessions and templates to a file. You can import it anywhere, even as a guest.</string>
+    <string name="account_import_subtitle">Restore from a backup file, even one made as a guest. It syncs to your account.</string>
+    <string name="account_export_subtitle">Create a backup file. Open it anywhere, even as a guest.</string>
     <string name="guest_export_and_exit">Export and exit</string>
 </resources>

@@ -64,18 +64,16 @@ import com.yugentech.sessions.ui.auth.onboardingScreen.components.AmbienceScene
 import com.yugentech.sessions.ui.auth.onboardingScreen.components.FocusScene
 import com.yugentech.sessions.ui.auth.onboardingScreen.components.GrowthScene
 import com.yugentech.sessions.ui.auth.onboardingScreen.components.SessionScene
-import com.yugentech.sessions.ui.auth.onboardingScreen.components.ThemeScene
 import kotlinx.coroutines.launch
 import kotlin.math.abs
 
 /** The onboarding's scenes, in order. */
-private enum class Scene { Focus, Session, Ambience, Theme, Growth }
+private enum class Scene { Focus, Session, Ambience, Growth }
 
 /**
- * Sessions' first run, after Quill's: five short, interactive scenes rather than a feature list.
+ * Sessions' first run, after Quill's: four short, interactive scenes rather than a feature list.
  * A focus dial counts down at a tap, a session card fills block by block (Skip moves it on),
- * soundscapes light up an equaliser, a home card recolours to each palette, and a focus heatmap
- * fills in.
+ * soundscapes light up an equaliser, and a focus heatmap fills in.
  *
  * It sits on the aura the nav host draws behind it (shared with the sign-in screens), whose glows
  * glide with each step. Story-style bars at the top fill as the user swipes; Skip leaves at any
@@ -155,7 +153,6 @@ private fun OnboardingContent(onFinish: () -> Unit, finishLabel: String) {
                         Scene.Focus -> FocusScene(active)
                         Scene.Session -> SessionScene(active)
                         Scene.Ambience -> AmbienceScene(active)
-                        Scene.Theme -> ThemeScene(active)
                         Scene.Growth -> GrowthScene(active)
                     }
                 }

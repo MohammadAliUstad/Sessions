@@ -158,12 +158,6 @@
     <string name="onboarding_sets_title">Series, con descansos\nincluidos</string>
     <string name="onboarding_ambience_title">Crea el ambiente</string>
     <string name="onboarding_ambience_body">Lluvia en la ventana, un fuego crepitante, una biblioteca tranquila. Elige un paisaje sonoro para tus sesiones o déjalo en silencio.</string>
-    <string name="onboarding_theme_tap">Toca una opción para probarla</string>
-    <string name="onboarding_theme_title">Hazla tuya</string>
-    <string name="onboarding_theme_body">Elige una paleta o los colores de tu fondo de pantalla, y opta por claro, oscuro o negro puro AMOLED. Todas las pantallas se adaptan.</string>
-    <string name="onboarding_mini_greeting">Buenas noches</string>
-    <string name="onboarding_mini_subtitle">¿Listo para concentrarte?</string>
-    <string name="onboarding_mini_start">Empezar</string>
     <string name="onboarding_growth_title">Mira cómo crece</string>
     <string name="onboarding_growth_body">Cada minuto de concentración cuenta. Estadísticas, un mapa de calor anual y recordatorios diarios suaves te animan a volver.</string>
     <string name="onboarding_growth_caption">de concentración esta temporada</string>
@@ -780,9 +774,9 @@
 
     <string name="guest_backup_section">Copia de seguridad</string>
     <string name="guest_export_title">Exportar datos</string>
-    <string name="guest_export_subtitle">Guarda tus sesiones y plantillas en un archivo</string>
+    <string name="guest_export_subtitle">Crea un archivo de copia de seguridad. Ábrelo en cualquier teléfono, o después de iniciar sesión.</string>
     <string name="guest_import_title">Importar datos</string>
-    <string name="guest_import_subtitle">Añade sesiones y plantillas desde una copia de seguridad</string>
+    <string name="guest_import_subtitle">Restaura desde un archivo de copia de seguridad. Lo que ya tienes no se duplica.</string>
     <string name="guest_export_done_title">Copia guardada</string>
     <string name="guest_export_done_message">Guarda este archivo en un lugar seguro. Impórtalo en cualquier teléfono para recuperar tus sesiones.</string>
     <string name="guest_export_failed_title">No se pudo guardar la copia</string>
@@ -791,7 +785,7 @@
     <string name="guest_import_done_message">Sesiones añadidas: %1$d\nPlantillas añadidas: %2$d</string>
     <string name="guest_import_failed_title">No se pudo importar</string>
     <string name="guest_import_failed_message">Este archivo no es una copia de Sessions o está dañado.</string>
-    <string name="account_import_subtitle">Trae una copia que guardaste como invitado. Se sincroniza con tu cuenta.</string>
-    <string name="account_export_subtitle">Guarda una copia de tus sesiones y plantillas en un archivo. Puedes importarla en cualquier lugar, incluso como invitado.</string>
+    <string name="account_import_subtitle">Restaura desde un archivo de copia de seguridad, incluso uno creado como invitado. Se sincroniza con tu cuenta.</string>
+    <string name="account_export_subtitle">Crea un archivo de copia de seguridad. Ábrelo en cualquier lugar, incluso como invitado.</string>
     <string name="guest_export_and_exit">Exportar y salir</string>
 </resources>

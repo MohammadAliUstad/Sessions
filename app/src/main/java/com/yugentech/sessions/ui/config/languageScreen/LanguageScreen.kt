@@ -64,7 +64,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextDirection
 import androidx.compose.ui.unit.dp
 import com.yugentech.sessions.R
 import com.yugentech.sessions.localization.AppLanguage
@@ -214,9 +213,7 @@ private fun LanguageRow(
         headlineContent = {
             Text(
                 text = title,
-                // A name in its own script reads in its own direction
-                // whatever direction the app is laid out in
-                style = MaterialTheme.typography.titleMedium.copy(textDirection = TextDirection.Content),
+                style = MaterialTheme.typography.titleMedium,
                 modifier = Modifier.padding(start = MaterialTheme.spacing.s, top = MaterialTheme.spacing.s)
             )
         },

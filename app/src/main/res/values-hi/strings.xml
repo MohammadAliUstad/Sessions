@@ -158,12 +158,6 @@
     <string name="onboarding_sets_title">सेट, ब्रेक के\nसाथ</string>
     <string name="onboarding_ambience_title">माहौल बनाएं</string>
     <string name="onboarding_ambience_body">खिड़की पर बारिश, चटकती आग, शांत लाइब्रेरी। अपने सेशन के लिए कोई साउंडस्केप चुनें या चुप्पी रखें।</string>
-    <string name="onboarding_theme_tap">आज़माने के लिए टाइल टैप करें</string>
-    <string name="onboarding_theme_title">इसे अपना बनाएं</string>
-    <string name="onboarding_theme_body">कोई पैलेट या अपने वॉलपेपर के रंग चुनें, और लाइट, डार्क या पूरी तरह काला AMOLED अपनाएं। हर स्क्रीन साथ बदलती है।</string>
-    <string name="onboarding_mini_greeting">शुभ संध्या</string>
-    <string name="onboarding_mini_subtitle">फ़ोकस के लिए तैयार?</string>
-    <string name="onboarding_mini_start">शुरू करें</string>
     <string name="onboarding_growth_title">बढ़ते हुए देखें</string>
     <string name="onboarding_growth_body">फ़ोकस का हर मिनट मायने रखता है। इनसाइट, साल भर का हीटमैप और रोज़ के हल्के रिमाइंडर आपको वापस लाते रहते हैं।</string>
     <string name="onboarding_growth_caption">इस सीज़न में फ़ोकस</string>
@@ -765,9 +759,9 @@
 
     <string name="guest_backup_section">बैकअप</string>
     <string name="guest_export_title">डेटा एक्सपोर्ट करें</string>
-    <string name="guest_export_subtitle">अपने सेशन और टेम्पलेट एक फ़ाइल में सेव करें</string>
+    <string name="guest_export_subtitle">एक बैकअप फ़ाइल बनाएँ। इसे किसी भी फ़ोन पर, या साइन इन करने के बाद खोलें।</string>
     <string name="guest_import_title">डेटा इंपोर्ट करें</string>
-    <string name="guest_import_subtitle">बैकअप फ़ाइल से सेशन और टेम्पलेट जोड़ें</string>
+    <string name="guest_import_subtitle">बैकअप फ़ाइल से रीस्टोर करें। जो पहले से है, वह दोबारा नहीं जुड़ता।</string>
     <string name="guest_export_done_title">बैकअप सेव हो गया</string>
     <string name="guest_export_done_message">इस फ़ाइल को सुरक्षित जगह रखें। अपने सेशन वापस पाने के लिए इसे किसी भी फ़ोन पर इंपोर्ट करें।</string>
     <string name="guest_export_failed_title">बैकअप सेव नहीं हो सका</string>
@@ -776,7 +770,7 @@
     <string name="guest_import_done_message">जोड़े गए सेशन: %1$d\nजोड़े गए टेम्पलेट: %2$d</string>
     <string name="guest_import_failed_title">इंपोर्ट नहीं हो सका</string>
     <string name="guest_import_failed_message">यह फ़ाइल Sessions का बैकअप नहीं है, या खराब हो गई है।</string>
-    <string name="account_import_subtitle">गेस्ट के रूप में सेव किया गया बैकअप लाएं। यह आपके खाते से सिंक हो जाएगा।</string>
-    <string name="account_export_subtitle">अपने सेशन और टेम्पलेट की एक कॉपी फ़ाइल में सेव करें। आप इसे कहीं भी इम्पोर्ट कर सकते हैं, गेस्ट के रूप में भी।</string>
+    <string name="account_import_subtitle">बैकअप फ़ाइल से रीस्टोर करें, चाहे वह गेस्ट के रूप में बनी हो। यह आपके खाते से सिंक हो जाएगा।</string>
+    <string name="account_export_subtitle">एक बैकअप फ़ाइल बनाएँ। इसे कहीं भी खोलें, गेस्ट के रूप में भी।</string>
     <string name="guest_export_and_exit">एक्सपोर्ट करें और बाहर निकलें</string>
 </resources>
