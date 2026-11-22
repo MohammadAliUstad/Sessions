@@ -58,6 +58,9 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material.icons.filled.Star
+import androidx.compose.material3.VerticalDivider
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -96,6 +99,7 @@ import com.yugentech.sessions.ui.config.aboutScreen.components.AnimatedRyoriIcon
 import kotlin.time.Duration.Companion.milliseconds
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import com.yugentech.sessions.theme.SheetTheme
 
 @Composable
 fun MoreAppsScreen(
@@ -155,7 +159,8 @@ fun MoreAppsScreen(
             item { SectionDivider() }
 
             // --- Mynt ---
-            item { MyntHeroSection() }
+            // Not on the Play Store yet, so it shows Coming soon
+            item { MyntHeroSection(onDownloadClick = null) }
 
             item {
                 Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
@@ -261,7 +266,14 @@ private fun QuillHeroSection(onDownloadClick: () -> Unit) {
         tagline = stringResource(R.string.quill_tagline),
         iconBackground = QuillIconBackground,
         animationMillis = 1900,
-        onDownloadClick = onDownloadClick
+        onDownloadClick = onDownloadClick,
+        footer = {
+            StoreStatsStrip(
+                rating = "4.9",
+                reviews = stringResource(R.string.more_apps_fact_reviews_quill),
+                downloads = "1K+"
+            )
+        }
     ) { isAnimating ->
         AnimatedQuillIcon(
             isAnimating = isAnimating,
@@ -383,13 +395,13 @@ private fun RyoriCapabilitiesCarousel() {
 // ============================== Mynt ==============================
 
 @Composable
-private fun MyntHeroSection() {
+private fun MyntHeroSection(onDownloadClick: (() -> Unit)?) {
     AppHeroSection(
         name = "Mynt",
         tagline = stringResource(R.string.mynt_tagline),
         iconBackground = MyntIconBackground,
         animationMillis = 1300,
-        onDownloadClick = null
+        onDownloadClick = onDownloadClick
     ) { isAnimating ->
         // Drawn larger than the tile, as Mynt itself does, so the wallet fills it and the tile
         // clips the safe-zone margin.
@@ -513,7 +525,8 @@ private fun HajimeCapabilitiesCarousel() {
 
 // ============================== Shared ==============================
 
-// App tile with the icon on its launcher background colour; tap to replay the animation. With no
+// App tile with the icon on its launcher background colour; tap to replay the animation.
+// An optional footer (e.g. the Play Store stats strip) sits under a divider. With no
 // onDownloadClick the app isn't out yet, so it shows Coming soon instead of the button.
 @Composable
 private fun AppHeroSection(
@@ -522,6 +535,7 @@ private fun AppHeroSection(
     iconBackground: Color,
     animationMillis: Int,
     onDownloadClick: (() -> Unit)?,
+    footer: (@Composable () -> Unit)? = null,
     icon: @Composable (isAnimating: Boolean) -> Unit
 ) {
     var isAnimating by remember { mutableStateOf(false) }
@@ -536,81 +550,91 @@ private fun AppHeroSection(
             containerColor = MaterialTheme.colorScheme.surfaceContainerHigh
         )
     ) {
-        Row(
-            modifier = Modifier
-                .padding(16.dp)
-                .fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(16.dp)
-        ) {
-            Box(
+        Column {
+            Row(
                 modifier = Modifier
-                    .size(88.dp)
-                    .clip(RoundedCornerShape(24.dp))
-                    .background(iconBackground)
-                    .clickable(
-                        interactionSource = remember { MutableInteractionSource() },
-                        indication = null
-                    ) {
-                        if (!isAnimating) {
-                            isAnimating = true
-                            scope.launch {
-                                delay(animationMillis.milliseconds)
-                                isAnimating = false
+                    .padding(16.dp)
+                    .fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+                Box(
+                    modifier = Modifier
+                        .size(88.dp)
+                        .clip(RoundedCornerShape(24.dp))
+                        .background(iconBackground)
+                        .clickable(
+                            interactionSource = remember { MutableInteractionSource() },
+                            indication = null
+                        ) {
+                            if (!isAnimating) {
+                                isAnimating = true
+                                scope.launch {
+                                    delay(animationMillis.milliseconds)
+                                    isAnimating = false
+                                }
                             }
-                        }
-                    },
-                contentAlignment = Alignment.Center
-            ) {
-                icon(isAnimating)
-            }
-
-            Column(
-                modifier = Modifier.weight(1f),
-                verticalArrangement = Arrangement.spacedBy(10.dp)
-            ) {
-                Column {
-                    Text(
-                        text = name,
-                        style = MaterialTheme.typography.headlineSmall,
-                        fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.onSurface
-                    )
-                    Text(
-                        text = tagline,
-                        style = MaterialTheme.typography.bodyMedium,
-                        fontWeight = FontWeight.Medium,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
+                        },
+                    contentAlignment = Alignment.Center
+                ) {
+                    icon(isAnimating)
                 }
 
-                if (onDownloadClick == null) {
-                    ComingSoonLabel()
-                } else {
-                    Button(
-                        onClick = onDownloadClick,
-                        modifier = Modifier.height(40.dp),
-                        contentPadding = PaddingValues(horizontal = 14.dp),
-                        shape = RoundedCornerShape(8.dp),
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = MaterialTheme.colorScheme.primary,
-                            contentColor = MaterialTheme.colorScheme.onPrimary
-                        )
-                    ) {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Filled.OpenInNew,
-                            contentDescription = null,
-                            modifier = Modifier.size(18.dp)
-                        )
-                        Spacer(modifier = Modifier.width(8.dp))
+                Column(
+                    modifier = Modifier.weight(1f),
+                    verticalArrangement = Arrangement.spacedBy(10.dp)
+                ) {
+                    Column {
                         Text(
-                            text = stringResource(R.string.more_apps_get_on_play),
-                            style = MaterialTheme.typography.labelLarge.copy(
-                                fontWeight = FontWeight.SemiBold
-                            )
+                            text = name,
+                            style = MaterialTheme.typography.headlineSmall,
+                            fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.onSurface
+                        )
+                        Text(
+                            text = tagline,
+                            style = MaterialTheme.typography.bodyMedium,
+                            fontWeight = FontWeight.Medium,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                     }
+
+                    if (onDownloadClick == null) {
+                        ComingSoonLabel()
+                    } else {
+                        Button(
+                            onClick = onDownloadClick,
+                            modifier = Modifier.height(40.dp),
+                            contentPadding = PaddingValues(horizontal = 14.dp),
+                            shape = RoundedCornerShape(8.dp),
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = MaterialTheme.colorScheme.primary,
+                                contentColor = MaterialTheme.colorScheme.onPrimary
+                            )
+                        ) {
+                            Icon(
+                                imageVector = Icons.AutoMirrored.Filled.OpenInNew,
+                                contentDescription = null,
+                                modifier = Modifier.size(18.dp)
+                            )
+                            Spacer(modifier = Modifier.width(8.dp))
+                            Text(
+                                text = stringResource(R.string.more_apps_get_on_play),
+                                style = MaterialTheme.typography.labelLarge.copy(
+                                    fontWeight = FontWeight.SemiBold
+                                )
+                            )
+                        }
+                    }
                 }
+            }
+
+            if (footer != null) {
+                HorizontalDivider(
+                    modifier = Modifier.padding(horizontal = 16.dp),
+                    color = MaterialTheme.colorScheme.outlineVariant
+                )
+                footer()
             }
         }
     }
@@ -628,6 +652,66 @@ private fun ComingSoonLabel() {
             text = stringResource(R.string.more_apps_coming_soon),
             style = MaterialTheme.typography.labelLarge.copy(fontWeight = FontWeight.SemiBold),
             modifier = Modifier.padding(horizontal = 14.dp, vertical = 8.dp)
+        )
+    }
+}
+
+// Play Store-style stats strip: the rating with a star, then downloads (Mynt's StoreStat).
+@Composable
+private fun StoreStatsStrip(rating: String, reviews: String, downloads: String) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(IntrinsicSize.Min)
+            .padding(vertical = 12.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        StoreStat(value = rating, showStar = true, label = reviews, modifier = Modifier.weight(1f))
+        VerticalDivider(
+            modifier = Modifier.padding(vertical = 4.dp),
+            color = MaterialTheme.colorScheme.outlineVariant
+        )
+        StoreStat(
+            value = downloads,
+            showStar = false,
+            label = stringResource(R.string.more_apps_fact_downloads),
+            modifier = Modifier.weight(1f)
+        )
+    }
+}
+
+@Composable
+private fun StoreStat(
+    value: String,
+    showStar: Boolean,
+    label: String,
+    modifier: Modifier = Modifier
+) {
+    Column(
+        modifier = modifier,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Text(
+                text = value,
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.onSurface
+            )
+            if (showStar) {
+                Spacer(modifier = Modifier.width(4.dp))
+                Icon(
+                    imageVector = Icons.Filled.Star,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.primary,
+                    modifier = Modifier.size(16.dp)
+                )
+            }
+        }
+        Text(
+            text = label,
+            style = MaterialTheme.typography.labelMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
         )
     }
 }
@@ -798,86 +882,88 @@ fun MoreFromUsSheet(onDismiss: () -> Unit, onSeeAll: () -> Unit) {
         }
     )
 
-    ModalBottomSheet(
-        onDismissRequest = onDismiss,
-        sheetState = sheetState,
-        containerColor = MaterialTheme.colorScheme.surfaceContainerLow,
-        // Sessions' sheet handle: a small pill with roomy padding, so it's easy to grab.
-        dragHandle = {
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clickable(
-                        interactionSource = remember { MutableInteractionSource() },
-                        indication = null,
-                        onClick = {}
-                    )
-                    .padding(vertical = 22.dp),
-                contentAlignment = Alignment.Center
-            ) {
+    SheetTheme {
+        ModalBottomSheet(
+            onDismissRequest = onDismiss,
+            sheetState = sheetState,
+            containerColor = MaterialTheme.colorScheme.surfaceContainerLow,
+            // Sessions' sheet handle: a small pill with roomy padding, so it's easy to grab.
+            dragHandle = {
                 Box(
                     modifier = Modifier
-                        .size(width = 32.dp, height = 6.dp)
-                        .background(
-                            color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.4f),
-                            shape = CircleShape
+                        .fillMaxWidth()
+                        .clickable(
+                            interactionSource = remember { MutableInteractionSource() },
+                            indication = null,
+                            onClick = {}
                         )
-                )
-            }
-        }
-    ) {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 20.dp)
-                .padding(bottom = 16.dp)
-        ) {
-            Text(
-                text = stringResource(R.string.more_from_us),
-                style = MaterialTheme.typography.headlineSmall,
-                fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.onSurface
-            )
-            Text(
-                text = stringResource(R.string.more_apps_sheet_subtitle),
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                modifier = Modifier.padding(top = 4.dp)
-            )
-
-            Column(
-                modifier = Modifier.padding(top = 20.dp),
-                verticalArrangement = Arrangement.spacedBy(2.dp)
-            ) {
-                apps.forEachIndexed { index, app ->
-                    SheetAppRow(
-                        app = app,
-                        index = index,
-                        count = apps.size,
-                        onGetApp = app.packageName?.let { pkg -> { openPlayStore(context, pkg) } }
+                        .padding(vertical = 22.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .size(width = 32.dp, height = 6.dp)
+                            .background(
+                                color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.4f),
+                                shape = CircleShape
+                            )
                     )
                 }
             }
-
-            TextButton(
-                onClick = {
-                    // Slides the sheet away first, so it doesn't vanish under the new screen.
-                    scope.launch { sheetState.hide() }.invokeOnCompletion {
-                        onDismiss()
-                        onSeeAll()
-                    }
-                },
+        ) {
+            Column(
                 modifier = Modifier
-                    .align(Alignment.CenterHorizontally)
-                    .padding(top = 12.dp)
+                    .fillMaxWidth()
+                    .padding(horizontal = 20.dp)
+                    .padding(bottom = 16.dp)
             ) {
-                Text(stringResource(R.string.more_apps_see_all))
-                Spacer(modifier = Modifier.width(8.dp))
-                Icon(
-                    imageVector = Icons.AutoMirrored.Filled.ArrowForward,
-                    contentDescription = null,
-                    modifier = Modifier.size(18.dp)
+                Text(
+                    text = stringResource(R.string.more_from_us),
+                    style = MaterialTheme.typography.headlineSmall,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.onSurface
                 )
+                Text(
+                    text = stringResource(R.string.more_apps_sheet_subtitle),
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.padding(top = 4.dp)
+                )
+
+                Column(
+                    modifier = Modifier.padding(top = 20.dp),
+                    verticalArrangement = Arrangement.spacedBy(2.dp)
+                ) {
+                    apps.forEachIndexed { index, app ->
+                        SheetAppRow(
+                            app = app,
+                            index = index,
+                            count = apps.size,
+                            onGetApp = app.packageName?.let { pkg -> { openPlayStore(context, pkg) } }
+                        )
+                    }
+                }
+
+                TextButton(
+                    onClick = {
+                        // Slides the sheet away first, so it doesn't vanish under the new screen.
+                        scope.launch { sheetState.hide() }.invokeOnCompletion {
+                            onDismiss()
+                            onSeeAll()
+                        }
+                    },
+                    modifier = Modifier
+                        .align(Alignment.CenterHorizontally)
+                        .padding(top = 12.dp)
+                ) {
+                    Text(stringResource(R.string.more_apps_see_all))
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Filled.ArrowForward,
+                        contentDescription = null,
+                        modifier = Modifier.size(18.dp)
+                    )
+                }
             }
         }
     }

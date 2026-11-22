@@ -17,10 +17,12 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.LocalRippleConfiguration
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
@@ -112,19 +114,23 @@ fun AnnouncementDialog(
                     }
 
                     announcement.dismissLabel?.let { dismissLabel ->
-                        TextButton(
-                            onClick = {
-                                haptic.performHapticFeedback(HapticFeedbackType.GestureThresholdActivate)
-                                onDismiss()
-                            },
-                            modifier = Modifier.fillMaxWidth(),
-                            shape = RoundedCornerShape(MaterialTheme.corners.medium)
-                        ) {
-                            Text(
-                                text = stringResource(dismissLabel),
-                                style = MaterialTheme.typography.labelLarge,
-                                color = MaterialTheme.colorScheme.primary
-                            )
+                        // No ripple on the close button: closing is a quiet way out, so it
+                        // shouldn't flash like the main action does
+                        CompositionLocalProvider(LocalRippleConfiguration provides null) {
+                            TextButton(
+                                onClick = {
+                                    haptic.performHapticFeedback(HapticFeedbackType.GestureThresholdActivate)
+                                    onDismiss()
+                                },
+                                modifier = Modifier.fillMaxWidth(),
+                                shape = RoundedCornerShape(MaterialTheme.corners.medium)
+                            ) {
+                                Text(
+                                    text = stringResource(dismissLabel),
+                                    style = MaterialTheme.typography.labelLarge,
+                                    color = MaterialTheme.colorScheme.primary
+                                )
+                            }
                         }
                     }
                 }

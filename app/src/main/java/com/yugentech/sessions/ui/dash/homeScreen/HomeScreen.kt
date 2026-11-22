@@ -79,6 +79,7 @@ fun HomeScreen(
 
     LaunchedEffect(userId) {
         homeViewModel.initUserData(userId)
+//        homeViewModel.injectDummyData()
     }
 
     Surface(

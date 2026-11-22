@@ -42,9 +42,11 @@ import androidx.compose.material.icons.filled.Contrast
 import androidx.compose.material.icons.filled.Gradient
 import androidx.compose.material.icons.filled.Palette
 import androidx.compose.material.icons.filled.SpaceDashboard
-import androidx.compose.material.icons.filled.Timer
 import androidx.compose.material.icons.filled.EmojiEvents
 import androidx.compose.material.icons.filled.Explore
+import androidx.compose.material.icons.filled.Face
+import androidx.compose.material.icons.filled.LightMode
+import androidx.compose.material.icons.filled.Replay
 import androidx.compose.material.icons.filled.ExpandMore
 import androidx.compose.material.icons.filled.Flag
 import androidx.compose.material.icons.filled.History
@@ -56,12 +58,17 @@ import androidx.compose.material.icons.filled.Sync
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.filled.Tune
 import androidx.compose.material.icons.filled.Translate
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LargeTopAppBar
+import androidx.compose.material3.MaterialShapes
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.toShape
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
@@ -91,6 +98,50 @@ fun WhatsNewScreen(
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
     val layoutDirection = LocalLayoutDirection.current
 
+    // 6.1.0: everything that changed after the 6.0.0 release
+    val v61Updates = listOf(
+        UpdateItem(
+            stringResource(R.string.whats_new_v61_1_title),
+            stringResource(R.string.whats_new_v61_1_body),
+            Icons.Default.Translate
+        ),
+        UpdateItem(
+            stringResource(R.string.whats_new_v61_2_title),
+            stringResource(R.string.whats_new_v61_2_body),
+            Icons.Default.AutoAwesome
+        ),
+        UpdateItem(
+            stringResource(R.string.whats_new_v6_20_title),
+            stringResource(R.string.whats_new_v6_20_body),
+            Icons.Default.Face
+        ),
+        UpdateItem(
+            stringResource(R.string.whats_new_v61_7_title),
+            stringResource(R.string.whats_new_v61_7_body),
+            Icons.AutoMirrored.Filled.ShowChart
+        ),
+        UpdateItem(
+            stringResource(R.string.whats_new_v61_3_title),
+            stringResource(R.string.whats_new_v61_3_body),
+            Icons.Default.Contrast
+        ),
+        UpdateItem(
+            stringResource(R.string.whats_new_v61_6_title),
+            stringResource(R.string.whats_new_v61_6_body),
+            Icons.Default.Backup
+        ),
+        UpdateItem(
+            stringResource(R.string.whats_new_v61_4_title),
+            stringResource(R.string.whats_new_v61_4_body),
+            Icons.Default.NoAccounts
+        ),
+        UpdateItem(
+            stringResource(R.string.whats_new_v61_5_title),
+            stringResource(R.string.whats_new_v61_5_body),
+            Icons.Default.Celebration
+        )
+    )
+
     val v6Updates = listOf(
         UpdateItem(
             stringResource(R.string.whats_new_v6_16_title),
@@ -113,34 +164,19 @@ fun WhatsNewScreen(
             Icons.Default.Translate
         ),
         UpdateItem(
-            stringResource(R.string.whats_new_v6_1_title),
-            stringResource(R.string.whats_new_v6_1_body),
-            Icons.Default.Gradient
-        ),
-        UpdateItem(
-            stringResource(R.string.whats_new_v6_2_title),
-            stringResource(R.string.whats_new_v6_2_body),
-            Icons.AutoMirrored.Filled.VolumeUp
-        ),
-        UpdateItem(
             stringResource(R.string.whats_new_v6_3_title),
             stringResource(R.string.whats_new_v6_3_body),
             Icons.Default.Tune
         ),
         UpdateItem(
-            stringResource(R.string.whats_new_v6_4_title),
-            stringResource(R.string.whats_new_v6_4_body),
-            Icons.Default.AccountCircle
+            stringResource(R.string.whats_new_v6_18_title),
+            stringResource(R.string.whats_new_v6_18_body),
+            Icons.Default.LightMode
         ),
         UpdateItem(
             stringResource(R.string.whats_new_v6_5_title),
             stringResource(R.string.whats_new_v6_5_body),
             Icons.Default.SpaceDashboard
-        ),
-        UpdateItem(
-            stringResource(R.string.whats_new_v6_6_title),
-            stringResource(R.string.whats_new_v6_6_body),
-            Icons.Default.Timer
         ),
         UpdateItem(
             stringResource(R.string.whats_new_v6_7_title),
@@ -161,6 +197,11 @@ fun WhatsNewScreen(
             stringResource(R.string.whats_new_v6_10_title),
             stringResource(R.string.whats_new_v6_10_body),
             Icons.AutoMirrored.Filled.Login
+        ),
+        UpdateItem(
+            stringResource(R.string.whats_new_v6_19_title),
+            stringResource(R.string.whats_new_v6_19_body),
+            Icons.Default.Replay
         ),
         UpdateItem(
             stringResource(R.string.whats_new_v6_11_title),
@@ -323,6 +364,7 @@ fun WhatsNewScreen(
         )
     )
 
+    var v6Expanded by rememberSaveable { mutableStateOf(false) }
     var v55Expanded by rememberSaveable { mutableStateOf(false) }
     var v5Expanded by rememberSaveable { mutableStateOf(false) }
     var v4Expanded by rememberSaveable { mutableStateOf(false) }
@@ -335,7 +377,7 @@ fun WhatsNewScreen(
                     Column {
                         Text(stringResource(R.string.whats_new_title))
                         Text(
-                            text = stringResource(R.string.whats_new_current_version, "6.0.0"),
+                            text = stringResource(R.string.whats_new_current_version, "6.1.0"),
                             style = MaterialTheme.typography.bodyMedium,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
@@ -373,8 +415,34 @@ fun WhatsNewScreen(
             ),
             verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.xxs)
         ) {
-            itemsIndexed(v6Updates) { index, item ->
-                UpdateCard(item, index, v6Updates.size)
+            itemsIndexed(v61Updates) { index, item ->
+                UpdateCard(item, index, v61Updates.size)
+            }
+
+            // 6.0.0 collapsible section
+            item {
+                VersionSectionHeader(
+                    version = "6.0.0",
+                    isLatest = false,
+                    expanded = v6Expanded,
+                    onClick = { v6Expanded = !v6Expanded }
+                )
+            }
+
+            item(key = "v6_collapsible_content") {
+                AnimatedVisibility(
+                    visible = v6Expanded,
+                    enter = fadeIn(tween(AppAnimations.Durations.Standard)) + expandVertically(tween(AppAnimations.Durations.Standard)),
+                    exit = fadeOut(tween(AppAnimations.Durations.Standard)) + shrinkVertically(tween(AppAnimations.Durations.Standard))
+                ) {
+                    Column(
+                        verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.xxs)
+                    ) {
+                        v6Updates.forEachIndexed { index, item ->
+                            UpdateCard(item, index, v6Updates.size)
+                        }
+                    }
+                }
             }
 
             // 5.5.0 collapsible section
@@ -502,6 +570,16 @@ private fun VersionSectionHeader(
     }
 }
 
+// A few expressive shapes, cycled through so the list doesn't look like a column of dots.
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
+private val updateIconShapes = listOf(
+    MaterialShapes.Cookie9Sided,
+    MaterialShapes.Clover4Leaf,
+    MaterialShapes.Sunny,
+    MaterialShapes.Pill
+)
+
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 private fun UpdateCard(item: UpdateItem, index: Int, totalCount: Int) {
     val shape = itemShape(index, totalCount)
@@ -520,13 +598,24 @@ private fun UpdateCard(item: UpdateItem, index: Int, totalCount: Int) {
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.m)
         ) {
-            Icon(
-                imageVector = item.icon,
-                contentDescription = null,
-                tint = MaterialTheme.colorScheme.primary,
-                modifier = Modifier.size(32.dp)
-            )
-            Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+            Box(
+                contentAlignment = Alignment.Center,
+                modifier = Modifier
+                    .size(44.dp)
+                    .clip(updateIconShapes[index % updateIconShapes.size].toShape())
+                    .background(MaterialTheme.colorScheme.secondaryContainer)
+            ) {
+                Icon(
+                    imageVector = item.icon,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.onSecondaryContainer,
+                    modifier = Modifier.size(22.dp)
+                )
+            }
+            Column(
+                modifier = Modifier.weight(1f),
+                verticalArrangement = Arrangement.spacedBy(4.dp)
+            ) {
                 Text(
                     text = item.title,
                     style = MaterialTheme.typography.titleMedium,

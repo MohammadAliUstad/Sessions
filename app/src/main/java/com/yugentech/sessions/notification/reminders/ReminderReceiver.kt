@@ -18,7 +18,8 @@ class ReminderReceiver : BroadcastReceiver() {
             context = context,
             id = id,
             title = intent.getStringExtra(EXTRA_TITLE) ?: "Sessions",
-            message = intent.getStringExtra(EXTRA_MESSAGE) ?: ""
+            // Worded now, in the app's language as it is today, not as it was when booked
+            message = dailyReminderMessage()
         )
         // Books tomorrow's as today's rings, from the latest saved time.
         ReminderStore.allDaily(context).firstOrNull { it.id == id }?.let { daily ->

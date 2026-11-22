@@ -87,9 +87,9 @@ class GuestBackupManager(
     }
 
     /**
-     * Adds what's in the backup at [uri] to the guest's data. Returns null when the file isn't a
-     * Sessions backup (or is too damaged to read at all). Like all guest data, what's added stays
-     * on this phone until the guest makes an account.
+     * Adds what's in the backup at [uri] to this phone's data. Returns null when the file isn't a
+     * Sessions backup (or is too damaged to read at all). For a guest what's added stays on this
+     * phone; for an account it's marked pending, so the next sync uploads it.
      */
     suspend fun import(userId: String, uri: Uri): ImportSummary? = withContext(Dispatchers.IO) {
         try {
@@ -184,10 +184,10 @@ class GuestBackupManager(
         return added
     }
 
-    /** Takes the backup's name and avatar only if the guest hasn't named themselves here yet. */
+    /** Takes the backup's name and avatar only if the user hasn't named themselves here yet. */
     private suspend fun importProfile(userId: String, profile: JSONObject) {
         val user = userDao.getUser(userId) ?: return
-        if (user.name != null) return
+        if (!user.name.isNullOrBlank()) return
         val name = profile.optString("name").trim().take(MAX_TEXT).ifEmpty { null } ?: return
         val avatarId = if (profile.has("avatarId")) profile.optInt("avatarId") else user.avatarId
         userDao.saveUser(user.copy(name = name, avatarId = avatarId))

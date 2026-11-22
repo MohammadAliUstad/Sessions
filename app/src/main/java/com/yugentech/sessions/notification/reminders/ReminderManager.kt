@@ -1,5 +1,6 @@
 package com.yugentech.sessions.notification.reminders
 
+import com.yugentech.sessions.localization.AppStrings
 import com.yugentech.sessions.R
 import android.app.AlarmManager
 import android.app.PendingIntent
@@ -25,6 +26,20 @@ import java.time.temporal.ChronoUnit
 import java.util.concurrent.TimeUnit
 import kotlin.math.abs
 import kotlin.random.Random
+
+/** The daily reminder: calm and plain. */
+private val dailyMessages = listOf(
+    R.string.reminder_daily_1,
+    R.string.reminder_daily_2,
+    R.string.reminder_daily_3,
+    R.string.reminder_daily_4
+)
+
+/**
+ * One of the daily reminder's lines, in the app's current language. Picked when the reminder
+ * rings, not when it's booked, so a language switch since then shows in it.
+ */
+internal fun dailyReminderMessage(): String = AppStrings.get(dailyMessages.random())
 
 /**
  * The reminders, set up the same way in Quill and Sessions; only the wording differs.
@@ -88,7 +103,7 @@ class ReminderManager(
             hour = hour,
             minute = minute,
             title = APP_NAME,
-            message = context.getString(dailyMessages.random())
+            message = dailyReminderMessage()
         )
     }
 
@@ -224,14 +239,6 @@ class ReminderManager(
         const val NUDGE_EARLIEST_HOUR = 11
         const val NUDGE_LATEST_HOUR = 19
         const val NUDGE_GAP_HOURS = 3
-
-        /** The daily reminder: calm and plain. */
-        val dailyMessages = listOf(
-            R.string.reminder_daily_1,
-            R.string.reminder_daily_2,
-            R.string.reminder_daily_3,
-            R.string.reminder_daily_4
-        )
 
         /** Now and then in the first days: light and playful. Each takes the task's name. */
         val playfulMessages = listOf(

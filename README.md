@@ -80,7 +80,7 @@ Sign in to keep your history backed up and synced across devices, or tap **Guest
 - **AMOLED Black:** Pure black backgrounds for OLED screens.
 - **6 Fonts:** Google Sans, Outfit, Manrope, Urbanist, Figtree and Garamond.
 - **Profile:** Pick one of the illustrated avatars, drawn by Pablo Stanley, and set your display name.
-- **10 Languages:** English, Spanish, Portuguese (Brazil), French, German, Hindi, Arabic, Japanese, Korean and Simplified Chinese. Follow your phone's language or choose one in the app.
+- **10 Languages:** English, Spanish, Portuguese (Brazil), French, German, Hindi, Japanese, Korean, Simplified Chinese and Russian. Follow your phone's language or choose one in the app.
 
 ### Accounts & Your Data
 - **Sign In or Go Guest:** Sign in with email or Google to back up and sync your sessions, templates and profile across devices, or continue as a guest with no account.

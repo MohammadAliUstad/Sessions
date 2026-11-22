@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.yugentech.sessions.announcements.model.Announcement
 import com.yugentech.sessions.announcements.repository.AnnouncementRepository
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -18,6 +19,9 @@ data class AnnouncementState(
     val queue: List<Announcement> = emptyList(),
     val isInitialized: Boolean = false
 )
+
+// The pause between one announcement closing and the next one opening.
+private const val BetweenAnnouncementsMillis = 700L
 
 class AnnouncementViewModel(
     private val repository: AnnouncementRepository
@@ -63,11 +67,13 @@ class AnnouncementViewModel(
         if (currentQueue.isNotEmpty()) {
             val next = currentQueue.first()
             val remaining = currentQueue.drop(1)
+            // Close this one first and leave a short pause before the next, so they read as
+            // two separate announcements rather than one swapping its contents
+            _state.update { it.copy(current = null, queue = remaining) }
             viewModelScope.launch {
                 repository.markSeen(next.id)
-            }
-            _state.update {
-                it.copy(current = next, queue = remaining)
+                delay(BetweenAnnouncementsMillis)
+                _state.update { it.copy(current = next) }
             }
         } else {
             _state.update {

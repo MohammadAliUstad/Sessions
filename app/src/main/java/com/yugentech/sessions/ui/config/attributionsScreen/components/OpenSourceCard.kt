@@ -2,7 +2,9 @@ package com.yugentech.sessions.ui.config.attributionsScreen.components
 
 import com.yugentech.sessions.R
 import com.yugentech.sessions.theme.tokens.icons
-import com.yugentech.sessions.ui.components.TintedLottieIcon
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Code
+import androidx.compose.material3.Icon
 import androidx.compose.ui.res.stringResource
 import android.content.Intent
 import androidx.compose.foundation.layout.Arrangement
@@ -57,9 +59,10 @@ fun OpenSourceCard(githubUrl: String) {
                     modifier = Modifier.size(MaterialTheme.components.imageSizeSmall)
                 ) {
                     Box(contentAlignment = Alignment.Center) {
-                        TintedLottieIcon(
-                            animation = R.raw.code_icon,
-                            color = MaterialTheme.colorScheme.onPrimaryContainer,
+                        Icon(
+                            imageVector = Icons.Filled.Code,
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.onPrimaryContainer,
                             modifier = Modifier.size(MaterialTheme.icons.large)
                         )
                     }

@@ -16,14 +16,14 @@ enum class AppLanguage(
 ) {
     English("en", "English", R.string.language_name_english),
     Spanish("es", "Español", R.string.language_name_spanish),
-    Portuguese("pt-BR", "Português (Brasil)", R.string.language_name_portuguese),
+    Portuguese("pt-BR", "Português", R.string.language_name_portuguese),
     French("fr", "Français", R.string.language_name_french),
     German("de", "Deutsch", R.string.language_name_german),
     Hindi("hi", "हिन्दी", R.string.language_name_hindi),
-    Arabic("ar", "العربية", R.string.language_name_arabic),
     Japanese("ja", "日本語", R.string.language_name_japanese),
     Korean("ko", "한국어", R.string.language_name_korean),
-    Chinese("zh-CN", "简体中文", R.string.language_name_chinese);
+    Chinese("zh-CN", "中文", R.string.language_name_chinese),
+    Russian("ru", "Русский", R.string.language_name_russian);
 
     companion object {
         /** The language a stored or system tag stands for, matching on the language when the region differs. */

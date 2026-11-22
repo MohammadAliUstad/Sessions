@@ -59,6 +59,7 @@ import androidx.compose.ui.platform.LocalHapticFeedback
 import com.yugentech.sessions.alerts.model.BackgroundSound
 import com.yugentech.sessions.theme.tokens.spacing
 import com.yugentech.sessions.ui.dash.util.models.SoundOption
+import com.yugentech.sessions.theme.SheetTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -94,115 +95,117 @@ fun SoundSelectionSheet(
 
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
 
-    ModalBottomSheet(
-        onDismissRequest = onDismiss,
-        sheetState = sheetState,
-        shape = RoundedCornerShape(topStart = 28.dp, topEnd = 28.dp),
-        dragHandle = {
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clickable(
-                        interactionSource = remember { MutableInteractionSource() },
-                        indication = null,
-                        onClick = {}
-                    )
-                    .padding(vertical = 22.dp),
-                contentAlignment = Alignment.Center
-            ) {
+    SheetTheme {
+        ModalBottomSheet(
+            onDismissRequest = onDismiss,
+            sheetState = sheetState,
+            shape = RoundedCornerShape(topStart = 28.dp, topEnd = 28.dp),
+            dragHandle = {
                 Box(
                     modifier = Modifier
-                        .size(width = 32.dp, height = 6.dp)
-                        .background(
-                            color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.4f),
-                            shape = CircleShape
+                        .fillMaxWidth()
+                        .clickable(
+                            interactionSource = remember { MutableInteractionSource() },
+                            indication = null,
+                            onClick = {}
                         )
-                )
-            }
-        }
-    ) {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(start = 24.dp, end = 24.dp, bottom = 40.dp),
-            verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.l)
-        ) {
-            Column(verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.xs)) {
-                Text(
-                    text = stringResource(R.string.sounds_title),
-                    style = MaterialTheme.typography.titleLarge,
-                    fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.onSurface
-                )
-                Text(
-                    text = stringResource(R.string.sounds_subtitle),
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-            }
-
-            SoundSwitchRow(
-                title = stringResource(R.string.sounds_turn_on),
-                subtitle = stringResource(R.string.sounds_turn_on_subtitle),
-                checked = isSoundOn,
-                onCheckedChange = { checked ->
-                    haptic.performHapticFeedback(if (checked) HapticFeedbackType.ToggleOn else HapticFeedbackType.ToggleOff)
-                    if (checked) {
-                        selectedOption = lastSound
-                        onPreview(lastSound)
-                    } else {
-                        selectedOption = BackgroundSound.NONE.id
-                        onPreview(null)
-                    }
-                }
-            )
-
-            // Sounds are only pickable while sounds are on; while off the grid stays visible
-            // (dimmed) so the user can still see which sound comes back when they turn it on.
-            Column(
-                modifier = Modifier.fillMaxWidth(),
-                verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.s)
-            ) {
-                soundOptions.chunked(2).forEach { rowOptions ->
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.s)
-                    ) {
-                        rowOptions.forEach { soundOption ->
-                            SoundToggleCard(
-                                soundOption = soundOption,
-                                isSelected = lastSound == soundOption.id,
-                                enabled = isSoundOn,
-                                onClick = {
-                                    selectedOption = soundOption.id
-                                    lastSound = soundOption.id
-                                    onPreview(selectedOption)
-                                    onHaptic()
-                                },
-                                modifier = Modifier.weight(1f)
+                        .padding(vertical = 22.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .size(width = 32.dp, height = 6.dp)
+                            .background(
+                                color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.4f),
+                                shape = CircleShape
                             )
+                    )
+                }
+            }
+        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 24.dp, end = 24.dp, bottom = 40.dp),
+                verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.l)
+            ) {
+                Column(verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.xs)) {
+                    Text(
+                        text = stringResource(R.string.sounds_title),
+                        style = MaterialTheme.typography.titleLarge,
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
+                    Text(
+                        text = stringResource(R.string.sounds_subtitle),
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
+
+                SoundSwitchRow(
+                    title = stringResource(R.string.sounds_turn_on),
+                    subtitle = stringResource(R.string.sounds_turn_on_subtitle),
+                    checked = isSoundOn,
+                    onCheckedChange = { checked ->
+                        haptic.performHapticFeedback(if (checked) HapticFeedbackType.ToggleOn else HapticFeedbackType.ToggleOff)
+                        if (checked) {
+                            selectedOption = lastSound
+                            onPreview(lastSound)
+                        } else {
+                            selectedOption = BackgroundSound.NONE.id
+                            onPreview(null)
+                        }
+                    }
+                )
+
+                // Sounds are only pickable while sounds are on; while off the grid stays visible
+                // (dimmed) so the user can still see which sound comes back when they turn it on.
+                Column(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.s)
+                ) {
+                    soundOptions.chunked(2).forEach { rowOptions ->
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.s)
+                        ) {
+                            rowOptions.forEach { soundOption ->
+                                SoundToggleCard(
+                                    soundOption = soundOption,
+                                    isSelected = lastSound == soundOption.id,
+                                    enabled = isSoundOn,
+                                    onClick = {
+                                        selectedOption = soundOption.id
+                                        lastSound = soundOption.id
+                                        onPreview(selectedOption)
+                                        onHaptic()
+                                    },
+                                    modifier = Modifier.weight(1f)
+                                )
+                            }
                         }
                     }
                 }
-            }
 
-            Button(
-                shape = CircleShape,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(58.dp),
-                onClick = {
-                    haptic.performHapticFeedback(HapticFeedbackType.Confirm)
-                    onConfirm(selectedOption)
-                    scope.launch { sheetState.hide() }
+                Button(
+                    shape = CircleShape,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(58.dp),
+                    onClick = {
+                        haptic.performHapticFeedback(HapticFeedbackType.Confirm)
+                        onConfirm(selectedOption)
+                        scope.launch { sheetState.hide() }
+                    }
+                ) {
+                    Text(
+                        text = stringResource(R.string.save),
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.SemiBold,
+                        maxLines = 1
+                    )
                 }
-            ) {
-                Text(
-                    text = stringResource(R.string.save),
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.SemiBold,
-                    maxLines = 1
-                )
             }
         }
     }

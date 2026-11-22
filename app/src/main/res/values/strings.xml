@@ -2,7 +2,7 @@
 <resources>
     <string name="app_name" translatable="false">Sessions</string>
     <string name="app_description">Sessions helps you build focus and discipline, one mindful session at a time. Track your time, protect your attention, and grow a little every day.</string>
-    <string name="version">Version 6.0.0</string>
+    <string name="version">Version 6.1.0</string>
 
 
     <string name="about">About</string>
@@ -37,14 +37,14 @@
     <string name="language_footer">Sessions switches straight away. On Android 13 and later you can also change it from your phone\'s settings under Apps › Sessions › Language.</string>
     <string name="language_name_english">English</string>
     <string name="language_name_spanish">Spanish</string>
-    <string name="language_name_portuguese">Portuguese (Brazil)</string>
+    <string name="language_name_portuguese">Portuguese</string>
     <string name="language_name_french">French</string>
     <string name="language_name_german">German</string>
     <string name="language_name_hindi">Hindi</string>
-    <string name="language_name_arabic">Arabic</string>
     <string name="language_name_japanese">Japanese</string>
     <string name="language_name_korean">Korean</string>
-    <string name="language_name_chinese">Chinese (Simplified)</string>
+    <string name="language_name_chinese">Chinese</string>
+    <string name="language_name_russian">Russian</string>
 
     <!-- Settings -->
     <string name="settings_section_notifications">Notifications</string>
@@ -201,12 +201,6 @@
     <string name="onboarding_sets_title">Sets, with breaks\nbuilt in</string>
     <string name="onboarding_ambience_title">Set the mood</string>
     <string name="onboarding_ambience_body">Rain on the window, a crackling fire, a quiet library. Pick a soundscape to play under your sessions, or keep it silent.</string>
-    <string name="onboarding_theme_tap">Tap a tile to try it</string>
-    <string name="onboarding_theme_title">Make it yours</string>
-    <string name="onboarding_theme_body">Pick a palette or your wallpaper\'s colours, and go light, dark or true-black AMOLED. Every screen follows along.</string>
-    <string name="onboarding_mini_greeting">Good evening</string>
-    <string name="onboarding_mini_subtitle">Ready to focus?</string>
-    <string name="onboarding_mini_start">Start</string>
     <string name="onboarding_growth_title">Watch it grow</string>
     <string name="onboarding_growth_body">Every focused minute counts. Insights, a year-long heatmap and gentle daily reminders keep you coming back.</string>
     <string name="onboarding_growth_caption">focused this season</string>
@@ -686,24 +680,16 @@
     <string name="expand">Expand</string>
 
     <!-- Release notes -->
-    <string name="whats_new_v6_1_title">Home Gradient Toggle</string>
-    <string name="whats_new_v6_1_body">You can now turn the living colour-wash gradient at the top of the home screen on or off from Home &amp; Cards in Settings. Applies to Refined and Studio layouts; the toggle card previews the glow right on itself.</string>
-    <string name="whats_new_v6_2_title">Animated Studio Sound Button</string>
-    <string name="whats_new_v6_2_body">The sound button in Studio now breathes gently while your ambient sound plays, pulsing in and out to show it\'s active. The icon also fades through when you mute or unmute, rather than snapping.</string>
     <string name="whats_new_v6_3_title">Unique Settings Toggle Icons</string>
     <string name="whats_new_v6_3_body">Each toggle in Settings now carries its own icon: a bell for notifications, an alarm for your daily reminder, a spark for playful reminders, a wave for sound effects, a vibration for haptics, and a sun for keeping the screen on.</string>
-    <string name="whats_new_v6_4_title">Avatar Ring Fix</string>
-    <string name="whats_new_v6_4_body">The selection ring on avatar items now wraps around the outside of each avatar as intended, instead of drawing over the edges of the image.</string>
     <string name="whats_new_v6_5_title">Choose Your Home Layout</string>
-    <string name="whats_new_v6_5_body">Pick how your Home screen looks from the new Home &amp; Cards screen in Settings: Classic, the original layout; Refined, a calmer take with the date above your task; or Studio, an all-new design.</string>
-    <string name="whats_new_v6_6_title">Meet Studio</string>
-    <string name="whats_new_v6_6_body">A watch-style dial whose ticks fill as you focus, with a dot riding the rim. Before you start, three tiles show your plan and when you\'d be done. During a session, a card shows each block on a timeline, and a floating dock holds every control.</string>
+    <string name="whats_new_v6_5_body">Your Home screen now comes in three layouts, picked in Settings › Home &amp; Cards. Classic keeps the familiar look. Refined is a calmer take, with the date above your task. Studio is all new: a watch-style dial whose ticks fill as you focus, with a dot riding the rim; three tiles that show your plan and when you\'d be done; and, during a session, a card with each block on a timeline and a floating dock that holds every control.</string>
     <string name="whats_new_v6_7_title">A Living Glow</string>
-    <string name="whats_new_v6_7_body">Refined and Studio have a soft, moving glow across the top of the screen in your theme\'s colours. It follows your session, leaning towards focus or break colours and flowing faster and brighter while the timer runs.</string>
+    <string name="whats_new_v6_7_body">Refined and Studio have a soft, moving glow across the top of the screen in your theme\'s colours. It follows your session, leaning towards focus or break colours and flowing faster and brighter while the timer runs. Prefer it off? Switch it off in Settings › Home &amp; Cards.</string>
     <string name="whats_new_v6_8_title">A Floating Navigation Bar</string>
     <string name="whats_new_v6_8_body">The bottom bar is now a floating pill. Each tab is just its icon, and the one you\'re on opens into a capsule with its name, while your pages run softly underneath it.</string>
-    <string name="whats_new_v6_9_title">Aurora &amp; Mesh Card Animations</string>
-    <string name="whats_new_v6_9_body">Two new animations for your session card: Aurora, soft light drifting over the card, and Mesh gradient, your theme\'s colours blending as they move. Like the others, they move only while the timer runs.</string>
+    <string name="whats_new_v6_9_title">Card Animations</string>
+    <string name="whats_new_v6_9_body">Your session card can now have a moving background, picked in Settings › Home &amp; Cards: Desert crossing, dunes and a sun that arcs across as your block runs; Lo-fi rain, drops sliding down a window; Candle &amp; embers, a flickering glow with rising embers; Aurora, soft light drifting over the card; and Mesh gradient, your theme\'s colours blending as they move. Each moves only while the timer runs.</string>
     <string name="whats_new_v6_10_title">A New Welcome</string>
     <string name="whats_new_v6_10_body">Sign in and sign up now sit on a slowly drifting glow, each with its own little animation: a focus dial still counting down where you left off, or a week of focus building up bar by bar.</string>
     <string name="whats_new_v6_11_title">New Colour Theme Cards</string>
@@ -711,13 +697,33 @@
     <string name="whats_new_v6_12_title">Smoother Theme Changes</string>
     <string name="whats_new_v6_12_body">Changing your colour theme, switching between light and dark, or turning on AMOLED black now fades gently across the whole screen.</string>
     <string name="whats_new_v6_13_title">Sessions in Your Language</string>
-    <string name="whats_new_v6_13_body">Sessions now speaks ten languages: English, Spanish, Portuguese, French, German, Hindi, Arabic, Japanese, Korean and Chinese. Pick yours in Settings › Language, or follow your phone\'s, and the whole app switches instantly, right where you are. Arabic reads right to left.</string>
+    <string name="whats_new_v6_13_body">Sessions now speaks nine languages: English, Spanish, Portuguese, French, German, Hindi, Japanese, Korean and Chinese. Pick yours in Settings › Language, or follow your phone\'s, and the whole app switches instantly, right where you are.</string>
     <string name="whats_new_v6_15_title">Change Your Task Mid-Session</string>
     <string name="whats_new_v6_15_body">Pause your session to rename your task, without starting over.</string>
     <string name="whats_new_v6_16_title">Use Sessions Without an Account</string>
     <string name="whats_new_v6_16_body">Tap Guest on the sign-in screen to start focusing right away. As a guest, everything stays on your phone and never goes to the cloud. Leaving guest mode deletes it, so you can export it on the way out.</string>
     <string name="whats_new_v6_17_title">Back Up and Bring It Along</string>
     <string name="whats_new_v6_17_body">Guests can export their sessions, templates and profile to a file from Settings › Backup, and import it on any phone. Signed in? Import that file in Settings and it syncs to your account. Importing never doubles anything up.</string>
+    <string name="whats_new_v6_18_title">Keep Screen On</string>
+    <string name="whats_new_v6_18_body">Turn on Keep Screen On in Settings and your screen stays awake for as long as a session is going, running or paused, so the timer is always in view. Once the session ends, your phone sleeps as usual.</string>
+    <string name="whats_new_v6_19_title">A New Welcome Tour</string>
+    <string name="whats_new_v6_19_body">The first-run tour is all new: five short scenes on focusing, sets with breaks, ambient sounds, themes and your progress, and you can play with them as you go. Tap the dial to run a quick focus, or tap a tile to try a theme. Want to see it again? Tap Replay Onboarding in Settings.</string>
+    <string name="whats_new_v6_20_title">A Livelier Avatar Picker</string>
+    <string name="whats_new_v6_20_body">Picking an avatar now has a little flourish: its circle turns into a playful Material shape, a different one each time, and its name lights up. The sheet stays open, so you can try a few before you swipe it away.</string>
+    <string name="whats_new_v61_1_title">Sessions in Russian</string>
+    <string name="whats_new_v61_1_body">Sessions now speaks Russian too, making ten languages. Pick it in Settings › Language. And when you switch languages, each row in the list now eases to its new size instead of jumping.</string>
+    <string name="whats_new_v61_2_title">A Polished New Icon</string>
+    <string name="whats_new_v61_2_body">The Sessions icon has been redrawn with smoother, cleaner shapes. You\'ll see it on your home screen, when the app opens, bouncing on the About screen, and in a matching new notification icon.</string>
+    <string name="whats_new_v61_3_title">Black Sheets in AMOLED</string>
+    <string name="whats_new_v61_3_body">With AMOLED Black on, bottom sheets now go true black too, matching the screen behind them.</string>
+    <string name="whats_new_v61_4_title">Guest Mode Fixes</string>
+    <string name="whats_new_v61_4_body">Leaving guest mode no longer gets stuck if something goes wrong. Leaving Settings during Export and exit no longer signs you out later by surprise. And importing a backup while signed in no longer duplicates your templates.</string>
+    <string name="whats_new_v61_5_title">A Fresh Look for This Screen</string>
+    <string name="whats_new_v61_5_body">Each change here now sits on its own playful Material shape, so the list is easier to scan.</string>
+    <string name="whats_new_v61_6_title">Take Your Account\'s Data With You</string>
+    <string name="whats_new_v61_6_body">Signed in? You can now export your sessions, templates and profile from Settings › Backup too. Want to switch to guest mode? Export, sign out, tap Guest and import the file, and everything comes with you.</string>
+    <string name="whats_new_v61_7_title">Livelier Insights</string>
+    <string name="whats_new_v61_7_body">Momentum now shows your streak on a badge with milestones at 3, 7, 14 and 30 days. Weekly Rhythm is a bar chart you can tap day by day, starting the week where your region does, and Task Allocation is a donut chart of where your time goes.</string>
     <string name="whats_new_v51_1_title">Templates Sync to Your Account</string>
     <string name="whats_new_v51_1_body">Your task templates are now saved to your account. Reinstall the app or sign in on another phone and they come right back.</string>
     <string name="whats_new_v51_2_title">Redesigned Sign In &amp; Sign Up</string>
@@ -786,6 +792,8 @@
     <string name="mynt_tagline">Your Voice Money Assistant</string>
     <string name="hajime_tagline">Learn to Read Japanese</string>
     <string name="more_apps_get_on_play">Get on Play Store</string>
+    <string name="more_apps_fact_reviews_quill">20+ reviews</string>
+    <string name="more_apps_fact_downloads">Downloads</string>
     <string name="more_apps_coming_soon">Coming soon</string>
     <string name="more_apps_overview_title">Focus. Read. Track. Learn. Cook.</string>
     <string name="more_apps_overview_body">Sessions, Quill, Mynt, Hajime and Ryori are made by YugenTech: small, thoughtful apps built to make everyday moments a little calmer.</string>
@@ -844,6 +852,8 @@
 
     <string name="announcement_v6_title">What\'s New in Sessions 6.0</string>
     <string name="announcement_v6_message">We\'ve added the new Studio layout with a watch-style dial, living glow backgrounds, mesh animations, and smoother transitions throughout the app.</string>
+    <string name="announcement_v61_title">What\'s New in Sessions 6.1</string>
+    <string name="announcement_v61_message">Sessions now speaks Russian, has a polished new icon and livelier Insights charts, and signed-in users can export their data, even to carry it into guest mode.</string>
     <string name="announcement_see_whats_new">See What\'s New</string>
     <string name="announcement_maybe_later">Maybe Later</string>
     <string name="announcement_layouts_title">Try the New Layouts</string>
@@ -922,9 +932,9 @@
 
     <string name="guest_backup_section">Backup</string>
     <string name="guest_export_title">Export data</string>
-    <string name="guest_export_subtitle">Save your sessions and templates to a file</string>
+    <string name="guest_export_subtitle">Create a backup file. Open it on any phone, or after you sign in.</string>
     <string name="guest_import_title">Import data</string>
-    <string name="guest_import_subtitle">Add sessions and templates from a backup file</string>
+    <string name="guest_import_subtitle">Restore from a backup file. Nothing you already have is duplicated.</string>
     <string name="guest_export_done_title">Backup saved</string>
     <string name="guest_export_done_message">Keep this file somewhere safe. Import it on any phone to get your sessions back.</string>
     <string name="guest_export_failed_title">Couldn\'t save the backup</string>
@@ -933,6 +943,7 @@
     <string name="guest_import_done_message">Sessions added: %1$d\nTemplates added: %2$d</string>
     <string name="guest_import_failed_title">Couldn\'t import</string>
     <string name="guest_import_failed_message">This file isn\'t a Sessions backup, or it\'s damaged.</string>
-    <string name="account_import_subtitle">Bring in a backup you saved as a guest. It syncs to your account.</string>
+    <string name="account_import_subtitle">Restore from a backup file, even one made as a guest. It syncs to your account.</string>
+    <string name="account_export_subtitle">Create a backup file. Open it anywhere, even as a guest.</string>
     <string name="guest_export_and_exit">Export and exit</string>
 </resources>

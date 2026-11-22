@@ -210,11 +210,23 @@ class AuthViewModel(
 
     fun signOut() {
         Timber.i("User requested sign out")
+        val userId = authRepository.currentUser
         _authState.update { it.copy(isLoading = true) }
         viewModelScope.launch {
             // The templates table isn't per account, so empty it before the next account signs
             // in (the cloud copy stays and comes back at this account's next sign-in).
             templateRepository.clearLocal()
+            // Same for the account's synced sessions, so a guest on this phone can import this
+            // account's backup. Best effort: signing out goes ahead even if this fails.
+            if (userId != null) {
+                try {
+                    guestDataManager.clearSignedOutAccount(userId)
+                } catch (e: CancellationException) {
+                    throw e
+                } catch (e: Exception) {
+                    Timber.e(e, "Couldn't clear the account's local sessions")
+                }
+            }
             authRepository.signOut()
             syncDataStore.clearSyncFlags()
         }

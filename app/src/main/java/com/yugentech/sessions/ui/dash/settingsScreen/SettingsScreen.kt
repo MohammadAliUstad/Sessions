@@ -124,7 +124,7 @@ fun SettingsScreen(
         }
     }
 
-    // A guest's backup file: saved where they choose, and read back from any file they pick
+    // A backup file (a guest's or an account's): saved where they choose, and read back from any file they pick
     // (file managers don't all call .json files JSON, hence the wider list)
     val backupState by guestBackupViewModel.state.collectAsStateWithLifecycle()
     // Set by "Export and exit" in the exit-guest dialog: once the file is saved, guest mode ends.
@@ -152,6 +152,13 @@ fun SettingsScreen(
     val importLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.OpenDocument()
     ) { uri -> uri?.let(guestBackupViewModel::import) }
+    fun launchExport() {
+        val date = SimpleDateFormat("yyyy-MM-dd", Locale.US).format(Date())
+        exportLauncher.launch("sessions-backup-$date.json")
+    }
+    fun launchImport() {
+        importLauncher.launch(arrayOf("application/json", "text/plain", "application/octet-stream"))
+    }
 
     var showLogoutDialog by remember { mutableStateOf(false) }
     var showExitDialog by remember { mutableStateOf(false) }
@@ -167,43 +174,6 @@ fun SettingsScreen(
         ),
         verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.xxs)
     ) {
-        // A guest's sessions live only on this phone, so the way to keep them comes first:
-        // a backup file they can export and import
-        if (isGuest) {
-            item {
-                SectionHeader(
-                    icon = Icons.Default.Backup,
-                    title = stringResource(R.string.guest_backup_section)
-                )
-            }
-            item {
-                SettingsListItem(
-                    title = stringResource(R.string.guest_export_title),
-                    subtitle = stringResource(R.string.guest_export_subtitle),
-                    index = 0,
-                    totalCount = 2,
-                    onClick = {
-                        if (!backupState.busy) {
-                            val date = SimpleDateFormat("yyyy-MM-dd", Locale.US).format(Date())
-                            exportLauncher.launch("sessions-backup-$date.json")
-                        }
-                    }
-                )
-            }
-            item {
-                SettingsListItem(
-                    title = stringResource(R.string.guest_import_title),
-                    subtitle = stringResource(R.string.guest_import_subtitle),
-                    index = 1,
-                    totalCount = 2,
-                    onClick = {
-                        if (!backupState.busy) {
-                            importLauncher.launch(arrayOf("application/json", "text/plain", "application/octet-stream"))
-                        }
-                    }
-                )
-            }
-        }
         item {
             SectionHeader(
                 icon = Icons.Default.Notifications,
@@ -413,27 +383,32 @@ fun SettingsScreen(
             )
         }
 
-        // A signed-in user can bring in a backup they saved as a guest; it then syncs to their account
-        if (!isGuest) {
-            item {
-                SectionHeader(
-                    icon = Icons.Default.Backup,
-                    title = stringResource(R.string.guest_backup_section)
-                )
-            }
-            item {
-                SettingsListItem(
-                    title = stringResource(R.string.guest_import_title),
-                    subtitle = stringResource(R.string.account_import_subtitle),
-                    index = 0,
-                    totalCount = 1,
-                    onClick = {
-                        if (!backupState.busy) {
-                            importLauncher.launch(arrayOf("application/json", "text/plain", "application/octet-stream"))
-                        }
-                    }
-                )
-            }
+        // Backup, in the same place in both modes. A guest's sessions live only on this phone,
+        // so it's their way to keep them; a signed-in user can save their account's data to a
+        // file (to keep, or to carry into guest mode) and bring in a backup, which then syncs
+        item {
+            SectionHeader(
+                icon = Icons.Default.Backup,
+                title = stringResource(R.string.guest_backup_section)
+            )
+        }
+        item {
+            SettingsListItem(
+                title = stringResource(R.string.guest_export_title),
+                subtitle = stringResource(if (isGuest) R.string.guest_export_subtitle else R.string.account_export_subtitle),
+                index = 0,
+                totalCount = 2,
+                onClick = { if (!backupState.busy) launchExport() }
+            )
+        }
+        item {
+            SettingsListItem(
+                title = stringResource(R.string.guest_import_title),
+                subtitle = stringResource(if (isGuest) R.string.guest_import_subtitle else R.string.account_import_subtitle),
+                index = 1,
+                totalCount = 2,
+                onClick = { if (!backupState.busy) launchImport() }
+            )
         }
 
         item {
@@ -486,8 +461,7 @@ fun SettingsScreen(
                 showLogoutDialog = false
                 if (!backupState.busy) {
                     exitAfterExport = true
-                    val date = SimpleDateFormat("yyyy-MM-dd", Locale.US).format(Date())
-                    exportLauncher.launch("sessions-backup-$date.json")
+                    launchExport()
                 }
             },
             onDismiss = { showLogoutDialog = false }

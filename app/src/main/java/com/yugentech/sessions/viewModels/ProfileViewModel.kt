@@ -182,15 +182,20 @@ class ProfileViewModel(
             set(Calendar.MILLISECOND, 0)
         }.timeInMillis
 
+        // A session dated after today (a phone clock set wrong) would otherwise count as the
+        // streak's only day and break it there, so the streak only looks at today and earlier
+        val pastDates = sessionDates.filter { it <= today }
+        if (pastDates.isEmpty()) return 0
+
         val yesterday = today - TimeUnit.DAYS.toMillis(1)
 
-        if (sessionDates.first() < yesterday) return 0
+        if (pastDates.first() < yesterday) return 0
 
         var currentStreak = 0
         var lastDate =
-            if (sessionDates.first() == today) today else yesterday + TimeUnit.DAYS.toMillis(1)
+            if (pastDates.first() == today) today else yesterday + TimeUnit.DAYS.toMillis(1)
 
-        for (date in sessionDates) {
+        for (date in pastDates) {
             if (lastDate - date <= TimeUnit.DAYS.toMillis(1)) {
                 currentStreak++
                 lastDate = date

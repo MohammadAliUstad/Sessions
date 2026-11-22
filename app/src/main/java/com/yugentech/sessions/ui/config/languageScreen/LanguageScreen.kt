@@ -2,6 +2,7 @@ package com.yugentech.sessions.ui.config.languageScreen
 
 import android.app.Activity
 import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.FastOutLinearInEasing
 import androidx.compose.animation.core.FastOutSlowInEasing
@@ -63,7 +64,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextDirection
 import androidx.compose.ui.unit.dp
 import com.yugentech.sessions.R
 import com.yugentech.sessions.localization.AppLanguage
@@ -139,7 +139,8 @@ fun LanguageScreen(onNavigateBack: () -> Unit) {
                 .fillMaxSize()
                 .padding(top = scaffoldPadding.calculateTopPadding()),
             contentPadding = PaddingValues(
-                bottom = navBarPadding.calculateBottomPadding() + 8.dp,
+                // Ends at the navigation bar and no further
+                bottom = navBarPadding.calculateBottomPadding(),
                 start = MaterialTheme.spacing.m + scaffoldPadding.calculateStartPadding(layoutDirection),
                 end = MaterialTheme.spacing.m + scaffoldPadding.calculateEndPadding(layoutDirection)
             ),
@@ -212,9 +213,7 @@ private fun LanguageRow(
         headlineContent = {
             Text(
                 text = title,
-                // A name in its own script reads in its own direction (Arabic right to left)
-                // whatever direction the app is laid out in
-                style = MaterialTheme.typography.titleMedium.copy(textDirection = TextDirection.Content),
+                style = MaterialTheme.typography.titleMedium,
                 modifier = Modifier.padding(start = MaterialTheme.spacing.s, top = MaterialTheme.spacing.s)
             )
         },
@@ -228,6 +227,11 @@ private fun LanguageRow(
         },
         trailingContent = { SelectionMark(selected = selected, ring = ring) },
         modifier = Modifier
+            // When the app switches language, names and subtitles in another script can need
+            // more or less height; the row eases to its new size instead of jumping to it
+            .animateContentSize(
+                animationSpec = spring(dampingRatio = 0.8f, stiffness = Spring.StiffnessMediumLow)
+            )
             .clip(itemShape(index, count))
             .background(container)
             .clickable(onClick = onClick),
